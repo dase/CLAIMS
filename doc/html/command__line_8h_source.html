@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: utility/command_line.h Source File</title>
+<title>Claims: utility/command_line.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('command__line_8h_source.html','');});
 <div class="title">command_line.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<a href="command__line_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;readline/readline.h&gt;</span></div>
@@ -117,10 +117,10 @@ $(document).ready(function(){initNavTree('command__line_8h_source.html','');});
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">using namespace </span>std;</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">/* An auxiliary structure used for removing duplicated command in the history.*/</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">static</span> std::string last_command;</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="command__line_8h.html#aadd1bbdb4a0b4f4e499a7523de7dc2ac">   12</a></span>&#160;<span class="keyword">static</span> std::string <a class="code" href="command__line_8h.html#aadd1bbdb4a0b4f4e499a7523de7dc2ac">last_command</a>;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">/* The maximum length of a command */</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> string_length=1024;</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="command__line_8h.html#a258fa500beb31e130a217ca71fdce899">   15</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="command__line_8h.html#a258fa500beb31e130a217ca71fdce899">string_length</a>=1024;</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">/* A auxiliary struct storing command */</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structinput__struct.html">   18</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structinput__struct.html">input_struct</a>{</div>
@@ -135,28 +135,35 @@ $(document).ready(function(){initNavTree('command__line_8h_source.html','');});
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="comment">/* add str to string until a char specified by target is read.*/</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">bool</span> append_til(<span class="keyword">const</span> <span class="keywordtype">char</span>* str, <span class="keywordtype">char</span> target, <span class="keywordtype">bool</span> &amp; target_match);</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="comment">/* the space holding the command */</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">char</span> <span class="keywordtype">string</span>[string_length];</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structinput__struct.html#a455964d216ad90269e080fd33d3fa151">   30</a></span>&#160;    <span class="keywordtype">char</span> <span class="keywordtype">string</span>[<a class="code" href="command__line_8h.html#a258fa500beb31e130a217ca71fdce899">string_length</a>];</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">/* the index indicating the end of the command */</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> index;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structinput__struct.html#a1f4a77db8b4457a22ae4919fffb4e384">   32</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structinput__struct.html#a1f4a77db8b4457a22ae4919fffb4e384">index</a>;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment">/* recovery history from file &quot;.history&quot; */</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keywordtype">void</span> recovery_history();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keywordtype">void</span> <a class="code" href="command__line_8cpp.html#a8a024ace74ddbdda27b54d39c7986d90">recovery_history</a>();</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">/* store current comment to the &quot;.history&quot; file */</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">void</span> store_history(<span class="keywordtype">char</span>* command );</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">void</span> <a class="code" href="command__line_8cpp.html#a7daeeac5b1c4b22e4ed673aeb5924b87">store_history</a>(<span class="keywordtype">char</span>* command );</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">void</span> init_command_line();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">void</span> <a class="code" href="command__line_8cpp.html#ac192abc7903946847613faedb4161228">init_command_line</a>();</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">int</span> get_one_command(<span class="keywordtype">string</span> &amp;str);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">int</span> <a class="code" href="command__line_8cpp.html#aec39a65ecadeb5abe63c0120c15d2e7d">get_one_command</a>(<span class="keywordtype">string</span> &amp;str);</div>
+<div class="ttc" id="command__line_8cpp_html_ac192abc7903946847613faedb4161228"><div class="ttname"><a href="command__line_8cpp.html#ac192abc7903946847613faedb4161228">init_command_line</a></div><div class="ttdeci">void init_command_line()</div><div class="ttdef"><b>Definition:</b> command_line.cpp:68</div></div>
+<div class="ttc" id="structinput__struct_html_a1f4a77db8b4457a22ae4919fffb4e384"><div class="ttname"><a href="structinput__struct.html#a1f4a77db8b4457a22ae4919fffb4e384">input_struct::index</a></div><div class="ttdeci">int index</div><div class="ttdef"><b>Definition:</b> command_line.h:32</div></div>
+<div class="ttc" id="command__line_8cpp_html_a8a024ace74ddbdda27b54d39c7986d90"><div class="ttname"><a href="command__line_8cpp.html#a8a024ace74ddbdda27b54d39c7986d90">recovery_history</a></div><div class="ttdeci">void recovery_history()</div><div class="ttdef"><b>Definition:</b> command_line.cpp:47</div></div>
+<div class="ttc" id="command__line_8cpp_html_a7daeeac5b1c4b22e4ed673aeb5924b87"><div class="ttname"><a href="command__line_8cpp.html#a7daeeac5b1c4b22e4ed673aeb5924b87">store_history</a></div><div class="ttdeci">void store_history(char *command)</div><div class="ttdef"><b>Definition:</b> command_line.cpp:76</div></div>
+<div class="ttc" id="command__line_8cpp_html_aec39a65ecadeb5abe63c0120c15d2e7d"><div class="ttname"><a href="command__line_8cpp.html#aec39a65ecadeb5abe63c0120c15d2e7d">get_one_command</a></div><div class="ttdeci">int get_one_command(string &amp;str)</div><div class="ttdef"><b>Definition:</b> command_line.cpp:83</div></div>
+<div class="ttc" id="command__line_8h_html_a258fa500beb31e130a217ca71fdce899"><div class="ttname"><a href="command__line_8h.html#a258fa500beb31e130a217ca71fdce899">string_length</a></div><div class="ttdeci">const int string_length</div><div class="ttdef"><b>Definition:</b> command_line.h:15</div></div>
 <div class="ttc" id="structinput__struct_html"><div class="ttname"><a href="structinput__struct.html">input_struct</a></div><div class="ttdef"><b>Definition:</b> command_line.h:18</div></div>
+<div class="ttc" id="command__line_8h_html_aadd1bbdb4a0b4f4e499a7523de7dc2ac"><div class="ttname"><a href="command__line_8h.html#aadd1bbdb4a0b4f4e499a7523de7dc2ac">last_command</a></div><div class="ttdeci">static std::string last_command</div><div class="ttdef"><b>Definition:</b> command_line.h:12</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><b>command_line.h</b></li>
+    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><a class="el" href="command__line_8h.html">command_line.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

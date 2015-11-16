@@ -17,7 +17,15 @@ var classProjectionDescriptor =
     [ "getSchema", "classProjectionDescriptor.html#ac2622e547dbdbafa8fc3bf3bac1c4606", null ],
     [ "hasAttribute", "classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7", null ],
     [ "isExist", "classProjectionDescriptor.html#a09710b2823bc7e694cbf0f10eea4e52c", null ],
+    [ "serialize", "classProjectionDescriptor.html#a234b505827ed457d2989a8f559ba040e", null ],
     [ "setProjectionID", "classProjectionDescriptor.html#a7175ceb04080905e827a546c6caf4966", null ],
     [ "boost::serialization::access", "classProjectionDescriptor.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
-    [ "TableDescriptor", "classProjectionDescriptor.html#ac4e037a921f77d7151fdd687b1d154df", null ]
+    [ "TableDescriptor", "classProjectionDescriptor.html#ac4e037a921f77d7151fdd687b1d154df", null ],
+    [ "blkMemoryLocations", "classProjectionDescriptor.html#a7fc39abbea0943aba0eb861143bd6379", null ],
+    [ "column_list_", "classProjectionDescriptor.html#a2307cffdd8ff4cae77e53ab559e7d984", null ],
+    [ "fileLocations", "classProjectionDescriptor.html#a9e4e2fe4034357f39a8d75b09334ffaa", null ],
+    [ "hdfsFilePath", "classProjectionDescriptor.html#aa1480f7b70e78e89bc8eea69982d9c45", null ],
+    [ "partitioner", "classProjectionDescriptor.html#aef3878aae5b0e5e9acc47b19f5be860e", null ],
+    [ "projection_id_", "classProjectionDescriptor.html#a4fdf73e65efd6050416222510498472c", null ],
+    [ "Projection_name_", "classProjectionDescriptor.html#a7a9d74b12a9d048e7d4542d3a2dbb9bb", null ]
 ];

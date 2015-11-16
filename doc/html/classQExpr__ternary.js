@@ -4,6 +4,7 @@ var classQExpr__ternary =
     [ "~QExpr_ternary", "classQExpr__ternary.html#a9c7efe7b86d61a45f30ef5a69f83ad97", null ],
     [ "QExpr_ternary", "classQExpr__ternary.html#ab957a094c9c838850edbc6e185d8a423", null ],
     [ "QExpr_ternary", "classQExpr__ternary.html#ae9d310942e440ffc12fb322012c642cf", null ],
+    [ "serialize", "classQExpr__ternary.html#a653ca6b1ff2cd47fbaad41b23569b881", null ],
     [ "boost::serialization::access", "classQExpr__ternary.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
     [ "function_call", "classQExpr__ternary.html#a735d5d12338784ab94dc467b9166e8ef", null ],
     [ "next0", "classQExpr__ternary.html#a91f8dd92cb837aa096cb7ecfb0614b50", null ],

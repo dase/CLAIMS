@@ -1,4 +1,4 @@
-.TH "Message256" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Message256" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ Message256 \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Message\&.h>\fP
 .SS "Static Public Member Functions"
 
 .in +1c
@@ -23,7 +25,23 @@ Message256 \-
 .RI "char \fBmessage\fP [256-sizeof(unsigned)]"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "static unsigned Message256::Capacity ()\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Referenced by Serialize()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned Message256::length"
+
+.PP
+Referenced by Serialize()\&.
+.SS "char Message256::message[256-sizeof(unsigned)]"
+
+.PP
+Referenced by Serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

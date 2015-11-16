@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: NodeTracker Class Reference</title>
+<title>Claims: NodeTracker Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -107,33 +107,329 @@ $(document).ready(function(){initNavTree('classNodeTracker.html','');});
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classNodeTracker-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">NodeTracker Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="NodeTracker_8h_source.html">NodeTracker.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for NodeTracker:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNodeTracker__coll__graph.png" border="0" usemap="#NodeTracker_coll__map" alt="Collaboration graph"/></div>
+<map name="NodeTracker_coll__map" id="NodeTracker_coll__map">
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a027eea8435badf6fe46886d74917df7e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a027eea8435badf6fe46886d74917df7e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>RegisterNode</b> (<a class="el" href="structNodeAddress.html">NodeAddress</a>)</td></tr>
+<tr class="memitem:a60eaeb2810f7249e43e7f6d4c30e6273"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#a60eaeb2810f7249e43e7f6d4c30e6273">~NodeTracker</a> ()</td></tr>
+<tr class="separator:a60eaeb2810f7249e43e7f6d4c30e6273"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a027eea8435badf6fe46886d74917df7e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#a027eea8435badf6fe46886d74917df7e">RegisterNode</a> (<a class="el" href="structNodeAddress.html">NodeAddress</a>)</td></tr>
 <tr class="separator:a027eea8435badf6fe46886d74917df7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4b482239c77f0c03c77f74982fc5f27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4b482239c77f0c03c77f74982fc5f27"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetNodeIP</b> (const NodeID &amp;) const </td></tr>
+<tr class="memitem:ab4b482239c77f0c03c77f74982fc5f27"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#ab4b482239c77f0c03c77f74982fc5f27">GetNodeIP</a> (const <a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> &amp;) const </td></tr>
 <tr class="separator:ab4b482239c77f0c03c77f74982fc5f27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5053dfbada851038859fe261efc593a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5053dfbada851038859fe261efc593a3"></a>
-std::vector&lt; NodeID &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetNodeIDList</b> () const </td></tr>
+<tr class="memitem:a5053dfbada851038859fe261efc593a3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#a5053dfbada851038859fe261efc593a3">GetNodeIDList</a> () const </td></tr>
 <tr class="separator:a5053dfbada851038859fe261efc593a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a117e68443ad648091dcf1566618fbaae"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a117e68443ad648091dcf1566618fbaae"></a>
-static <a class="el" href="classNodeTracker.html">NodeTracker</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>GetInstance</b> ()</td></tr>
+<tr class="memitem:a117e68443ad648091dcf1566618fbaae"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classNodeTracker.html">NodeTracker</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#a117e68443ad648091dcf1566618fbaae">GetInstance</a> ()</td></tr>
 <tr class="separator:a117e68443ad648091dcf1566618fbaae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ad1e4bfa4d53724431d4e6b236f56f6f0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#ad1e4bfa4d53724431d4e6b236f56f6f0">NodeTracker</a> ()</td></tr>
+<tr class="separator:ad1e4bfa4d53724431d4e6b236f56f6f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ab49eaf1da9d451909a7582d4fd4bd67c"><td class="memItemLeft" align="right" valign="top">boost::unordered_map<br class="typebreak"/>
+&lt; <a class="el" href="structNodeAddress.html">NodeAddress</a>, <a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#ab49eaf1da9d451909a7582d4fd4bd67c">address_to_id_</a></td></tr>
+<tr class="separator:ab49eaf1da9d451909a7582d4fd4bd67c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13b58f129b6cde80adf9e89cad744643"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#a13b58f129b6cde80adf9e89cad744643">allocate_cur_</a></td></tr>
+<tr class="separator:a13b58f129b6cde80adf9e89cad744643"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:afc90d2c1211711969b3b66a6e40cab5e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classNodeTracker.html">NodeTracker</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNodeTracker.html#afc90d2c1211711969b3b66a6e40cab5e">instance_</a> =0</td></tr>
+<tr class="separator:afc90d2c1211711969b3b66a6e40cab5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a60eaeb2810f7249e43e7f6d4c30e6273"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">NodeTracker::~NodeTracker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classResourceManagerMaster.html#ab21ddc068b7e49a1c3ac9bb4eee93a27">ResourceManagerMaster::~ResourceManagerMaster()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNodeTracker_a60eaeb2810f7249e43e7f6d4c30e6273_icgraph.png" border="0" usemap="#classNodeTracker_a60eaeb2810f7249e43e7f6d4c30e6273_icgraph" alt=""/></div>
+<map name="classNodeTracker_a60eaeb2810f7249e43e7f6d4c30e6273_icgraph" id="classNodeTracker_a60eaeb2810f7249e43e7f6d4c30e6273_icgraph">
+<area shape="rect" id="node2" href="classResourceManagerMaster.html#ab21ddc068b7e49a1c3ac9bb4eee93a27" title="ResourceManagerMaster\l::~ResourceManagerMaster" alt="" coords="243,5,427,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ad1e4bfa4d53724431d4e6b236f56f6f0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">NodeTracker::NodeTracker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classNodeTracker.html#a117e68443ad648091dcf1566618fbaae">GetInstance()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNodeTracker_ad1e4bfa4d53724431d4e6b236f56f6f0_icgraph.png" border="0" usemap="#classNodeTracker_ad1e4bfa4d53724431d4e6b236f56f6f0_icgraph" alt=""/></div>
+<map name="classNodeTracker_ad1e4bfa4d53724431d4e6b236f56f6f0_icgraph" id="classNodeTracker_ad1e4bfa4d53724431d4e6b236f56f6f0_icgraph">
+<area shape="rect" id="node2" href="classNodeTracker.html#a117e68443ad648091dcf1566618fbaae" title="NodeTracker::GetInstance" alt="" coords="235,375,411,402"/><area shape="rect" id="node3" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#aee1a5cd2e4fbcf1f1d1bf40579650ae0" title="claims::logical_operator\l::LogicalEqualJoin::GetPhysicalPlan" alt="" coords="1059,67,1293,108"/><area shape="rect" id="node4" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a7eac8188ca75de34675928e300498824" title="claims::logical_operator\l::LogicalEqualJoin::DecideOutput\lDataflowProperty" alt="" coords="476,94,692,150"/><area shape="rect" id="node6" href="classclaims_1_1logical__operator_1_1LogicalFilter.html#ad61fcb381d731cebb463a0f892951578" title="claims::logical_operator\l::LogicalFilter::GetOptimalPhysicalPlan" alt="" coords="459,175,709,216"/><area shape="rect" id="node7" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a7bcdb7a8400086602410317295e069a8" title="claims::logical_operator\l::LogicalOperator::ConvertNode\lIDListToNodeIPList" alt="" coords="481,241,687,297"/><area shape="rect" id="node8" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a2c2cdd0aa638a1651743e8256ff23f32" title="Method description: generate a few physical operators according to this logical operator. " alt="" coords="504,321,664,377"/><area shape="rect" id="node9" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a7c804ada0ec3dad5875cb24a94ac4ebe" title="Method description: NOT USED NOW !!! get the optimal physical plan. " alt="" coords="498,401,670,457"/><area shape="rect" id="node10" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="1341,503,1592,544"/><area shape="rect" id="node11" href="classResourceManagerMaster.html#aa193416dd1d8871846488ebbab7c20cb" title="ResourceManagerMaster\l::ResourceManagerMaster" alt="" coords="496,717,672,759"/><area shape="rect" id="node12" href="classBlockManagerMaster.html#ae4d6e5cc3211be9b841de8abd8252da5" title="BlockManagerMaster\l::SendBindingMessage" alt="" coords="506,587,662,628"/><area shape="rect" id="node36" href="classBlockManagerMaster.html#a3a4eb6417085bf165f21f2e289d87575" title="BlockManagerMaster\l::SendUnbindingMessage" alt="" coords="499,652,669,693"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a57c7bd3990fc27fdfce241995a1c69f1" title="Method description: Get the child information. " alt="" coords="769,99,999,140"/><area shape="rect" id="node13" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="805,671,963,712"/><area shape="rect" id="node22" href="classPartitioner.html#a2232c5ea585c56c8842e411d50369519" title="Partitioner::UpdatePartition\lWithNumberOfChunksToBlockManager" alt="" coords="758,925,1010,967"/><area shape="rect" id="node14" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1131,598,1221,625"/><area shape="rect" id="node16" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1101,649,1251,675"/><area shape="rect" id="node17" href="classLogicalCSBIndexBuilding.html#a38c6c55beb979a42d2dcb594f3cff5eb" title="LogicalCSBIndexBuilding\l::GetPlanContext" alt="" coords="1091,700,1261,741"/><area shape="rect" id="node18" href="classLogicalIndexScan.html#a804357b680cb6309a5c9dc0bc3e50539" title="LogicalIndexScan::GetPlan\lContext" alt="" coords="1086,765,1266,807"/><area shape="rect" id="node19" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1097,831,1255,858"/><area shape="rect" id="node20" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1094,882,1258,909"/><area shape="rect" id="node21" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6" title="It can generate many projection. We need the smallest cost of projections, so we should choose the be..." alt="" coords="1075,532,1277,573"/><area shape="rect" id="node15" href="Partitioner__test_8cpp.html#a64660bd51a5d8ed98d98e66e6b1404fc" title="main2342343333" alt="" coords="1407,598,1527,625"/><area shape="rect" id="node23" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001" title="HdfsLoader::load" alt="" coords="1115,1030,1237,1057"/><area shape="rect" id="node33" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3" title="HdfsLoader::append" alt="" coords="1107,933,1245,959"/><area shape="rect" id="node24" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b" title="append_test" alt="" coords="1420,979,1513,1006"/><area shape="rect" id="node26" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1407,1030,1526,1057"/><area shape="rect" id="node27" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1395,1081,1539,1123"/><area shape="rect" id="node28" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="1391,1147,1543,1174"/><area shape="rect" id="node29" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed" title="LoadData" alt="" coords="1427,1198,1506,1225"/><area shape="rect" id="node25" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1689,979,1764,1006"/><area shape="rect" id="node30" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1641,1198,1813,1225"/><area shape="rect" id="node31" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1866,1173,1987,1199"/><area shape="rect" id="node32" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="1861,1223,1992,1250"/><area shape="rect" id="node34" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1392,913,1541,955"/><area shape="rect" id="node35" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed" title="inmemory_append_test" alt="" coords="1388,862,1545,889"/><area shape="rect" id="node37" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="798,1012,970,1053"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a117e68443ad648091dcf1566618fbaae"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classNodeTracker.html">NodeTracker</a> * NodeTracker::GetInstance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classNodeTracker.html#afc90d2c1211711969b3b66a6e40cab5e">instance_</a>, and <a class="el" href="classNodeTracker.html#ad1e4bfa4d53724431d4e6b236f56f6f0">NodeTracker()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a7bcdb7a8400086602410317295e069a8">claims::logical_operator::LogicalOperator::ConvertNodeIDListToNodeIPList()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a7eac8188ca75de34675928e300498824">claims::logical_operator::LogicalEqualJoin::DecideOutputDataflowProperty()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f">claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalFilter.html#ad61fcb381d731cebb463a0f892951578">claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a7c804ada0ec3dad5875cb24a94ac4ebe">claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a2c2cdd0aa638a1651743e8256ff23f32">claims::logical_operator::LogicalQueryPlanRoot::GetPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#aee1a5cd2e4fbcf1f1d1bf40579650ae0">claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan()</a>, <a class="el" href="classResourceManagerMaster.html#aa193416dd1d8871846488ebbab7c20cb">ResourceManagerMaster::ResourceManagerMaster()</a>, <a class="el" href="classBlockManagerMaster.html#ae4d6e5cc3211be9b841de8abd8252da5">BlockManagerMaster::SendBindingMessage()</a>, and <a class="el" href="classBlockManagerMaster.html#a3a4eb6417085bf165f21f2e289d87575">BlockManagerMaster::SendUnbindingMessage()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNodeTracker_a117e68443ad648091dcf1566618fbaae_cgraph.png" border="0" usemap="#classNodeTracker_a117e68443ad648091dcf1566618fbaae_cgraph" alt=""/></div>
+<map name="classNodeTracker_a117e68443ad648091dcf1566618fbaae_cgraph" id="classNodeTracker_a117e68443ad648091dcf1566618fbaae_cgraph">
+<area shape="rect" id="node2" href="classNodeTracker.html#ad1e4bfa4d53724431d4e6b236f56f6f0" title="NodeTracker::NodeTracker" alt="" coords="230,5,410,32"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNodeTracker_a117e68443ad648091dcf1566618fbaae_icgraph.png" border="0" usemap="#classNodeTracker_a117e68443ad648091dcf1566618fbaae_icgraph" alt=""/></div>
+<map name="classNodeTracker_a117e68443ad648091dcf1566618fbaae_icgraph" id="classNodeTracker_a117e68443ad648091dcf1566618fbaae_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a7bcdb7a8400086602410317295e069a8" title="claims::logical_operator\l::LogicalOperator::ConvertNode\lIDListToNodeIPList" alt="" coords="251,5,458,61"/><area shape="rect" id="node3" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a7eac8188ca75de34675928e300498824" title="claims::logical_operator\l::LogicalEqualJoin::DecideOutput\lDataflowProperty" alt="" coords="247,136,463,192"/><area shape="rect" id="node6" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="1112,238,1363,279"/><area shape="rect" id="node7" href="classclaims_1_1logical__operator_1_1LogicalFilter.html#ad61fcb381d731cebb463a0f892951578" title="claims::logical_operator\l::LogicalFilter::GetOptimalPhysicalPlan" alt="" coords="229,398,480,439"/><area shape="rect" id="node8" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a7c804ada0ec3dad5875cb24a94ac4ebe" title="Method description: NOT USED NOW !!! get the optimal physical plan. " alt="" coords="269,464,441,520"/><area shape="rect" id="node9" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a2c2cdd0aa638a1651743e8256ff23f32" title="Method description: generate a few physical operators according to this logical operator. " alt="" coords="275,544,435,600"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#aee1a5cd2e4fbcf1f1d1bf40579650ae0" title="claims::logical_operator\l::LogicalEqualJoin::GetPhysicalPlan" alt="" coords="830,109,1063,150"/><area shape="rect" id="node10" href="classResourceManagerMaster.html#aa193416dd1d8871846488ebbab7c20cb" title="ResourceManagerMaster\l::ResourceManagerMaster" alt="" coords="267,625,443,666"/><area shape="rect" id="node11" href="classBlockManagerMaster.html#ae4d6e5cc3211be9b841de8abd8252da5" title="BlockManagerMaster\l::SendBindingMessage" alt="" coords="277,267,433,309"/><area shape="rect" id="node35" href="classBlockManagerMaster.html#a3a4eb6417085bf165f21f2e289d87575" title="BlockManagerMaster\l::SendUnbindingMessage" alt="" coords="269,333,440,374"/><area shape="rect" id="node4" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a57c7bd3990fc27fdfce241995a1c69f1" title="Method description: Get the child information. " alt="" coords="540,141,769,182"/><area shape="rect" id="node12" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="576,406,733,447"/><area shape="rect" id="node21" href="classPartitioner.html#a2232c5ea585c56c8842e411d50369519" title="Partitioner::UpdatePartition\lWithNumberOfChunksToBlockManager" alt="" coords="529,661,781,702"/><area shape="rect" id="node13" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="901,333,992,360"/><area shape="rect" id="node15" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="872,384,1021,411"/><area shape="rect" id="node16" href="classLogicalCSBIndexBuilding.html#a38c6c55beb979a42d2dcb594f3cff5eb" title="LogicalCSBIndexBuilding\l::GetPlanContext" alt="" coords="862,435,1031,477"/><area shape="rect" id="node17" href="classLogicalIndexScan.html#a804357b680cb6309a5c9dc0bc3e50539" title="LogicalIndexScan::GetPlan\lContext" alt="" coords="857,501,1037,542"/><area shape="rect" id="node18" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="868,567,1025,593"/><area shape="rect" id="node19" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="865,617,1029,644"/><area shape="rect" id="node20" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a115536e6d59d370d7e996e5cd915add6" title="It can generate many projection. We need the smallest cost of projections, so we should choose the be..." alt="" coords="845,267,1048,309"/><area shape="rect" id="node14" href="Partitioner__test_8cpp.html#a64660bd51a5d8ed98d98e66e6b1404fc" title="main2342343333" alt="" coords="1177,333,1297,360"/><area shape="rect" id="node22" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001" title="HdfsLoader::load" alt="" coords="886,765,1007,792"/><area shape="rect" id="node32" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3" title="HdfsLoader::append" alt="" coords="877,668,1016,695"/><area shape="rect" id="node23" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b" title="append_test" alt="" coords="1191,715,1284,741"/><area shape="rect" id="node25" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1178,765,1297,792"/><area shape="rect" id="node26" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="1165,817,1309,858"/><area shape="rect" id="node27" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="1161,883,1313,909"/><area shape="rect" id="node28" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed" title="LoadData" alt="" coords="1198,933,1277,960"/><area shape="rect" id="node24" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1460,715,1535,741"/><area shape="rect" id="node29" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1411,933,1583,960"/><area shape="rect" id="node30" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1637,908,1758,935"/><area shape="rect" id="node31" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="1632,959,1763,985"/><area shape="rect" id="node33" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="1163,649,1312,690"/><area shape="rect" id="node34" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed" title="inmemory_append_test" alt="" coords="1159,597,1316,624"/><area shape="rect" id="node36" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="569,747,741,789"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5053dfbada851038859fe261efc593a3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> &gt; NodeTracker::GetNodeIDList </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classNodeTracker.html#ab49eaf1da9d451909a7582d4fd4bd67c">address_to_id_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a7eac8188ca75de34675928e300498824">claims::logical_operator::LogicalEqualJoin::DecideOutputDataflowProperty()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f">claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalFilter.html#ad61fcb381d731cebb463a0f892951578">claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan()</a>, and <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a7c804ada0ec3dad5875cb24a94ac4ebe">claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNodeTracker_a5053dfbada851038859fe261efc593a3_icgraph.png" border="0" usemap="#classNodeTracker_a5053dfbada851038859fe261efc593a3_icgraph" alt=""/></div>
+<map name="classNodeTracker_a5053dfbada851038859fe261efc593a3_icgraph" id="classNodeTracker_a5053dfbada851038859fe261efc593a3_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a7eac8188ca75de34675928e300498824" title="claims::logical_operator\l::LogicalEqualJoin::DecideOutput\lDataflowProperty" alt="" coords="263,5,479,61"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1LogicalScan.html#a43286ad01cf50e9978cbefae39a66f9f" title="claims::logical_operator\l::LogicalScan::GetOptimalPhysicalPlan" alt="" coords="245,86,496,127"/><area shape="rect" id="node6" href="classclaims_1_1logical__operator_1_1LogicalFilter.html#ad61fcb381d731cebb463a0f892951578" title="claims::logical_operator\l::LogicalFilter::GetOptimalPhysicalPlan" alt="" coords="245,151,496,193"/><area shape="rect" id="node7" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a7c804ada0ec3dad5875cb24a94ac4ebe" title="Method description: NOT USED NOW !!! get the optimal physical plan. " alt="" coords="285,217,457,273"/><area shape="rect" id="node3" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a57c7bd3990fc27fdfce241995a1c69f1" title="Method description: Get the child information. " alt="" coords="544,13,773,54"/><area shape="rect" id="node4" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#aee1a5cd2e4fbcf1f1d1bf40579650ae0" title="claims::logical_operator\l::LogicalEqualJoin::GetPhysicalPlan" alt="" coords="822,13,1055,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab4b482239c77f0c03c77f74982fc5f27"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string NodeTracker::GetNodeIP </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> &amp;&#160;</td>
+          <td class="paramname"><em>target</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classNodeTracker.html#ab49eaf1da9d451909a7582d4fd4bd67c">address_to_id_</a>, and <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a7bcdb7a8400086602410317295e069a8">claims::logical_operator::LogicalOperator::ConvertNodeIDListToNodeIPList()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNodeTracker_ab4b482239c77f0c03c77f74982fc5f27_icgraph.png" border="0" usemap="#classNodeTracker_ab4b482239c77f0c03c77f74982fc5f27_icgraph" alt=""/></div>
+<map name="classNodeTracker_ab4b482239c77f0c03c77f74982fc5f27_icgraph" id="classNodeTracker_ab4b482239c77f0c03c77f74982fc5f27_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a7bcdb7a8400086602410317295e069a8" title="claims::logical_operator\l::LogicalOperator::ConvertNode\lIDListToNodeIPList" alt="" coords="225,5,431,61"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a027eea8435badf6fe46886d74917df7e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int NodeTracker::RegisterNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structNodeAddress.html">NodeAddress</a>&#160;</td>
+          <td class="paramname"><em>new_node_address</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classNodeTracker.html#ab49eaf1da9d451909a7582d4fd4bd67c">address_to_id_</a>, and <a class="el" href="classNodeTracker.html#a13b58f129b6cde80adf9e89cad744643">allocate_cur_</a>.</p>
+
+<p>Referenced by <a class="el" href="classResourceManagerMaster.html#a4811a0de3bed02e4e2ce142d5fccb84a">ResourceManagerMaster::RegisterNewSlave()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNodeTracker_a027eea8435badf6fe46886d74917df7e_icgraph.png" border="0" usemap="#classNodeTracker_a027eea8435badf6fe46886d74917df7e_icgraph" alt=""/></div>
+<map name="classNodeTracker_a027eea8435badf6fe46886d74917df7e_icgraph" id="classNodeTracker_a027eea8435badf6fe46886d74917df7e_icgraph">
+<area shape="rect" id="node2" href="classResourceManagerMaster.html#a4811a0de3bed02e4e2ce142d5fccb84a" title="ResourceManagerMaster\l::RegisterNewSlave" alt="" coords="240,5,408,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ab49eaf1da9d451909a7582d4fd4bd67c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::unordered_map&lt;<a class="el" href="structNodeAddress.html">NodeAddress</a>,<a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a>&gt; NodeTracker::address_to_id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classNodeTracker.html#a5053dfbada851038859fe261efc593a3">GetNodeIDList()</a>, <a class="el" href="classNodeTracker.html#ab4b482239c77f0c03c77f74982fc5f27">GetNodeIP()</a>, and <a class="el" href="classNodeTracker.html#a027eea8435badf6fe46886d74917df7e">RegisterNode()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a13b58f129b6cde80adf9e89cad744643"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned NodeTracker::allocate_cur_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classNodeTracker.html#a027eea8435badf6fe46886d74917df7e">RegisterNode()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afc90d2c1211711969b3b66a6e40cab5e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classNodeTracker.html">NodeTracker</a> * NodeTracker::instance_ =0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classNodeTracker.html#a117e68443ad648091dcf1566618fbaae">GetInstance()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Resource/<a class="el" href="NodeTracker_8h_source.html">NodeTracker.h</a></li>
-<li>Resource/NodeTracker.cpp</li>
+<li>Resource/<a class="el" href="NodeTracker_8cpp.html">NodeTracker.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

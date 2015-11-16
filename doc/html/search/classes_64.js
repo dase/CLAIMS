@@ -4,6 +4,7 @@ var searchData=
   ['data_5f_5f',['data__',['../structdata____.html',1,'']]],
   ['data_5foffset',['data_offset',['../structdata__offset.html',1,'']]],
   ['datatype',['Datatype',['../structDatatype.html',1,'']]],
+  ['datatypeoper',['DataTypeOper',['../classclaims_1_1common_1_1DataTypeOper.html',1,'claims::common']]],
   ['describe_5fstmt',['Describe_stmt',['../structDescribe__stmt.html',1,'']]],
   ['disk_5finfo',['disk_info',['../structdisk__info.html',1,'']]],
   ['diskchunkreaderiteraror',['DiskChunkReaderIteraror',['../classDiskChunkReaderIteraror.html',1,'']]],

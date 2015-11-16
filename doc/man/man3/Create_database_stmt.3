@@ -1,4 +1,4 @@
-.TH "Create_database_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Create_database_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Create_database_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBcreate_type\fP"
@@ -22,7 +24,25 @@ Create_database_stmt \-
 .RI "char * \fBname\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int Create_database_stmt::check"
+
+.PP
+Referenced by newCreateDatabaseStmt()\&.
+.SS "int Create_database_stmt::create_type"
+
+.PP
+Referenced by newCreateDatabaseStmt()\&.
+.SS "char* Create_database_stmt::name"
+
+.PP
+Referenced by newCreateDatabaseStmt()\&.
+.SS "\fBnodetype\fP Create_database_stmt::type"
+
+.PP
+Referenced by newCreateDatabaseStmt()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

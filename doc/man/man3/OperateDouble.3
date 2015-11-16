@@ -1,4 +1,4 @@
-.TH "OperateDouble" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "OperateDouble" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,17 @@ OperateDouble \-
 .br
 .PP
 .PP
+\fC#include <data_type\&.h>\fP
+.PP
 Inherits \fBOperate\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBOperateDouble\fP (bool _nullable=true)"
+.br
+.ti -1c
+.RI "\fB~OperateDouble\fP ()"
 .br
 .ti -1c
 .RI "void \fBassignment\fP (const void *const &src, void *const &desc) const "
@@ -42,19 +47,19 @@ Inherits \fBOperate\fP\&.
 .RI "void \fBmultiple\fP (void *target, void *increment)"
 .br
 .ti -1c
-.RI "fun \fBGetADDFunction\fP ()"
+.RI "\fBfun\fP \fBGetADDFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetMINFunction\fP ()"
+.RI "\fBfun\fP \fBGetMINFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetMAXFunction\fP ()"
+.RI "\fBfun\fP \fBGetMAXFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetIncreateByOneFunction\fP ()"
+.RI "\fBfun\fP \fBGetIncreateByOneFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetAVGFunction\fP ()"
+.RI "\fBfun\fP \fBGetAVGFunction\fP ()"
 .br
 .ti -1c
 .RI "unsigned \fBgetPartitionValue\fP (const void *key, const \fBPartitionFunction\fP *partition_function) const "
@@ -76,8 +81,109 @@ Inherits \fBOperate\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "OperateDouble::OperateDouble (bool_nullable = \fCtrue\fP)\fC [inline]\fP"
 
+.SS "OperateDouble::~OperateDouble ()\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void OperateDouble::add (void *target, void *increment)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "void OperateDouble::assignment (const void *const &src, void *const &desc) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "int OperateDouble::compare (const void *a, const void *b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBOperate\fP* OperateDouble::duplicateOperator () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateDouble::equal (const void *const &a, const void *const &b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateDouble::GetADDFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateDouble::GetAVGFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateDouble::GetIncreateByOneFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateDouble::GetMAXFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateDouble::GetMINFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "unsigned OperateDouble::getPartitionValue (const void *key, const \fBPartitionFunction\fP *partition_function) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References PartitionFunction::get_partition_value()\&.
+.SS "unsigned OperateDouble::getPartitionValue (const void *key) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References hash_value()\&.
+.SS "unsigned OperateDouble::getPartitionValue (const void *key, const unsigned long &mod) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References hash_value()\&.
+.SS "bool OperateDouble::greate (const void *&a, const void *&b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateDouble::isNull (void *value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_DOUBLE\&.
+.SS "bool OperateDouble::less (const void *&a, const void *&b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "void OperateDouble::multiple (void *target, void *increment)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateDouble::setNull (void *value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_DOUBLE\&.
+.SS "std::string OperateDouble::toString (void *value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_DOUBLE\&.
+.SS "void OperateDouble::toValue (void *target, const char *string)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_DOUBLE\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

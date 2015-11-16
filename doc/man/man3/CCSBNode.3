@@ -1,4 +1,4 @@
-.TH "CCSBNode< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CCSBNode< T >" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,10 +7,18 @@ CCSBNode< T > \-
 .br
 .PP
 .PP
+\fC#include <CSBPlusTree\&.h>\fP
+.PP
 Inherited by \fBCCSBInternalNode< T >\fP, and \fBCCSBLeafNode< T >\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBCCSBNode\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~CCSBNode\fP ()"
+.br
 .ti -1c
 .RI "int \fBgetUsedKeys\fP ()"
 .br
@@ -86,7 +94,117 @@ Inherited by \fBCCSBInternalNode< T >\fP, and \fBCCSBLeafNode< T >\fP\&.
 .RI "\fBCCSBNode\fP< T > * \fBp_father\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T > \fBCCSBNode\fP< T >::\fBCCSBNode\fP ()"
+
+.SS "template<typename T > \fBCCSBNode\fP< T >::~\fBCCSBNode\fP ()\fC [virtual]\fP"
+
+.PP
+References NULL\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::Combine (\fBCCSBNode\fP< T > *pNode)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP, and \fBCCSBInternalNode< T >\fP\&.
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::Delete (Tvalue)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP, and \fBCCSBInternalNode< T >\fP\&.
+.SS "template<typename T> virtual void \fBCCSBNode\fP< T >::DeleteChildren ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP, and \fBCCSBInternalNode< T >\fP\&.
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::deserialize (FILE *filename)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP, and \fBCCSBInternalNode< T >\fP\&.
+.SS "template<typename T> virtual \fBdata_offset\fP<T> \fBCCSBNode\fP< T >::getElement (unsignedi)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP, and \fBCCSBInternalNode< T >\fP\&.
+.PP
+Referenced by CSBPlusTree< T >::Insert(), CSBPlusTree< T >::rangeQuery(), CSBPlusTree< T >::Search(), CSBPlusTree< T >::SearchLeafNode(), CCSBInternalNodeGroup< T >::setNode(), CCSBLeafNodeGroup< T >::setNode(), CCSBInternalNode< T >::SplitInsert(), and CCSBLeafNode< T >::SplitInsert()\&.
+.SS "template<typename T> \fBCCSBNode\fP<T>* \fBCCSBNode\fP< T >::getFather ()\fC [inline]\fP"
+
+.PP
+Referenced by CSBPlusTree< T >::Insert(), CSBPlusTree< T >::rangeQuery(), CSBPlusTree< T >::Search(), CSBPlusTree< T >::SearchLeafNode(), CCSBInternalNodeGroup< T >::setNode(), and CCSBLeafNodeGroup< T >::setNode()\&.
+.SS "template<typename T> static unsigned \fBCCSBNode\fP< T >::getMaxDatas ()\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References cacheline_size\&.
+.PP
+Referenced by CSBPlusTree< T >::CSBPlusTree()\&.
+.SS "template<typename T> static unsigned \fBCCSBNode\fP< T >::getMaxKeys ()\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References cacheline_size\&.
+.PP
+Referenced by CSBPlusTree< T >::CSBPlusTree()\&.
+.SS "template<typename T> virtual \fBCCSBNodeGroup\fP<T>* \fBCCSBNode\fP< T >::getPointer ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP, and \fBCCSBInternalNode< T >\fP\&.
+.PP
+Referenced by CSBPlusTree< T >::rangeQuery(), CSBPlusTree< T >::Search(), CSBPlusTree< T >::SearchLeafNode(), and CCSBInternalNodeGroup< T >::setNode()\&.
+.SS "template<typename T> int \fBCCSBNode\fP< T >::getUsedKeys ()\fC [inline]\fP"
+
+.PP
+Referenced by CSBPlusTree< T >::Insert(), CSBPlusTree< T >::rangeQuery(), CSBPlusTree< T >::Search(), CCSBInternalNodeGroup< T >::setNode(), and CCSBLeafNodeGroup< T >::setNode()\&.
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::Insert (Tkey)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBInternalNode< T >\fP\&.
+.PP
+Referenced by CSBPlusTree< T >::Insert(), CCSBInternalNode< T >::SplitInsert(), and CCSBLeafNode< T >::SplitInsert()\&.
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::Insert (\fBdata_offset\fP< T >value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP\&.
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::serialize (FILE *filename)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP, and \fBCCSBInternalNode< T >\fP\&.
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::setElement (unsignedi, \fBdata_offset\fP< T >value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP\&.
+.PP
+Referenced by CCSBInternalNode< T >::SplitInsert(), and CCSBLeafNode< T >::SplitInsert()\&.
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::setElement (unsignedi, Tvalue)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBInternalNode< T >\fP\&.
+.SS "template<typename T> void \fBCCSBNode\fP< T >::setFather (\fBCCSBNode\fP< T > *father)\fC [inline]\fP"
+
+.SS "template<typename T> virtual void \fBCCSBNode\fP< T >::setPointer (\fBCCSBNodeGroup\fP< T > *pointer)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBInternalNode< T >\fP\&.
+.SS "template<typename T> virtual bool \fBCCSBNode\fP< T >::setUsedKeys (intcount)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP, and \fBCCSBInternalNode< T >\fP\&.
+.PP
+Referenced by CCSBInternalNode< T >::SplitInsert(), and CCSBLeafNode< T >::SplitInsert()\&.
+.SS "template<typename T> virtual T \fBCCSBNode\fP< T >::SplitInsert (\fBCCSBNode\fP< T > *pNode, Tkey)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBInternalNode< T >\fP\&.
+.SS "template<typename T> virtual T \fBCCSBNode\fP< T >::SplitInsert (\fBCCSBNode\fP< T > *pNode, \fBdata_offset\fP< T >data)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBCCSBLeafNode< T >\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "template<typename T> \fBCCSBNode\fP<T>* \fBCCSBNode\fP< T >::p_father"
+
+.SS "template<typename T> int \fBCCSBNode\fP< T >::used_keys"
+
+.PP
+Referenced by CSBPlusTree< T >::rangeQuery(), and CSBPlusTree< T >::Search()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

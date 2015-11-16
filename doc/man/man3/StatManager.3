@@ -1,4 +1,4 @@
-.TH "StatManager" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "StatManager" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ StatManager \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <StatManager\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "virtual \fB~StatManager\fP ()"
+.br
 .ti -1c
 .RI "\fBHistogram\fP * \fBgetHistogram\fP (const \fBAttributeID\fP attID)"
 .br
@@ -22,7 +27,7 @@ StatManager \-
 .RI "void \fBaddStat\fP (const \fBAttributeID\fP attId, const \fBPartitionID\fP partId, const \fBHistogram\fP *stat)"
 .br
 .ti -1c
-.RI "\fBTableStatistic\fP * \fBgetTableStatistic\fP (const TableID &table_id) const "
+.RI "\fBTableStatistic\fP * \fBgetTableStatistic\fP (const \fBTableID\fP &table_id) const "
 .br
 .ti -1c
 .RI "\fBAttributeStatistics\fP * \fBgetAttributeStatistic\fP (const \fBAttributeID\fP &attrId) const "
@@ -31,7 +36,7 @@ StatManager \-
 .RI "\fBAttributeStatistics\fP * \fBgetAttributeStatistic\fP (const \fBAttribute\fP &attr) const "
 .br
 .ti -1c
-.RI "void \fBsetTableStatistic\fP (const TableID &table_id, \fBTableStatistic\fP *tab_stat)"
+.RI "void \fBsetTableStatistic\fP (const \fBTableID\fP &table_id, \fBTableStatistic\fP *tab_stat)"
 .br
 .in -1c
 .SS "Static Public Member Functions"
@@ -41,7 +46,90 @@ StatManager \-
 .RI "static \fBStatManager\fP * \fBgetInstance\fP ()"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBStatManager\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "boost::unordered_map< \fBTableID\fP, 
+.br
+\fBTableStatistic\fP * > \fBtab_stat_list_\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBStatManager\fP * \fBm_singleton\fP = 0"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "StatManager::~StatManager ()\fC [virtual]\fP"
+
+.SS "StatManager::StatManager ()\fC [private]\fP"
+
+.PP
+Referenced by getInstance()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void StatManager::addStat (const \fBAttributeID\fPattId, \fBHistogram\fP *stat)"
+
+.SS "void StatManager::addStat (const \fBAttributeID\fPattId, const \fBPartitionID\fPpartId, const \fBHistogram\fP *stat)"
+
+.SS "\fBAttributeStatistics\fP * StatManager::getAttributeStatistic (const \fBAttributeID\fP &attrId) const"
+
+.PP
+References TableStatistic::getAttributeStatistics(), getTableStatistic(), and AttributeID::table_id\&.
+.PP
+Referenced by Estimation::estEqualJoin(), claims::logical_operator::LogicalAggregation::EstimateGroupByCardinality(), getHistogram(), and claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair()\&.
+.SS "\fBAttributeStatistics\fP * StatManager::getAttributeStatistic (const \fBAttribute\fP &attr) const"
+
+.PP
+References TableStatistic::getAttributeStatistics(), Attribute::getID(), getTableStatistic(), and Attribute::table_id_\&.
+.SS "\fBHistogram\fP * StatManager::getHistogram (const \fBAttributeID\fPattID)"
+
+.PP
+References getAttributeStatistic(), and AttributeStatistics::getHistogram()\&.
+.PP
+Referenced by Estimation::estEqualOper(), and Estimation::estRangeOper()\&.
+.SS "\fBStatManager\fP * StatManager::getInstance ()\fC [static]\fP"
+
+.PP
+References m_singleton, and StatManager()\&.
+.PP
+Referenced by Analyzer::analyse(), Analyzer::analyse_on_project(), Analyzer::compute_attribute_stat(), Analyzer::compute_table_stat(), Estimation::estEqualJoin(), Estimation::estEqualOper(), claims::logical_operator::LogicalAggregation::EstimateGroupByCardinality(), Estimation::estRangeOper(), and claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair()\&.
+.SS "\fBHistogram\fP * StatManager::getStat (const \fBAttributeID\fPattID, const \fBPartitionID\fPpartID)"
+
+.SS "\fBTableStatistic\fP * StatManager::getTableStatistic (const \fBTableID\fP &table_id) const"
+
+.PP
+References tab_stat_list_\&.
+.PP
+Referenced by Analyzer::analyse(), Analyzer::analyse_on_project(), Analyzer::compute_attribute_stat(), getAttributeStatistic(), and claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair()\&.
+.SS "void StatManager::setTableStatistic (const \fBTableID\fP &table_id, \fBTableStatistic\fP *tab_stat)"
+
+.PP
+References tab_stat_list_\&.
+.PP
+Referenced by Analyzer::compute_table_stat()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBStatManager\fP * StatManager::m_singleton = 0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by getInstance()\&.
+.SS "boost::unordered_map<\fBTableID\fP,\fBTableStatistic\fP*> StatManager::tab_stat_list_\fC [private]\fP"
+
+.PP
+Referenced by getTableStatistic(), and setTableStatistic()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: utility/generator.h Source File</title>
+<title>Claims: utility/generator.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('generator_8h_source.html','');});
 <div class="title">generator.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="generator_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * generator.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Jun 5, 2014</span></div>
@@ -122,84 +122,84 @@ $(document).ready(function(){initNavTree('generator_8h_source.html','');});
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../common/Schema/SchemaFix.h&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;../common/Schema/Schema.h&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;../Debug.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;data_distribution_generator.h&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="data__distribution__generator_8h.html">data_distribution_generator.h</a>&quot;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
 <div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structcolumn__metadata.html">   21</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcolumn__metadata.html">column_metadata</a>{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="classcolumn__type.html">column_type</a> type;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="classColumnDistribution.html">ColumnDistribution</a>* dis;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="structcolumn__metadata.html">column_metadata</a>(<a class="code" href="classcolumn__type.html">column_type</a> type,<a class="code" href="classColumnDistribution.html">ColumnDistribution</a>* dis=0):type(type),dis(dis){</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structcolumn__metadata.html#a930b2fbdbf0f0143e46aa06101ae33e1">   22</a></span>&#160;    <a class="code" href="classcolumn__type.html">column_type</a> <a class="code" href="structcolumn__metadata.html#a930b2fbdbf0f0143e46aa06101ae33e1">type</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">   23</a></span>&#160;    <a class="code" href="classColumnDistribution.html">ColumnDistribution</a>* <a class="code" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">dis</a>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structcolumn__metadata.html#a8c62513cf47e4d8949630b11a18df263">   24</a></span>&#160;    <a class="code" href="structcolumn__metadata.html#a8c62513cf47e4d8949630b11a18df263">column_metadata</a>(<a class="code" href="classcolumn__type.html">column_type</a> <a class="code" href="structcolumn__metadata.html#a930b2fbdbf0f0143e46aa06101ae33e1">type</a>,<a class="code" href="classColumnDistribution.html">ColumnDistribution</a>* <a class="code" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">dis</a>=0):type(type),<a class="code" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">dis</a>(<a class="code" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">dis</a>){</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    }</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="structcolumn__metadata.html">column_metadata</a>():dis(0){</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structcolumn__metadata.html#aba2da5558661292e71e742a22a6bb83b">   26</a></span>&#160;    <a class="code" href="structcolumn__metadata.html#aba2da5558661292e71e742a22a6bb83b">column_metadata</a>():<a class="code" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">dis</a>(0){</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    }</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="structcolumn__metadata.html">column_metadata</a>(<span class="keyword">const</span> <a class="code" href="structcolumn__metadata.html">column_metadata</a>&amp; r){</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        this-&gt;type=r.type;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        this-&gt;dis=r.dis;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="structcolumn__metadata.html#a54aee3d8638a93b34997a6c0cec68ccf">   29</a></span>&#160;    <a class="code" href="structcolumn__metadata.html#a54aee3d8638a93b34997a6c0cec68ccf">column_metadata</a>(<span class="keyword">const</span> <a class="code" href="structcolumn__metadata.html">column_metadata</a>&amp; r){</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        this-&gt;<a class="code" href="structcolumn__metadata.html#a930b2fbdbf0f0143e46aa06101ae33e1">type</a>=r.<a class="code" href="structcolumn__metadata.html#a930b2fbdbf0f0143e46aa06101ae33e1">type</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        this-&gt;<a class="code" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">dis</a>=r.<a class="code" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">dis</a>;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    }</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classRandomRow.html">   35</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRandomRow.html">RandomRow</a>{</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="classRandomRow.html">RandomRow</a>(){</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classRandomRow.html#a51b994e61c1ffd9d1264c5ab86c8611d">   37</a></span>&#160;    <a class="code" href="classRandomRow.html#a51b994e61c1ffd9d1264c5ab86c8611d">RandomRow</a>(){</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">void</span> addIntUniformColumn(<span class="keywordtype">int</span> min=0, <span class="keywordtype">int</span> max=1024*1024, <span class="keywordtype">int</span> seed=0){</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classRandomRow.html#a4c29d0369a6a77bd44dac592b2c2ff96">   40</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRandomRow.html#a4c29d0369a6a77bd44dac592b2c2ff96">addIntUniformColumn</a>(<span class="keywordtype">int</span> min=0, <span class="keywordtype">int</span> max=1024*1024, <span class="keywordtype">int</span> seed=0){</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <a class="code" href="structcolumn__metadata.html">column_metadata</a> column;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        column.type=<a class="code" href="classcolumn__type.html">column_type</a>(t_int);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        column.dis=<span class="keyword">new</span> <a class="code" href="classUniformInt.html">UniformInt</a>(min,max,seed);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        columns_.push_back(column);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        column.<a class="code" href="structcolumn__metadata.html#a930b2fbdbf0f0143e46aa06101ae33e1">type</a>=<a class="code" href="classcolumn__type.html">column_type</a>(<a class="code" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14a1e40ebab7c7eecd67e15491ef6af84d7">t_int</a>);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        column.<a class="code" href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">dis</a>=<span class="keyword">new</span> <a class="code" href="classUniformInt.html">UniformInt</a>(min,max,seed);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="classRandomRow.html#ab22029c9a3fff7a88169b95195806dbd">columns_</a>.push_back(column);</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    ~<a class="code" href="classRandomRow.html">RandomRow</a>(){</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0;i&lt;columns_.size();i++){</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <span class="keyword">delete</span> columns_[i].dis;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classRandomRow.html#ab0f7ec61f08a60eacf68e70a66ae9b0a">   46</a></span>&#160;    <a class="code" href="classRandomRow.html#ab0f7ec61f08a60eacf68e70a66ae9b0a">~RandomRow</a>(){</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0;i&lt;<a class="code" href="classRandomRow.html#ab22029c9a3fff7a88169b95195806dbd">columns_</a>.size();i++){</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <span class="keyword">delete</span> <a class="code" href="classRandomRow.html#ab22029c9a3fff7a88169b95195806dbd">columns_</a>[i].dis;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        }</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    std::vector&lt;column_metadata&gt; getColumns(){</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">return</span> columns_;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classRandomRow.html#af552917e09e76893b0360ef083e67f74">   51</a></span>&#160;    std::vector&lt;column_metadata&gt; <a class="code" href="classRandomRow.html#af552917e09e76893b0360ef083e67f74">getColumns</a>(){</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classRandomRow.html#ab22029c9a3fff7a88169b95195806dbd">columns_</a>;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    std::vector&lt;column_metadata&gt; columns_;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classRandomRow.html#ab22029c9a3fff7a88169b95195806dbd">   55</a></span>&#160;    std::vector&lt;column_metadata&gt; <a class="code" href="classRandomRow.html#ab22029c9a3fff7a88169b95195806dbd">columns_</a>;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">inline</span> <a class="code" href="classSchema.html">Schema</a>* generateSchema(<span class="keywordtype">unsigned</span> tuple_length){</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="generator_8h.html#ad66eec1384139fefba0afd6117082d82">   58</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="generator_8h.html#ad66eec1384139fefba0afd6117082d82">generateSchema</a>(<span class="keywordtype">unsigned</span> tuple_length){</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    std::vector&lt;column_type&gt; columns;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0;i&lt;tuple_length/<span class="keyword">sizeof</span>(int);i++){</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        columns.push_back(<a class="code" href="classcolumn__type.html">column_type</a>(t_int));</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        columns.push_back(<a class="code" href="classcolumn__type.html">column_type</a>(<a class="code" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14a1e40ebab7c7eecd67e15491ef6af84d7">t_int</a>));</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* schema=<span class="keyword">new</span> <a class="code" href="classSchemaFix.html">SchemaFix</a>(columns);</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> schema;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">inline</span> <a class="code" href="classSchema.html">Schema</a>* generateSchema(std::vector&lt;column_type&gt; columns){</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="generator_8h.html#a7fba1b7cdab0b7348862a8d9381b0afc">   68</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="generator_8h.html#ad66eec1384139fefba0afd6117082d82">generateSchema</a>(std::vector&lt;column_type&gt; columns){</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">new</span> <a class="code" href="classSchemaFix.html">SchemaFix</a>(columns);</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">inline</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* generateBlockStreamBuffer(vector&lt;column_metadata&gt; columns, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> tuple_count, <a class="code" href="classSchema.html">Schema</a>** return_schema=0){</div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="generator_8h.html#a3f0880f4e7133ae3135ff44dc2f7fba8">   73</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* <a class="code" href="generator_8h.html#a3f0880f4e7133ae3135ff44dc2f7fba8">generateBlockStreamBuffer</a>(vector&lt;column_metadata&gt; columns, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> tuple_count, <a class="code" href="classSchema.html">Schema</a>** return_schema=0){</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    std::vector&lt;column_type&gt; column_types;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0;i&lt;columns.size();i++){</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        column_types.push_back(columns[i].type);</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* schema=generateSchema(column_types);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* schema=<a class="code" href="generator_8h.html#ad66eec1384139fefba0afd6117082d82">generateSchema</a>(column_types);</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> tuple_length=schema-&gt;getTupleMaxSize();</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">unsigned</span> block_num=tuple_count*schema-&gt;getTupleMaxSize()/(BLOCK_SIZE);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">void</span>* tmp_tuple=malloc(schema-&gt;getTupleMaxSize());      <span class="comment">//newmalloc</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> tuple_length=schema-&gt;<a class="code" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">getTupleMaxSize</a>();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">unsigned</span> block_num=tuple_count*schema-&gt;<a class="code" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">getTupleMaxSize</a>()/(<a class="code" href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a>);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">void</span>* tmp_tuple=malloc(schema-&gt;<a class="code" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">getTupleMaxSize</a>());      <span class="comment">//newmalloc</span></div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* buffer=<span class="keyword">new</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>();</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">int</span> value=0;</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0;i&lt;tuple_count;){</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordtype">void</span>* tuple;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* new_block=<a class="code" href="classBlockStreamBase.html#a0dc24a0a58b6702a4e61ef09ad968f0c">BlockStreamBase::createBlockWithDesirableSerilaizedSize</a>(schema,BLOCK_SIZE);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        new_block-&gt;setEmpty();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordflow">while</span>(tuple=new_block-&gt;allocateTuple(schema-&gt;getTupleMaxSize())){</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* new_block=<a class="code" href="classBlockStreamBase.html#a0dc24a0a58b6702a4e61ef09ad968f0c">BlockStreamBase::createBlockWithDesirableSerilaizedSize</a>(schema,<a class="code" href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a>);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        new_block-&gt;<a class="code" href="classBlockStreamBase.html#a0e34e5e274bdee82a9bea61e1991ecdc">setEmpty</a>();</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordflow">while</span>(tuple=new_block-&gt;<a class="code" href="classBlockStreamBase.html#acf2074e9f553d6b0d2de640b5c4c9f64">allocateTuple</a>(schema-&gt;<a class="code" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">getTupleMaxSize</a>())){</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0;i&lt;columns.size();i++){</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                <span class="keywordflow">if</span>(columns[i].dis!=0){</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                    columns[i].dis-&gt;giveRandomValue(schema-&gt;getColumnAddess(i,tuple));</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                    columns[i].dis-&gt;giveRandomValue(schema-&gt;<a class="code" href="classSchema.html#a1b785aecbf1e23308d28eabb93b2e97c">getColumnAddess</a>(i,tuple));</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                }</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            }</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
@@ -217,29 +217,29 @@ $(document).ready(function(){initNavTree('generator_8h_source.html','');});
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    free(tmp_tuple);</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">if</span>(return_schema!=0){</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        *return_schema=schema-&gt;duplicateSchema();</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        *return_schema=schema-&gt;<a class="code" href="classSchema.html#a6c5d8657e426580a551f8a0829662ee0">duplicateSchema</a>();</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keyword">delete</span> schema;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordflow">return</span> buffer;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;}</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keyword">inline</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* generate_BlockStreamBuffer(<a class="code" href="classSchema.html">Schema</a>* schema,<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> total_data_size_in_MB,std::vector&lt;ColumnDistribution*&gt; random_col=std::vector&lt;ColumnDistribution*&gt;()){</div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="generator_8h.html#af0392a7bc8d6a7e18cee9e633d911d44">  118</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* <a class="code" href="generator_8h.html#af0392a7bc8d6a7e18cee9e633d911d44">generate_BlockStreamBuffer</a>(<a class="code" href="classSchema.html">Schema</a>* schema,<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> total_data_size_in_MB,std::vector&lt;ColumnDistribution*&gt; random_col=std::vector&lt;ColumnDistribution*&gt;()){</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> tuple_length=schema-&gt;getTupleMaxSize();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> tuple_length=schema-&gt;<a class="code" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">getTupleMaxSize</a>();</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> tuple_count=total_data_size_in_MB*1024*1024/(tuple_length);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">unsigned</span> block_num=total_data_size_in_MB*1024*1024/(BLOCK_SIZE);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">void</span>* tmp_tuple=malloc(schema-&gt;getTupleMaxSize());      <span class="comment">//newmalloc</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">unsigned</span> block_num=total_data_size_in_MB*1024*1024/(<a class="code" href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a>);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">void</span>* tmp_tuple=malloc(schema-&gt;<a class="code" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">getTupleMaxSize</a>());      <span class="comment">//newmalloc</span></div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* buffer=<span class="keyword">new</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>();</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">int</span> value=0;</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i=0;i&lt;tuple_count;){</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keywordtype">void</span>* tuple;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* new_block=<a class="code" href="classBlockStreamBase.html#a0dc24a0a58b6702a4e61ef09ad968f0c">BlockStreamBase::createBlockWithDesirableSerilaizedSize</a>(schema,BLOCK_SIZE);</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        new_block-&gt;setEmpty();</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordflow">while</span>(tuple=new_block-&gt;allocateTuple(schema-&gt;getTupleMaxSize())){</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* new_block=<a class="code" href="classBlockStreamBase.html#a0dc24a0a58b6702a4e61ef09ad968f0c">BlockStreamBase::createBlockWithDesirableSerilaizedSize</a>(schema,<a class="code" href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a>);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        new_block-&gt;<a class="code" href="classBlockStreamBase.html#a0e34e5e274bdee82a9bea61e1991ecdc">setEmpty</a>();</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordflow">while</span>(tuple=new_block-&gt;<a class="code" href="classBlockStreamBase.html#acf2074e9f553d6b0d2de640b5c4c9f64">allocateTuple</a>(schema-&gt;<a class="code" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">getTupleMaxSize</a>())){</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;            memcpy(tuple,tmp_tuple,tuple_length);</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            schema-&gt;columns[0].operate-&gt;assignment(&amp;value,tuple);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            schema-&gt;<a class="code" href="classSchema.html#ab7f76432f2a95121d054d0d70e3034db">columns</a>[0].operate-&gt;assignment(&amp;value,tuple);</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;            value=random();</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="comment">//          value++;</span></div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            i++;</div>
@@ -255,22 +255,44 @@ $(document).ready(function(){initNavTree('generator_8h_source.html','');});
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;}</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GENERATOR_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classSchema_html_ab7f76432f2a95121d054d0d70e3034db"><div class="ttname"><a href="classSchema.html#ab7f76432f2a95121d054d0d70e3034db">Schema::columns</a></div><div class="ttdeci">std::vector&lt; column_type &gt; columns</div><div class="ttdef"><b>Definition:</b> Schema.h:53</div></div>
+<div class="ttc" id="structcolumn__metadata_html_aba2da5558661292e71e742a22a6bb83b"><div class="ttname"><a href="structcolumn__metadata.html#aba2da5558661292e71e742a22a6bb83b">column_metadata::column_metadata</a></div><div class="ttdeci">column_metadata()</div><div class="ttdef"><b>Definition:</b> generator.h:26</div></div>
+<div class="ttc" id="Debug_8h_html_ad51ded0bbd705f02f73fc60c0b721ced"><div class="ttname"><a href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a></div><div class="ttdeci">#define BLOCK_SIZE</div><div class="ttdef"><b>Definition:</b> Debug.h:26</div></div>
+<div class="ttc" id="classRandomRow_html_a51b994e61c1ffd9d1264c5ab86c8611d"><div class="ttname"><a href="classRandomRow.html#a51b994e61c1ffd9d1264c5ab86c8611d">RandomRow::RandomRow</a></div><div class="ttdeci">RandomRow()</div><div class="ttdef"><b>Definition:</b> generator.h:37</div></div>
+<div class="ttc" id="generator_8h_html_ad66eec1384139fefba0afd6117082d82"><div class="ttname"><a href="generator_8h.html#ad66eec1384139fefba0afd6117082d82">generateSchema</a></div><div class="ttdeci">Schema * generateSchema(unsigned tuple_length)</div><div class="ttdef"><b>Definition:</b> generator.h:58</div></div>
 <div class="ttc" id="classDynamicBlockBuffer_html"><div class="ttname"><a href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a></div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:24</div></div>
+<div class="ttc" id="structcolumn__metadata_html_aabae6d23fa0b2d4a1470dd34c4b49c57"><div class="ttname"><a href="structcolumn__metadata.html#aabae6d23fa0b2d4a1470dd34c4b49c57">column_metadata::dis</a></div><div class="ttdeci">ColumnDistribution * dis</div><div class="ttdef"><b>Definition:</b> generator.h:23</div></div>
+<div class="ttc" id="classSchema_html_a8b72b9dd459d92f224ff122dd2a78e9c"><div class="ttname"><a href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">Schema::getTupleMaxSize</a></div><div class="ttdeci">virtual unsigned getTupleMaxSize() const =0</div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
+<div class="ttc" id="generator_8h_html_af0392a7bc8d6a7e18cee9e633d911d44"><div class="ttname"><a href="generator_8h.html#af0392a7bc8d6a7e18cee9e633d911d44">generate_BlockStreamBuffer</a></div><div class="ttdeci">DynamicBlockBuffer * generate_BlockStreamBuffer(Schema *schema, unsigned long total_data_size_in_MB, std::vector&lt; ColumnDistribution * &gt; random_col=std::vector&lt; ColumnDistribution * &gt;())</div><div class="ttdef"><b>Definition:</b> generator.h:118</div></div>
+<div class="ttc" id="classBlockStreamBase_html_a0e34e5e274bdee82a9bea61e1991ecdc"><div class="ttname"><a href="classBlockStreamBase.html#a0e34e5e274bdee82a9bea61e1991ecdc">BlockStreamBase::setEmpty</a></div><div class="ttdeci">virtual void setEmpty()=0</div></div>
 <div class="ttc" id="classBlockStreamBase_html_a0dc24a0a58b6702a4e61ef09ad968f0c"><div class="ttname"><a href="classBlockStreamBase.html#a0dc24a0a58b6702a4e61ef09ad968f0c">BlockStreamBase::createBlockWithDesirableSerilaizedSize</a></div><div class="ttdeci">static BlockStreamBase * createBlockWithDesirableSerilaizedSize(Schema *schema, unsigned block_size)</div><div class="ttdef"><b>Definition:</b> BlockStream.cpp:36</div></div>
+<div class="ttc" id="classRandomRow_html_ab0f7ec61f08a60eacf68e70a66ae9b0a"><div class="ttname"><a href="classRandomRow.html#ab0f7ec61f08a60eacf68e70a66ae9b0a">RandomRow::~RandomRow</a></div><div class="ttdeci">~RandomRow()</div><div class="ttdef"><b>Definition:</b> generator.h:46</div></div>
+<div class="ttc" id="structcolumn__metadata_html_a54aee3d8638a93b34997a6c0cec68ccf"><div class="ttname"><a href="structcolumn__metadata.html#a54aee3d8638a93b34997a6c0cec68ccf">column_metadata::column_metadata</a></div><div class="ttdeci">column_metadata(const column_metadata &amp;r)</div><div class="ttdef"><b>Definition:</b> generator.h:29</div></div>
+<div class="ttc" id="classRandomRow_html_ab22029c9a3fff7a88169b95195806dbd"><div class="ttname"><a href="classRandomRow.html#ab22029c9a3fff7a88169b95195806dbd">RandomRow::columns_</a></div><div class="ttdeci">std::vector&lt; column_metadata &gt; columns_</div><div class="ttdef"><b>Definition:</b> generator.h:55</div></div>
 <div class="ttc" id="classUniformInt_html"><div class="ttname"><a href="classUniformInt.html">UniformInt</a></div><div class="ttdef"><b>Definition:</b> data_distribution_generator.h:21</div></div>
 <div class="ttc" id="classColumnDistribution_html"><div class="ttname"><a href="classColumnDistribution.html">ColumnDistribution</a></div><div class="ttdef"><b>Definition:</b> data_distribution_generator.h:15</div></div>
+<div class="ttc" id="generator_8h_html_a3f0880f4e7133ae3135ff44dc2f7fba8"><div class="ttname"><a href="generator_8h.html#a3f0880f4e7133ae3135ff44dc2f7fba8">generateBlockStreamBuffer</a></div><div class="ttdeci">DynamicBlockBuffer * generateBlockStreamBuffer(vector&lt; column_metadata &gt; columns, unsigned long tuple_count, Schema **return_schema=0)</div><div class="ttdef"><b>Definition:</b> generator.h:73</div></div>
+<div class="ttc" id="classRandomRow_html_a4c29d0369a6a77bd44dac592b2c2ff96"><div class="ttname"><a href="classRandomRow.html#a4c29d0369a6a77bd44dac592b2c2ff96">RandomRow::addIntUniformColumn</a></div><div class="ttdeci">void addIntUniformColumn(int min=0, int max=1024 *1024, int seed=0)</div><div class="ttdef"><b>Definition:</b> generator.h:40</div></div>
 <div class="ttc" id="classSchemaFix_html"><div class="ttname"><a href="classSchemaFix.html">SchemaFix</a></div><div class="ttdef"><b>Definition:</b> SchemaFix.h:20</div></div>
+<div class="ttc" id="classRandomRow_html_af552917e09e76893b0360ef083e67f74"><div class="ttname"><a href="classRandomRow.html#af552917e09e76893b0360ef083e67f74">RandomRow::getColumns</a></div><div class="ttdeci">std::vector&lt; column_metadata &gt; getColumns()</div><div class="ttdef"><b>Definition:</b> generator.h:51</div></div>
+<div class="ttc" id="classSchema_html_a1b785aecbf1e23308d28eabb93b2e97c"><div class="ttname"><a href="classSchema.html#a1b785aecbf1e23308d28eabb93b2e97c">Schema::getColumnAddess</a></div><div class="ttdeci">virtual void * getColumnAddess(const unsigned &amp;index, const void *const &amp;column_start) const __attribute__((always_inline))=0</div></div>
 <div class="ttc" id="classBlockStreamBase_html"><div class="ttname"><a href="classBlockStreamBase.html">BlockStreamBase</a></div><div class="ttdef"><b>Definition:</b> BlockStream.h:21</div></div>
+<div class="ttc" id="structcolumn__metadata_html_a8c62513cf47e4d8949630b11a18df263"><div class="ttname"><a href="structcolumn__metadata.html#a8c62513cf47e4d8949630b11a18df263">column_metadata::column_metadata</a></div><div class="ttdeci">column_metadata(column_type type, ColumnDistribution *dis=0)</div><div class="ttdef"><b>Definition:</b> generator.h:24</div></div>
+<div class="ttc" id="structcolumn__metadata_html_a930b2fbdbf0f0143e46aa06101ae33e1"><div class="ttname"><a href="structcolumn__metadata.html#a930b2fbdbf0f0143e46aa06101ae33e1">column_metadata::type</a></div><div class="ttdeci">column_type type</div><div class="ttdef"><b>Definition:</b> generator.h:22</div></div>
+<div class="ttc" id="data__type_8h_html_ac2ad7f431e3446fddcd9b6b9f93c4c14a1e40ebab7c7eecd67e15491ef6af84d7"><div class="ttname"><a href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14a1e40ebab7c7eecd67e15491ef6af84d7">t_int</a></div><div class="ttdef"><b>Definition:</b> data_type.h:35</div></div>
+<div class="ttc" id="classBlockStreamBase_html_acf2074e9f553d6b0d2de640b5c4c9f64"><div class="ttname"><a href="classBlockStreamBase.html#acf2074e9f553d6b0d2de640b5c4c9f64">BlockStreamBase::allocateTuple</a></div><div class="ttdeci">virtual void * allocateTuple(unsigned bytes)=0</div></div>
 <div class="ttc" id="structcolumn__metadata_html"><div class="ttname"><a href="structcolumn__metadata.html">column_metadata</a></div><div class="ttdef"><b>Definition:</b> generator.h:21</div></div>
 <div class="ttc" id="classRandomRow_html"><div class="ttname"><a href="classRandomRow.html">RandomRow</a></div><div class="ttdef"><b>Definition:</b> generator.h:35</div></div>
-<div class="ttc" id="classcolumn__type_html"><div class="ttname"><a href="classcolumn__type.html">column_type</a></div><div class="ttdef"><b>Definition:</b> data_type.h:1487</div></div>
+<div class="ttc" id="classcolumn__type_html"><div class="ttname"><a href="classcolumn__type.html">column_type</a></div><div class="ttdef"><b>Definition:</b> data_type.h:1200</div></div>
+<div class="ttc" id="classSchema_html_a6c5d8657e426580a551f8a0829662ee0"><div class="ttname"><a href="classSchema.html#a6c5d8657e426580a551f8a0829662ee0">Schema::duplicateSchema</a></div><div class="ttdeci">virtual Schema * duplicateSchema() const =0</div></div>
+<div class="ttc" id="data__distribution__generator_8h_html"><div class="ttname"><a href="data__distribution__generator_8h.html">data_distribution_generator.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><b>generator.h</b></li>
+    <li class="navelem"><a class="el" href="dir_64e73385a8b7738563c26ce10415b58d.html">utility</a></li><li class="navelem"><a class="el" href="generator_8h.html">generator.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

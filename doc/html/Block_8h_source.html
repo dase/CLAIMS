@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Block/Block.h Source File</title>
+<title>Claims: common/Block/Block.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('Block_8h_source.html','');});
 <div class="title">Block.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="Block_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Block.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Jun 22, 2013</span></div>
@@ -120,39 +120,50 @@ $(document).ready(function(){initNavTree('Block_8h_source.html','');});
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classBlock.html">   13</a></span>&#160;<span class="preprocessor"></span><span class="keyword">class </span><a class="code" href="classBlock.html">Block</a> {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <a class="code" href="classBlock.html">Block</a>(<span class="keywordtype">unsigned</span> BlockSize);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="classBlock.html">Block</a>(<span class="keyword">const</span> <a class="code" href="classBlock.html">Block</a> &amp;block);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="classBlock.html">Block</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; size,<span class="keyword">const</span> <span class="keywordtype">void</span>* start);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classBlock.html">Block</a>();</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">void</span>* getBlock()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">void</span> setBlock(<span class="keywordtype">void</span>*);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">unsigned</span> getsize() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">unsigned</span> setsize(<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; size) ;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <a class="code" href="classBlock.html#ab49606b09503b3c5a53388717a340cf6">Block</a>(<span class="keywordtype">unsigned</span> <a class="code" href="classBlock.html#af9841acaa0ad69a51f494cee74239200">BlockSize</a>);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="classBlock.html#ab49606b09503b3c5a53388717a340cf6">Block</a>(<span class="keyword">const</span> <a class="code" href="classBlock.html">Block</a> &amp;block);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="classBlock.html#ab49606b09503b3c5a53388717a340cf6">Block</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; size,<span class="keyword">const</span> <span class="keywordtype">void</span>* <a class="code" href="classBlock.html#a99141189c72a66ebadab57dba364118c">start</a>);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classBlock.html#a19d1bd0e1cef6a865ed2745a2e648405">~Block</a>();</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">void</span>* <a class="code" href="classBlock.html#a106b1a1095930c997df00da51a024fbf">getBlock</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classBlock.html#a45123744b2e134fc599f4abd310b9381">setBlock</a>(<span class="keywordtype">void</span>*);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classBlock.html#a8173c589654677bf9f5f1a17111d3866">getsize</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classBlock.html#a5a4eab8a3f9edd817a32a752661faf20">setsize</a>(<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; size) ;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">bool</span> isIsReference()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordflow">return</span> isReference_;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classBlock.html#a60a4f0e9e4e14985d20d1605d0525959">   24</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classBlock.html#a60a4f0e9e4e14985d20d1605d0525959">isIsReference</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classBlock.html#a198d7e8ea6e129fb297eb94e4796baa0">isReference_</a>;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    }</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">void</span> setIsReference(<span class="keywordtype">bool</span> isReference);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classBlock.html#a81731d125799d916b0099aba20719347">setIsReference</a>(<span class="keywordtype">bool</span> isReference);</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">unsigned</span> BlockSize;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">char</span>* start;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classBlock.html#af9841acaa0ad69a51f494cee74239200">   31</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classBlock.html#af9841acaa0ad69a51f494cee74239200">BlockSize</a>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classBlock.html#a99141189c72a66ebadab57dba364118c">   32</a></span>&#160;    <span class="keywordtype">char</span>* <a class="code" href="classBlock.html#a99141189c72a66ebadab57dba364118c">start</a>;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="comment">/* true, if it references to others, which means that the block does not need</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">     * to free the memory reference in destructor.</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">bool</span> isReference_;</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classBlock.html#a198d7e8ea6e129fb297eb94e4796baa0">   37</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classBlock.html#a198d7e8ea6e129fb297eb94e4796baa0">isReference_</a>;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;};</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* BLOCK_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classBlock_html_a8173c589654677bf9f5f1a17111d3866"><div class="ttname"><a href="classBlock.html#a8173c589654677bf9f5f1a17111d3866">Block::getsize</a></div><div class="ttdeci">unsigned getsize() const </div><div class="ttdef"><b>Definition:</b> Block.cpp:51</div></div>
+<div class="ttc" id="classBlock_html_a99141189c72a66ebadab57dba364118c"><div class="ttname"><a href="classBlock.html#a99141189c72a66ebadab57dba364118c">Block::start</a></div><div class="ttdeci">char * start</div><div class="ttdef"><b>Definition:</b> Block.h:32</div></div>
+<div class="ttc" id="classBlock_html_a106b1a1095930c997df00da51a024fbf"><div class="ttname"><a href="classBlock.html#a106b1a1095930c997df00da51a024fbf">Block::getBlock</a></div><div class="ttdeci">void * getBlock() const </div><div class="ttdef"><b>Definition:</b> Block.cpp:47</div></div>
+<div class="ttc" id="classBlock_html_a198d7e8ea6e129fb297eb94e4796baa0"><div class="ttname"><a href="classBlock.html#a198d7e8ea6e129fb297eb94e4796baa0">Block::isReference_</a></div><div class="ttdeci">bool isReference_</div><div class="ttdef"><b>Definition:</b> Block.h:37</div></div>
+<div class="ttc" id="classBlock_html_af9841acaa0ad69a51f494cee74239200"><div class="ttname"><a href="classBlock.html#af9841acaa0ad69a51f494cee74239200">Block::BlockSize</a></div><div class="ttdeci">unsigned BlockSize</div><div class="ttdef"><b>Definition:</b> Block.h:31</div></div>
+<div class="ttc" id="classBlock_html_ab49606b09503b3c5a53388717a340cf6"><div class="ttname"><a href="classBlock.html#ab49606b09503b3c5a53388717a340cf6">Block::Block</a></div><div class="ttdeci">Block(unsigned BlockSize)</div><div class="ttdef"><b>Definition:</b> Block.cpp:14</div></div>
+<div class="ttc" id="classBlock_html_a60a4f0e9e4e14985d20d1605d0525959"><div class="ttname"><a href="classBlock.html#a60a4f0e9e4e14985d20d1605d0525959">Block::isIsReference</a></div><div class="ttdeci">bool isIsReference() const </div><div class="ttdef"><b>Definition:</b> Block.h:24</div></div>
+<div class="ttc" id="classBlock_html_a19d1bd0e1cef6a865ed2745a2e648405"><div class="ttname"><a href="classBlock.html#a19d1bd0e1cef6a865ed2745a2e648405">Block::~Block</a></div><div class="ttdeci">virtual ~Block()</div><div class="ttdef"><b>Definition:</b> Block.cpp:30</div></div>
+<div class="ttc" id="classBlock_html_a45123744b2e134fc599f4abd310b9381"><div class="ttname"><a href="classBlock.html#a45123744b2e134fc599f4abd310b9381">Block::setBlock</a></div><div class="ttdeci">void setBlock(void *)</div><div class="ttdef"><b>Definition:</b> Block.cpp:58</div></div>
+<div class="ttc" id="classBlock_html_a81731d125799d916b0099aba20719347"><div class="ttname"><a href="classBlock.html#a81731d125799d916b0099aba20719347">Block::setIsReference</a></div><div class="ttdeci">void setIsReference(bool isReference)</div><div class="ttdef"><b>Definition:</b> Block.cpp:62</div></div>
+<div class="ttc" id="classBlock_html_a5a4eab8a3f9edd817a32a752661faf20"><div class="ttname"><a href="classBlock.html#a5a4eab8a3f9edd817a32a752661faf20">Block::setsize</a></div><div class="ttdeci">unsigned setsize(const unsigned &amp;size)</div><div class="ttdef"><b>Definition:</b> Block.cpp:55</div></div>
 <div class="ttc" id="classBlock_html"><div class="ttname"><a href="classBlock.html">Block</a></div><div class="ttdef"><b>Definition:</b> Block.h:13</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><b>Block.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><a class="el" href="Block_8h.html">Block.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

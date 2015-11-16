@@ -1,4 +1,4 @@
-.TH "ProjectionID" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ProjectionID" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,10 @@ ProjectionID \-
 
 .in +1c
 .ti -1c
-.RI "\fBProjectionID\fP (TableID tid, ProjectionOffset off)"
+.RI "\fBProjectionID\fP ()"
+.br
+.ti -1c
+.RI "\fBProjectionID\fP (\fBTableID\fP tid, \fBProjectionOffset\fP off)"
 .br
 .ti -1c
 .RI "\fBProjectionID\fP (const \fBProjectionID\fP &r)"
@@ -31,10 +34,10 @@ ProjectionID \-
 
 .in +1c
 .ti -1c
-.RI "TableID \fBtable_id\fP"
+.RI "\fBTableID\fP \fBtable_id\fP"
 .br
 .ti -1c
-.RI "ProjectionOffset \fBprojection_off\fP"
+.RI "\fBProjectionOffset\fP \fBprojection_off\fP"
 .br
 .in -1c
 .SS "Friends"
@@ -47,7 +50,43 @@ ProjectionID \-
 .SH "Detailed Description"
 .PP 
 \fBProjectionID\fP: a projection has an unique \fBProjectionID\fP 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ProjectionID::ProjectionID ()\fC [inline]\fP"
+
+.SS "ProjectionID::ProjectionID (\fBTableID\fPtid, \fBProjectionOffset\fPoff)\fC [inline]\fP"
+
+.SS "ProjectionID::ProjectionID (const \fBProjectionID\fP &r)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ProjectionID::operator< (const \fBProjectionID\fP &r) const\fC [inline]\fP"
+
+.PP
+References projection_off, and table_id\&.
+.SS "bool ProjectionID::operator== (const \fBProjectionID\fP &r) const\fC [inline]\fP"
+
+.PP
+References projection_off, and table_id\&.
+.SS "template<class Archive > void ProjectionID::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP"
+
+.PP
+References projection_off, and table_id\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBProjectionOffset\fP ProjectionID::projection_off"
+
+.PP
+Referenced by PartitionID::getName(), PartitionID::getPathAndName(), Catalog::getProjection(), hash_value(), LogicalCSBIndexBuilding::LogicalCSBIndexBuilding(), LogicalIndexScan::LogicalIndexScan(), operator<(), operator==(), and serialize()\&.
+.SS "\fBTableID\fP ProjectionID::table_id"
+
+.PP
+Referenced by Analyzer::analyse_on_project(), PartitionID::getName(), PartitionID::getPathAndName(), Catalog::getProjection(), hash_value(), operator<(), operator==(), LogicalCSBIndexBuilding::Print(), claims::logical_operator::LogicalScan::Print(), claims::physical_operator::PhysicalProjectionScan::Print(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

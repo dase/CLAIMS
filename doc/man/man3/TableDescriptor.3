@@ -1,4 +1,4 @@
-.TH "TableDescriptor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "TableDescriptor" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,23 +6,31 @@ TableDescriptor \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <table\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBTableDescriptor\fP (const string &name, const TableID table_id)"
+.RI "\fBTableDescriptor\fP ()"
+.br
+.ti -1c
+.RI "\fBTableDescriptor\fP (const string &name, const \fBTableID\fP table_id)"
+.br
+.ti -1c
+.RI "virtual \fB~TableDescriptor\fP ()"
 .br
 .ti -1c
 .RI "void \fBaddAttribute\fP (\fBAttribute\fP attr)"
 .br
 .ti -1c
-.RI "bool \fBaddAttribute\fP (string attname, data_type dt, unsigned max_length=0, bool unique=false, bool can_be_null=true)"
+.RI "bool \fBaddAttribute\fP (string attname, \fBdata_type\fP dt, unsigned max_length=0, bool unique=false, bool can_be_null=true)"
 .br
 .ti -1c
-.RI "bool \fBcreateHashPartitionedProjection\fP (vector< ColumnOffset > column_list, ColumnOffset partition_key_index, unsigned number_of_partitions)"
+.RI "bool \fBcreateHashPartitionedProjection\fP (vector< \fBColumnOffset\fP > column_list, \fBColumnOffset\fP partition_key_index, unsigned number_of_partitions)"
 .br
 .ti -1c
-.RI "bool \fBcreateHashPartitionedProjection\fP (vector< ColumnOffset > column_list, std::string partition_attribute_name, unsigned number_of_partitions)"
+.RI "bool \fBcreateHashPartitionedProjection\fP (vector< \fBColumnOffset\fP > column_list, std::string partition_attribute_name, unsigned number_of_partitions)"
 .br
 .ti -1c
 .RI "bool \fBcreateHashPartitionedProjection\fP (vector< \fBAttribute\fP > column_list, std::string partition_attribute_name, unsigned number_of_partitions)"
@@ -37,7 +45,7 @@ TableDescriptor \-
 .RI "string \fBgetTableName\fP () const "
 .br
 .ti -1c
-.RI "ColumnOffset \fBgetColumnID\fP (const string &attrName) const "
+.RI "\fBColumnOffset\fP \fBgetColumnID\fP (const string &attrName) const "
 .br
 .ti -1c
 .RI "map< string, set< string > > \fBgetColumnLocations\fP (const string &attrName) const "
@@ -64,10 +72,10 @@ TableDescriptor \-
 .RI "string \fBget_table_name\fP () const "
 .br
 .ti -1c
-.RI "TableID \fBget_table_id\fP () const "
+.RI "\fBTableID\fP \fBget_table_id\fP () const "
 .br
 .ti -1c
-.RI "\fBProjectionDescriptor\fP * \fBgetProjectoin\fP (ProjectionOffset) const "
+.RI "\fBProjectionDescriptor\fP * \fBgetProjectoin\fP (\fBProjectionOffset\fP) const "
 .br
 .ti -1c
 .RI "unsigned \fBgetNumberOfProjection\fP () const "
@@ -105,7 +113,7 @@ TableDescriptor \-
 .RI "vector< \fBAttribute\fP > \fBattributes\fP"
 .br
 .ti -1c
-.RI "TableID \fBtable_id_\fP"
+.RI "\fBTableID\fP \fBtable_id_\fP"
 .br
 .ti -1c
 .RI "vector< \fBProjectionDescriptor\fP * > \fBprojection_list_\fP"
@@ -121,7 +129,147 @@ TableDescriptor \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "TableDescriptor::TableDescriptor ()\fC [inline]\fP"
+
+.SS "TableDescriptor::TableDescriptor (const string &name, const \fBTableID\fPtable_id)"
+
+.SS "TableDescriptor::~TableDescriptor ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void TableDescriptor::addAttribute (\fBAttribute\fPattr)"
+
+.PP
+References attributes\&.
+.PP
+Referenced by BindingTest(), create_load_test(), create_poc_data_four_partitions(), create_poc_data_one_partitions(), CreateTable(), execting_test(), claims::stmt_handler::CreateTableExec::Execute(), init_multi_node_tpc_h_envoriment_(), init_poc_environment(), init_single_node_tpc_h_envoriment_(), init_single_node_tpc_h_envoriment_ing(), init_single_node_tpc_h_envoriment_sort(), init_tt_environment(), load_tpc_h_4_partition(), loadData(), startup_catalog(), startup_mulitple_node_environment_of_poc(), startup_multiple_node_environment(), startup_multiple_node_environment_of_stock(), startup_multiple_node_environment_of_tpch(), startup_single_node_environment_of_tpch(), startup_single_node_one_partition_environment_of_tpch(), statistic_manager_test(), TableDescriptor_test(), test_CSBIndexBuilding(), test_index_scan_iterator(), test_logical_csb_index_building(), and variable_schema_test()\&.
+.SS "bool TableDescriptor::addAttribute (stringattname, \fBdata_type\fPdt, unsignedmax_length = \fC0\fP, boolunique = \fCfalse\fP, boolcan_be_null = \fCtrue\fP)"
+
+.PP
+References attributes, table_id_, and tableName\&.
+.SS "void TableDescriptor::addColumn (\fBProjectionDescriptor\fP *column)"
+
+.SS "bool TableDescriptor::createHashPartitionedProjection (vector< \fBColumnOffset\fP >column_list, \fBColumnOffset\fPpartition_key_index, unsignednumber_of_partitions)"
+
+.PP
+References attributes, PartitionFunctionFactory::createGeneralModuloFunction(), projection_list_, and table_id_\&.
+.PP
+Referenced by BindingTest(), create_load_test(), create_poc_data_four_partitions(), create_poc_data_one_partitions(), CreateProjection(), execting_test(), init_poc_environment(), init_tt_environment(), loadData(), startup_catalog(), startup_mulitple_node_environment_of_poc(), startup_multiple_node_environment(), statistic_manager_test(), TableDescriptor_test(), test_CSBIndexBuilding(), test_index_scan_iterator(), test_logical_csb_index_building(), and variable_schema_test()\&.
+.SS "bool TableDescriptor::createHashPartitionedProjection (vector< \fBColumnOffset\fP >column_list, std::stringpartition_attribute_name, unsignednumber_of_partitions)"
+
+.PP
+References attributes, PartitionFunctionFactory::createGeneralModuloFunction(), getAttribute(), projection_list_, and table_id_\&.
+.SS "bool TableDescriptor::createHashPartitionedProjection (vector< \fBAttribute\fP >column_list, std::stringpartition_attribute_name, unsignednumber_of_partitions)"
+
+.PP
+References attributes, PartitionFunctionFactory::createGeneralModuloFunction(), getAttribute(), projection_list_, and table_id_\&.
+.SS "bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute (std::stringpartition_attribute_name, unsignednumber_of_partitions)"
+
+.PP
+References attributes, PartitionFunctionFactory::createGeneralModuloFunction(), getAttribute2(), projection_list_, and table_id_\&.
+.PP
+Referenced by init_multi_node_tpc_h_envoriment_(), init_single_node_tpc_h_envoriment_(), init_single_node_tpc_h_envoriment_ing(), init_single_node_tpc_h_envoriment_sort(), load_tpc_h_4_partition(), startup_multiple_node_environment_of_tpch(), startup_single_node_environment_of_tpch(), and startup_single_node_one_partition_environment_of_tpch()\&.
+.SS "\fBTableID\fP TableDescriptor::get_table_id () const\fC [inline]\fP"
+
+.PP
+Referenced by Catalog::add_table(), create_load_test(), CreateProjection(), and statistic_manager_test()\&.
+.SS "string TableDescriptor::get_table_name () const\fC [inline]\fP"
+
+.SS "\fBAttribute\fP TableDescriptor::getAttribute (unsignedoffset) const\fC [inline]\fP"
+
+.PP
+Referenced by Analyzer::analyse(), bulk_test_logical_index_scan(), Analyzer::computeHistogram(), createHashPartitionedProjection(), CreateProjection(), Estimation::estEqualJoin(), Estimation::estEqualOper(), Estimation::estRangeOper(), claims::stmt_handler::InsertExec::Execute(), get_aggregation_args(), init_single_node_tpc_h_envoriment_ing(), InsertData(), claims::stmt_handler::InsertExec::InsertValueToStream(), InsertValueToStream(), lineitem_scan_aggregation(), lineitem_scan_filter(), lineitem_scan_self_join(), claims::logical_operator::LogicalScan::LogicalScan(), query_1(), query_2(), query_3(), query_select_aggregation(), query_select_fzh(), sb_scan_aggregation(), sb_scan_filter(), sb_scan_self_join(), test_complete_repartition_filtered_join(), test_complete_repartition_scan_join(), test_index_filter_performance(), test_logical_csb_index_building(), test_logical_index_building(), test_logical_index_scan(), test_multiple_complete_repartition_filtered_join(), test_multiple_complete_repartition_scan_join(), test_multiple_no_repartition_filtered_join(), test_multiple_no_repartition_scan_join(), test_multiple_scan(), test_multiple_scan_filter_Aggregation(), test_multiple_scan_filter_high_selectivity(), test_multiple_scan_filter_low_selectivity(), test_multiple_scan_filter_Scalar_Aggregation(), test_no_repartition_filtered_join(), test_no_repartition_scan_join(), test_scan(), test_scan_Aggregation_large_Groups(), test_scan_Aggregation_small_Groups(), test_scan_filter_Aggregation(), test_scan_filter_high_selectivity(), test_scan_filter_low_selectivity(), test_scan_filter_performance(), and test_scan_filter_Scalar_Aggregation()\&.
+.SS "\fBAttribute\fP TableDescriptor::getAttribute (const std::string &name) const"
+
+.PP
+References attributes, and tableName\&.
+.SS "\fBAttribute\fP TableDescriptor::getAttribute2 (const std::string &name) const"
+
+.PP
+References attributes\&.
+.PP
+Referenced by createHashPartitionedProjectionOnAllAttribute()\&.
+.SS "vector<\fBAttribute\fP> TableDescriptor::getAttributes () const\fC [inline]\fP"
+
+.PP
+Referenced by add_all_table_column(), add_table_column(), Analyzer::analyse(), AstSelectStmt::GetLogicalPlanOfProject(), getSchema(), claims::logical_operator::LogicalScan::LogicalScan(), and AstTable::SemanticAnalisys()\&.
+.SS "vector<\fBAttribute\fP> TableDescriptor::getAttributes (vector< unsigned >index_list) const\fC [inline]\fP"
+
+.SS "\fBColumnOffset\fP TableDescriptor::getColumnID (const string &attrName) const"
+
+.SS "map<string, set<string> > TableDescriptor::getColumnLocations (const string &attrName) const"
+
+.SS "unsigned int TableDescriptor::getNumberOfAttribute ()\fC [inline]\fP"
+
+.PP
+Referenced by claims::stmt_handler::InsertExec::Execute(), and InsertData()\&.
+.SS "unsigned TableDescriptor::getNumberOfProjection () const"
+
+.PP
+References projection_list_\&.
+.PP
+Referenced by Analyzer::analyse(), HdfsLoader::append(), Analyzer::computeHistogram(), CreateProjection(), Catalog::getPartitionIDList(), claims::logical_operator::LogicalScan::GetPlanContext(), HdfsLoader::HdfsLoader(), HdfsLoader::insertRecords(), and HdfsLoader::load()\&.
+.SS "\fBProjectionDescriptor\fP * TableDescriptor::getProjectoin (\fBProjectionOffset\fPpid) const"
+
+.PP
+References NULL, and projection_list_\&.
+.PP
+Referenced by Analyzer::analyse(), HdfsLoader::append(), BindingTest(), bulk_test_logical_index_scan(), Analyzer::compute_table_stat(), Analyzer::computeHistogram(), create_poc_data_four_partitions(), create_poc_data_one_partitions(), CreateProjection(), execting_test(), Catalog::getPartitionIDList(), claims::logical_operator::LogicalScan::GetPlanContext(), Catalog::getProjection(), HdfsLoader::HdfsLoader(), init_multi_node_tpc_h_envoriment_(), init_poc_environment(), init_single_node_tpc_h_envoriment_(), init_single_node_tpc_h_envoriment_ing(), init_single_node_tpc_h_envoriment_sort(), init_tt_environment(), insert_into_hash_table_from_projection(), lineitem_scan_aggregation(), lineitem_scan_filter(), lineitem_scan_self_join(), HdfsLoader::load(), loadData(), LogicalCSBIndexBuilding::LogicalCSBIndexBuilding(), LogicalIndexScan::LogicalIndexScan(), projection_scan(), query_1(), query_2(), query_3(), query_select_aggregation(), query_select_aggregation_ing(), query_select_fzh(), query_select_sort(), query_select_sort_string(), sb_scan_aggregation(), sb_scan_filter(), sb_scan_self_join(), startup_catalog(), startup_mulitple_node_environment_of_poc(), startup_multiple_node_environment(), startup_multiple_node_environment_of_stock(), startup_multiple_node_environment_of_tpch(), startup_single_node_environment_of_tpch(), startup_single_node_one_partition_environment_of_tpch(), statistic_manager_test(), test_block_construct(), test_complete_repartition_filtered_join(), test_complete_repartition_scan_join(), test_CSBIndexBuilding(), test_index_filter_performance(), test_index_scan_iterator(), test_logical_csb_index_building(), test_logical_index_building(), test_logical_index_scan(), test_multiple_complete_repartition_filtered_join(), test_multiple_complete_repartition_scan_join(), test_multiple_no_repartition_filtered_join(), test_multiple_no_repartition_scan_join(), test_multiple_scan(), test_multiple_scan_filter_Aggregation(), test_multiple_scan_filter_high_selectivity(), test_multiple_scan_filter_low_selectivity(), test_multiple_scan_filter_Scalar_Aggregation(), test_no_repartition_filtered_join(), test_no_repartition_scan_join(), test_scan(), test_scan_Aggregation_large_Groups(), test_scan_Aggregation_small_Groups(), test_scan_filter_Aggregation(), test_scan_filter_high_selectivity(), test_scan_filter_low_selectivity(), test_scan_filter_performance(), test_scan_filter_Scalar_Aggregation(), and variable_schema_test()\&.
+.SS "unsigned long TableDescriptor::getRowNumber ()\fC [inline]\fP"
+
+.PP
+Referenced by append_test(), create_load_test(), HdfsLoader::HdfsLoader(), and inmemory_append_test()\&.
+.SS "\fBSchema\fP * TableDescriptor::getSchema () const"
+
+.PP
+References attributes, and getAttributes()\&.
+.PP
+Referenced by HdfsLoader::HdfsLoader()\&.
+.SS "string TableDescriptor::getTableName () const\fC [inline]\fP"
+
+.PP
+Referenced by Catalog::add_table(), claims::stmt_handler::InsertExec::Execute(), InsertData(), and ShowTable()\&.
+.SS "unsigned long TableDescriptor::isEmpty ()\fC [inline]\fP"
+
+.SS "bool TableDescriptor::isExist (const string &name) const"
+
+.PP
+References attributes\&.
+.PP
+Referenced by CreateProjection(), and Catalog::isAttributeExist()\&.
+.SS "template<class Archive > void TableDescriptor::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [protected]\fP"
+
+.SS "void TableDescriptor::setRowNumber (unsigned longrow_number)\fC [inline]\fP"
+
+.PP
+Referenced by HdfsLoader::append(), and HdfsLoader::load()\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "vector<\fBAttribute\fP> TableDescriptor::attributes\fC [protected]\fP"
+
+.PP
+Referenced by addAttribute(), createHashPartitionedProjection(), createHashPartitionedProjectionOnAllAttribute(), getAttribute(), getAttribute2(), getSchema(), and isExist()\&.
+.SS "vector<\fBProjectionDescriptor\fP*> TableDescriptor::projection_list_\fC [protected]\fP"
+
+.PP
+Referenced by createHashPartitionedProjection(), createHashPartitionedProjectionOnAllAttribute(), getNumberOfProjection(), and getProjectoin()\&.
+.SS "unsigned long TableDescriptor::row_number_\fC [protected]\fP"
+
+.SS "\fBTableID\fP TableDescriptor::table_id_\fC [protected]\fP"
+
+.PP
+Referenced by addAttribute(), createHashPartitionedProjection(), and createHashPartitionedProjectionOnAllAttribute()\&.
+.SS "string TableDescriptor::tableName\fC [protected]\fP"
+
+.PP
+Referenced by addAttribute(), and getAttribute()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

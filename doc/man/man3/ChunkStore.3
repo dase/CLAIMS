@@ -1,4 +1,4 @@
-.TH "ChunkStore" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ChunkStore" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,19 @@ ChunkStore \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <BlockStore\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "virtual bool \fBstoreChunk\fP (\fBChunkID\fP chunk_id, void *value, unsigned length=CHUNK_SIZE)=0"
+.RI "\fBChunkStore\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~ChunkStore\fP ()"
+.br
+.ti -1c
+.RI "virtual bool \fBstoreChunk\fP (\fBChunkID\fP chunk_id, void *value, unsigned length=\fBCHUNK_SIZE\fP)=0"
 .br
 .ti -1c
 .RI "virtual void * \fBgetChunk\fP (\fBChunkID\fP chunk_id)=0"
@@ -25,7 +33,25 @@ ChunkStore \-
 .RI "virtual unsigned \fBgetSize\fP (\fBChunkID\fP chunk_id)=0"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ChunkStore::ChunkStore ()"
+
+.SS "ChunkStore::~ChunkStore ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool ChunkStore::contains (\fBChunkID\fPchunk_id)\fC [pure virtual]\fP"
+
+.SS "virtual void* ChunkStore::getChunk (\fBChunkID\fPchunk_id)\fC [pure virtual]\fP"
+
+.SS "virtual unsigned ChunkStore::getSize (\fBChunkID\fPchunk_id)\fC [pure virtual]\fP"
+
+.SS "virtual bool ChunkStore::remove (\fBChunkID\fPchunk_id)\fC [pure virtual]\fP"
+
+.SS "virtual bool ChunkStore::storeChunk (\fBChunkID\fPchunk_id, void *value, unsignedlength = \fC\fBCHUNK_SIZE\fP\fP)\fC [pure virtual]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

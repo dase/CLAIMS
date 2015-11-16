@@ -34,6 +34,7 @@
 #include <vector>
 #include <iostream>
 #include "../common/Schema/SchemaFix.h"
+
 namespace claims {
 namespace logical_operator {
 
@@ -79,6 +80,15 @@ Attribute PlanContext::GetAttribute(std::string name) const {
       return attribute_list_[i];
     }
   }
+  //  if (name.find('.') >= name.size()) {
+  //    for (unsigned i = 0; i < attribute_list_.size(); i++) {
+  //      if (attribute_list_[i].attrName.substr(
+  //              attribute_list_[i].attrName.find('.') + 1) == name) {
+  //        return attribute_list_[i];
+  //      }
+  //    }
+  //  }
+  assert(false);
   LOG(WARNING) << "Failed to find attribute " << name.c_str() << std::endl;
   return Attribute(ATTRIBUTE_NULL);
 }
@@ -90,7 +100,7 @@ Attribute PlanContext::GetAttribute(std::string tbname,
       return attribute_list_[i];
     }
   }
-  LOG(WARNING) << "Failed to find attribute " << colname.c_str() << std::endl;
+  LOG(WARNING) << "Failed to find attribute " << colname << std::endl;
   assert(false);
   return Attribute(ATTRIBUTE_NULL);
 }

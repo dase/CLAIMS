@@ -12,5 +12,7 @@ var classClient =
     [ "receive", "classClient.html#aceb6dc63dbe5debfd1602d3c96d8a9a9", null ],
     [ "shutdown", "classClient.html#a3c1f75dd30ecd5a2817f3b47c2afc458", null ],
     [ "submit", "classClient.html#a77fa0d2ff840924df6f09eecf55fe4f6", null ],
-    [ "submitQuery", "classClient.html#ac129048b0c86f3d5d5e8f30656b52ca2", null ]
+    [ "submitQuery", "classClient.html#ac129048b0c86f3d5d5e8f30656b52ca2", null ],
+    [ "connected_", "classClient.html#aa8f65b36399d7ce688a18fc0e02da2b1", null ],
+    [ "m_clientFd", "classClient.html#ad7431b4c50ff1fb8a6489a422afb7224", null ]
 ];

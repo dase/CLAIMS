@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Block/DynamicBlockBuffer.h Source File</title>
+<title>Claims: common/Block/DynamicBlockBuffer.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('DynamicBlockBuffer_8h_source.html','')
 <div class="title">DynamicBlockBuffer.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="DynamicBlockBuffer_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * DynamicBlockBuffer.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Dec 20, 2013</span></div>
@@ -119,56 +119,75 @@ $(document).ready(function(){initNavTree('DynamicBlockBuffer_8h_source.html','')
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#ifdef DMALLOC</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;dmalloc.h&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;Block.h&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;BlockStream.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="Block_8h.html">Block.h</a>&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="BlockStream_8h.html">BlockStream.h</a>&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;../../utility/lock.h&quot;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classDynamicBlockBuffer.html">   24</a></span>&#160;<span class="keyword">class </span><a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a> {</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classDynamicBlockBuffer_1_1Iterator.html">   26</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">Iterator</a> {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">Iterator</a>(<span class="keyword">const</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* dbb);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">Iterator</a>(<span class="keyword">const</span> <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">Iterator</a> &amp;);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">Iterator</a>();</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* nextBlock();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* atomicNextBlock();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html#aca21de1c2861054cec9aa7fef405e31e">Iterator</a>(<span class="keyword">const</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* dbb);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html#aca21de1c2861054cec9aa7fef405e31e">Iterator</a>(<span class="keyword">const</span> <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">Iterator</a> &amp;);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html#aca21de1c2861054cec9aa7fef405e31e">Iterator</a>();</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd">nextBlock</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html#a2160c9de11aead7b5ac245bb52bb4db2">atomicNextBlock</a>();</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">unsigned</span> cur_;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">const</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* dbb_;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="classLock.html">Lock</a> lock_;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classDynamicBlockBuffer_1_1Iterator.html#a050b7db17cd33809330922684b1adf5d">   34</a></span>&#160;        <span class="keywordtype">unsigned</span> <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html#a050b7db17cd33809330922684b1adf5d">cur_</a>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classDynamicBlockBuffer_1_1Iterator.html#a1551cbc25f5008920cbe4930c332b792">   35</a></span>&#160;        <span class="keyword">const</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>* <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html#a1551cbc25f5008920cbe4930c332b792">dbb_</a>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classDynamicBlockBuffer_1_1Iterator.html#a969dd33b5983e9cd826933b58fe99a67">   36</a></span>&#160;        <a class="code" href="classLock.html">Lock</a> <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html#a969dd33b5983e9cd826933b58fe99a67">lock_</a>;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    };</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>();</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>(<span class="keyword">const</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>&amp; r);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classDynamicBlockBuffer.html#a5944c3f8bc505153d39312e15a0d169a">DynamicBlockBuffer</a>();</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="classDynamicBlockBuffer.html#a5944c3f8bc505153d39312e15a0d169a">DynamicBlockBuffer</a>(<span class="keyword">const</span> <a class="code" href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a>&amp; r);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classDynamicBlockBuffer.html#a630faacb14599fb3a2ea49671743c70d">~DynamicBlockBuffer</a>();</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">bool</span> appendNewBlock(<a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* new_block);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">bool</span> atomicAppendNewBlock(<a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* new_block);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* getBlock(<span class="keywordtype">unsigned</span> index) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">Iterator</a> createIterator() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classDynamicBlockBuffer.html#aa4adc433a771493673729db1ea95881a">appendNewBlock</a>(<a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* new_block);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classDynamicBlockBuffer.html#ab211e531983ae1060ccef192a83ac9e3">atomicAppendNewBlock</a>(<a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* new_block);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="classBlockStreamBase.html">BlockStreamBase</a>* <a class="code" href="classDynamicBlockBuffer.html#ae7fae9156ab422e5137f9f3284d37b3e">getBlock</a>(<span class="keywordtype">unsigned</span> index) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="classDynamicBlockBuffer_1_1Iterator.html">Iterator</a> <a class="code" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956">createIterator</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    </div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">unsigned</span> getNumberOfBlocks();</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classDynamicBlockBuffer.html#a06dc2e73451520ec30bc2e254a179da5">getNumberOfBlocks</a>();</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">/* release the memory in block list.</span></div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">     * NOTE: this function should be used carefully, as the block memory is not allocated by this class.</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">void</span> destory();</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> getNumberOftuples()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3">destory</a>();</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e">getNumberOftuples</a>()<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::vector&lt;BlockStreamBase*&gt; block_list_;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="classLock.html">Lock</a> lock_;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classDynamicBlockBuffer.html#a62b0a7d48d0cd458c3023c2a2c63e488">   56</a></span>&#160;    std::vector&lt;BlockStreamBase*&gt; <a class="code" href="classDynamicBlockBuffer.html#a62b0a7d48d0cd458c3023c2a2c63e488">block_list_</a>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classDynamicBlockBuffer.html#a43a45944ad2241ce7a78aee6e2cc40c2">   57</a></span>&#160;    <a class="code" href="classLock.html">Lock</a> <a class="code" href="classDynamicBlockBuffer.html#a43a45944ad2241ce7a78aee6e2cc40c2">lock_</a>;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;};</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* DYNAMICBLOCKBUFFER_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="classDynamicBlockBuffer_1_1Iterator_html"><div class="ttname"><a href="classDynamicBlockBuffer_1_1Iterator.html">DynamicBlockBuffer::Iterator</a></div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:26</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_1_1Iterator_html_a1fcf55ae05275b6debdabc99e21e10cd"><div class="ttname"><a href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd">DynamicBlockBuffer::Iterator::nextBlock</a></div><div class="ttdeci">BlockStreamBase * nextBlock()</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:57</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_a43a45944ad2241ce7a78aee6e2cc40c2"><div class="ttname"><a href="classDynamicBlockBuffer.html#a43a45944ad2241ce7a78aee6e2cc40c2">DynamicBlockBuffer::lock_</a></div><div class="ttdeci">Lock lock_</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:57</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_1_1Iterator_html_a050b7db17cd33809330922684b1adf5d"><div class="ttname"><a href="classDynamicBlockBuffer_1_1Iterator.html#a050b7db17cd33809330922684b1adf5d">DynamicBlockBuffer::Iterator::cur_</a></div><div class="ttdeci">unsigned cur_</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:34</div></div>
 <div class="ttc" id="classLock_html"><div class="ttname"><a href="classLock.html">Lock</a></div><div class="ttdef"><b>Definition:</b> lock.h:18</div></div>
 <div class="ttc" id="classDynamicBlockBuffer_html"><div class="ttname"><a href="classDynamicBlockBuffer.html">DynamicBlockBuffer</a></div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:24</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_a6b1b8b40c120258380aac49b4050dad3"><div class="ttname"><a href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3">DynamicBlockBuffer::destory</a></div><div class="ttdeci">void destory()</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:75</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_ab211e531983ae1060ccef192a83ac9e3"><div class="ttname"><a href="classDynamicBlockBuffer.html#ab211e531983ae1060ccef192a83ac9e3">DynamicBlockBuffer::atomicAppendNewBlock</a></div><div class="ttdeci">bool atomicAppendNewBlock(BlockStreamBase *new_block)</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:33</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_aa4adc433a771493673729db1ea95881a"><div class="ttname"><a href="classDynamicBlockBuffer.html#aa4adc433a771493673729db1ea95881a">DynamicBlockBuffer::appendNewBlock</a></div><div class="ttdeci">bool appendNewBlock(BlockStreamBase *new_block)</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:29</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_a630faacb14599fb3a2ea49671743c70d"><div class="ttname"><a href="classDynamicBlockBuffer.html#a630faacb14599fb3a2ea49671743c70d">DynamicBlockBuffer::~DynamicBlockBuffer</a></div><div class="ttdeci">virtual ~DynamicBlockBuffer()</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:23</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_a5944c3f8bc505153d39312e15a0d169a"><div class="ttname"><a href="classDynamicBlockBuffer.html#a5944c3f8bc505153d39312e15a0d169a">DynamicBlockBuffer::DynamicBlockBuffer</a></div><div class="ttdeci">DynamicBlockBuffer()</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:14</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_1_1Iterator_html_aca21de1c2861054cec9aa7fef405e31e"><div class="ttname"><a href="classDynamicBlockBuffer_1_1Iterator.html#aca21de1c2861054cec9aa7fef405e31e">DynamicBlockBuffer::Iterator::Iterator</a></div><div class="ttdeci">Iterator()</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:46</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_1_1Iterator_html_a969dd33b5983e9cd826933b58fe99a67"><div class="ttname"><a href="classDynamicBlockBuffer_1_1Iterator.html#a969dd33b5983e9cd826933b58fe99a67">DynamicBlockBuffer::Iterator::lock_</a></div><div class="ttdeci">Lock lock_</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:36</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_a62b0a7d48d0cd458c3023c2a2c63e488"><div class="ttname"><a href="classDynamicBlockBuffer.html#a62b0a7d48d0cd458c3023c2a2c63e488">DynamicBlockBuffer::block_list_</a></div><div class="ttdeci">std::vector&lt; BlockStreamBase * &gt; block_list_</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:56</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_ae7fae9156ab422e5137f9f3284d37b3e"><div class="ttname"><a href="classDynamicBlockBuffer.html#ae7fae9156ab422e5137f9f3284d37b3e">DynamicBlockBuffer::getBlock</a></div><div class="ttdeci">BlockStreamBase * getBlock(unsigned index) const </div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:40</div></div>
 <div class="ttc" id="classBlockStreamBase_html"><div class="ttname"><a href="classBlockStreamBase.html">BlockStreamBase</a></div><div class="ttdef"><b>Definition:</b> BlockStream.h:21</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_acb837fe538f68e89e27ca7cbbc2e344e"><div class="ttname"><a href="classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e">DynamicBlockBuffer::getNumberOftuples</a></div><div class="ttdeci">unsigned long getNumberOftuples() const </div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:90</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_1_1Iterator_html_a2160c9de11aead7b5ac245bb52bb4db2"><div class="ttname"><a href="classDynamicBlockBuffer_1_1Iterator.html#a2160c9de11aead7b5ac245bb52bb4db2">DynamicBlockBuffer::Iterator::atomicNextBlock</a></div><div class="ttdeci">BlockStreamBase * atomicNextBlock()</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:65</div></div>
+<div class="ttc" id="BlockStream_8h_html"><div class="ttname"><a href="BlockStream_8h.html">BlockStream.h</a></div></div>
+<div class="ttc" id="classDynamicBlockBuffer_1_1Iterator_html_a1551cbc25f5008920cbe4930c332b792"><div class="ttname"><a href="classDynamicBlockBuffer_1_1Iterator.html#a1551cbc25f5008920cbe4930c332b792">DynamicBlockBuffer::Iterator::dbb_</a></div><div class="ttdeci">const DynamicBlockBuffer * dbb_</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.h:35</div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_ad3fd45b2086e797a3d8130d231571956"><div class="ttname"><a href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956">DynamicBlockBuffer::createIterator</a></div><div class="ttdeci">Iterator createIterator() const </div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:72</div></div>
+<div class="ttc" id="Block_8h_html"><div class="ttname"><a href="Block_8h.html">Block.h</a></div></div>
+<div class="ttc" id="classDynamicBlockBuffer_html_a06dc2e73451520ec30bc2e254a179da5"><div class="ttname"><a href="classDynamicBlockBuffer.html#a06dc2e73451520ec30bc2e254a179da5">DynamicBlockBuffer::getNumberOfBlocks</a></div><div class="ttdeci">unsigned getNumberOfBlocks()</div><div class="ttdef"><b>Definition:</b> DynamicBlockBuffer.cpp:83</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><b>DynamicBlockBuffer.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><a class="el" href="DynamicBlockBuffer_8h.html">DynamicBlockBuffer.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

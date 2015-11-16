@@ -30,6 +30,8 @@
 #include <iostream>  //  NOLINT
 #include <iomanip>
 #include <string>
+#include <set>
+#include <vector>
 #include <bitset>
 #include "../ast_node/ast_expr_node.h"
 #include "./ast_select_stmt.h"
@@ -60,7 +62,8 @@ using std::bitset;
 AstExprConst::AstExprConst(AstNodeType ast_node_type, string expr_type,
                            string data)
     : AstNode(ast_node_type), expr_type_(expr_type), data_(data) {}
-
+AstExprConst::AstExprConst(AstExprConst* node)
+    : AstNode(node), expr_type_(node->expr_type_), data_(node->data_) {}
 AstExprConst::~AstExprConst() {}
 void AstExprConst::Print(int level) const {
   cout << setw(level++ * TAB_SIZE) << " "
@@ -70,6 +73,8 @@ void AstExprConst::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
        << "const data: " << data_ << endl;
 }
+AstNode* AstExprConst::AstNodeCopy() { return new AstExprConst(this); }
+
 // TODO(FZH) be strict to the type of const
 ErrorNo AstExprConst::SemanticAnalisys(SemanticContext* sem_cnxt) {
   ErrorNo ret = eOK;
@@ -85,34 +90,11 @@ void AstExprConst::RecoverExprName(string& name) {
   return;
 }
 void AstExprConst::ReplaceAggregation(AstNode*& agg_column,
-                                      set<AstNode*>& agg_node, bool is_select) {
+                                      set<AstNode*>& agg_node,
+                                      bool need_collect) {
   agg_column = NULL;
 }
-ErrorNo AstExprConst::GetLogicalPlan(QNode*& logic_expr,
-                                     LogicalOperator* child_logic_plan) {
-  data_type actual_type = t_string;
-  if (expr_type_ == "CONST_INT") {
-    if (atol(data_.c_str()) > INT_MAX) {
-      actual_type = t_u_long;
-    } else {
-      actual_type = t_int;
-    }
-  } else if (expr_type_ == "CONST_BOOL") {
-    actual_type = t_boolean;
-  } else if (expr_type_ == "CONST_STRING") {
-    actual_type = t_string;
-  } else if (expr_type_ == "CONST_DOUBLE") {
-    actual_type = t_double;
-  } else if (expr_type_ == "CONST") {
-    actual_type = t_string;
-  } else {
-    LOG(ERROR) << "no actual_type!" << endl;
-    return eNoDataTypeInConst;
-  }
-  logic_expr = new QExpr(const_cast<char*>(data_.c_str()), actual_type,
-                         const_cast<char*>(data_.c_str()));
-  return eOK;
-}
+
 ErrorNo AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
                                      LogicalOperator* child_logic_plan) {
   data_type actual_type = t_string;
@@ -141,7 +123,14 @@ ErrorNo AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
 AstExprUnary::AstExprUnary(AstNodeType ast_node_type, string expr_type,
                            AstNode* arg0)
     : AstNode(ast_node_type), expr_type_(expr_type), arg0_(arg0) {}
-
+AstExprUnary::AstExprUnary(AstExprUnary* node)
+    : AstNode(node), expr_type_(node->expr_type_) {
+  if (NULL != node->arg0_) {
+    arg0_ = node->arg0_->AstNodeCopy();
+  } else {
+    arg0_ = NULL;
+  }
+}
 AstExprUnary::~AstExprUnary() { delete arg0_; }
 
 void AstExprUnary::Print(int level) const {
@@ -151,6 +140,9 @@ void AstExprUnary::Print(int level) const {
     arg0_->Print(level + 1);
   }
 }
+
+AstNode* AstExprUnary::AstNodeCopy() { return new AstExprUnary(this); }
+
 ErrorNo AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
   // agg couldn't in where or groupby
   if (expr_type_ == "SUM" || expr_type_ == "MAX" || expr_type_ == "MIN" ||
@@ -164,20 +156,24 @@ ErrorNo AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
   }
   if (expr_type_ == "COUNT_ALL") {
+    sem_cnxt->select_expr_have_agg = true;
+
     expr_str_ = "COUNT(*)";
     return eOK;
   }
   if (NULL != arg0_) {
     // upper node have agg and this node is agg, then error
-    if (sem_cnxt->have_agg &&
-        ((expr_type_ == "SUM" || expr_type_ == "MAX" || expr_type_ == "MIN" ||
-          expr_type_ == "AVG" || expr_type_ == "COUNT"))) {
-      return eAggHaveAgg;
-    }
-    sem_cnxt->have_agg =
+    bool here_have_agg =
         (expr_type_ == "SUM" || expr_type_ == "MAX" || expr_type_ == "MIN" ||
          expr_type_ == "AVG" || expr_type_ == "COUNT");
 
+    if (sem_cnxt->have_agg && here_have_agg) {
+      return eAggHaveAgg;
+    }
+    sem_cnxt->have_agg = here_have_agg;
+    if (sem_cnxt->have_agg) {
+      sem_cnxt->select_expr_have_agg = true;
+    }
     ErrorNo ret = arg0_->SemanticAnalisys(sem_cnxt);
     if (eOK != ret) {
       return ret;
@@ -212,20 +208,21 @@ void AstExprUnary::RecoverExprName(string& name) {
 }
 
 void AstExprUnary::ReplaceAggregation(AstNode*& agg_column,
-                                      set<AstNode*>& agg_node, bool is_select) {
+                                      set<AstNode*>& agg_node,
+                                      bool need_collect) {
   // like a leaf node
   if (expr_type_ == "COUNT_ALL" || expr_type_ == "SUM" || expr_type_ == "MAX" ||
       expr_type_ == "MIN" || expr_type_ == "AVG" || expr_type_ == "COUNT") {
-    agg_column = new AstColumn(AST_COLUMN, "NULL_AGG", expr_str_, expr_str_);
-    if (is_select) {
+    if (need_collect) {
       agg_node.insert(this);
     }
+    agg_column = new AstColumn(AST_COLUMN, "NULL_MID", expr_str_, expr_str_);
     return;
   } else {
     agg_column = NULL;
-    arg0_->ReplaceAggregation(agg_column, agg_node, is_select);
+    arg0_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete arg0_;
       }
       arg0_ = agg_column;
@@ -295,16 +292,37 @@ ErrorNo AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
                     expr_str_, oper, child_logic_expr);
   return eOK;
 }
-
+ErrorNo AstExprUnary::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  if (NULL != arg0_) {
+    arg0_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(arg0_);
+    select_alias_solver->DeleteOldNode();
+  }
+  return eOK;
+}
 AstExprCalBinary::AstExprCalBinary(AstNodeType ast_node_type,
                                    std::string expr_type, AstNode* arg0,
                                    AstNode* arg1)
     : AstNode(ast_node_type), expr_type_(expr_type), arg0_(arg0), arg1_(arg1) {}
-
+AstExprCalBinary::AstExprCalBinary(AstExprCalBinary* node)
+    : AstNode(node), expr_type_(node->expr_type_) {
+  if (NULL != node->arg0_) {
+    arg0_ = node->arg0_->AstNodeCopy();
+  } else {
+    arg0_ = NULL;
+  }
+  if (NULL != node->arg1_) {
+    arg1_ = node->arg1_->AstNodeCopy();
+  } else {
+    arg1_ = NULL;
+  }
+}
 AstExprCalBinary::~AstExprCalBinary() {
   delete arg0_;
   delete arg1_;
 }
+AstNode* AstExprCalBinary::AstNodeCopy() { return new AstExprCalBinary(this); }
 
 void AstExprCalBinary::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
@@ -372,14 +390,14 @@ void AstExprCalBinary::RecoverExprName(string& name) {
 
 void AstExprCalBinary::ReplaceAggregation(AstNode*& agg_column,
                                           set<AstNode*>& agg_node,
-                                          bool is_select) {
+                                          bool need_collect) {
   if (NULL != arg0_) {
     agg_column = NULL;
-    arg0_->ReplaceAggregation(agg_column, agg_node, is_select);
+    arg0_->ReplaceAggregation(agg_column, agg_node, need_collect);
     // this agg shouldn't delete in select clause, because they are collected
     // for build aggregation
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete arg0_;
       }
       arg0_ = agg_column;
@@ -388,9 +406,9 @@ void AstExprCalBinary::ReplaceAggregation(AstNode*& agg_column,
   }
   if (NULL != arg1_) {
     agg_column = NULL;
-    arg1_->ReplaceAggregation(agg_column, agg_node, is_select);
+    arg1_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete arg1_;
       }
       arg1_ = agg_column;
@@ -417,10 +435,7 @@ void AstExprCalBinary::GetRefTable(set<string>& ref_table) {
     arg1_->GetRefTable(ref_table);
   }
 }
-ErrorNo AstExprCalBinary::GetLogicalPlan(QNode*& logic_expr,
-                                         LogicalOperator* child_logic_plan) {
-  return eOK;
-}
+
 ErrorNo AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
                                          LogicalOperator* child_logic_plan) {
   ExprNode* left_expr_node = NULL;
@@ -481,6 +496,21 @@ ErrorNo AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
                               expr_str_, oper, left_expr_node, right_expr_node);
   return eOK;
 }
+
+ErrorNo AstExprCalBinary::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  if (NULL != arg0_) {
+    arg0_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(arg0_);
+    select_alias_solver->DeleteOldNode();
+  }
+  if (NULL != arg1_) {
+    arg1_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(arg1_);
+    select_alias_solver->DeleteOldNode();
+  }
+  return eOK;
+}
 AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string expr_type,
                                    AstNode* arg0, AstNode* arg1)
     : AstNode(ast_node_type),
@@ -526,10 +556,25 @@ AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string cmp_para,
     }
   }
 }
+AstExprCmpBinary::AstExprCmpBinary(AstExprCmpBinary* node)
+    : AstNode(node), expr_type_(node->expr_type_), cmp_para_(node->cmp_para_) {
+  if (NULL != node->arg0_) {
+    arg0_ = node->arg0_->AstNodeCopy();
+  } else {
+    arg0_ = NULL;
+  }
+  if (NULL != node->arg1_) {
+    arg1_ = node->arg1_->AstNodeCopy();
+  } else {
+    arg1_ = NULL;
+  }
+}
 AstExprCmpBinary::~AstExprCmpBinary() {
   delete arg0_;
   delete arg1_;
 }
+AstNode* AstExprCmpBinary::AstNodeCopy() { return new AstExprCmpBinary(this); }
+
 void AstExprCmpBinary::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
        << "|expr binary| " << expr_type_ << " @ " << expr_str_ << endl;
@@ -571,12 +616,12 @@ void AstExprCmpBinary::RecoverExprName(string& name) {
 }
 void AstExprCmpBinary::ReplaceAggregation(AstNode*& agg_column,
                                           set<AstNode*>& agg_node,
-                                          bool is_select) {
+                                          bool need_collect) {
   if (NULL != arg0_) {
     agg_column = NULL;
-    arg0_->ReplaceAggregation(agg_column, agg_node, is_select);
+    arg0_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete arg0_;
       }
       arg0_ = agg_column;
@@ -585,9 +630,9 @@ void AstExprCmpBinary::ReplaceAggregation(AstNode*& agg_column,
   }
   if (NULL != arg1_) {
     agg_column = NULL;
-    arg1_->ReplaceAggregation(agg_column, agg_node, is_select);
+    arg1_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete arg1_;
       }
       arg1_ = agg_column;
@@ -603,41 +648,7 @@ void AstExprCmpBinary::GetRefTable(set<string>& ref_table) {
     arg1_->GetRefTable(ref_table);
   }
 }
-ErrorNo AstExprCmpBinary::GetLogicalPlan(QNode*& logic_expr,
-                                         LogicalOperator* child_logic_plan) {
-  QNode* left_expr_node = NULL;
-  QNode* right_expr_node = NULL;
-  ErrorNo ret = eOK;
-  ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
-  if (eOK != ret) {
-    return ret;
-  }
-  ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
-  if (eOK != ret) {
-    return ret;
-  }
-  data_type actual_type = TypeConversionMatrix::type_conversion_matrix
-      [left_expr_node->actual_type][right_expr_node->actual_type];
-  oper_type oper = oper_equal;
-  if (expr_type_ == "<") {
-    oper = oper_less;
-  } else if (expr_type_ == ">") {
-    oper = oper_great;
-  } else if (expr_type_ == "=") {
-    oper = oper_equal;
-  } else if (expr_type_ == ">=") {
-    oper = oper_great_equal;
-  } else if (expr_type_ == "<=") {
-    oper = oper_less_equal;
-  } else if (expr_type_ == "!=") {
-    oper = oper_not_equal;
-  } else if (expr_type_ == "<=>") {
-    oper = oper_not_equal;
-  }
-  logic_expr = new QExpr_binary(left_expr_node, right_expr_node, actual_type,
-                                oper, t_qexpr_cmp, expr_str_.c_str());
-  return eOK;
-}
+
 ErrorNo AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
                                          LogicalOperator* child_logic_plan) {
   ExprNode* left_expr_node = NULL;
@@ -673,14 +684,41 @@ ErrorNo AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
                               expr_str_, oper, left_expr_node, right_expr_node);
   return eOK;
 }
+ErrorNo AstExprCmpBinary::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  if (NULL != arg0_) {
+    arg0_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(arg0_);
+    select_alias_solver->DeleteOldNode();
+  }
+  if (NULL != arg1_) {
+    arg1_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(arg1_);
+    select_alias_solver->DeleteOldNode();
+  }
+  return eOK;
+}
+
 AstExprList::AstExprList(AstNodeType ast_node_type, AstNode* expr,
                          AstNode* next)
     : AstNode(ast_node_type), expr_(expr), next_(next) {}
-
+AstExprList::AstExprList(AstExprList* node) : AstNode(node) {
+  if (NULL != node->expr_) {
+    expr_ = node->expr_->AstNodeCopy();
+  } else {
+    expr_ = NULL;
+  }
+  if (NULL != node->next_) {
+    next_ = node->next_->AstNodeCopy();
+  } else {
+    next_ = NULL;
+  }
+}
 AstExprList::~AstExprList() {
   delete expr_;
   delete next_;
 }
+AstNode* AstExprList::AstNodeCopy() { return new AstExprList(this); }
 
 void AstExprList::Print(int level) const {
   // cout << "level= " << level << endl;
@@ -717,12 +755,13 @@ void AstExprList::RecoverExprName(string& name) {
   return;
 }
 void AstExprList::ReplaceAggregation(AstNode*& agg_column,
-                                     set<AstNode*>& agg_node, bool is_select) {
+                                     set<AstNode*>& agg_node,
+                                     bool need_collect) {
   if (NULL != expr_) {
     agg_column = NULL;
-    expr_->ReplaceAggregation(agg_column, agg_node, is_select);
+    expr_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete expr_;
       }
       expr_ = agg_column;
@@ -731,9 +770,9 @@ void AstExprList::ReplaceAggregation(AstNode*& agg_column,
   }
   if (NULL != next_) {
     agg_column = NULL;
-    next_->ReplaceAggregation(agg_column, agg_node, is_select);
+    next_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete next_;
       }
       next_ = agg_column;
@@ -749,11 +788,21 @@ void AstExprList::GetRefTable(set<string>& ref_table) {
     next_->GetRefTable(ref_table);
   }
 }
-ErrorNo AstExprList::GetLogicalPlan(QNode*& logic_expr,
-                                    LogicalOperator* child_logic_plan) {
+
+ErrorNo AstExprList::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  if (NULL != expr_) {
+    expr_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(expr_);
+    select_alias_solver->DeleteOldNode();
+  }
+  if (NULL != next_) {
+    next_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(next_);
+    select_alias_solver->DeleteOldNode();
+  }
   return eOK;
 }
-
 AstExprFunc::AstExprFunc(AstNodeType ast_node_type, std::string expr_type,
                          AstNode* arg0, AstNode* arg1, AstNode* arg2)
     : AstNode(ast_node_type),
@@ -761,12 +810,30 @@ AstExprFunc::AstExprFunc(AstNodeType ast_node_type, std::string expr_type,
       arg0_(arg0),
       arg1_(arg1),
       arg2_(arg2) {}
-
+AstExprFunc::AstExprFunc(AstExprFunc* node)
+    : AstNode(node), expr_type_(node->expr_type_) {
+  if (NULL != node->arg0_) {
+    arg0_ = node->arg0_->AstNodeCopy();
+  } else {
+    arg0_ = NULL;
+  }
+  if (NULL != node->arg1_) {
+    arg1_ = node->arg1_->AstNodeCopy();
+  } else {
+    arg1_ = NULL;
+  }
+  if (NULL != node->arg2_) {
+    arg2_ = node->arg2_->AstNodeCopy();
+  } else {
+    arg2_ = NULL;
+  }
+}
 AstExprFunc::~AstExprFunc() {
   delete arg0_;
   delete arg1_;
   delete arg2_;
 }
+AstNode* AstExprFunc::AstNodeCopy() { return new AstExprFunc(this); }
 
 void AstExprFunc::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
@@ -837,12 +904,13 @@ void AstExprFunc::RecoverExprName(string& name) {
   return;
 }
 void AstExprFunc::ReplaceAggregation(AstNode*& agg_column,
-                                     set<AstNode*>& agg_node, bool is_select) {
+                                     set<AstNode*>& agg_node,
+                                     bool need_collect) {
   if (NULL != arg0_) {
     agg_column = NULL;
-    arg0_->ReplaceAggregation(agg_column, agg_node, is_select);
+    arg0_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete arg0_;
       }
       arg0_ = agg_column;
@@ -851,9 +919,9 @@ void AstExprFunc::ReplaceAggregation(AstNode*& agg_column,
   }
   if (NULL != arg1_) {
     agg_column = NULL;
-    arg1_->ReplaceAggregation(agg_column, agg_node, is_select);
+    arg1_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete arg1_;
       }
       arg1_ = agg_column;
@@ -862,9 +930,9 @@ void AstExprFunc::ReplaceAggregation(AstNode*& agg_column,
   }
   if (NULL != arg2_) {
     agg_column = NULL;
-    arg2_->ReplaceAggregation(agg_column, agg_node, is_select);
+    arg2_->ReplaceAggregation(agg_column, agg_node, need_collect);
     if (NULL != agg_column) {
-      if (!is_select) {
+      if (!need_collect) {
         delete arg2_;
       }
       arg2_ = agg_column;
@@ -935,6 +1003,24 @@ ErrorNo AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
   }
   return eOK;
 }
-
+ErrorNo AstExprFunc::SolveSelectAlias(
+    SelectAliasSolver* const select_alias_solver) {
+  if (NULL != arg0_) {
+    arg0_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(arg0_);
+    select_alias_solver->DeleteOldNode();
+  }
+  if (NULL != arg1_) {
+    arg1_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(arg1_);
+    select_alias_solver->DeleteOldNode();
+  }
+  if (NULL != arg2_) {
+    arg2_->SolveSelectAlias(select_alias_solver);
+    select_alias_solver->SetNewNode(arg2_);
+    select_alias_solver->DeleteOldNode();
+  }
+  return eOK;
+}
 //}  // namespace sql_parser
 //}  // namespace claims

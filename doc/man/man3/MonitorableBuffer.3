@@ -1,4 +1,4 @@
-.TH "MonitorableBuffer" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "MonitorableBuffer" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,10 +7,18 @@ MonitorableBuffer \-
 .br
 .PP
 .PP
+\fC#include <MonitorableBuffer\&.h>\fP
+.PP
 Inherited by \fBBlockStreamBuffer\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBMonitorableBuffer\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~MonitorableBuffer\fP ()"
+.br
 .ti -1c
 .RI "virtual double \fBgetBufferUsage\fP ()=0"
 .br
@@ -24,7 +32,50 @@ Inherited by \fBBlockStreamBuffer\fP\&.
 .RI "bool \fBinputComplete\fP () const "
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBinput_complete_\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "MonitorableBuffer::MonitorableBuffer ()"
+
+.SS "MonitorableBuffer::~MonitorableBuffer ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual double MonitorableBuffer::getBufferUsage ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamBuffer\fP\&.
+.PP
+Referenced by ExpanderTracker::decideExpandingOrShrinking(), and ExpanderTracker::getSegmentStatus()\&.
+.SS "virtual long MonitorableBuffer::getReceivedDataSizeInKbytes ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBBlockStreamBuffer\fP\&.
+.SS "bool MonitorableBuffer::inputComplete () const"
+
+.PP
+References input_complete_\&.
+.PP
+Referenced by ExpanderTracker::decideExpandingOrShrinking()\&.
+.SS "void MonitorableBuffer::setInputComplete ()"
+
+.PP
+References input_complete_\&.
+.PP
+Referenced by claims::physical_operator::Expander::ExpandedWork(), and claims::physical_operator::ExchangeMerger::Receiver()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool MonitorableBuffer::input_complete_\fC [private]\fP"
+
+.PP
+Referenced by inputComplete(), and setInputComplete()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

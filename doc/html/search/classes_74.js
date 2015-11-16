@@ -5,15 +5,20 @@ var searchData=
   ['tableidallocator',['TableIDAllocator',['../structTableIDAllocator.html',1,'']]],
   ['tablelist',['Tablelist',['../structTablelist.html',1,'']]],
   ['tablestatistic',['TableStatistic',['../classTableStatistic.html',1,'']]],
-  ['threadcontext',['ThreadContext',['../classThreadContext.html',1,'']]],
+  ['tail_5finfo',['tail_info',['../structBlockStreamFix_1_1tail__info.html',1,'BlockStreamFix']]],
+  ['tail_5finfo',['tail_info',['../structBlockStreamVar_1_1tail__info.html',1,'BlockStreamVar']]],
+  ['task',['Task',['../structThreadPool_1_1Task.html',1,'ThreadPool']]],
+  ['threadcontext',['ThreadContext',['../classclaims_1_1physical__operator_1_1ThreadContext.html',1,'claims::physical_operator']]],
   ['threadmanager',['ThreadManager',['../classThreadManager.html',1,'']]],
   ['threadpool',['ThreadPool',['../classThreadPool.html',1,'']]],
   ['threadpoollogging',['ThreadPoolLogging',['../classThreadPoolLogging.html',1,'']]],
   ['threadsafe',['ThreadSafe',['../classThreadSafe.html',1,'']]],
   ['timeoutreceiver',['TimeOutReceiver',['../classTimeOutReceiver.html',1,'']]],
+  ['token',['Token',['../classJson_1_1Reader_1_1Token.html',1,'Json::Reader']]],
   ['truncate_5fstmt',['Truncate_stmt',['../structTruncate__stmt.html',1,'']]],
   ['tuple',['Tuple',['../structTuple.html',1,'']]],
   ['tupleconvertor',['TupleConvertor',['../classTupleConvertor.html',1,'']]],
   ['typecast',['TypeCast',['../classTypeCast.html',1,'']]],
-  ['typepromotion',['TypePromotion',['../classTypePromotion.html',1,'']]]
+  ['typeconversionmatrix',['TypeConversionMatrix',['../classclaims_1_1common_1_1TypeConversionMatrix.html',1,'claims::common']]],
+  ['typepromotionmatrix',['TypePromotionMatrix',['../classTypePromotionMatrix.html',1,'']]]
 ];

@@ -1,4 +1,4 @@
-.TH "Json::Path" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::Path" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,6 +27,38 @@ Experimental and untested: represents a 'path' to access a node\&.
 .RI "\fBValue\fP & \fBmake\fP (\fBValue\fP &root) const "
 .br
 .in -1c
+.SS "Private Types"
+
+.in +1c
+.ti -1c
+.RI "typedef std::vector< const 
+.br
+\fBPathArgument\fP * > \fBInArgs\fP"
+.br
+.ti -1c
+.RI "typedef std::vector< \fBPathArgument\fP > \fBArgs\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBmakePath\fP (const std::string &path, const \fBInArgs\fP &\fBin\fP)"
+.br
+.ti -1c
+.RI "void \fBaddPathInArg\fP (const std::string &path, const \fBInArgs\fP &\fBin\fP, InArgs::const_iterator &itInArg, \fBPathArgument::Kind\fP kind)"
+.br
+.ti -1c
+.RI "void \fBinvalidPath\fP (const std::string &path, int location)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBArgs\fP \fBargs_\fP"
+.br
+.in -1c
 .SH "Detailed Description"
 .PP 
 Experimental and untested: represents a 'path' to access a node\&. 
@@ -48,11 +80,55 @@ Syntax:
 '\&.[%]' => index is provied as parameter 
 .PP
 
+.SH "Member Typedef Documentation"
+.PP 
+.SS "typedef std::vector<\fBPathArgument\fP> \fBJson::Path::Args\fP\fC [private]\fP"
+
+.SS "typedef std::vector<const \fBPathArgument\fP*> \fBJson::Path::InArgs\fP\fC [private]\fP"
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Json::Path::Path (const std::string &path, const \fBPathArgument\fP &a1 = \fC\fBPathArgument\fP()\fP, const \fBPathArgument\fP &a2 = \fC\fBPathArgument\fP()\fP, const \fBPathArgument\fP &a3 = \fC\fBPathArgument\fP()\fP, const \fBPathArgument\fP &a4 = \fC\fBPathArgument\fP()\fP, const \fBPathArgument\fP &a5 = \fC\fBPathArgument\fP()\fP)"
+
+.PP
+References Json::in(), and makePath()\&.
 .SH "Member Function Documentation"
 .PP 
+.SS "void Json::Path::addPathInArg (const std::string &path, const \fBInArgs\fP &in, InArgs::const_iterator &itInArg, \fBPathArgument::Kind\fPkind)\fC [private]\fP"
+
+.PP
+References args_\&.
+.PP
+Referenced by makePath()\&.
+.SS "void Json::Path::invalidPath (const std::string &path, intlocation)\fC [private]\fP"
+
+.PP
+Referenced by makePath()\&.
 .SS "\fBValue\fP & Json::Path::make (\fBValue\fP &root) const"
 Creates the 'path' to access the specified node and returns a reference on the node\&. 
+.PP
+References args_, Json::PathArgument::index_, Json::Value::isArray(), Json::Value::isObject(), Json::PathArgument::key_, Json::PathArgument::kind_, Json::PathArgument::kindIndex, and Json::PathArgument::kindKey\&.
+.SS "void Json::Path::makePath (const std::string &path, const \fBInArgs\fP &in)\fC [private]\fP"
+
+.PP
+References addPathInArg(), args_, invalidPath(), Json::PathArgument::kindIndex, and Json::PathArgument::kindKey\&.
+.PP
+Referenced by Path()\&.
+.SS "const \fBValue\fP & Json::Path::resolve (const \fBValue\fP &root) const"
+
+.PP
+References args_, Json::PathArgument::index_, Json::Value::isArray(), Json::Value::isObject(), Json::Value::isValidIndex(), Json::PathArgument::key_, Json::PathArgument::kind_, Json::PathArgument::kindIndex, Json::PathArgument::kindKey, and Json::Value::null\&.
+.SS "\fBValue\fP Json::Path::resolve (const \fBValue\fP &root, const \fBValue\fP &defaultValue) const"
+
+.PP
+References args_, Json::PathArgument::index_, Json::Value::isArray(), Json::Value::isObject(), Json::Value::isValidIndex(), Json::PathArgument::key_, Json::PathArgument::kind_, Json::PathArgument::kindIndex, Json::PathArgument::kindKey, and Json::Value::null\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBArgs\fP Json::Path::args_\fC [private]\fP"
+
+.PP
+Referenced by addPathInArg(), make(), makePath(), and resolve()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "express_operator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "express_operator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,24 +6,40 @@ express_operator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ExpressionItem\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "void \fBset\fP (op_type tp, unsigned number_of_parameter=0)"
+.RI "void \fBset\fP (\fBop_type\fP tp, unsigned number_of_parameter=0)"
 .br
 .in -1c
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "op_type \fBop_\fP"
+.RI "\fBop_type\fP \fBop_\fP"
 .br
 .ti -1c
 .RI "unsigned \fBnum_of_parameter\fP"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void express_operator::set (\fBop_type\fPtp, unsignednumber_of_parameter = \fC0\fP)\fC [inline]\fP"
+
+.PP
+References op_add, op_and, op_cast_int, op_multiple, op_not, and op_or\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned express_operator::num_of_parameter"
+
+.SS "\fBop_type\fP express_operator::op_"
+
+.PP
+Referenced by ExpressionCalculator::compute(), and ExpressionCalculator::computes()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

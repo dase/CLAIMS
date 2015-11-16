@@ -1,4 +1,4 @@
-.TH "Join" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Join" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Join \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBjointype\fP"
@@ -25,7 +27,29 @@ Join \-
 .RI "\fBNode\fP * \fBcondition\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP * Join::condition"
+
+.PP
+Referenced by fromlist_analysis(), newJoin(), output(), solve_join_condition(), and where_from2logicalplan()\&.
+.SS "int Join::jointype"
+
+.PP
+Referenced by newJoin(), and output()\&.
+.SS "\fBNode\fP* Join::lnext"
+
+.PP
+Referenced by fromlist_analysis(), judgepos(), newJoin(), output(), set_join_condition_on_joinnode(), and where_from2logicalplan()\&.
+.SS "\fBNode\fP * Join::rnext"
+
+.PP
+Referenced by fromlist_analysis(), judgepos(), newJoin(), output(), set_join_condition_on_joinnode(), and where_from2logicalplan()\&.
+.SS "\fBnodetype\fP Join::type"
+
+.PP
+Referenced by newJoin()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

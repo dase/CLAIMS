@@ -1,4 +1,4 @@
-.TH "bottomLayerSorting" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "bottomLayerSorting" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,7 +7,9 @@ bottomLayerSorting \-
 .br
 .PP
 .PP
-Inherits \fBPhysicalOperator\fP\&.
+\fC#include <CSBIndexBuilding\&.h>\fP
+.PP
+Inherits \fBclaims::physical_operator::PhysicalOperator\fP\&.
 .SS "Classes"
 
 .in +1c
@@ -31,16 +33,60 @@ Inherits \fBPhysicalOperator\fP\&.
 
 .in +1c
 .ti -1c
+.RI "\fBbottomLayerSorting\fP ()"
+.br
+.ti -1c
 .RI "\fBbottomLayerSorting\fP (\fBState\fP state)"
 .br
 .ti -1c
-.RI "bool \fBOpen\fP (const PartitionOffset &partition_offset=0)"
+.RI "virtual \fB~bottomLayerSorting\fP ()"
+.br
+.ti -1c
+.RI "bool \fBOpen\fP (const \fBPartitionOffset\fP &partition_offset=0)"
 .br
 .ti -1c
 .RI "bool \fBNext\fP (\fBBlockStreamBase\fP *block)"
 .br
 .ti -1c
 .RI "bool \fBClose\fP ()"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<typename T > \fBCSBPlusTree\fP< T > * \fBindexBuilding\fP (vector< \fBcompare_node\fP * > chunk_tuples)"
+.br
+.ti -1c
+.RI "void \fBcomputeVectorSchema\fP ()"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBcompare\fP (const \fBcompare_node\fP *a, const \fBcompare_node\fP *b)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP \fBstate_\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBvector_schema_\fP"
+.br
+.ti -1c
+.RI "std::map< \fBChunkOffset\fP, vector
+.br
+< \fBcompare_node\fP * > > \fBtuples_in_chunk_\fP"
+.br
+.ti -1c
+.RI "\fBPartitionID\fP \fBpartition_id_\fP"
 .br
 .in -1c
 .SS "Friends"
@@ -51,13 +97,87 @@ Inherits \fBPhysicalOperator\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Member Typedef Documentation"
+.PP 
+.SS "typedef struct \fBbottomLayerSorting::compare_node\fP  \fBbottomLayerSorting::compare_node\fP"
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "bottomLayerSorting::bottomLayerSorting ()"
+
+.PP
+References claims::physical_operator::PhysicalOperator::InitExpandedStatus()\&.
+.SS "bottomLayerSorting::bottomLayerSorting (\fBState\fPstate)"
+
+.PP
+References claims::physical_operator::PhysicalOperator::InitExpandedStatus()\&.
+.SS "bottomLayerSorting::~bottomLayerSorting ()\fC [virtual]\fP"
+
 .SH "Member Function Documentation"
 .PP 
-.SS "bool bottomLayerSorting::Open (const PartitionOffset &part_off = \fC0\fP)\fC [virtual]\fP"
-Because that boost::serialization will allocate an instance of this class when deserializing, and hence the following three virtual method cannot be pure\&. \fIfor testing\fP/ cout << 'chunk id: ' << *(unsigned short*)iter->first << endl; 
+.SS "bool bottomLayerSorting::Close ()\fC [virtual]\fP"
+
 .PP
-Reimplemented from \fBPhysicalOperator\fP\&.
+Reimplemented from \fBclaims::physical_operator::PhysicalOperator\fP\&.
+.PP
+References bottomLayerSorting::State::child_, claims::physical_operator::PhysicalOperatorBase::Close(), claims::physical_operator::PhysicalOperator::InitExpandedStatus(), and state_\&.
+.SS "bool bottomLayerSorting::compare (const \fBcompare_node\fP *a, const \fBcompare_node\fP *b)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References Schema::getColumnAddess(), Operate::less(), bottomLayerSorting::compare_node::op_, bottomLayerSorting::compare_node::tuple_, and bottomLayerSorting::compare_node::vector_schema_\&.
+.PP
+Referenced by Open()\&.
+.SS "void bottomLayerSorting::computeVectorSchema ()\fC [private]\fP"
+
+.PP
+References Schema::getcolumn(), bottomLayerSorting::State::schema_, state_, t_u_smallInt, and vector_schema_\&.
+.PP
+Referenced by Open()\&.
+.SS "template<typename T > \fBCSBPlusTree\fP< T > * bottomLayerSorting::indexBuilding (vector< \fBcompare_node\fP * >chunk_tuples)\fC [private]\fP"
+\fIfor testing\fP/ cout << 'chunk data size: ' << chunk_tuples\&.size() << endl << endl;
+.PP
+\fIfor testing\fP/ cout << aray[i]\&._key << '\\t' << aray[i]\&._block_off << '\\t' << aray[i]\&._tuple_off << endl; 
+.PP
+References data_offset< T >::_block_off, data_offset< T >::_key, data_offset< T >::_tuple_off, Schema::getColumnAddess(), and vector_schema_\&.
+.SS "bool bottomLayerSorting::Next (\fBBlockStreamBase\fP *block)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBclaims::physical_operator::PhysicalOperator\fP\&.
+.PP
+References ChunkID::chunk_off, Schema::getcolumn(), IndexManager::getInstance(), bottomLayerSorting::State::index_name_, IndexManager::insertIndexToList(), bottomLayerSorting::State::key_indexing_, ChunkID::partition_id, partition_id_, state_, t_int, tuples_in_chunk_, column_type::type, and vector_schema_\&.
+.SS "bool bottomLayerSorting::Open (const \fBPartitionOffset\fP &part_off = \fC0\fP)\fC [virtual]\fP"
+Because that \fBboost::serialization\fP will allocate an instance of this class when deserializing, and hence the following three virtual method cannot be pure\&. \fIfor testing\fP/ cout << 'chunk id: ' << *(unsigned short*)iter->first << endl; 
+.PP
+Reimplemented from \fBclaims::physical_operator::PhysicalOperator\fP\&.
+.PP
+References claims::physical_operator::PhysicalOperator::BarrierArrive(), bottomLayerSorting::State::block_size_, bottomLayerSorting::State::child_, compare(), computeVectorSchema(), Schema::copyTuple(), BlockStreamBase::createBlock(), BlockStreamBase::createIterator(), Operate::duplicateOperator(), column_type::get_length(), Schema::getcolumn(), Schema::getColumnValue(), claims::physical_operator::PhysicalOperator::GetReturnStatus(), Schema::getTupleMaxSize(), claims::physical_operator::PhysicalOperatorBase::Next(), BlockStreamBase::BlockStreamTraverseIterator::nextTuple(), NULL, bottomLayerSorting::compare_node::op_, claims::physical_operator::PhysicalOperatorBase::Open(), column_type::operate, partition_id_, PartitionID::partition_off, PartitionID::projection_id, bottomLayerSorting::State::projection_id_, bottomLayerSorting::State::schema_, BlockStreamBase::setEmpty(), claims::physical_operator::PhysicalOperator::SetReturnStatus(), state_, claims::physical_operator::PhysicalOperator::TryEntryIntoSerializedSection(), bottomLayerSorting::compare_node::tuple_, tuples_in_chunk_, bottomLayerSorting::compare_node::vector_schema_, and vector_schema_\&.
+.SS "template<class Archive > void bottomLayerSorting::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References state_\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPartitionID\fP bottomLayerSorting::partition_id_\fC [private]\fP"
+
+.PP
+Referenced by Next(), and Open()\&.
+.SS "\fBState\fP bottomLayerSorting::state_\fC [private]\fP"
+
+.PP
+Referenced by Close(), computeVectorSchema(), Next(), Open(), and serialize()\&.
+.SS "std::map<\fBChunkOffset\fP, vector<\fBcompare_node\fP*> > bottomLayerSorting::tuples_in_chunk_\fC [private]\fP"
+
+.PP
+Referenced by Next(), and Open()\&.
+.SS "\fBSchema\fP* bottomLayerSorting::vector_schema_\fC [private]\fP"
+
+.PP
+Referenced by computeVectorSchema(), indexBuilding(), Next(), and Open()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

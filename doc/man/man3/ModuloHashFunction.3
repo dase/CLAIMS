@@ -1,4 +1,4 @@
-.TH "ModuloHashFunction" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ModuloHashFunction" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ModuloHashFunction \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <hash\&.h>\fP
 .PP
 Inherits \fBPartitionFunction\fP\&.
 .SS "Public Member Functions"
@@ -18,6 +20,9 @@ Inherits \fBPartitionFunction\fP\&.
 .RI "\fBModuloHashFunction\fP (int min, unsigned int range, unsigned int skipbits)"
 .br
 .ti -1c
+.RI "\fB~ModuloHashFunction\fP ()"
+.br
+.ti -1c
 .RI "unsigned int \fBget_partition_value\fP (const int &value) const "
 .br
 .ti -1c
@@ -27,10 +32,24 @@ Inherits \fBPartitionFunction\fP\&.
 .RI "unsigned int \fBget_partition_value\fP (const unsigned long &value) const "
 .br
 .ti -1c
-.RI "PartitionStyle \fBgetPartitionFashion\fP () const "
+.RI "\fBPartitionStyle\fP \fBgetPartitionFashion\fP () const "
 .br
 .ti -1c
 .RI "unsigned int \fBgetNumberOfPartitions\fP () const "
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned int \fBskipbits_\fP"
 .br
 .in -1c
 .SS "Friends"
@@ -45,6 +64,12 @@ Inherits \fBPartitionFunction\fP\&.
 .PP 
 .SS "ModuloHashFunction::ModuloHashFunction ()\fC [inline]\fP"
 Skipbits parameter defines number of least-significant bits which will be discarded before computing the hash\&. 
+.SS "ModuloHashFunction::ModuloHashFunction (intmin, unsigned intrange, unsigned intskipbits)\fC [inline]\fP"
+
+.PP
+References PartitionFunction::k_, and skipbits_\&.
+.SS "ModuloHashFunction::~ModuloHashFunction ()\fC [inline]\fP"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "unsigned int ModuloHashFunction::get_partition_value (const int &value) const\fC [inline]\fP, \fC [virtual]\fP"
@@ -52,8 +77,46 @@ Return h(x) = x mod k\&.
 .PP
 Implements \fBPartitionFunction\fP\&.
 .PP
-References PartitionFunction::k_\&.
+References PartitionFunction::k_, PartitionFunction::min_, and skipbits_\&.
+.SS "unsigned int ModuloHashFunction::get_partition_value (const double &value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References PartitionFunction::k_, PartitionFunction::min_, and skipbits_\&.
+.SS "unsigned int ModuloHashFunction::get_partition_value (const unsigned long &value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References PartitionFunction::k_, PartitionFunction::min_, and skipbits_\&.
+.SS "unsigned int ModuloHashFunction::getNumberOfPartitions () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References PartitionFunction::k_, and skipbits_\&.
+.SS "\fBPartitionFunction::PartitionStyle\fP ModuloHashFunction::getPartitionFashion () const\fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References PartitionFunction::hash_f\&.
+.SS "template<class Archive > void ModuloHashFunction::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References skipbits_\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned int ModuloHashFunction::skipbits_\fC [private]\fP"
+
+.PP
+Referenced by get_partition_value(), getNumberOfPartitions(), ModuloHashFunction(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

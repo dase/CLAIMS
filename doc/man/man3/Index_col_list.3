@@ -1,4 +1,4 @@
-.TH "Index_col_list" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Index_col_list" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Index_col_list \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBname\fP"
@@ -25,7 +27,29 @@ Index_col_list \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int Index_col_list::asc_desc"
+
+.PP
+Referenced by newIndexColList()\&.
+.SS "\fBNode\fP* Index_col_list::length"
+
+.PP
+Referenced by newIndexColList()\&.
+.SS "char* Index_col_list::name"
+
+.PP
+Referenced by newIndexColList()\&.
+.SS "\fBNode\fP* Index_col_list::next"
+
+.PP
+Referenced by newIndexColList()\&.
+.SS "\fBnodetype\fP Index_col_list::type"
+
+.PP
+Referenced by newIndexColList()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

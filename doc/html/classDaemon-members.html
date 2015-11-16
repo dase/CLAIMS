@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Member List</title>
+<title>Claims: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,10 +111,20 @@ $(document).ready(function(){initNavTree('classDaemon.html','');});
 
 <p>This is the complete list of members for <a class="el" href="classDaemon.html">Daemon</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>addRemoteCommand</b>(const remote_command &amp;rc) (defined in <a class="el" href="classDaemon.html">Daemon</a>)</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>getExecutedResult</b>() (defined in <a class="el" href="classDaemon.html">Daemon</a>)</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>getInstance</b>() (defined in <a class="el" href="classDaemon.html">Daemon</a>)</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>worker</b>(void *) (defined in <a class="el" href="classDaemon.html">Daemon</a>)</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classDaemon.html#a727a3f9233fd096363b8570c4faf7816">addExecutedResult</a>(const executed_result &amp;item)</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classDaemon.html#a0b4c0ec5b692a21e3a6d847c76a33ea5">addRemoteCommand</a>(const remote_command &amp;rc)</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classDaemon.html#a219c10e2d61c35f446d096726842fc82">Daemon</a>()</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classDaemon.html#a7825feddb6eef742d34bdda4974873e5">executed_result_queue_</a></td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classDaemon.html#aaf662d7901f7623cb050eeab07ba8f1e">getExecutedResult</a>()</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classDaemon.html#acd28b5ef418a8369293a144ca644d5d1">getInstance</a>()</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classDaemon.html#a3dad32068b89890e28591d58fd4cb3f5">getRemoteCommand</a>()</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classDaemon.html#a512ea932d905c60387cee7b24760674a">instance_</a></td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classDaemon.html#a709642687eadbe3002c8531d15c98ddf">lock_</a></td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classDaemon.html#acda3cb67aa0d90d1679efbb3bab91e89">remote_command_queue_</a></td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classDaemon.html#af5ed92dd41e12499f2b1c47cccf191c5">semaphore_command_queue_</a></td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classDaemon.html#a7e62d4d73f17318f8c9bf3d9b9a6ab86">semaphore_result_queue_</a></td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classDaemon.html#aea8bf0567f4c3853dd07b84eee38b4ea">worker</a>(void *)</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classDaemon.html#ae10170ea962e99bdea6c8074af7e13ba">~Daemon</a>()</td><td class="entry"><a class="el" href="classDaemon.html">Daemon</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

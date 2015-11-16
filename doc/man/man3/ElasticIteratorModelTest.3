@@ -1,4 +1,4 @@
-.TH "ElasticIteratorModelTest" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ElasticIteratorModelTest" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ElasticIteratorModelTest \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <elastic_iterator_model_test\&.h>\fP
 .PP
 Inherits Test\&.
 .SS "Static Public Member Functions"
@@ -48,7 +50,43 @@ Inherits Test\&.
 .RI "void \fBTearDown\fP ()"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "static void ElasticIteratorModelTest::SetConnectionInfo (std::stringhost, intport)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References ip_, and port_\&.
+.SS "static void ElasticIteratorModelTest::SetConnectionIp (std::stringIp)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References ip_\&.
+.SS "static void ElasticIteratorModelTest::SetConnectionPort (intport)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References port_\&.
+.SS "void ElasticIteratorModelTest::SetUp ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+References client_, Client::connection(), ip_, and port_\&.
+.SS "void ElasticIteratorModelTest::TearDown ()\fC [inline]\fP, \fC [protected]\fP"
+
+.PP
+References client_, and Client::shutdown()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBClient\fP ElasticIteratorModelTest::client_"
+
+.PP
+Referenced by SetUp(), and TearDown()\&.
+.SS "std::string ElasticIteratorModelTest::ip_\fC [static]\fP"
+
+.PP
+Referenced by handle_parameters(), SetConnectionInfo(), SetConnectionIp(), and SetUp()\&.
+.SS "int ElasticIteratorModelTest::port_\fC [static]\fP"
+
+.PP
+Referenced by handle_parameters(), SetConnectionInfo(), SetConnectionPort(), and SetUp()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

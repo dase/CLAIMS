@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Parsetree/runparsetree.h Source File</title>
+<title>Claims: Parsetree/runparsetree.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('runparsetree_8h_source.html','');});
 <div class="title">runparsetree.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="runparsetree_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * runparsetree.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: 2015-2-10</span></div>
@@ -119,33 +119,44 @@ $(document).ready(function(){initNavTree('runparsetree_8h_source.html','');});
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;sql_node_struct.h&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;StreamBuffer.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="sql__node__struct_8h.html">sql_node_struct.h</a>&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="StreamBuffer_8h.html">StreamBuffer.h</a>&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;../common/Logging.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;sql.tab.hpp&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;sql.lex.h&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">extern</span> timeval start_time;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">extern</span> vector&lt;Node*&gt; NodePointer;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> yyparse (<span class="keyword">struct</span> <a class="code" href="structParseResult.html">ParseResult</a>* result);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">void</span> GetInputSQL(<a class="code" href="classStreamBuffer.html">StreamBuffer</a>* stream_buffer, <span class="keywordtype">char</span> *desc);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<a class="code" href="structNode.html">Node</a> * getparsetreeroot();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<a class="code" href="structNode.html">Node</a> * getparsetreeroot(<span class="keyword">const</span> <span class="keywordtype">char</span> *sql);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<a class="code" href="structNode.html">Node</a> * getparsetreeroot(<span class="keyword">struct</span> <a class="code" href="structParseResult.html">ParseResult</a> * presult,<span class="keyword">const</span> <span class="keywordtype">char</span> * InputStr);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<a class="code" href="structNode.html">Node</a> * getparsetreeroot(<span class="keyword">struct</span> <a class="code" href="structParseResult.html">ParseResult</a> * presult);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* RUNPARSETREE_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="structNode_html"><div class="ttname"><a href="structNode.html">Node</a></div><div class="ttdef"><b>Definition:</b> sql_node_struct.h:60</div></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#ifdef OLDSQL</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;sql.tab.hpp&quot;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;sql.lex.h&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"></span><span class="keyword">extern</span> timeval <a class="code" href="ExecuteLogicalQueryPlan_8cpp.html#ad0b9d8b7a7ffe582db1ff04ce942ef6b">start_time</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">extern</span> vector&lt;Node*&gt; <a class="code" href="runparsetree_8h.html#aaca6cd8445bf721b492955549bb988bb">NodePointer</a>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="runparsetree_8h.html#abe83274b3dfdf9ea141d55a522a2c5fc">yyparse</a>(<span class="keyword">struct</span> <a class="code" href="structParserResult.html">ParserResult</a>* result);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keywordtype">void</span> <a class="code" href="runparsetree_8cpp.html#ad01b7f7ae9aa44fd04a4c03a9dd86a78">GetInputSQL</a>(<a class="code" href="classStreamBuffer.html">StreamBuffer</a>* stream_buffer, <span class="keywordtype">char</span>* desc);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<a class="code" href="structNode.html">Node</a>* <a class="code" href="runparsetree_8cpp.html#a57062502599daef7617eb93b8a63bdee">getparsetreeroot</a>();</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<a class="code" href="structNode.html">Node</a>* <a class="code" href="runparsetree_8cpp.html#a57062502599daef7617eb93b8a63bdee">getparsetreeroot</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="sql__parser__test_8h.html#ae960889c221e97e5edf7a6d9f07a3807">sql</a>);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<a class="code" href="structNode.html">Node</a>* <a class="code" href="runparsetree_8cpp.html#a57062502599daef7617eb93b8a63bdee">getparsetreeroot</a>(<span class="keyword">struct</span> <a class="code" href="structParserResult.html">ParserResult</a>* presult, <span class="keyword">const</span> <span class="keywordtype">char</span>* InputStr);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<a class="code" href="structNode.html">Node</a>* <a class="code" href="runparsetree_8cpp.html#a57062502599daef7617eb93b8a63bdee">getparsetreeroot</a>(<span class="keyword">struct</span> <a class="code" href="structParserResult.html">ParserResult</a>* presult);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* RUNPARSETREE_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="structParserResult_html"><div class="ttname"><a href="structParserResult.html">ParserResult</a></div><div class="ttdef"><b>Definition:</b> sql_node_struct.h:112</div></div>
+<div class="ttc" id="runparsetree_8h_html_aaca6cd8445bf721b492955549bb988bb"><div class="ttname"><a href="runparsetree_8h.html#aaca6cd8445bf721b492955549bb988bb">NodePointer</a></div><div class="ttdeci">vector&lt; Node * &gt; NodePointer</div></div>
+<div class="ttc" id="runparsetree_8cpp_html_ad01b7f7ae9aa44fd04a4c03a9dd86a78"><div class="ttname"><a href="runparsetree_8cpp.html#ad01b7f7ae9aa44fd04a4c03a9dd86a78">GetInputSQL</a></div><div class="ttdeci">void GetInputSQL(StreamBuffer *stream_buffer, char *desc)</div><div class="ttdef"><b>Definition:</b> runparsetree.cpp:17</div></div>
+<div class="ttc" id="structNode_html"><div class="ttname"><a href="structNode.html">Node</a></div><div class="ttdef"><b>Definition:</b> sql_node_struct.h:108</div></div>
 <div class="ttc" id="classStreamBuffer_html"><div class="ttname"><a href="classStreamBuffer.html">StreamBuffer</a></div><div class="ttdef"><b>Definition:</b> StreamBuffer.h:17</div></div>
-<div class="ttc" id="structParseResult_html"><div class="ttname"><a href="structParseResult.html">ParseResult</a></div><div class="ttdef"><b>Definition:</b> sql_node_struct.h:64</div></div>
+<div class="ttc" id="runparsetree_8cpp_html_a57062502599daef7617eb93b8a63bdee"><div class="ttname"><a href="runparsetree_8cpp.html#a57062502599daef7617eb93b8a63bdee">getparsetreeroot</a></div><div class="ttdeci">Node * getparsetreeroot()</div><div class="ttdef"><b>Definition:</b> runparsetree.cpp:27</div></div>
+<div class="ttc" id="sql__parser__test_8h_html_ae960889c221e97e5edf7a6d9f07a3807"><div class="ttname"><a href="sql__parser__test_8h.html#ae960889c221e97e5edf7a6d9f07a3807">sql</a></div><div class="ttdeci">char sql[1000]</div><div class="ttdef"><b>Definition:</b> sql_parser_test.h:20</div></div>
+<div class="ttc" id="ExecuteLogicalQueryPlan_8cpp_html_ad0b9d8b7a7ffe582db1ff04ce942ef6b"><div class="ttname"><a href="ExecuteLogicalQueryPlan_8cpp.html#ad0b9d8b7a7ffe582db1ff04ce942ef6b">start_time</a></div><div class="ttdeci">timeval start_time</div><div class="ttdef"><b>Definition:</b> ExecuteLogicalQueryPlan.cpp:40</div></div>
+<div class="ttc" id="StreamBuffer_8h_html"><div class="ttname"><a href="StreamBuffer_8h.html">StreamBuffer.h</a></div></div>
+<div class="ttc" id="sql__node__struct_8h_html"><div class="ttname"><a href="sql__node__struct_8h.html">sql_node_struct.h</a></div></div>
+<div class="ttc" id="runparsetree_8h_html_abe83274b3dfdf9ea141d55a522a2c5fc"><div class="ttname"><a href="runparsetree_8h.html#abe83274b3dfdf9ea141d55a522a2c5fc">yyparse</a></div><div class="ttdeci">int yyparse(struct ParserResult *result)</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bde3608718175c999738dedb53669132.html">Parsetree</a></li><li class="navelem"><b>runparsetree.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bde3608718175c999738dedb53669132.html">Parsetree</a></li><li class="navelem"><a class="el" href="runparsetree_8h.html">runparsetree.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

@@ -1,4 +1,4 @@
-.TH "Where_list" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Where_list" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Where_list \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBwherestring\fP"
@@ -19,7 +21,21 @@ Where_list \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Where_list::next"
+
+.PP
+Referenced by depart_join_condition(), departwc(), fromlist_analysis(), newWhereList(), and Query()\&.
+.SS "\fBnodetype\fP Where_list::type"
+
+.PP
+Referenced by newWhereList()\&.
+.SS "char* Where_list::wherestring"
+
+.PP
+Referenced by newWhereList(), and output()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

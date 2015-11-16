@@ -1,4 +1,4 @@
-.TH "PartitionStorage::PartitionReaderItetaor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PartitionStorage::PartitionReaderItetaor" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,17 @@ PartitionStorage::PartitionReaderItetaor \-
 .br
 .PP
 .PP
+\fC#include <PartitionStorage\&.h>\fP
+.PP
 Inherited by \fBPartitionStorage::AtomicPartitionReaderIterator\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBPartitionReaderItetaor\fP (\fBPartitionStorage\fP *partition_storage)"
+.br
+.ti -1c
+.RI "virtual \fB~PartitionReaderItetaor\fP ()"
 .br
 .ti -1c
 .RI "virtual \fBChunkReaderIterator\fP * \fBnextChunk\fP ()"
@@ -34,7 +39,37 @@ Inherited by \fBPartitionStorage::AtomicPartitionReaderIterator\fP\&.
 .RI "\fBChunkReaderIterator\fP * \fBchunk_it_\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PartitionStorage::PartitionReaderItetaor::PartitionReaderItetaor (\fBPartitionStorage\fP *partition_storage)"
+
+.SS "PartitionStorage::PartitionReaderItetaor::~PartitionReaderItetaor ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool PartitionStorage::PartitionReaderItetaor::nextBlock (\fBBlockStreamBase\fP *&block)\fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBPartitionStorage::AtomicPartitionReaderIterator\fP\&.
+.PP
+Referenced by insert_into_hash_table_from_projection(), and claims::physical_operator::PhysicalProjectionScan::Next()\&.
+.SS "\fBChunkReaderIterator\fP * PartitionStorage::PartitionReaderItetaor::nextChunk ()\fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBPartitionStorage::AtomicPartitionReaderIterator\fP\&.
+.PP
+References PartitionStorage::number_of_chunks_\&.
+.PP
+Referenced by bottomLayerCollecting::askForNextBlock(), IndexScanIterator::askForNextBlock(), PartitionStorage::AtomicPartitionReaderIterator::nextBlock(), and claims::physical_operator::PhysicalProjectionScan::Open()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned PartitionStorage::PartitionReaderItetaor::chunk_cur_\fC [protected]\fP"
+
+.SS "\fBChunkReaderIterator\fP* PartitionStorage::PartitionReaderItetaor::chunk_it_\fC [protected]\fP"
+
+.SS "\fBPartitionStorage\fP* PartitionStorage::PartitionReaderItetaor::ps\fC [protected]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

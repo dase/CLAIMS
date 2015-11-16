@@ -1,4 +1,4 @@
-.TH "attr_index_list" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "attr_index_list" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ attr_index_list \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <IndexManager\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBattr_index_list\fP ()"
+.br
 .ti -1c
 .RI "\fBattr_index_list\fP (\fBAttribute\fP attr)"
 .br
@@ -29,7 +34,33 @@ attr_index_list \-
 .RI "std::map< \fBChunkID\fP, void * > \fBcsb_tree_list\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "attr_index_list::attr_index_list ()\fC [inline]\fP"
+
+.SS "attr_index_list::attr_index_list (\fBAttribute\fPattr)\fC [inline]\fP"
+
+.PP
+References csb_tree_list\&.
+.SS "attr_index_list::attr_index_list (\fBAttribute\fPattr, std::stringindex_name)\fC [inline]\fP"
+
+.PP
+References csb_tree_list\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string attr_index_list::attr_index_name"
+
+.PP
+Referenced by IndexManager::deserialize(), and IndexManager::serialize()\&.
+.SS "\fBAttribute\fP attr_index_list::attribute"
+
+.PP
+Referenced by IndexManager::deserialize(), and IndexManager::serialize()\&.
+.SS "std::map<\fBChunkID\fP, void* > attr_index_list::csb_tree_list"
+
+.PP
+Referenced by IndexManager::addIndexToList(), attr_index_list(), IndexManager::deleteIndexFromList(), IndexManager::deserialize(), IndexManager::insertIndexToList(), and IndexManager::serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

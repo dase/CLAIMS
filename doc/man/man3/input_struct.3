@@ -1,4 +1,4 @@
-.TH "input_struct" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "input_struct" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ input_struct \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <command_line\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBinput_struct\fP ()"
+.br
 .ti -1c
 .RI "void \fBreset\fP ()"
 .br
@@ -23,13 +28,49 @@ input_struct \-
 
 .in +1c
 .ti -1c
-.RI "char \fBstring\fP [string_length]"
+.RI "char \fBstring\fP [\fBstring_length\fP]"
 .br
 .ti -1c
 .RI "int \fBindex\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "input_struct::input_struct ()"
+
+.PP
+References string_length\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool input_struct::append (const char *str)"
+
+.PP
+References index, and string_length\&.
+.PP
+Referenced by get_one_command(), and recovery_history()\&.
+.SS "bool input_struct::append_til (const char *str, chartarget, bool &target_match)"
+
+.PP
+References index, and string_length\&.
+.PP
+Referenced by get_one_command(), and recovery_history()\&.
+.SS "void input_struct::reset ()"
+
+.PP
+References index, and string_length\&.
+.PP
+Referenced by recovery_history()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "int input_struct::index"
+
+.PP
+Referenced by append(), append_til(), and reset()\&.
+.SS "char input_struct::string[\fBstring_length\fP]"
+
+.PP
+Referenced by get_one_command(), and recovery_history()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

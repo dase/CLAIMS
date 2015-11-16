@@ -1,4 +1,4 @@
-.TH "ClientResponse" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ClientResponse" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ClientResponse \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ClientResponse\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
@@ -80,7 +82,127 @@ ClientResponse \-
 .RI "std::string \fBcontent\fP"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void ClientResponse::deserialize (const char *received_buffer, intrecieved_bytes_length)\fC [inline]\fP"
+
+.PP
+References content, length, and status\&.
+.PP
+Referenced by Client::receive(), Client::submit(), and Client::submitQuery()\&.
+.SS "unsigned ClientResponse::get_length ()\fC [inline]\fP"
+
+.PP
+References content, length, and status\&.
+.SS "\fBColumnHeader\fP ClientResponse::getAttributeName () const\fC [inline]\fP"
+
+.PP
+References content, HEADER, and status\&.
+.PP
+Referenced by Client::submit(), and testServerClient()\&.
+.SS "std::string ClientResponse::getChange () const\fC [inline]\fP"
+
+.PP
+References CHANGEDD, content, and status\&.
+.SS "\fBBlockStreamBase\fP* ClientResponse::getDataBlock (\fBSchema\fP *schema) const\fC [inline]\fP"
+
+.PP
+References content, BlockStreamBase::createBlock(), DATA, length, and status\&.
+.PP
+Referenced by Client::submit(), and testServerClient()\&.
+.SS "std::string ClientResponse::getEndInfo () const\fC [inline]\fP"
+
+.PP
+References content, ENDED, and status\&.
+.SS "std::string ClientResponse::getError () const\fC [inline]\fP"
+
+.PP
+References content, ERROR, and status\&.
+.SS "std::string ClientResponse::getMessage ()\fC [inline]\fP"
+
+.PP
+References DATA, ENDED, ERROR, HEADER, OK, SCHEMASS, and status\&.
+.PP
+Referenced by Client::submit(), and testServerClient()\&.
+.SS "std::string ClientResponse::getOK () const\fC [inline]\fP"
+
+.PP
+References content, OK, and status\&.
+.SS "\fBSchema\fP* ClientResponse::getSchema () const\fC [inline]\fP"
+
+.PP
+References content, NULL, SCHEMASS, and status\&.
+.PP
+Referenced by Client::submit(), and testServerClient()\&.
+.SS "int ClientResponse::serialize (char *&buffer) const\fC [inline]\fP"
+
+.PP
+References content, length, ClientLogging::log(), and status\&.
+.PP
+Referenced by ClientListener::write()\&.
+.SS "void ClientResponse::setAttributeName (\fBColumnHeader\fP &header)\fC [inline]\fP"
+
+.PP
+References content, HEADER, length, and status\&.
+.PP
+Referenced by ClientListener::sendHandler()\&.
+.SS "void ClientResponse::setChange (std::stringinfo)\fC [inline]\fP"
+
+.PP
+References CHANGEDD, content, length, and status\&.
+.PP
+Referenced by ClientListener::sendHandler()\&.
+.SS "void ClientResponse::setData (strings)\fC [inline]\fP"
+
+.PP
+References content, DATA, length, and status\&.
+.PP
+Referenced by ClientListener::sendJsonPacket()\&.
+.SS "void ClientResponse::setDataBlock (\fBBlock\fP &block)\fC [inline]\fP"
+
+.PP
+References content, DATA, Block::getBlock(), Block::getsize(), length, and status\&.
+.PP
+Referenced by ClientListener::sendHandler()\&.
+.SS "void ClientResponse::setEnd (doublequery_time)\fC [inline]\fP"
+
+.PP
+References content, ENDED, length, and status\&.
+.PP
+Referenced by ClientListener::sendHandler()\&.
+.SS "void ClientResponse::setError (std::stringreason)\fC [inline]\fP"
+
+.PP
+References content, ERROR, length, and status\&.
+.PP
+Referenced by ClientListener::sendHandler()\&.
+.SS "void ClientResponse::setOk (std::stringinfo)\fC [inline]\fP"
+
+.PP
+References content, length, OK, and status\&.
+.PP
+Referenced by ClientListener::sendHandler()\&.
+.SS "void ClientResponse::setSchema (\fBSchema\fP *schema)\fC [inline]\fP"
+
+.PP
+References content, length, NULL, SCHEMASS, and status\&.
+.PP
+Referenced by ClientListener::sendHandler()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string ClientResponse::content"
+
+.PP
+Referenced by deserialize(), get_length(), getAttributeName(), getChange(), getDataBlock(), getEndInfo(), getError(), getOK(), getSchema(), ClientListener::sendHandler(), serialize(), setAttributeName(), setChange(), setData(), setDataBlock(), setEnd(), setError(), setOk(), setSchema(), Client::submit(), testServerClient(), and ClientListener::write()\&.
+.SS "int ClientResponse::length"
+
+.PP
+Referenced by deserialize(), get_length(), getDataBlock(), ClientListener::sendHandler(), serialize(), setAttributeName(), setChange(), setData(), setDataBlock(), setEnd(), setError(), setOk(), setSchema(), and ClientListener::write()\&.
+.SS "int ClientResponse::status"
+
+.PP
+Referenced by deserialize(), get_length(), getAttributeName(), getChange(), getDataBlock(), getEndInfo(), getError(), getMessage(), getOK(), getSchema(), ClientListener::sendHandler(), serialize(), setAttributeName(), setChange(), setData(), setDataBlock(), setEnd(), setError(), setOk(), setSchema(), Client::submit(), testServerClient(), and ClientListener::write()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

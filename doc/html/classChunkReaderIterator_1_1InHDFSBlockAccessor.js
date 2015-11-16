@@ -6,5 +6,8 @@ var classChunkReaderIterator_1_1InHDFSBlockAccessor =
     [ "getChunkSize", "classChunkReaderIterator_1_1InHDFSBlockAccessor.html#aeb488e789cdeba7e00fb4c3adff0ff72", null ],
     [ "setBlockCur", "classChunkReaderIterator_1_1InHDFSBlockAccessor.html#a72fa908e67a6fa912a530d3250583b12", null ],
     [ "setChunkId", "classChunkReaderIterator_1_1InHDFSBlockAccessor.html#a43b4b39cf5c89326b097a50fe2d81a09", null ],
-    [ "setChunkSize", "classChunkReaderIterator_1_1InHDFSBlockAccessor.html#ae23d7ab0d5d0a59367eedcd6d3c7c5e7", null ]
+    [ "setChunkSize", "classChunkReaderIterator_1_1InHDFSBlockAccessor.html#ae23d7ab0d5d0a59367eedcd6d3c7c5e7", null ],
+    [ "block_cur", "classChunkReaderIterator_1_1InHDFSBlockAccessor.html#a6d69412d57eb7f03516e7ef55c4cb1df", null ],
+    [ "chunk_id", "classChunkReaderIterator_1_1InHDFSBlockAccessor.html#aaaa57f070dcc5918ab0a033b52078f4f", null ],
+    [ "chunk_size", "classChunkReaderIterator_1_1InHDFSBlockAccessor.html#a7047401871185b15d783764ea19a83b1", null ]
 ];

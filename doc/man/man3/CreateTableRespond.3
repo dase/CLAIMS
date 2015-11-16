@@ -1,4 +1,4 @@
-.TH "CreateTableRespond" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CreateTableRespond" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ CreateTableRespond \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Message\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBCreateTableRespond\fP (bool result)"
+.RI "\fBCreateTableRespond\fP ()"
+.br
+.ti -1c
+.RI "\fBCreateTableRespond\fP (bool \fBresult\fP)"
 .br
 .in -1c
 .SS "Static Public Member Functions"
@@ -20,7 +25,7 @@ CreateTableRespond \-
 .RI "static \fBCreateTableRespond\fP \fBdeserialize\fP (\fBMessage256\fP message)"
 .br
 .ti -1c
-.RI "static \fBMessage256\fP \fBserialize\fP (\fBCreateTableRespond\fP input)"
+.RI "static \fBMessage256\fP \fBserialize\fP (\fBCreateTableRespond\fP \fBinput\fP)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -30,6 +35,13 @@ CreateTableRespond \-
 .RI "bool \fBresult\fP"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -37,7 +49,35 @@ CreateTableRespond \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CreateTableRespond::CreateTableRespond ()\fC [inline]\fP"
+
+.SS "CreateTableRespond::CreateTableRespond (boolresult)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static \fBCreateTableRespond\fP CreateTableRespond::deserialize (\fBMessage256\fPmessage)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBMessage256\fP CreateTableRespond::serialize (\fBCreateTableRespond\fPinput)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References input()\&.
+.SS "template<class Archive > void CreateTableRespond::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References result\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "bool CreateTableRespond::result"
+
+.PP
+Referenced by serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

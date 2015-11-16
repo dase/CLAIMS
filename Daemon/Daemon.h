@@ -18,41 +18,42 @@
 
 #define EXECUTED_RESULT_STATUS_OK 0
 #define EXECUTED_RESULT_STATUS_ERROR 1
-
-struct remote_command{
-	std::string cmd;
-	int socket_fd;
+#define NEWSQLINTERFACE
+struct remote_command {
+  std::string cmd;
+  int socket_fd;
 };
-struct executed_result{
-	bool status;	// ture is OK
-	int fd;
-	ResultSet* result;
-	std::string error_info;
-	std::string info;
+struct executed_result {
+  bool status;  // ture is OK
+  int fd;
+  ResultSet* result;
+  std::string error_info;
+  std::string info;
 };
 class Daemon {
-public:
+ public:
+  static Daemon* getInstance();
+  static void* worker(void*);
 
-	static Daemon* getInstance();
-	static void* worker(void*);
+  void addRemoteCommand(const remote_command& rc);
 
-	void addRemoteCommand(const remote_command& rc);
+  executed_result getExecutedResult();
 
-	executed_result getExecutedResult();
-private:
-	Daemon();
-	virtual ~Daemon();
-	remote_command getRemoteCommand();
-	void addExecutedResult(const executed_result& item);
-private:
-	static Daemon* instance_;
-	std::list<remote_command> remote_command_queue_;
-	semaphore semaphore_command_queue_;
+ private:
+  Daemon();
+  virtual ~Daemon();
+  remote_command getRemoteCommand();
+  void addExecutedResult(const executed_result& item);
 
-	std::list<executed_result> executed_result_queue_;
-	semaphore semaphore_result_queue_;
+ private:
+  static Daemon* instance_;
+  std::list<remote_command> remote_command_queue_;
+  semaphore semaphore_command_queue_;
 
-	Lock lock_;
+  std::list<executed_result> executed_result_queue_;
+  semaphore semaphore_result_queue_;
+
+  static Lock* lock_;
 };
 
 #endif /* DAEMON_H_ */

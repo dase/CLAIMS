@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/types/ttmath/ttmathmisc.h Source File</title>
+<title>Claims: common/types/ttmath/ttmathmisc.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -207,7 +207,7 @@ $(document).ready(function(){initNavTree('ttmathmisc_8h_source.html','');});
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment">     char_type is char or wchar_t</span></div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="comment">     */</span></div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="keywordtype">char</span>_type&gt;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> SkipWhiteCharacters(<span class="keyword">const</span> char_type * &amp; c) {</div>
+<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="classttmath_1_1Misc.html#a6046430880f5e9ae0938d614554c2366">  131</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classttmath_1_1Misc.html#a6046430880f5e9ae0938d614554c2366">SkipWhiteCharacters</a>(<span class="keyword">const</span> char_type * &amp; c) {</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="comment">// 13 is at the end in a DOS text file (\r\n)</span></div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keywordflow">while</span> ((*c == <span class="charliteral">&#39; &#39;</span>) || (*c == <span class="charliteral">&#39;\t&#39;</span>) || (*c == 13) || (*c == <span class="charliteral">&#39;\n&#39;</span>))</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            ++c;</div>
@@ -223,7 +223,7 @@ $(document).ready(function(){initNavTree('ttmathmisc_8h_source.html','');});
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <span class="keywordflow">return</span> c - <span class="charliteral">&#39;A&#39;</span> + 10;</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    }</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;</div>
-<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="classttmath_1_1Misc.html#aa2637677dbd7199d4e6b4cea89f7f9d9">  167</a></span>&#160;    <span class="keyword">static</span> sint <a class="code" href="classttmath_1_1Misc.html#aa2637677dbd7199d4e6b4cea89f7f9d9">CharToDigit</a>(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> base) {</div>
+<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="classttmath_1_1Misc.html#aa2637677dbd7199d4e6b4cea89f7f9d9">  167</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">sint</a> <a class="code" href="classttmath_1_1Misc.html#aa2637677dbd7199d4e6b4cea89f7f9d9">CharToDigit</a>(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> c, <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> base) {</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">if</span> (c &gt;= <span class="charliteral">&#39;0&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;9&#39;</span>)</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            c = c - <span class="charliteral">&#39;0&#39;</span>;</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (c &gt;= <span class="charliteral">&#39;a&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;z&#39;</span>)</div>
@@ -236,7 +236,7 @@ $(document).ready(function(){initNavTree('ttmathmisc_8h_source.html','');});
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keywordflow">if</span> (c &gt;= base)</div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            <span class="keywordflow">return</span> -1;</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="keywordflow">return</span> sint(c);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">sint</a>(c);</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    }</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;</div>
 <div class="line"><a name="l00194"></a><span class="lineno"><a class="line" href="classttmath_1_1Misc.html#a93a49aa7775f27e51feccc665c537277">  194</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> <a class="code" href="classttmath_1_1Misc.html#a93a49aa7775f27e51feccc665c537277">DigitToChar</a>(<a class="code" href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">uint</a> digit) {</div>
@@ -256,6 +256,7 @@ $(document).ready(function(){initNavTree('ttmathmisc_8h_source.html','');});
 <div class="ttc" id="classttmath_1_1Misc_html_a37c769adf7e2cb8a7533d04dea080ebf"><div class="ttname"><a href="classttmath_1_1Misc.html#a37c769adf7e2cb8a7533d04dea080ebf">ttmath::Misc::CharToDigit</a></div><div class="ttdeci">static uint CharToDigit(uint c)</div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:148</div></div>
 <div class="ttc" id="classttmath_1_1Misc_html_a77a225d405c1f54c28dfca566c486232"><div class="ttname"><a href="classttmath_1_1Misc.html#a77a225d405c1f54c28dfca566c486232">ttmath::Misc::AssignString</a></div><div class="ttdeci">static void AssignString(std::string &amp;result, const char *str)</div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:66</div></div>
 <div class="ttc" id="classttmath_1_1Misc_html_a93a49aa7775f27e51feccc665c537277"><div class="ttname"><a href="classttmath_1_1Misc.html#a93a49aa7775f27e51feccc665c537277">ttmath::Misc::DigitToChar</a></div><div class="ttdeci">static uint DigitToChar(uint digit)</div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:194</div></div>
+<div class="ttc" id="namespacettmath_html_a300d86e7599787a118808c8c5972670f"><div class="ttname"><a href="namespacettmath.html#a300d86e7599787a118808c8c5972670f">ttmath::sint</a></div><div class="ttdeci">signed int sint</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:120</div></div>
 <div class="ttc" id="classttmath_1_1Misc_html"><div class="ttname"><a href="classttmath_1_1Misc.html">ttmath::Misc</a></div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:53</div></div>
 <div class="ttc" id="classttmath_1_1Misc_html_add85ddc6d2534f9cc210e0732d2135a7"><div class="ttname"><a href="classttmath_1_1Misc.html#add85ddc6d2534f9cc210e0732d2135a7">ttmath::Misc::AssignString</a></div><div class="ttdeci">static void AssignString(std::string &amp;result, const std::wstring &amp;str)</div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:100</div></div>
 <div class="ttc" id="classttmath_1_1Misc_html_a0ab84b0f5dd68e5829cb48f19cf07891"><div class="ttname"><a href="classttmath_1_1Misc.html#a0ab84b0f5dd68e5829cb48f19cf07891">ttmath::Misc::AssignString</a></div><div class="ttdeci">static void AssignString(std::wstring &amp;result, const std::string &amp;str)</div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:83</div></div>
@@ -263,6 +264,7 @@ $(document).ready(function(){initNavTree('ttmathmisc_8h_source.html','');});
 <div class="ttc" id="classttmath_1_1Misc_html_acfe3356acfeb0a444481e6d6ccb5ba78"><div class="ttname"><a href="classttmath_1_1Misc.html#acfe3356acfeb0a444481e6d6ccb5ba78">ttmath::Misc::AddString</a></div><div class="ttdeci">static void AddString(std::string &amp;result, const char *str)</div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:114</div></div>
 <div class="ttc" id="classttmath_1_1Misc_html_a7233e6204b8e57f5faaf5e627541d24e"><div class="ttname"><a href="classttmath_1_1Misc.html#a7233e6204b8e57f5faaf5e627541d24e">ttmath::Misc::AssignString</a></div><div class="ttdeci">static void AssignString(std::wstring &amp;result, const char *str)</div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:73</div></div>
 <div class="ttc" id="namespacettmath_html_a9897e861179132b64f0e2640dde9d7b7"><div class="ttname"><a href="namespacettmath.html#a9897e861179132b64f0e2640dde9d7b7">ttmath::uint</a></div><div class="ttdeci">unsigned int uint</div><div class="ttdef"><b>Definition:</b> ttmathtypes.h:119</div></div>
+<div class="ttc" id="classttmath_1_1Misc_html_a6046430880f5e9ae0938d614554c2366"><div class="ttname"><a href="classttmath_1_1Misc.html#a6046430880f5e9ae0938d614554c2366">ttmath::Misc::SkipWhiteCharacters</a></div><div class="ttdeci">static void SkipWhiteCharacters(const char_type *&amp;c)</div><div class="ttdef"><b>Definition:</b> ttmathmisc.h:131</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

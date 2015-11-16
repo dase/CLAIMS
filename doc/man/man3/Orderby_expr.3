@@ -1,4 +1,4 @@
-.TH "Orderby_expr" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Orderby_expr" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Orderby_expr \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "\fBNode\fP * \fBargs\fP"
@@ -22,7 +24,25 @@ Orderby_expr \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Orderby_expr::args"
+
+.PP
+Referenced by newOrderbyExpr(), and output()\&.
+.SS "\fBNode\fP* Orderby_expr::next"
+
+.PP
+Referenced by newOrderbyExpr()\&.
+.SS "char* Orderby_expr::sorttype"
+
+.PP
+Referenced by newOrderbyExpr(), and output()\&.
+.SS "\fBnodetype\fP Orderby_expr::type"
+
+.PP
+Referenced by newOrderbyExpr()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

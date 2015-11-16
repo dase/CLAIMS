@@ -5,5 +5,6 @@ var classLock =
     [ "acquire", "classLock.html#ae987aaa09db9da0a36edce0ed62d4557", null ],
     [ "destroy", "classLock.html#aa598d78a0ef439e96dd11b6e6dd690a5", null ],
     [ "release", "classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1", null ],
-    [ "try_acquire", "classLock.html#a79afa8ec0e2aaccb354d9c73c2232b0d", null ]
+    [ "try_acquire", "classLock.html#a79afa8ec0e2aaccb354d9c73c2232b0d", null ],
+    [ "m", "classLock.html#a627a70773938512e9f1882609fba4e95", null ]
 ];

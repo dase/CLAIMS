@@ -1,4 +1,4 @@
-.TH "Groupby_expr" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Groupby_expr" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Groupby_expr \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "\fBNode\fP * \fBargs\fP"
@@ -22,7 +24,25 @@ Groupby_expr \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Groupby_expr::args"
+
+.PP
+Referenced by expr_to_str_for_groupby(), expr_to_str_for_orderby(), get_all_groupby_expression_item(), get_group_by_attributes(), get_orderby_column_from_selectlist(), groupby_analysis(), newGroupbyExpr(), orderby_analysis(), and output()\&.
+.SS "\fBNode\fP* Groupby_expr::next"
+
+.PP
+Referenced by expr_to_str_for_groupby(), expr_to_str_for_orderby(), get_all_groupby_expression_item(), get_group_by_attributes(), get_orderby_column_from_selectlist(), groupby_analysis(), newGroupbyExpr(), and orderby_analysis()\&.
+.SS "int Groupby_expr::sorttype"
+
+.PP
+Referenced by get_orderby_column_from_selectlist(), newGroupbyExpr(), and output()\&.
+.SS "\fBnodetype\fP Groupby_expr::type"
+
+.PP
+Referenced by newGroupbyExpr()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "bottomLayerCollecting::State" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "bottomLayerCollecting::State" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ bottomLayerCollecting::State \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <CSBIndexBuilding\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBState\fP (\fBProjectionID\fP projection_id, \fBSchema\fP *schema, unsigned key_indexing, unsigned block_size)"
+.RI "\fBState\fP ()"
+.br
+.ti -1c
+.RI "\fBState\fP (\fBProjectionID\fP projection_id, \fBSchema\fP *schema, unsigned key_indexing, unsigned \fBblock_size\fP)"
 .br
 .ti -1c
 .RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
@@ -42,7 +47,43 @@ bottomLayerCollecting::State \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "bottomLayerCollecting::State::State ()\fC [inline]\fP"
+
+.SS "bottomLayerCollecting::State::State (\fBProjectionID\fPprojection_id, \fBSchema\fP *schema, unsignedkey_indexing, unsignedblock_size)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class Archive > void bottomLayerCollecting::State::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP"
+
+.PP
+References block_size_, key_indexing_, projection_id_, and schema_\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SS "friend class \fBbottomLayerCollecting\fP\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned bottomLayerCollecting::State::block_size_"
+
+.PP
+Referenced by LogicalCSBIndexBuilding::GetPhysicalPlan(), bottomLayerCollecting::Open(), and serialize()\&.
+.SS "unsigned bottomLayerCollecting::State::key_indexing_"
+
+.PP
+Referenced by bottomLayerCollecting::computeOutputSchema(), LogicalCSBIndexBuilding::GetPhysicalPlan(), bottomLayerCollecting::Next(), and serialize()\&.
+.SS "\fBProjectionID\fP bottomLayerCollecting::State::projection_id_"
+
+.PP
+Referenced by LogicalCSBIndexBuilding::GetPhysicalPlan(), bottomLayerCollecting::Open(), and serialize()\&.
+.SS "\fBSchema\fP* bottomLayerCollecting::State::schema_"
+
+.PP
+Referenced by bottomLayerCollecting::computeOutputSchema(), LogicalCSBIndexBuilding::GetPhysicalPlan(), bottomLayerCollecting::Next(), bottomLayerCollecting::Open(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Daemon/Daemon.h Source File</title>
+<title>Claims: Daemon/Daemon.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('Daemon_8h_source.html','');});
 <div class="title">Daemon.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="Daemon_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Daemon.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Feb 20, 2014</span></div>
@@ -124,58 +124,79 @@ $(document).ready(function(){initNavTree('Daemon_8h_source.html','');});
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;../common/Block/ResultSet.h&quot;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;../utility/lock.h&quot;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define EXECUTED_RESULT_STATUS_OK 0</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define EXECUTED_RESULT_STATUS_ERROR 1</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="Daemon_8h.html#a724eba3402d938c605a7bcbbf8b21202">   19</a></span>&#160;<span class="preprocessor">#define EXECUTED_RESULT_STATUS_OK 0</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="Daemon_8h.html#a529b3c3ee82354be61a35ab09558d647">   20</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define EXECUTED_RESULT_STATUS_ERROR 1</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structremote__command.html">   22</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structremote__command.html">remote_command</a>{</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    std::string cmd;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">int</span> socket_fd;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structremote__command.html#a6c5d6700c4101d9e72e9c6b0add4bd89">   23</a></span>&#160;    std::string <a class="code" href="structremote__command.html#a6c5d6700c4101d9e72e9c6b0add4bd89">cmd</a>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structremote__command.html#a4951768759858f1144dade4c9a8d1cf8">   24</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structremote__command.html#a4951768759858f1144dade4c9a8d1cf8">socket_fd</a>;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;};</div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structexecuted__result.html">   26</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structexecuted__result.html">executed_result</a>{</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">bool</span> status;    <span class="comment">// ture is OK</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">int</span> fd;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="classResultSet.html">ResultSet</a>* result;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    std::string error_info;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    std::string info;</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structexecuted__result.html#a7632cc0d71e3478535dd189fcd4cebde">   27</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="structexecuted__result.html#a7632cc0d71e3478535dd189fcd4cebde">status</a>;    <span class="comment">// ture is OK</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structexecuted__result.html#a43660856559e5fdd9854a0cd8c237b08">   28</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structexecuted__result.html#a43660856559e5fdd9854a0cd8c237b08">fd</a>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="structexecuted__result.html#a82b5c96a4d841465c7609671ffdb966e">   29</a></span>&#160;    <a class="code" href="classResultSet.html">ResultSet</a>* <a class="code" href="structexecuted__result.html#a82b5c96a4d841465c7609671ffdb966e">result</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structexecuted__result.html#ae1c254bcceb38d9e71d593f14d3175ca">   30</a></span>&#160;    std::string <a class="code" href="structexecuted__result.html#ae1c254bcceb38d9e71d593f14d3175ca">error_info</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="structexecuted__result.html#a0bd133f6b50b6e0b5996e519ec9e08cf">   31</a></span>&#160;    std::string <a class="code" href="structexecuted__result.html#a0bd133f6b50b6e0b5996e519ec9e08cf">info</a>;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;};</div>
 <div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classDaemon.html">   33</a></span>&#160;<span class="keyword">class </span><a class="code" href="classDaemon.html">Daemon</a> {</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">static</span> <a class="code" href="classDaemon.html">Daemon</a>* getInstance();</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span>* worker(<span class="keywordtype">void</span>*);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">static</span> <a class="code" href="classDaemon.html">Daemon</a>* <a class="code" href="classDaemon.html#acd28b5ef418a8369293a144ca644d5d1">getInstance</a>();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span>* <a class="code" href="classDaemon.html#aea8bf0567f4c3853dd07b84eee38b4ea">worker</a>(<span class="keywordtype">void</span>*);</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">void</span> addRemoteCommand(<span class="keyword">const</span> <a class="code" href="structremote__command.html">remote_command</a>&amp; rc);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classDaemon.html#a0b4c0ec5b692a21e3a6d847c76a33ea5">addRemoteCommand</a>(<span class="keyword">const</span> <a class="code" href="structremote__command.html">remote_command</a>&amp; rc);</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="structexecuted__result.html">executed_result</a> getExecutedResult();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="structexecuted__result.html">executed_result</a> <a class="code" href="classDaemon.html#aaf662d7901f7623cb050eeab07ba8f1e">getExecutedResult</a>();</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="classDaemon.html">Daemon</a>();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classDaemon.html">Daemon</a>();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="structremote__command.html">remote_command</a> getRemoteCommand();</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> addExecutedResult(<span class="keyword">const</span> <a class="code" href="structexecuted__result.html">executed_result</a>&amp; item);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="classDaemon.html#a219c10e2d61c35f446d096726842fc82">Daemon</a>();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classDaemon.html#ae10170ea962e99bdea6c8074af7e13ba">~Daemon</a>();</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="structremote__command.html">remote_command</a> <a class="code" href="classDaemon.html#a3dad32068b89890e28591d58fd4cb3f5">getRemoteCommand</a>();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classDaemon.html#a727a3f9233fd096363b8570c4faf7816">addExecutedResult</a>(<span class="keyword">const</span> <a class="code" href="structexecuted__result.html">executed_result</a>&amp; item);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">static</span> <a class="code" href="classDaemon.html">Daemon</a>* instance_;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    std::list&lt;remote_command&gt; remote_command_queue_;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> semaphore_command_queue_;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classDaemon.html#a512ea932d905c60387cee7b24760674a">   48</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classDaemon.html">Daemon</a>* <a class="code" href="classDaemon.html#a512ea932d905c60387cee7b24760674a">instance_</a>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classDaemon.html#acda3cb67aa0d90d1679efbb3bab91e89">   49</a></span>&#160;    std::list&lt;remote_command&gt; <a class="code" href="classDaemon.html#acda3cb67aa0d90d1679efbb3bab91e89">remote_command_queue_</a>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classDaemon.html#af5ed92dd41e12499f2b1c47cccf191c5">   50</a></span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> <a class="code" href="classDaemon.html#af5ed92dd41e12499f2b1c47cccf191c5">semaphore_command_queue_</a>;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    std::list&lt;executed_result&gt; executed_result_queue_;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> semaphore_result_queue_;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classDaemon.html#a7825feddb6eef742d34bdda4974873e5">   52</a></span>&#160;    std::list&lt;executed_result&gt; <a class="code" href="classDaemon.html#a7825feddb6eef742d34bdda4974873e5">executed_result_queue_</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classDaemon.html#a7e62d4d73f17318f8c9bf3d9b9a6ab86">   53</a></span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> <a class="code" href="classDaemon.html#a7e62d4d73f17318f8c9bf3d9b9a6ab86">semaphore_result_queue_</a>;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="classLock.html">Lock</a> lock_;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classDaemon.html#a709642687eadbe3002c8531d15c98ddf">   55</a></span>&#160;    <a class="code" href="classLock.html">Lock</a> <a class="code" href="classDaemon.html#a709642687eadbe3002c8531d15c98ddf">lock_</a>;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* DAEMON_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classDaemon_html_a7e62d4d73f17318f8c9bf3d9b9a6ab86"><div class="ttname"><a href="classDaemon.html#a7e62d4d73f17318f8c9bf3d9b9a6ab86">Daemon::semaphore_result_queue_</a></div><div class="ttdeci">semaphore semaphore_result_queue_</div><div class="ttdef"><b>Definition:</b> Daemon.h:53</div></div>
+<div class="ttc" id="classDaemon_html_a0b4c0ec5b692a21e3a6d847c76a33ea5"><div class="ttname"><a href="classDaemon.html#a0b4c0ec5b692a21e3a6d847c76a33ea5">Daemon::addRemoteCommand</a></div><div class="ttdeci">void addRemoteCommand(const remote_command &amp;rc)</div><div class="ttdef"><b>Definition:</b> Daemon.cpp:119</div></div>
 <div class="ttc" id="structremote__command_html"><div class="ttname"><a href="structremote__command.html">remote_command</a></div><div class="ttdef"><b>Definition:</b> Daemon.h:22</div></div>
 <div class="ttc" id="classLock_html"><div class="ttname"><a href="classLock.html">Lock</a></div><div class="ttdef"><b>Definition:</b> lock.h:18</div></div>
+<div class="ttc" id="structexecuted__result_html_a43660856559e5fdd9854a0cd8c237b08"><div class="ttname"><a href="structexecuted__result.html#a43660856559e5fdd9854a0cd8c237b08">executed_result::fd</a></div><div class="ttdeci">int fd</div><div class="ttdef"><b>Definition:</b> Daemon.h:28</div></div>
+<div class="ttc" id="classDaemon_html_acda3cb67aa0d90d1679efbb3bab91e89"><div class="ttname"><a href="classDaemon.html#acda3cb67aa0d90d1679efbb3bab91e89">Daemon::remote_command_queue_</a></div><div class="ttdeci">std::list&lt; remote_command &gt; remote_command_queue_</div><div class="ttdef"><b>Definition:</b> Daemon.h:49</div></div>
+<div class="ttc" id="structexecuted__result_html_a7632cc0d71e3478535dd189fcd4cebde"><div class="ttname"><a href="structexecuted__result.html#a7632cc0d71e3478535dd189fcd4cebde">executed_result::status</a></div><div class="ttdeci">bool status</div><div class="ttdef"><b>Definition:</b> Daemon.h:27</div></div>
+<div class="ttc" id="classDaemon_html_acd28b5ef418a8369293a144ca644d5d1"><div class="ttname"><a href="classDaemon.html#acd28b5ef418a8369293a144ca644d5d1">Daemon::getInstance</a></div><div class="ttdeci">static Daemon * getInstance()</div><div class="ttdef"><b>Definition:</b> Daemon.cpp:16</div></div>
+<div class="ttc" id="structexecuted__result_html_ae1c254bcceb38d9e71d593f14d3175ca"><div class="ttname"><a href="structexecuted__result.html#ae1c254bcceb38d9e71d593f14d3175ca">executed_result::error_info</a></div><div class="ttdeci">std::string error_info</div><div class="ttdef"><b>Definition:</b> Daemon.h:30</div></div>
+<div class="ttc" id="classDaemon_html_ae10170ea962e99bdea6c8074af7e13ba"><div class="ttname"><a href="classDaemon.html#ae10170ea962e99bdea6c8074af7e13ba">Daemon::~Daemon</a></div><div class="ttdeci">virtual ~Daemon()</div><div class="ttdef"><b>Definition:</b> Daemon.cpp:37</div></div>
 <div class="ttc" id="classsemaphore_html"><div class="ttname"><a href="classsemaphore.html">semaphore</a></div><div class="ttdef"><b>Definition:</b> lock.h:46</div></div>
 <div class="ttc" id="classResultSet_html"><div class="ttname"><a href="classResultSet.html">ResultSet</a></div><div class="ttdef"><b>Definition:</b> ResultSet.h:15</div></div>
+<div class="ttc" id="classDaemon_html_aaf662d7901f7623cb050eeab07ba8f1e"><div class="ttname"><a href="classDaemon.html#aaf662d7901f7623cb050eeab07ba8f1e">Daemon::getExecutedResult</a></div><div class="ttdeci">executed_result getExecutedResult()</div><div class="ttdef"><b>Definition:</b> Daemon.cpp:137</div></div>
+<div class="ttc" id="structexecuted__result_html_a82b5c96a4d841465c7609671ffdb966e"><div class="ttname"><a href="structexecuted__result.html#a82b5c96a4d841465c7609671ffdb966e">executed_result::result</a></div><div class="ttdeci">ResultSet * result</div><div class="ttdef"><b>Definition:</b> Daemon.h:29</div></div>
+<div class="ttc" id="classDaemon_html_a709642687eadbe3002c8531d15c98ddf"><div class="ttname"><a href="classDaemon.html#a709642687eadbe3002c8531d15c98ddf">Daemon::lock_</a></div><div class="ttdeci">Lock lock_</div><div class="ttdef"><b>Definition:</b> Daemon.h:55</div></div>
+<div class="ttc" id="classDaemon_html_a3dad32068b89890e28591d58fd4cb3f5"><div class="ttname"><a href="classDaemon.html#a3dad32068b89890e28591d58fd4cb3f5">Daemon::getRemoteCommand</a></div><div class="ttdeci">remote_command getRemoteCommand()</div><div class="ttdef"><b>Definition:</b> Daemon.cpp:126</div></div>
+<div class="ttc" id="classDaemon_html_a219c10e2d61c35f446d096726842fc82"><div class="ttname"><a href="classDaemon.html#a219c10e2d61c35f446d096726842fc82">Daemon::Daemon</a></div><div class="ttdeci">Daemon()</div><div class="ttdef"><b>Definition:</b> Daemon.cpp:24</div></div>
+<div class="ttc" id="structremote__command_html_a6c5d6700c4101d9e72e9c6b0add4bd89"><div class="ttname"><a href="structremote__command.html#a6c5d6700c4101d9e72e9c6b0add4bd89">remote_command::cmd</a></div><div class="ttdeci">std::string cmd</div><div class="ttdef"><b>Definition:</b> Daemon.h:23</div></div>
+<div class="ttc" id="classDaemon_html_aea8bf0567f4c3853dd07b84eee38b4ea"><div class="ttname"><a href="classDaemon.html#aea8bf0567f4c3853dd07b84eee38b4ea">Daemon::worker</a></div><div class="ttdeci">static void * worker(void *)</div><div class="ttdef"><b>Definition:</b> Daemon.cpp:77</div></div>
+<div class="ttc" id="classDaemon_html_a512ea932d905c60387cee7b24760674a"><div class="ttname"><a href="classDaemon.html#a512ea932d905c60387cee7b24760674a">Daemon::instance_</a></div><div class="ttdeci">static Daemon * instance_</div><div class="ttdef"><b>Definition:</b> Daemon.h:48</div></div>
 <div class="ttc" id="classDaemon_html"><div class="ttname"><a href="classDaemon.html">Daemon</a></div><div class="ttdef"><b>Definition:</b> Daemon.h:33</div></div>
+<div class="ttc" id="classDaemon_html_a727a3f9233fd096363b8570c4faf7816"><div class="ttname"><a href="classDaemon.html#a727a3f9233fd096363b8570c4faf7816">Daemon::addExecutedResult</a></div><div class="ttdeci">void addExecutedResult(const executed_result &amp;item)</div><div class="ttdef"><b>Definition:</b> Daemon.cpp:147</div></div>
+<div class="ttc" id="structexecuted__result_html_a0bd133f6b50b6e0b5996e519ec9e08cf"><div class="ttname"><a href="structexecuted__result.html#a0bd133f6b50b6e0b5996e519ec9e08cf">executed_result::info</a></div><div class="ttdeci">std::string info</div><div class="ttdef"><b>Definition:</b> Daemon.h:31</div></div>
+<div class="ttc" id="classDaemon_html_a7825feddb6eef742d34bdda4974873e5"><div class="ttname"><a href="classDaemon.html#a7825feddb6eef742d34bdda4974873e5">Daemon::executed_result_queue_</a></div><div class="ttdeci">std::list&lt; executed_result &gt; executed_result_queue_</div><div class="ttdef"><b>Definition:</b> Daemon.h:52</div></div>
+<div class="ttc" id="structremote__command_html_a4951768759858f1144dade4c9a8d1cf8"><div class="ttname"><a href="structremote__command.html#a4951768759858f1144dade4c9a8d1cf8">remote_command::socket_fd</a></div><div class="ttdeci">int socket_fd</div><div class="ttdef"><b>Definition:</b> Daemon.h:24</div></div>
+<div class="ttc" id="classDaemon_html_af5ed92dd41e12499f2b1c47cccf191c5"><div class="ttname"><a href="classDaemon.html#af5ed92dd41e12499f2b1c47cccf191c5">Daemon::semaphore_command_queue_</a></div><div class="ttdeci">semaphore semaphore_command_queue_</div><div class="ttdef"><b>Definition:</b> Daemon.h:50</div></div>
 <div class="ttc" id="structexecuted__result_html"><div class="ttname"><a href="structexecuted__result.html">executed_result</a></div><div class="ttdef"><b>Definition:</b> Daemon.h:26</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_7641fbb9a88ecfca8605603f00d186f7.html">Daemon</a></li><li class="navelem"><b>Daemon.h</b></li>
+    <li class="navelem"><a class="el" href="dir_7641fbb9a88ecfca8605603f00d186f7.html">Daemon</a></li><li class="navelem"><a class="el" href="Daemon_8h.html">Daemon.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

@@ -1,4 +1,4 @@
-.TH "yyGLRStack" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "yyGLRStack" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,7 +22,7 @@ yyGLRStack \-
 .RI "\fBYYSTYPE\fP \fByyval\fP"
 .br
 .ti -1c
-.RI "YYJMP_BUF \fByyexception_buffer\fP"
+.RI "\fBYYJMP_BUF\fP \fByyexception_buffer\fP"
 .br
 .ti -1c
 .RI "\fByyGLRStackItem\fP * \fByyitems\fP"
@@ -43,7 +43,47 @@ yyGLRStack \-
 .RI "\fByyGLRStateSet\fP \fByytops\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int yyGLRStack::yyerrcnt"
+
+.SS "int yyGLRStack::yyerrState"
+
+.PP
+Referenced by yyinitGLRStack(), yyparse(), yyrecoverSyntaxError(), and yyreportSyntaxError()\&.
+.SS "\fBYYJMP_BUF\fP yyGLRStack::yyexception_buffer"
+
+.PP
+Referenced by yyFail(), yyMemoryExhausted(), and yyparse()\&.
+.SS "\fByyGLRStackItem\fP * yyGLRStack::yyitems"
+
+.PP
+Referenced by yycompressStack(), yyexpandGLRStack(), yyfreeGLRStack(), yyinitGLRStack(), and yyparse()\&.
+.SS "\fByyGLRState\fP * yyGLRStack::yylastDeleted"
+
+.PP
+Referenced by yycompressStack(), yyinitGLRStack(), yymarkStackDeleted(), and yyundeleteLastStack()\&.
+.SS "\fByyGLRStackItem\fP * yyGLRStack::yynextFree"
+
+.PP
+Referenced by yycompressStack(), yydoAction(), yyexpandGLRStack(), yyinitGLRStack(), yynewGLRStackItem(), yyparse(), and yyrecoverSyntaxError()\&.
+.SS "int yyGLRStack::yyrawchar"
+
+.SS "size_t yyGLRStack::yyspaceLeft"
+
+.PP
+Referenced by yycompressStack(), yydoAction(), yyexpandGLRStack(), yyinitGLRStack(), yynewGLRStackItem(), yyparse(), and yyrecoverSyntaxError()\&.
+.SS "\fByyGLRState\fP * yyGLRStack::yysplitPoint"
+
+.PP
+Referenced by yycompressStack(), yydoAction(), yyexpandGLRStack(), yyglrReduce(), yyinitGLRStack(), yyresolveStack(), yysplitStack(), yyupdateSplit(), and yyuserAction()\&.
+.SS "\fByyGLRStateSet\fP yyGLRStack::yytops"
+
+.PP
+Referenced by yyaddDeferredAction(), yycompressStack(), yydoAction(), yyexpandGLRStack(), yyfreeGLRStack(), yyglrReduce(), yyglrShift(), yyglrShiftDefer(), yyinitGLRStack(), yymarkStackDeleted(), yyparse(), yyprocessOneStack(), yyrecoverSyntaxError(), yyremoveDeletes(), yyreportSyntaxError(), yyresolveStack(), yysplitStack(), and yyundeleteLastStack()\&.
+.SS "\fBYYSTYPE\fP yyGLRStack::yyval"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

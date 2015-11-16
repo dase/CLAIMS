@@ -1,4 +1,4 @@
-.TH "Show_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Show_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Show_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "bool \fBfull\fP"
@@ -25,7 +27,29 @@ Show_stmt \-
 .RI "char * \fBlike_string\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "char* Show_stmt::database_name"
+
+.PP
+Referenced by newShowStmt()\&.
+.SS "bool Show_stmt::full"
+
+.PP
+Referenced by newShowStmt()\&.
+.SS "char* Show_stmt::like_string"
+
+.PP
+Referenced by newShowStmt()\&.
+.SS "int Show_stmt::show_type"
+
+.PP
+Referenced by newShowStmt(), and ShowTable()\&.
+.SS "\fBnodetype\fP Show_stmt::type"
+
+.PP
+Referenced by newShowStmt()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

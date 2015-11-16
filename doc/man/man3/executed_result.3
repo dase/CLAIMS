@@ -1,4 +1,4 @@
-.TH "executed_result" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "executed_result" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ executed_result \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Daemon\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
@@ -25,7 +27,29 @@ executed_result \-
 .RI "std::string \fBinfo\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string executed_result::error_info"
+
+.PP
+Referenced by ClientListener::sendHandler(), and Daemon::worker()\&.
+.SS "int executed_result::fd"
+
+.PP
+Referenced by ClientListener::sendHandler(), and Daemon::worker()\&.
+.SS "std::string executed_result::info"
+
+.PP
+Referenced by ClientListener::sendHandler(), and Daemon::worker()\&.
+.SS "\fBResultSet\fP* executed_result::result"
+
+.PP
+Referenced by ClientListener::sendHandler(), ClientListener::sendJsonPacket(), and Daemon::worker()\&.
+.SS "bool executed_result::status"
+
+.PP
+Referenced by ClientListener::sendHandler(), ClientListener::sendJsonPacket(), and Daemon::worker()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

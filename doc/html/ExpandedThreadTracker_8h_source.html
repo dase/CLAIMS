@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/ExpandedThreadTracker.h Source File</title>
+<title>Claims: common/ExpandedThreadTracker.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('ExpandedThreadTracker_8h_source.html',
 <div class="title">ExpandedThreadTracker.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ExpandedThreadTracker_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * ExpandedThreadTracker.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: May 25, 2014</span></div>
@@ -124,70 +124,93 @@ $(document).ready(function(){initNavTree('ExpandedThreadTracker_8h_source.html',
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;../utility/ExpandabilityShrinkability.h&quot;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="ExpandedThreadTracker_8h.html#a3f5c395a25e004d3ed9d901b2d0474c6">   19</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> <a class="code" href="ExpandedThreadTracker_8h.html#a3f5c395a25e004d3ed9d901b2d0474c6">timestamp</a>;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> timestamp;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html">   23</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structPerformanceInfo.html">PerformanceInfo</a>{</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structPerformanceInfo_1_1entry.html">   24</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structPerformanceInfo_1_1entry.html">entry</a>{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="structPerformanceInfo_1_1entry.html">entry</a>():performance(0),last_update(0){};</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordtype">float</span> performance;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        timestamp last_update;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordtype">bool</span> isUpdateToDate();</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    };</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">//  PerformanceInfo();</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="structPerformanceInfo.html">PerformanceInfo</a>(<a class="code" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a>* expand_shrink);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    ~<a class="code" href="structPerformanceInfo.html">PerformanceInfo</a>();</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">void</span> processed_one_block();</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">double</span> report_instance_performance_in_millibytes();</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    ticks current_time_slice_start_;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> nblocks_in_current_slice_;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> initialize();</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> eclipseTimeSlices(<span class="keywordtype">unsigned</span> offset);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">void</span> hitCurrentSlice();</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="comment">/* eclipse the slices that are out of the scope and initialize the new entries*/</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> updateTimeSlicesToCurrentTicks();</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> getBlockSumInAllSlices();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="classSpineLock.html">SpineLock</a> lock_;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="comment">// store the number of processed block in nearly 10 time slices</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="comment">// from 0 to NUMOFSLICES ----&gt;  from old to new</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">unsigned</span> *slices;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> init_ticks_;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">// store entrys in different condition where degree of parallelism range from 0 to max_degree_of_parallelism</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    std::vector&lt;entry&gt; scalability_vector_;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a>* expand_shrink_;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="comment">/* the timestamp for the last update to the scalability vector */</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    timestamp last_update_;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classExpandedThreadTracker.html">   60</a></span>&#160;<span class="keyword">class </span><a class="code" href="classExpandedThreadTracker.html">ExpandedThreadTracker</a> {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="classExpandedThreadTracker.html">ExpandedThreadTracker</a>(<a class="code" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a>* expand_shrink);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classExpandedThreadTracker.html">ExpandedThreadTracker</a>();</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">inline</span> <a class="code" href="structPerformanceInfo.html">PerformanceInfo</a>&amp; getPerformanceInfo(){</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">return</span> perf_info_;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="structPerformanceInfo.html">PerformanceInfo</a> perf_info_;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;};</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* EXPANDEDTHREADTRACKER_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html">   21</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structPerformanceInfo.html">PerformanceInfo</a> {</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structPerformanceInfo_1_1entry.html">   22</a></span>&#160;  <span class="keyword">struct </span><a class="code" href="structPerformanceInfo_1_1entry.html">entry</a> {</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structPerformanceInfo_1_1entry.html#a5c6caeebc3dfec1e96b03e195873d539">   23</a></span>&#160;    <a class="code" href="structPerformanceInfo_1_1entry.html#a7f710db7ec4259ea5f8f23d79fc32b05">entry</a>() : <a class="code" href="structPerformanceInfo_1_1entry.html#a5c6caeebc3dfec1e96b03e195873d539">performance</a>(0), <a class="code" href="structPerformanceInfo_1_1entry.html#a3b2bd117ec0e313c5710132c6e9f17e9">last_update</a>(0){};</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPerformanceInfo_1_1entry.html#a5c6caeebc3dfec1e96b03e195873d539">performance</a>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structPerformanceInfo_1_1entry.html#a3b2bd117ec0e313c5710132c6e9f17e9">   25</a></span>&#160;    <a class="code" href="ExpandedThreadTracker_8h.html#a3f5c395a25e004d3ed9d901b2d0474c6">timestamp</a> <a class="code" href="structPerformanceInfo_1_1entry.html#a3b2bd117ec0e313c5710132c6e9f17e9">last_update</a>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="structPerformanceInfo_1_1entry.html#a3a70021f6df66b9c2a1a5b7478e0e3bb">isUpdateToDate</a>();</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  };</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#a0e19a359e4bf2aff1df263279007dd6f">   28</a></span>&#160;  <a class="code" href="structPerformanceInfo.html#a0e19a359e4bf2aff1df263279007dd6f">PerformanceInfo</a>() {}</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <a class="code" href="structPerformanceInfo.html#a0e19a359e4bf2aff1df263279007dd6f">PerformanceInfo</a>(<a class="code" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a>* expand_shrink);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <a class="code" href="structPerformanceInfo.html#a9c87ee812c77360f97334924983f0199">~PerformanceInfo</a>();</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="structPerformanceInfo.html#a4738b19dbb4b5f291722077db7b2bef4">processed_one_block</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keywordtype">double</span> <a class="code" href="structPerformanceInfo.html#af3992fa64bd57d31e0d0ada9b002c0ad">report_instance_performance_in_millibytes</a>();</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#abaaed2d2dd45795077066b563729275d">   33</a></span>&#160;  <a class="code" href="rdtsc_8h.html#adb1311ec3cd0a48b4a8f6d480533649d">ticks</a> <a class="code" href="structPerformanceInfo.html#abaaed2d2dd45795077066b563729275d">current_time_slice_start_</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#a80030e0293762d7c157c62214d8fc9f6">   34</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="structPerformanceInfo.html#a80030e0293762d7c157c62214d8fc9f6">nblocks_in_current_slice_</a>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="structPerformanceInfo.html#aa633925ae425b46e79af4eb978b3093b">initialize</a>();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="structPerformanceInfo.html#aba862c1eea5dd72c38393b55186d6523">eclipseTimeSlices</a>(<span class="keywordtype">unsigned</span> offset);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="structPerformanceInfo.html#a8cd8060bb47eab8e097d53023749c0b6">hitCurrentSlice</a>();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="comment">/* eclipse the slices that are out of the scope and initialize the new</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">   * entries*/</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="structPerformanceInfo.html#a59f790d68d1d4a428ecc68fca9a10658">updateTimeSlicesToCurrentTicks</a>();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="structPerformanceInfo.html#a28b7094aef9ee2845c9109f49fd76dd4">getBlockSumInAllSlices</a>();</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#aec33e28656a21261f962ac4c1cc20999">   44</a></span>&#160;  <a class="code" href="classSpineLock.html">SpineLock</a> <a class="code" href="structPerformanceInfo.html#aec33e28656a21261f962ac4c1cc20999">lock_</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="comment">// store the number of processed block in nearly 10 time slices</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="comment">// from   0 to NUMOFSLICES ----&gt;  from old to new</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#a33736a282de0b1b452edb5fbc5fa3bde">   47</a></span>&#160;  <span class="keywordtype">unsigned</span>* <a class="code" href="structPerformanceInfo.html#a33736a282de0b1b452edb5fbc5fa3bde">slices</a>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#af5f46fa243f453e7b7d13dd3f3cf8544">   48</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> <a class="code" href="structPerformanceInfo.html#af5f46fa243f453e7b7d13dd3f3cf8544">init_ticks_</a>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="comment">// store entrys in different condition where degree of parallelism range from</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="comment">// 0 to max_degree_of_parallelism</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#a141a1c2dd1e3e9c09c3109c6eaecdecc">   51</a></span>&#160;  std::vector&lt;entry&gt; <a class="code" href="structPerformanceInfo.html#a141a1c2dd1e3e9c09c3109c6eaecdecc">scalability_vector_</a>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#a3e31d422790e2c88e89e8934942b7e89">   52</a></span>&#160;  <a class="code" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a>* <a class="code" href="structPerformanceInfo.html#a3e31d422790e2c88e89e8934942b7e89">expand_shrink_</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="comment">/* the timestamp for the last update to the scalability vector */</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structPerformanceInfo.html#a706b4a2cb6b30ffbd75cad60c65df904">   54</a></span>&#160;  <a class="code" href="ExpandedThreadTracker_8h.html#a3f5c395a25e004d3ed9d901b2d0474c6">timestamp</a> <a class="code" href="structPerformanceInfo.html#a706b4a2cb6b30ffbd75cad60c65df904">last_update_</a>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classExpandedThreadTracker.html">   57</a></span>&#160;<span class="keyword">class </span><a class="code" href="classExpandedThreadTracker.html">ExpandedThreadTracker</a> {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <a class="code" href="classExpandedThreadTracker.html#a0a91d3c7ba0bc905598c92c6634be659">ExpandedThreadTracker</a>(<a class="code" href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a>* expand_shrink);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classExpandedThreadTracker.html#a23aa8c6168910ed64c8a03cf252ae3da">~ExpandedThreadTracker</a>();</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classExpandedThreadTracker.html#ac063e8477d9c3e506ea297d04f2ec2b9">   61</a></span>&#160;  <span class="keyword">inline</span> <a class="code" href="structPerformanceInfo.html">PerformanceInfo</a>&amp; <a class="code" href="classExpandedThreadTracker.html#ac063e8477d9c3e506ea297d04f2ec2b9">getPerformanceInfo</a>() { <span class="keywordflow">return</span> <a class="code" href="classExpandedThreadTracker.html#aa1ec03a6892b0016940d2cb49fbf006c">perf_info_</a>; }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classExpandedThreadTracker.html#aa1ec03a6892b0016940d2cb49fbf006c">   64</a></span>&#160;  <a class="code" href="structPerformanceInfo.html">PerformanceInfo</a> <a class="code" href="classExpandedThreadTracker.html#aa1ec03a6892b0016940d2cb49fbf006c">perf_info_</a>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* EXPANDEDTHREADTRACKER_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="structPerformanceInfo_html_aa633925ae425b46e79af4eb978b3093b"><div class="ttname"><a href="structPerformanceInfo.html#aa633925ae425b46e79af4eb978b3093b">PerformanceInfo::initialize</a></div><div class="ttdeci">void initialize()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:135</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a141a1c2dd1e3e9c09c3109c6eaecdecc"><div class="ttname"><a href="structPerformanceInfo.html#a141a1c2dd1e3e9c09c3109c6eaecdecc">PerformanceInfo::scalability_vector_</a></div><div class="ttdeci">std::vector&lt; entry &gt; scalability_vector_</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:51</div></div>
+<div class="ttc" id="structPerformanceInfo_html_aba862c1eea5dd72c38393b55186d6523"><div class="ttname"><a href="structPerformanceInfo.html#aba862c1eea5dd72c38393b55186d6523">PerformanceInfo::eclipseTimeSlices</a></div><div class="ttdeci">void eclipseTimeSlices(unsigned offset)</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:143</div></div>
+<div class="ttc" id="structPerformanceInfo_1_1entry_html_a3b2bd117ec0e313c5710132c6e9f17e9"><div class="ttname"><a href="structPerformanceInfo_1_1entry.html#a3b2bd117ec0e313c5710132c6e9f17e9">PerformanceInfo::entry::last_update</a></div><div class="ttdeci">timestamp last_update</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:25</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a80030e0293762d7c157c62214d8fc9f6"><div class="ttname"><a href="structPerformanceInfo.html#a80030e0293762d7c157c62214d8fc9f6">PerformanceInfo::nblocks_in_current_slice_</a></div><div class="ttdeci">unsigned long nblocks_in_current_slice_</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:34</div></div>
+<div class="ttc" id="rdtsc_8h_html_adb1311ec3cd0a48b4a8f6d480533649d"><div class="ttname"><a href="rdtsc_8h.html#adb1311ec3cd0a48b4a8f6d480533649d">ticks</a></div><div class="ttdeci">unsigned long long int ticks</div><div class="ttdef"><b>Definition:</b> rdtsc.h:26</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a706b4a2cb6b30ffbd75cad60c65df904"><div class="ttname"><a href="structPerformanceInfo.html#a706b4a2cb6b30ffbd75cad60c65df904">PerformanceInfo::last_update_</a></div><div class="ttdeci">timestamp last_update_</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:54</div></div>
 <div class="ttc" id="classExpandabilityShrinkability_html"><div class="ttname"><a href="classExpandabilityShrinkability.html">ExpandabilityShrinkability</a></div><div class="ttdef"><b>Definition:</b> ExpandabilityShrinkability.h:11</div></div>
+<div class="ttc" id="classExpandedThreadTracker_html_ac063e8477d9c3e506ea297d04f2ec2b9"><div class="ttname"><a href="classExpandedThreadTracker.html#ac063e8477d9c3e506ea297d04f2ec2b9">ExpandedThreadTracker::getPerformanceInfo</a></div><div class="ttdeci">PerformanceInfo &amp; getPerformanceInfo()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:61</div></div>
+<div class="ttc" id="structPerformanceInfo_1_1entry_html_a3a70021f6df66b9c2a1a5b7478e0e3bb"><div class="ttname"><a href="structPerformanceInfo_1_1entry.html#a3a70021f6df66b9c2a1a5b7478e0e3bb">PerformanceInfo::entry::isUpdateToDate</a></div><div class="ttdeci">bool isUpdateToDate()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:183</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a0e19a359e4bf2aff1df263279007dd6f"><div class="ttname"><a href="structPerformanceInfo.html#a0e19a359e4bf2aff1df263279007dd6f">PerformanceInfo::PerformanceInfo</a></div><div class="ttdeci">PerformanceInfo()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:28</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a59f790d68d1d4a428ecc68fca9a10658"><div class="ttname"><a href="structPerformanceInfo.html#a59f790d68d1d4a428ecc68fca9a10658">PerformanceInfo::updateTimeSlicesToCurrentTicks</a></div><div class="ttdeci">void updateTimeSlicesToCurrentTicks()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:158</div></div>
+<div class="ttc" id="structPerformanceInfo_html_abaaed2d2dd45795077066b563729275d"><div class="ttname"><a href="structPerformanceInfo.html#abaaed2d2dd45795077066b563729275d">PerformanceInfo::current_time_slice_start_</a></div><div class="ttdeci">ticks current_time_slice_start_</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:33</div></div>
+<div class="ttc" id="structPerformanceInfo_html_af3992fa64bd57d31e0d0ada9b002c0ad"><div class="ttname"><a href="structPerformanceInfo.html#af3992fa64bd57d31e0d0ada9b002c0ad">PerformanceInfo::report_instance_performance_in_millibytes</a></div><div class="ttdeci">double report_instance_performance_in_millibytes()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:98</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a28b7094aef9ee2845c9109f49fd76dd4"><div class="ttname"><a href="structPerformanceInfo.html#a28b7094aef9ee2845c9109f49fd76dd4">PerformanceInfo::getBlockSumInAllSlices</a></div><div class="ttdeci">unsigned long getBlockSumInAllSlices()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:173</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a33736a282de0b1b452edb5fbc5fa3bde"><div class="ttname"><a href="structPerformanceInfo.html#a33736a282de0b1b452edb5fbc5fa3bde">PerformanceInfo::slices</a></div><div class="ttdeci">unsigned * slices</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:47</div></div>
 <div class="ttc" id="classSpineLock_html"><div class="ttname"><a href="classSpineLock.html">SpineLock</a></div><div class="ttdef"><b>Definition:</b> lock.h:173</div></div>
-<div class="ttc" id="structPerformanceInfo_html"><div class="ttname"><a href="structPerformanceInfo.html">PerformanceInfo</a></div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:23</div></div>
-<div class="ttc" id="classExpandedThreadTracker_html"><div class="ttname"><a href="classExpandedThreadTracker.html">ExpandedThreadTracker</a></div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:60</div></div>
-<div class="ttc" id="structPerformanceInfo_1_1entry_html"><div class="ttname"><a href="structPerformanceInfo_1_1entry.html">PerformanceInfo::entry</a></div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:24</div></div>
+<div class="ttc" id="structPerformanceInfo_html"><div class="ttname"><a href="structPerformanceInfo.html">PerformanceInfo</a></div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:21</div></div>
+<div class="ttc" id="classExpandedThreadTracker_html_a0a91d3c7ba0bc905598c92c6634be659"><div class="ttname"><a href="classExpandedThreadTracker.html#a0a91d3c7ba0bc905598c92c6634be659">ExpandedThreadTracker::ExpandedThreadTracker</a></div><div class="ttdeci">ExpandedThreadTracker(ExpandabilityShrinkability *expand_shrink)</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:126</div></div>
+<div class="ttc" id="classExpandedThreadTracker_html_aa1ec03a6892b0016940d2cb49fbf006c"><div class="ttname"><a href="classExpandedThreadTracker.html#aa1ec03a6892b0016940d2cb49fbf006c">ExpandedThreadTracker::perf_info_</a></div><div class="ttdeci">PerformanceInfo perf_info_</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:64</div></div>
+<div class="ttc" id="structPerformanceInfo_1_1entry_html_a7f710db7ec4259ea5f8f23d79fc32b05"><div class="ttname"><a href="structPerformanceInfo_1_1entry.html#a7f710db7ec4259ea5f8f23d79fc32b05">PerformanceInfo::entry::entry</a></div><div class="ttdeci">entry()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:23</div></div>
+<div class="ttc" id="structPerformanceInfo_html_af5f46fa243f453e7b7d13dd3f3cf8544"><div class="ttname"><a href="structPerformanceInfo.html#af5f46fa243f453e7b7d13dd3f3cf8544">PerformanceInfo::init_ticks_</a></div><div class="ttdeci">unsigned long long int init_ticks_</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:48</div></div>
+<div class="ttc" id="classExpandedThreadTracker_html"><div class="ttname"><a href="classExpandedThreadTracker.html">ExpandedThreadTracker</a></div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:57</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a8cd8060bb47eab8e097d53023749c0b6"><div class="ttname"><a href="structPerformanceInfo.html#a8cd8060bb47eab8e097d53023749c0b6">PerformanceInfo::hitCurrentSlice</a></div><div class="ttdeci">void hitCurrentSlice()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:154</div></div>
+<div class="ttc" id="structPerformanceInfo_html_aec33e28656a21261f962ac4c1cc20999"><div class="ttname"><a href="structPerformanceInfo.html#aec33e28656a21261f962ac4c1cc20999">PerformanceInfo::lock_</a></div><div class="ttdeci">SpineLock lock_</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:44</div></div>
+<div class="ttc" id="structPerformanceInfo_1_1entry_html"><div class="ttname"><a href="structPerformanceInfo_1_1entry.html">PerformanceInfo::entry</a></div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:22</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a3e31d422790e2c88e89e8934942b7e89"><div class="ttname"><a href="structPerformanceInfo.html#a3e31d422790e2c88e89e8934942b7e89">PerformanceInfo::expand_shrink_</a></div><div class="ttdeci">ExpandabilityShrinkability * expand_shrink_</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:52</div></div>
+<div class="ttc" id="structPerformanceInfo_1_1entry_html_a5c6caeebc3dfec1e96b03e195873d539"><div class="ttname"><a href="structPerformanceInfo_1_1entry.html#a5c6caeebc3dfec1e96b03e195873d539">PerformanceInfo::entry::performance</a></div><div class="ttdeci">float performance</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:23</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a4738b19dbb4b5f291722077db7b2bef4"><div class="ttname"><a href="structPerformanceInfo.html#a4738b19dbb4b5f291722077db7b2bef4">PerformanceInfo::processed_one_block</a></div><div class="ttdeci">void processed_one_block()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:46</div></div>
+<div class="ttc" id="classExpandedThreadTracker_html_a23aa8c6168910ed64c8a03cf252ae3da"><div class="ttname"><a href="classExpandedThreadTracker.html#a23aa8c6168910ed64c8a03cf252ae3da">ExpandedThreadTracker::~ExpandedThreadTracker</a></div><div class="ttdeci">virtual ~ExpandedThreadTracker()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:131</div></div>
+<div class="ttc" id="structPerformanceInfo_html_a9c87ee812c77360f97334924983f0199"><div class="ttname"><a href="structPerformanceInfo.html#a9c87ee812c77360f97334924983f0199">PerformanceInfo::~PerformanceInfo</a></div><div class="ttdeci">~PerformanceInfo()</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.cpp:169</div></div>
+<div class="ttc" id="ExpandedThreadTracker_8h_html_a3f5c395a25e004d3ed9d901b2d0474c6"><div class="ttname"><a href="ExpandedThreadTracker_8h.html#a3f5c395a25e004d3ed9d901b2d0474c6">timestamp</a></div><div class="ttdeci">unsigned long long int timestamp</div><div class="ttdef"><b>Definition:</b> ExpandedThreadTracker.h:19</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><b>ExpandedThreadTracker.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="ExpandedThreadTracker_8h.html">ExpandedThreadTracker.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

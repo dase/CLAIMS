@@ -128,14 +128,15 @@ PlanContext LogicalAggregation::GetPlanContext() {
   ChangeAggAttrsForAVG();
   // initialize expression of group_by_attrs and aggregation_attrs
   Schema* input_schema = GetSchema(child_context.attribute_list_);
-  set_column_id(child_context);
+  map<string, int> column_to_id;
+  GetColumnToId(child_context.attribute_list_, column_to_id);
   for (int i = 0; i < group_by_attrs_.size(); ++i) {
     group_by_attrs_[i]->InitExprAtLogicalPlan(group_by_attrs_[i]->actual_type_,
-                                              column_id_, input_schema);
+                                              column_to_id, input_schema);
   }
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
     aggregation_attrs_[i]->InitExprAtLogicalPlan(
-        aggregation_attrs_[i]->actual_type_, column_id_, input_schema);
+        aggregation_attrs_[i]->actual_type_, column_to_id, input_schema);
   }
 
   if (CanOmitHashRepartition(child_context)) {
@@ -233,19 +234,10 @@ bool LogicalAggregation::CanOmitHashRepartition(
   }
   return false;
 }
-void LogicalAggregation::set_column_id(const PlanContext& plan_context) {
-  for (int i = 0; i < plan_context.attribute_list_.size(); ++i) {
-    /**
-     * Traverse the attribute_list_，store the attribute name and index into
-     * column_id.
-     */
-    column_id_[plan_context.attribute_list_[i].attrName] = i;
-  }
-}
 /** replace each group by output attributes with one column, and change every
  * agg(expr) to agg(column[agg_expr_name]), for example: select sum(c)/2 from
- * TB group by a+b; => select sum(column["NULL_AGG","sum(c)/2"]) from TB group
- * by column[ "NULL_AGG", "a+b" ];
+ * TB group by a+b; => select sum(column["NULL_MID","sum(c)/2"]) from TB group
+ * by column[ "NULL_MID", "a+b" ];
  * then initialize the new expression.
  */
 void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
@@ -257,17 +249,17 @@ void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
   int group_by_size = group_by_attrs_.size();
   // map column name to id
   for (int i = 0; i < group_by_size; ++i) {
-    column_to_id["NULL_AGG." + group_by_attrs_[i]->alias_] = i;
+    column_to_id["NULL_MID." + group_by_attrs_[i]->alias_] = i;
   }
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
-    column_to_id["NULL_AGG." + aggregation_attrs_[i]->alias_] =
+    column_to_id["NULL_MID." + aggregation_attrs_[i]->alias_] =
         i + group_by_size;
   }
   // reconstruct group by attributes and initialize them
   for (int i = 0; i < group_by_attrs_.size(); ++i) {
     group_by_node = new ExprColumn(
         ExprNodeType::t_qcolcumns, group_by_attrs_[i]->actual_type_,
-        group_by_attrs_[i]->alias_, "NULL_AGG", group_by_attrs_[i]->alias_);
+        group_by_attrs_[i]->alias_, "NULL_MID", group_by_attrs_[i]->alias_);
     group_by_node->InitExprAtLogicalPlan(group_by_node->actual_type_,
                                          column_to_id, input_schema);
     group_by_attrs.push_back(group_by_node);
@@ -279,7 +271,7 @@ void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
         aggregation_attrs_[i]->alias_, aggregation_attrs_[i]->oper_type_,
         new ExprColumn(ExprNodeType::t_qexpr,
                        aggregation_attrs_[i]->actual_type_,
-                       aggregation_attrs_[i]->alias_, "NULL_AGG",
+                       aggregation_attrs_[i]->alias_, "NULL_MID",
                        aggregation_attrs_[i]->alias_));
     agg_node->InitExprAtLogicalPlan(agg_node->actual_type_, column_to_id,
                                     input_schema);
@@ -443,35 +435,44 @@ int64_t LogicalAggregation::EstimateGroupByCardinality(
 #endif
 }
 void LogicalAggregation::Print(int level) const {
-  printf("%*.sAggregation: aggregation_style: ", level * 8, " ");
+  cout << setw(level * kTabSize) << " "
+       << "Aggregation: " << endl;
+  ++level;
   switch (aggregation_style_) {
     case kLocalAgg: {
-      printf("kLocalAgg\n");
+      cout << setw(level * kTabSize) << " "
+           << "kLocalAgg" << endl;
       break;
     }
     case kReparGlobalAgg: {
-      printf("kReparGlobalAgg\n");
+      cout << setw(level * kTabSize) << " "
+           << "kReparGlobalAgg" << endl;
       break;
     }
     case kLocalAggReparGlobalAgg: {
-      printf("kLocalAggReparGlobalAgg!\n");
+      cout << setw(level * kTabSize) << " "
+           << "kLocalAggReparGlobalAgg!" << endl;
       break;
     }
-    default: { printf("aggregation style is not given!\n"); }
+    default: {
+      cout << setw(level * kTabSize) << " "
+           << "aggregation style is not given!" << endl;
+    }
   }
 
-  cout << setw(level * kTabSize) << " "
-       << "group by attributes:" << endl;
+  cout << setw((level - 1) * kTabSize) << " "
+       << "## group by attributes:" << endl;
   for (int i = 0; i < group_by_attrs_.size(); ++i) {
-    cout << setw(level * kTabSize) << " " << group_by_attrs_[i]->alias_ << endl;
+    cout << "    " << group_by_attrs_[i]->alias_ << endl;
   }
-  cout << setw(level * kTabSize) << " "
-       << "aggregation attributes:" << endl;
+  cout << setw((level - 1) * kTabSize) << " "
+       << "## aggregation attributes:" << endl;
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
     cout << setw(level * kTabSize) << " " << aggregation_attrs_[i]->alias_
          << endl;
   }
-  child_->Print(level + 1);
+  --level;
+  child_->Print(level);
 }
 }  // namespace logical_operator
 }  // namespace claims

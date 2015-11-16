@@ -1,4 +1,4 @@
-.TH "Comparator::Pair" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Comparator::Pair" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ Comparator::Pair \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Comparator\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBPair\fP (\fBcolumn_type\fP first, \fBcolumn_type\fP second)"
+.RI "\fBPair\fP (\fBcolumn_type\fP \fBfirst\fP, \fBcolumn_type\fP \fBsecond\fP)"
+.br
+.ti -1c
+.RI "\fBPair\fP ()"
 .br
 .ti -1c
 .RI "bool \fBoperator==\fP (const struct \fBComparator::Pair\fP &p) const "
@@ -39,7 +44,41 @@ Comparator::Pair \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Comparator::Pair::Pair (\fBcolumn_type\fPfirst, \fBcolumn_type\fPsecond)\fC [inline]\fP"
+
+.SS "Comparator::Pair::Pair ()\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool Comparator::Pair::operator< (const struct \fBComparator::Pair\fP &p) const\fC [inline]\fP"
+
+.PP
+References DATA_TYPE_NUMBER, first, second, and column_type::type\&.
+.SS "bool Comparator::Pair::operator== (const struct \fBComparator::Pair\fP &p) const\fC [inline]\fP"
+
+.PP
+References first, and second\&.
+.SS "template<class Archive > void Comparator::Pair::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP"
+
+.PP
+References first, and second\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBcolumn_type\fP Comparator::Pair::first"
+
+.PP
+Referenced by Comparator::iniatilize(), operator<(), operator==(), and serialize()\&.
+.SS "\fBcolumn_type\fP Comparator::Pair::second"
+
+.PP
+Referenced by AttributeComparator::AttributeComparator(), Comparator::iniatilize(), operator<(), operator==(), serialize(), and AttributeComparator::serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

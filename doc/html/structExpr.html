@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Expr Struct Reference</title>
+<title>Claims: Expr Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,16 +111,45 @@ $(document).ready(function(){initNavTree('structExpr.html','');});
 <div class="title">Expr Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="sql__node__struct_8h_source.html">sql_node_struct.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a8ebec78fb26c823d1749b03795a5aeae"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8ebec78fb26c823d1749b03795a5aeae"></a>
-nodetype&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
+<tr class="memitem:a8ebec78fb26c823d1749b03795a5aeae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="sql__node__struct_8h.html#a618f7f5866526d01adfc6c50c3250898">nodetype</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structExpr.html#a8ebec78fb26c823d1749b03795a5aeae">type</a></td></tr>
 <tr class="separator:a8ebec78fb26c823d1749b03795a5aeae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86e48e90a601b31c72387b05574156bf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a86e48e90a601b31c72387b05574156bf"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>data</b></td></tr>
+<tr class="memitem:a86e48e90a601b31c72387b05574156bf"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structExpr.html#a86e48e90a601b31c72387b05574156bf">data</a></td></tr>
 <tr class="separator:a86e48e90a601b31c72387b05574156bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a86e48e90a601b31c72387b05574156bf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* Expr::data</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="ExecuteLogicalQueryPlan_8h.html#ad001fcfe24bcc03c3bb1eb752712e046">CheckType()</a>, <a class="el" href="preprocess_8cpp.html#aa113ae6cfa26a77ca7ae1249410fed4c">expr_to_str()</a>, <a class="el" href="parsetree2logicalplan_8cpp.html#aed2ba834b9286ec4213397afce29284b">get_orderby_column_from_selectlist()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a30eeb02107153bbdf6556f6844c42e2d">InsertValueToStream()</a>, <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed">LoadData()</a>, <a class="el" href="sql__node__struct_8h.html#ab2acdda56ae2c94f8c20ca927c7c027a">newExpr()</a>, <a class="el" href="sql__node__struct_8h.html#a9e160fc351b8f9ca98efe4249ecd908c">output()</a>, and <a class="el" href="initquery_8h.html#a64107350191726c80a384af224a375cc">transformqual()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8ebec78fb26c823d1749b03795a5aeae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="sql__node__struct_8h.html#a618f7f5866526d01adfc6c50c3250898">nodetype</a> Expr::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="ExecuteLogicalQueryPlan_8h.html#ad001fcfe24bcc03c3bb1eb752712e046">CheckType()</a>, and <a class="el" href="sql__node__struct_8h.html#ab2acdda56ae2c94f8c20ca927c7c027a">newExpr()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>Parsetree/<a class="el" href="sql__node__struct_8h_source.html">sql_node_struct.h</a></li>
 </ul>

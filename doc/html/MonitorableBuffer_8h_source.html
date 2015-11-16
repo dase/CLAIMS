@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Block/MonitorableBuffer.h Source File</title>
+<title>Claims: common/Block/MonitorableBuffer.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('MonitorableBuffer_8h_source.html','');
 <div class="title">MonitorableBuffer.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="MonitorableBuffer_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * MonitorableBuffer.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Mar 27, 2014</span></div>
@@ -120,24 +120,31 @@ $(document).ready(function(){initNavTree('MonitorableBuffer_8h_source.html','');
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classMonitorableBuffer.html">   13</a></span>&#160;<span class="preprocessor"></span><span class="keyword">class </span><a class="code" href="classMonitorableBuffer.html">MonitorableBuffer</a> {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <a class="code" href="classMonitorableBuffer.html">MonitorableBuffer</a>();</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classMonitorableBuffer.html">MonitorableBuffer</a>();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">double</span> getBufferUsage()=0;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">long</span> getReceivedDataSizeInKbytes() =0;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">void</span> setInputComplete();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">bool</span> inputComplete()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <a class="code" href="classMonitorableBuffer.html#aa90a8f4287998b8f09690f387cdf0cab">MonitorableBuffer</a>();</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classMonitorableBuffer.html#a528355a5205e10172a1b36ce4da56591">~MonitorableBuffer</a>();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">double</span> <a class="code" href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3">getBufferUsage</a>()=0;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">long</span> <a class="code" href="classMonitorableBuffer.html#ad36415c360d5d7c11f61e794e0cdfefa">getReceivedDataSizeInKbytes</a>() =0;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classMonitorableBuffer.html#ac4b944bcc1d2a1efede8ab37d643a709">setInputComplete</a>();</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7">inputComplete</a>()<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">bool</span> input_complete_;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classMonitorableBuffer.html#a9f4d926390314618fc2968694054058f">   22</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classMonitorableBuffer.html#a9f4d926390314618fc2968694054058f">input_complete_</a>;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* MONITORABLEBUFFER_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classMonitorableBuffer_html_a998e5c4e335957e380a58625604843f3"><div class="ttname"><a href="classMonitorableBuffer.html#a998e5c4e335957e380a58625604843f3">MonitorableBuffer::getBufferUsage</a></div><div class="ttdeci">virtual double getBufferUsage()=0</div></div>
+<div class="ttc" id="classMonitorableBuffer_html_a528355a5205e10172a1b36ce4da56591"><div class="ttname"><a href="classMonitorableBuffer.html#a528355a5205e10172a1b36ce4da56591">MonitorableBuffer::~MonitorableBuffer</a></div><div class="ttdeci">virtual ~MonitorableBuffer()</div><div class="ttdef"><b>Definition:</b> MonitorableBuffer.cpp:14</div></div>
+<div class="ttc" id="classMonitorableBuffer_html_a06e10b5331d5dab464ae48b87e3275e7"><div class="ttname"><a href="classMonitorableBuffer.html#a06e10b5331d5dab464ae48b87e3275e7">MonitorableBuffer::inputComplete</a></div><div class="ttdeci">bool inputComplete() const </div><div class="ttdef"><b>Definition:</b> MonitorableBuffer.cpp:21</div></div>
+<div class="ttc" id="classMonitorableBuffer_html_a9f4d926390314618fc2968694054058f"><div class="ttname"><a href="classMonitorableBuffer.html#a9f4d926390314618fc2968694054058f">MonitorableBuffer::input_complete_</a></div><div class="ttdeci">bool input_complete_</div><div class="ttdef"><b>Definition:</b> MonitorableBuffer.h:22</div></div>
+<div class="ttc" id="classMonitorableBuffer_html_ac4b944bcc1d2a1efede8ab37d643a709"><div class="ttname"><a href="classMonitorableBuffer.html#ac4b944bcc1d2a1efede8ab37d643a709">MonitorableBuffer::setInputComplete</a></div><div class="ttdeci">void setInputComplete()</div><div class="ttdef"><b>Definition:</b> MonitorableBuffer.cpp:18</div></div>
+<div class="ttc" id="classMonitorableBuffer_html_aa90a8f4287998b8f09690f387cdf0cab"><div class="ttname"><a href="classMonitorableBuffer.html#aa90a8f4287998b8f09690f387cdf0cab">MonitorableBuffer::MonitorableBuffer</a></div><div class="ttdeci">MonitorableBuffer()</div><div class="ttdef"><b>Definition:</b> MonitorableBuffer.cpp:10</div></div>
 <div class="ttc" id="classMonitorableBuffer_html"><div class="ttname"><a href="classMonitorableBuffer.html">MonitorableBuffer</a></div><div class="ttdef"><b>Definition:</b> MonitorableBuffer.h:13</div></div>
+<div class="ttc" id="classMonitorableBuffer_html_ad36415c360d5d7c11f61e794e0cdfefa"><div class="ttname"><a href="classMonitorableBuffer.html#ad36415c360d5d7c11f61e794e0cdfefa">MonitorableBuffer::getReceivedDataSizeInKbytes</a></div><div class="ttdeci">virtual long getReceivedDataSizeInKbytes()=0</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><b>MonitorableBuffer.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><a class="el" href="MonitorableBuffer_8h.html">MonitorableBuffer.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

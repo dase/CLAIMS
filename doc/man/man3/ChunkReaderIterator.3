@@ -1,4 +1,4 @@
-.TH "ChunkReaderIterator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ChunkReaderIterator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ChunkReaderIterator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ChunkStorage\&.h>\fP
 .PP
 Inherited by \fBDiskChunkReaderIteraror\fP, \fBHDFSChunkReaderIterator\fP, and \fBInMemoryChunkReaderItetaor\fP\&.
 .SS "Classes"
@@ -28,7 +30,7 @@ Inherited by \fBDiskChunkReaderIteraror\fP, \fBHDFSChunkReaderIterator\fP, and \
 
 .in +1c
 .ti -1c
-.RI "\fBChunkReaderIterator\fP (const \fBChunkID\fP &chunk_id, unsigned block_size, unsigned chunk_size, const unsigned &number_of_blocks=0)"
+.RI "\fBChunkReaderIterator\fP (const \fBChunkID\fP &chunk_id, unsigned \fBblock_size\fP, unsigned chunk_size, const unsigned &number_of_blocks=0)"
 .br
 .ti -1c
 .RI "virtual bool \fBnextBlock\fP (\fBBlockStreamBase\fP *&block)=0"
@@ -38,6 +40,9 @@ Inherited by \fBDiskChunkReaderIteraror\fP, \fBHDFSChunkReaderIterator\fP, and \
 .br
 .ti -1c
 .RI "bool \fBnextBlock\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~ChunkReaderIterator\fP ()"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -62,7 +67,57 @@ Inherited by \fBDiskChunkReaderIteraror\fP, \fBHDFSChunkReaderIterator\fP, and \
 .RI "unsigned \fBchunk_size_\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ChunkReaderIterator::ChunkReaderIterator (const \fBChunkID\fP &chunk_id, unsignedblock_size, unsignedchunk_size, const unsigned &number_of_blocks = \fC0\fP)\fC [inline]\fP"
+
+.SS "virtual ChunkReaderIterator::~ChunkReaderIterator ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool ChunkReaderIterator::getNextBlockAccessor (\fBblock_accessor\fP *&ba)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBHDFSChunkReaderIterator\fP, \fBDiskChunkReaderIteraror\fP, and \fBInMemoryChunkReaderItetaor\fP\&.
+.PP
+Referenced by claims::physical_operator::PhysicalProjectionScan::Open()\&.
+.SS "virtual bool ChunkReaderIterator::nextBlock (\fBBlockStreamBase\fP *&block)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBHDFSChunkReaderIterator\fP, \fBDiskChunkReaderIteraror\fP, and \fBInMemoryChunkReaderItetaor\fP\&.
+.PP
+Referenced by bottomLayerCollecting::askForNextBlock(), and IndexScanIterator::askForNextBlock()\&.
+.SS "bool ChunkReaderIterator::nextBlock ()"
+
+.PP
+References Lock::acquire(), cur_block_, lock_, number_of_blocks_, and Lock::release()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned ChunkReaderIterator::block_size_"
+
+.PP
+Referenced by DiskChunkReaderIteraror::DiskChunkReaderIteraror(), InMemoryChunkReaderItetaor::getNextBlockAccessor(), DiskChunkReaderIteraror::getNextBlockAccessor(), HDFSChunkReaderIterator::getNextBlockAccessor(), HDFSChunkReaderIterator::HDFSChunkReaderIterator(), InMemoryChunkReaderItetaor::nextBlock(), DiskChunkReaderIteraror::nextBlock(), and HDFSChunkReaderIterator::nextBlock()\&.
+.SS "\fBChunkID\fP ChunkReaderIterator::chunk_id_"
+
+.PP
+Referenced by DiskChunkReaderIteraror::DiskChunkReaderIteraror(), DiskChunkReaderIteraror::getNextBlockAccessor(), HDFSChunkReaderIterator::getNextBlockAccessor(), and HDFSChunkReaderIterator::HDFSChunkReaderIterator()\&.
+.SS "unsigned ChunkReaderIterator::chunk_size_"
+
+.PP
+Referenced by DiskChunkReaderIteraror::getNextBlockAccessor(), and HDFSChunkReaderIterator::getNextBlockAccessor()\&.
+.SS "unsigned ChunkReaderIterator::cur_block_"
+
+.PP
+Referenced by InMemoryChunkReaderItetaor::getNextBlockAccessor(), DiskChunkReaderIteraror::getNextBlockAccessor(), HDFSChunkReaderIterator::getNextBlockAccessor(), nextBlock(), InMemoryChunkReaderItetaor::nextBlock(), DiskChunkReaderIteraror::nextBlock(), and HDFSChunkReaderIterator::nextBlock()\&.
+.SS "\fBLock\fP ChunkReaderIterator::lock_"
+
+.PP
+Referenced by InMemoryChunkReaderItetaor::getNextBlockAccessor(), DiskChunkReaderIteraror::getNextBlockAccessor(), HDFSChunkReaderIterator::getNextBlockAccessor(), nextBlock(), InMemoryChunkReaderItetaor::nextBlock(), DiskChunkReaderIteraror::nextBlock(), and HDFSChunkReaderIterator::nextBlock()\&.
+.SS "unsigned ChunkReaderIterator::number_of_blocks_"
+
+.PP
+Referenced by DiskChunkReaderIteraror::DiskChunkReaderIteraror(), InMemoryChunkReaderItetaor::getNextBlockAccessor(), DiskChunkReaderIteraror::getNextBlockAccessor(), HDFSChunkReaderIterator::getNextBlockAccessor(), HDFSChunkReaderIterator::HDFSChunkReaderIterator(), nextBlock(), InMemoryChunkReaderItetaor::nextBlock(), DiskChunkReaderIteraror::nextBlock(), and HDFSChunkReaderIterator::nextBlock()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

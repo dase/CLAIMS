@@ -1,7 +1,7 @@
 var namespacettmath =
 [
     [ "Int", "classttmath_1_1Int.html", "classttmath_1_1Int" ],
-    [ "Misc", "classttmath_1_1Misc.html", null ],
+    [ "Misc", "classttmath_1_1Misc.html", "classttmath_1_1Misc" ],
     [ "Conv", "structttmath_1_1Conv.html", "structttmath_1_1Conv" ],
     [ "StopCalculating", "classttmath_1_1StopCalculating.html", "classttmath_1_1StopCalculating" ],
     [ "ExceptionInfo", "classttmath_1_1ExceptionInfo.html", "classttmath_1_1ExceptionInfo" ],

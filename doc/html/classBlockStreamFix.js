@@ -1,5 +1,6 @@
 var classBlockStreamFix =
 [
+    [ "tail_info", "structBlockStreamFix_1_1tail__info.html", "structBlockStreamFix_1_1tail__info" ],
     [ "BlockStreamFix", "classBlockStreamFix.html#a48ea4cf20b5d62cd894fdfe56ebe311b", null ],
     [ "BlockStreamFix", "classBlockStreamFix.html#a2a94a6e019fdef195a4d8715fca6e0f9", null ],
     [ "~BlockStreamFix", "classBlockStreamFix.html#aa4f48e351b6c2cf3a2a2d0ecf8e48991", null ],

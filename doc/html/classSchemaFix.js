@@ -18,7 +18,10 @@ var classSchemaFix =
     [ "getTupleMaxSize", "classSchemaFix.html#a090a83014e962bf74da06894c8ac7b69", null ],
     [ "getTupleSize", "classSchemaFix.html#ae555bad3e1c8098c38931184d142e0cb", null ],
     [ "ingetTupleActualSize", "classSchemaFix.html#acf190747509b19b8ccbc7bc9a69c53c8", null ],
+    [ "serialize", "classSchemaFix.html#ae0321ce788e7e629cad30fadefc2d539", null ],
     [ "showAccum_off", "classSchemaFix.html#ad099e73a048d2d7a589f0a144fab69aa", null ],
     [ "toValue", "classSchemaFix.html#a4efa7fdd77be2c63b78bf74013853af3", null ],
-    [ "boost::serialization::access", "classSchemaFix.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "boost::serialization::access", "classSchemaFix.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "accum_offsets", "classSchemaFix.html#af822be9a7a95a1ee356724959657578a", null ],
+    [ "totalsize", "classSchemaFix.html#a7255b2f31dc3c87b57cc2e4cae58fae5", null ]
 ];

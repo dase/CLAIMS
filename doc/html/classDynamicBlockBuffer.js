@@ -10,5 +10,7 @@ var classDynamicBlockBuffer =
     [ "destory", "classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3", null ],
     [ "getBlock", "classDynamicBlockBuffer.html#ae7fae9156ab422e5137f9f3284d37b3e", null ],
     [ "getNumberOfBlocks", "classDynamicBlockBuffer.html#a06dc2e73451520ec30bc2e254a179da5", null ],
-    [ "getNumberOftuples", "classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e", null ]
+    [ "getNumberOftuples", "classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e", null ],
+    [ "block_list_", "classDynamicBlockBuffer.html#a62b0a7d48d0cd458c3023c2a2c63e488", null ],
+    [ "lock_", "classDynamicBlockBuffer.html#a43a45944ad2241ce7a78aee6e2cc40c2", null ]
 ];

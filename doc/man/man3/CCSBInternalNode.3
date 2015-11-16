@@ -1,4 +1,4 @@
-.TH "CCSBInternalNode< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CCSBInternalNode< T >" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,10 +7,18 @@ CCSBInternalNode< T > \-
 .br
 .PP
 .PP
+\fC#include <CSBPlusTree\&.h>\fP
+.PP
 Inherits \fBCCSBNode< T >\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBCCSBInternalNode\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~CCSBInternalNode\fP ()"
+.br
 .ti -1c
 .RI "bool \fBsetUsedKeys\fP (int count)"
 .br
@@ -59,8 +67,79 @@ Inherits \fBCCSBNode< T >\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T > \fBCCSBInternalNode\fP< T >::\fBCCSBInternalNode\fP ()"
+
+.PP
+References INVALID, and NULL\&.
+.SS "template<typename T > \fBCCSBInternalNode\fP< T >::~\fBCCSBInternalNode\fP ()\fC [virtual]\fP"
+
+.PP
+References NULL\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T > bool \fBCCSBInternalNode\fP< T >::Combine (\fBCCSBNode\fP< T > *pNode)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBInternalNode\fP< T >::Delete (Tvalue)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > void \fBCCSBInternalNode\fP< T >::DeleteChildren ()\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBInternalNode\fP< T >::deserialize (FILE *filename)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+Referenced by CCSBInternalNodeGroup< T >::deserialize()\&.
+.SS "template<typename T> \fBdata_offset\fP<T> \fBCCSBInternalNode\fP< T >::getElement (unsignedi)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+References data_offset< T >::_block_off, data_offset< T >::_key, data_offset< T >::_tuple_off, and INVALID\&.
+.SS "template<typename T> \fBCCSBNodeGroup\fP<T>* \fBCCSBInternalNode\fP< T >::getPointer ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBInternalNode\fP< T >::Insert (Tkey)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > bool \fBCCSBInternalNode\fP< T >::serialize (FILE *filename)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T> bool \fBCCSBInternalNode\fP< T >::setElement (unsignedi, Tkey)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T> void \fBCCSBInternalNode\fP< T >::setPointer (\fBCCSBNodeGroup\fP< T > *pointer)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T> bool \fBCCSBInternalNode\fP< T >::setUsedKeys (intcount)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.SS "template<typename T > T \fBCCSBInternalNode\fP< T >::SplitInsert (\fBCCSBNode\fP< T > *pNode, Tkey)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBCCSBNode< T >\fP\&.
+.PP
+References CCSBNode< T >::getElement(), CCSBNode< T >::Insert(), INVALID, CCSBNode< T >::setElement(), and CCSBNode< T >::setUsedKeys()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "template<typename T> T* \fBCCSBInternalNode\fP< T >::node_keys"
+
+.SS "template<typename T> \fBCCSBNodeGroup\fP<T>* \fBCCSBInternalNode\fP< T >::p_child_node_group"
 
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

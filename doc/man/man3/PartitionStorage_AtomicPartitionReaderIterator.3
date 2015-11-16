@@ -1,4 +1,4 @@
-.TH "PartitionStorage::AtomicPartitionReaderIterator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PartitionStorage::AtomicPartitionReaderIterator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ PartitionStorage::AtomicPartitionReaderIterator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <PartitionStorage\&.h>\fP
 .PP
 Inherits \fBPartitionStorage::PartitionReaderItetaor\fP\&.
 .SS "Public Member Functions"
@@ -15,15 +17,48 @@ Inherits \fBPartitionStorage::PartitionReaderItetaor\fP\&.
 .RI "\fBAtomicPartitionReaderIterator\fP (\fBPartitionStorage\fP *partition_storage)"
 .br
 .ti -1c
+.RI "virtual \fB~AtomicPartitionReaderIterator\fP ()"
+.br
+.ti -1c
 .RI "\fBChunkReaderIterator\fP * \fBnextChunk\fP ()"
 .br
 .ti -1c
 .RI "virtual bool \fBnextBlock\fP (\fBBlockStreamBase\fP *&block)"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBLock\fP \fBlock_\fP"
+.br
+.in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PartitionStorage::AtomicPartitionReaderIterator::AtomicPartitionReaderIterator (\fBPartitionStorage\fP *partition_storage)\fC [inline]\fP"
+
+.SS "PartitionStorage::AtomicPartitionReaderIterator::~AtomicPartitionReaderIterator ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool PartitionStorage::AtomicPartitionReaderIterator::nextBlock (\fBBlockStreamBase\fP *&block)\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBPartitionStorage::PartitionReaderItetaor\fP\&.
+.PP
+References ChunkReaderIterator::block_accessor::getBlock(), and PartitionStorage::PartitionReaderItetaor::nextChunk()\&.
+.SS "\fBChunkReaderIterator\fP * PartitionStorage::AtomicPartitionReaderIterator::nextChunk ()\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBPartitionStorage::PartitionReaderItetaor\fP\&.
+.PP
+References PartitionStorage::number_of_chunks_\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBLock\fP PartitionStorage::AtomicPartitionReaderIterator::lock_\fC [private]\fP"
 
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -40,8 +40,6 @@ namespace logical_operator {
  * but in the current version, return_tuples_ can't get -1, we use another
  * method to control the value of it.
  */
-#define NEWLIMIT
-#ifdef NEWLIMIT
 class LogicalLimit : public LogicalOperator {
  public:
   /**
@@ -98,22 +96,6 @@ class LogicalLimit : public LogicalOperator {
   int64_t returned_tuples_;
   int64_t start_position_;
 };
-#else
-class LimitConstraint {
- public:
-  LimitConstraint(unsigned long return_tuples);
-  LimitConstraint(unsigned long return_tuples, unsigned long position);
-  // TODO(HanZhang):The positions of parameters is reverse, we should make
-  // sure where the function called.
-  LimitConstraint();
-  // virtual ~LimitConstraint();
-  bool CanBeOmitted() const;
-
- public:
-  unsigned long start_position_;
-  unsigned long returned_tuples_;
-};
-#endif
 }  // namespace logical_operator
 }  // namespace claims
 

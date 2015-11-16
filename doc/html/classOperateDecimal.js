@@ -20,6 +20,7 @@ var classOperateDecimal =
     [ "multiple", "classOperateDecimal.html#aa3fb29a72697492805047d9a858bfa0e", null ],
     [ "setNull", "classOperateDecimal.html#a9247400da8963e5df1a65d761953c081", null ],
     [ "toString", "classOperateDecimal.html#a26d99489f3781d81f67cfc9e2007cfa0", null ],
+    [ "toString", "classOperateDecimal.html#a10dd4f941b3cf92c002a1e92cb196e47", null ],
     [ "toValue", "classOperateDecimal.html#ae4571eeaef457a8ea2e92dc94782476e", null ],
     [ "number_of_decimal_digits_", "classOperateDecimal.html#a5f46d8b588418cff1cf35ed1e51f437a", null ]
 ];

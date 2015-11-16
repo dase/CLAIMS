@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: storage/DiskStore.h Source File</title>
+<title>Claims: storage/DiskStore.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('DiskStore_8h_source.html','');});
 <div class="title">DiskStore.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="DiskStore_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * DiskStore.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: 2013-10-11</span></div>
@@ -127,7 +127,7 @@ $(document).ready(function(){initNavTree('DiskStore_8h_source.html','');});
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor"></span><span class="keyword">using namespace </span>std;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;BlockStore.h&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="BlockStore_8h.html">BlockStore.h</a>&quot;</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;sys/stat.h&gt;</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;sys/types.h&gt;</span></div>
@@ -138,41 +138,48 @@ $(document).ready(function(){initNavTree('DiskStore_8h_source.html','');});
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classDiskStore.html">DiskStore</a>();</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="comment">// 存到磁盘上的时候是用blockId来命名的</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">bool</span> putValue(<span class="keywordtype">string</span> blockId,<span class="keywordtype">void</span> *value){</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classDiskStore.html#a62d2b78239f85f156ddf262f99c59789">   33</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classDiskStore.html#a62d2b78239f85f156ddf262f99c59789">putValue</a>(<span class="keywordtype">string</span> blockId,<span class="keywordtype">void</span> *value){</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">void</span> *getChunk(<span class="keywordtype">string</span> blockId){</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classDiskStore.html#ae64a14e4a3f234bd7f5f8342d6cc4ab0">   36</a></span>&#160;    <span class="keywordtype">void</span> *<a class="code" href="classDiskStore.html#ae64a14e4a3f234bd7f5f8342d6cc4ab0">getChunk</a>(<span class="keywordtype">string</span> blockId){</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="comment">// todo: 将blockId对应的文件mmap到内存中，然后返回内存的指针</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    }</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">bool</span> <span class="keyword">remove</span>(<span class="keywordtype">string</span> blockId){</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classDiskStore.html#a80971afa023d086dfab20145ffa203cf">   40</a></span>&#160;    <span class="keywordtype">bool</span> <span class="keyword">remove</span>(<span class="keywordtype">string</span> blockId){</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">bool</span> contains(<span class="keywordtype">string</span> blockId){</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classDiskStore.html#a5ed16141456328a12131a7f869760481">   43</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classDiskStore.html#a5ed16141456328a12131a7f869760481">contains</a>(<span class="keywordtype">string</span> blockId){</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">unsigned</span> getSize(<span class="keywordtype">string</span> blockId){</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classDiskStore.html#a284ca273466861cb09fbff9707c268f2">   46</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classDiskStore.html#a284ca273466861cb09fbff9707c268f2">getSize</a>(<span class="keywordtype">string</span> blockId){</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">bool</span> getFile(<span class="keywordtype">string</span> blockId){</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classDiskStore.html#aa75e0d2419c5a78101e689b3694d3fd4">   50</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classDiskStore.html#aa75e0d2419c5a78101e689b3694d3fd4">getFile</a>(<span class="keywordtype">string</span> blockId){</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    }</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="comment">// 创建给定路径的目录</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">bool</span> createDirs(<span class="keywordtype">string</span> rootDirs);</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">string</span> rootDirs_;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classDiskStore.html#a4eaf7e595840f76af22191df9e74f310">   57</a></span>&#160;    <span class="keywordtype">string</span> <a class="code" href="classDiskStore.html#a4eaf7e595840f76af22191df9e74f310">rootDirs_</a>;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;};</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* DISKSTORE_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="classDiskStore_html"><div class="ttname"><a href="classDiskStore.html">DiskStore</a></div><div class="ttdef"><b>Definition:</b> DiskStore.h:27</div></div>
+<div class="ttc" id="classDiskStore_html_ae64a14e4a3f234bd7f5f8342d6cc4ab0"><div class="ttname"><a href="classDiskStore.html#ae64a14e4a3f234bd7f5f8342d6cc4ab0">DiskStore::getChunk</a></div><div class="ttdeci">void * getChunk(string blockId)</div><div class="ttdef"><b>Definition:</b> DiskStore.h:36</div></div>
+<div class="ttc" id="classDiskStore_html_aa75e0d2419c5a78101e689b3694d3fd4"><div class="ttname"><a href="classDiskStore.html#aa75e0d2419c5a78101e689b3694d3fd4">DiskStore::getFile</a></div><div class="ttdeci">bool getFile(string blockId)</div><div class="ttdef"><b>Definition:</b> DiskStore.h:50</div></div>
+<div class="ttc" id="classDiskStore_html_a284ca273466861cb09fbff9707c268f2"><div class="ttname"><a href="classDiskStore.html#a284ca273466861cb09fbff9707c268f2">DiskStore::getSize</a></div><div class="ttdeci">unsigned getSize(string blockId)</div><div class="ttdef"><b>Definition:</b> DiskStore.h:46</div></div>
+<div class="ttc" id="classDiskStore_html_a4eaf7e595840f76af22191df9e74f310"><div class="ttname"><a href="classDiskStore.html#a4eaf7e595840f76af22191df9e74f310">DiskStore::rootDirs_</a></div><div class="ttdeci">string rootDirs_</div><div class="ttdef"><b>Definition:</b> DiskStore.h:57</div></div>
+<div class="ttc" id="classDiskStore_html_a5ed16141456328a12131a7f869760481"><div class="ttname"><a href="classDiskStore.html#a5ed16141456328a12131a7f869760481">DiskStore::contains</a></div><div class="ttdeci">bool contains(string blockId)</div><div class="ttdef"><b>Definition:</b> DiskStore.h:43</div></div>
+<div class="ttc" id="classDiskStore_html_a62d2b78239f85f156ddf262f99c59789"><div class="ttname"><a href="classDiskStore.html#a62d2b78239f85f156ddf262f99c59789">DiskStore::putValue</a></div><div class="ttdeci">bool putValue(string blockId, void *value)</div><div class="ttdef"><b>Definition:</b> DiskStore.h:33</div></div>
+<div class="ttc" id="BlockStore_8h_html"><div class="ttname"><a href="BlockStore_8h.html">BlockStore.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_70f20ecf11358dff00a0daf546d3147e.html">storage</a></li><li class="navelem"><b>DiskStore.h</b></li>
+    <li class="navelem"><a class="el" href="dir_70f20ecf11358dff00a0daf546d3147e.html">storage</a></li><li class="navelem"><a class="el" href="DiskStore_8h.html">DiskStore.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: ExchangeTracker Class Reference</title>
+<title>Claims: ExchangeTracker Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -107,32 +107,116 @@ $(document).ready(function(){initNavTree('classExchangeTracker.html','');});
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classExchangeTracker-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ExchangeTracker Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="exchange__tracker_8h_source.html">exchange_tracker.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for ExchangeTracker:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExchangeTracker__coll__graph.png" border="0" usemap="#ExchangeTracker_coll__map" alt="Collaboration graph"/></div>
+<map name="ExchangeTracker_coll__map" id="ExchangeTracker_coll__map">
+<area shape="rect" id="node2" href="classLogging.html" title="Logging" alt="" coords="5,5,72,32"/><area shape="rect" id="node3" href="classLock.html" title="Lock" alt="" coords="97,5,148,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker_1_1ExchangeTrackerActor.html">ExchangeTrackerActor</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abf8302c74e2c57a6098b985e19a4b8d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abf8302c74e2c57a6098b985e19a4b8d1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>RegisterExchange</b> (<a class="el" href="structExchangeID.html">ExchangeID</a> exchange_id, std::string port)</td></tr>
+<tr class="memitem:ac9b29bdf51108c5ae4077199d5271e6a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a">ExchangeTracker</a> ()</td></tr>
+<tr class="separator:ac9b29bdf51108c5ae4077199d5271e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac935fd6e892acca88b11156cfd8720c2"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#ac935fd6e892acca88b11156cfd8720c2">~ExchangeTracker</a> ()</td></tr>
+<tr class="separator:ac935fd6e892acca88b11156cfd8720c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf8302c74e2c57a6098b985e19a4b8d1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#abf8302c74e2c57a6098b985e19a4b8d1">RegisterExchange</a> (<a class="el" href="structExchangeID.html">ExchangeID</a> exchange_id, std::string port)</td></tr>
 <tr class="separator:abf8302c74e2c57a6098b985e19a4b8d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21d2145ace826765363d303dcbe668bb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a21d2145ace826765363d303dcbe668bb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>LogoutExchange</b> (const <a class="el" href="structExchangeID.html">ExchangeID</a> &amp;exchange_id)</td></tr>
+<tr class="memitem:a21d2145ace826765363d303dcbe668bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#a21d2145ace826765363d303dcbe668bb">LogoutExchange</a> (const <a class="el" href="structExchangeID.html">ExchangeID</a> &amp;exchange_id)</td></tr>
 <tr class="separator:a21d2145ace826765363d303dcbe668bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc69bb3a28c177f35f7d9e1556869770"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#afc69bb3a28c177f35f7d9e1556869770">AskForSocketConnectionInfo</a> (<a class="el" href="structExchangeID.html">ExchangeID</a> exchange_id, NodeID target_id, <a class="el" href="structNodeAddress.html">NodeAddress</a> &amp;node_addr)</td></tr>
+<tr class="memitem:afc69bb3a28c177f35f7d9e1556869770"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#afc69bb3a28c177f35f7d9e1556869770">AskForSocketConnectionInfo</a> (<a class="el" href="structExchangeID.html">ExchangeID</a> exchange_id, <a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> target_id, <a class="el" href="structNodeAddress.html">NodeAddress</a> &amp;node_addr)</td></tr>
 <tr class="separator:afc69bb3a28c177f35f7d9e1556869770"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8e0931b1ee0a785a8b6a2ef714a3c11"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8e0931b1ee0a785a8b6a2ef714a3c11"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>printAllExchangeId</b> () const </td></tr>
+<tr class="memitem:ae8e0931b1ee0a785a8b6a2ef714a3c11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#ae8e0931b1ee0a785a8b6a2ef714a3c11">printAllExchangeId</a> () const </td></tr>
 <tr class="separator:ae8e0931b1ee0a785a8b6a2ef714a3c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a15a45628877f050e8ad01e3a3bbb0b28"><td class="memItemLeft" align="right" valign="top">Theron::EndPoint *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#a15a45628877f050e8ad01e3a3bbb0b28">endpoint</a></td></tr>
+<tr class="separator:a15a45628877f050e8ad01e3a3bbb0b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a424d319d4b3890b8fd2c9d3a3770ca34"><td class="memItemLeft" align="right" valign="top">Theron::Framework *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#a424d319d4b3890b8fd2c9d3a3770ca34">framework</a></td></tr>
+<tr class="separator:a424d319d4b3890b8fd2c9d3a3770ca34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0a8cc2704879174c15eeed20a134499"><td class="memItemLeft" align="right" valign="top">Theron::Actor *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#aa0a8cc2704879174c15eeed20a134499">actor</a></td></tr>
+<tr class="separator:aa0a8cc2704879174c15eeed20a134499"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab55c308ea38647ccd001b413abe47bc"><td class="memItemLeft" align="right" valign="top">boost::unordered_map<br class="typebreak"/>
+&lt; <a class="el" href="structExchangeID.html">ExchangeID</a>, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#aab55c308ea38647ccd001b413abe47bc">id_to_port</a></td></tr>
+<tr class="separator:aab55c308ea38647ccd001b413abe47bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b2660493c234cd66dbf435e706c28e2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogging.html">Logging</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#a2b2660493c234cd66dbf435e706c28e2">logging_</a></td></tr>
+<tr class="separator:a2b2660493c234cd66dbf435e706c28e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26f93b2952c259c2e16e7e10185bdca1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLock.html">Lock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#a26f93b2952c259c2e16e7e10185bdca1">lock_</a></td></tr>
+<tr class="separator:a26f93b2952c259c2e16e7e10185bdca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:a249a2ae668647d2d83bcc17d0e466e0a"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classExchangeTracker.html#a249a2ae668647d2d83bcc17d0e466e0a">RegisterActor</a></td></tr>
 <tr class="separator:a249a2ae668647d2d83bcc17d0e466e0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ac9b29bdf51108c5ae4077199d5271e6a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ExchangeTracker::ExchangeTracker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classExchangeTracker.html#aa0a8cc2704879174c15eeed20a134499">actor</a>, <a class="el" href="classExchangeTracker.html#a15a45628877f050e8ad01e3a3bbb0b28">endpoint</a>, <a class="el" href="classExchangeTracker.html#a424d319d4b3890b8fd2c9d3a3770ca34">framework</a>, <a class="el" href="classEnvironment.html#a231ead4cffb4ff8fab471932be0f9f88">Environment::getEndPoint()</a>, <a class="el" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61">Environment::getInstance()</a>, <a class="el" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057">Environment::getNodeID()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, and <a class="el" href="classExchangeTracker.html#a2b2660493c234cd66dbf435e706c28e2">logging_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExchangeTracker_ac9b29bdf51108c5ae4077199d5271e6a_cgraph.png" border="0" usemap="#classExchangeTracker_ac9b29bdf51108c5ae4077199d5271e6a_cgraph" alt=""/></div>
+<map name="classExchangeTracker_ac9b29bdf51108c5ae4077199d5271e6a_cgraph" id="classExchangeTracker_ac9b29bdf51108c5ae4077199d5271e6a_cgraph">
+<area shape="rect" id="node2" href="classEnvironment.html#a231ead4cffb4ff8fab471932be0f9f88" title="Environment::getEndPoint" alt="" coords="246,5,421,32"/><area shape="rect" id="node3" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="248,659,419,685"/><area shape="rect" id="node46" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057" title="Environment::getNodeID" alt="" coords="1247,1228,1414,1255"/><area shape="rect" id="node19" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1726,777,1818,804"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="469,859,645,885"/><area shape="rect" id="node5" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1281,209,1380,236"/><area shape="rect" id="node6" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="717,1255,889,1281"/><area shape="rect" id="node11" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="735,1103,871,1129"/><area shape="rect" id="node12" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="709,1153,896,1180"/><area shape="rect" id="node14" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="731,1204,874,1231"/><area shape="rect" id="node16" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="704,783,901,809"/><area shape="rect" id="node20" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="710,935,895,977"/><area shape="rect" id="node23" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="711,1458,895,1499"/><area shape="rect" id="node28" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="694,228,911,255"/><area shape="rect" id="node29" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="985,719,1159,761"/><area shape="rect" id="node31" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="695,491,910,533"/><area shape="rect" id="node39" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="699,162,906,203"/><area shape="rect" id="node41" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="705,1052,900,1079"/><area shape="rect" id="node47" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="695,833,911,860"/><area shape="rect" id="node49" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="709,1001,896,1028"/><area shape="rect" id="node50" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="723,279,883,305"/><area shape="rect" id="node7" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="983,1407,1161,1433"/><area shape="rect" id="node8" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0" title="PortManager::getConfigure" alt="" coords="1241,1319,1420,1345"/><area shape="rect" id="node9" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b" title="PortManager::generateFree\lPorts" alt="" coords="1241,1370,1421,1411"/><area shape="rect" id="node10" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30" title="Logging_PortManager" alt="" coords="1257,1436,1405,1463"/><area shape="rect" id="node13" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="969,1237,1175,1264"/><area shape="rect" id="node15" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1012,1288,1132,1315"/><area shape="rect" id="node17" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="1239,778,1423,819"/><area shape="rect" id="node18" href="classExpanderTracker.html#add587f48f3613937f08c94f0570478aa" title="ExpanderTracker::monitoring\lThread" alt="" coords="1483,829,1672,870"/><area shape="rect" id="node21" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="1239,953,1422,980"/><area shape="rect" id="node22" href="classBufferManager.html#a0b8362fcbc407aea3e8324e69ce5c569" title="BufferManager::BufferManager" alt="" coords="1477,953,1677,980"/><area shape="rect" id="node24" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="991,1512,1153,1539"/><area shape="rect" id="node25" href="classClientListenerLogging.html#a52a19994634ec81023f81299ab4cec1e" title="ClientListenerLogging::log" alt="" coords="1491,1537,1663,1564"/><area shape="rect" id="node26" href="classClientListener.html#a11455a9819572dda29fd01eb60171eb8" title="ClientListener::receiveHandler" alt="" coords="1232,1537,1429,1564"/><area shape="rect" id="node27" href="classClientListener.html#ad13c4304fac33c02aeef2101f0cb5651" title="ClientListener::sendHandler" alt="" coords="1239,1588,1422,1615"/><area shape="rect" id="node30" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="1251,676,1410,703"/><area shape="rect" id="node32" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="977,523,1167,565"/><area shape="rect" id="node33" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="991,589,1153,630"/><area shape="rect" id="node34" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="1011,654,1133,695"/><area shape="rect" id="node35" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="1005,275,1139,317"/><area shape="rect" id="node36" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="961,341,1183,368"/><area shape="rect" id="node37" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="985,393,1159,434"/><area shape="rect" id="node38" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="985,458,1159,499"/><area shape="rect" id="node40" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54" title="InstanceResourceManager\l::Register" alt="" coords="983,107,1161,149"/><area shape="rect" id="node42" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="999,1121,1145,1162"/><area shape="rect" id="node43" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92" title="BlockManager::getInstance" alt="" coords="981,1004,1163,1031"/><area shape="rect" id="node44" href="classBlockManagerMaster.html#a41f5fb3487ce3bac55b6eec9c38d26e1" title="BlockManagerMaster\l::initialize" alt="" coords="999,1055,1145,1097"/><area shape="rect" id="node45" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="992,1187,1152,1213"/><area shape="rect" id="node48" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="1004,837,1140,878"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ac935fd6e892acca88b11156cfd8720c2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ExchangeTracker::~ExchangeTracker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classExchangeTracker.html#aa0a8cc2704879174c15eeed20a134499">actor</a>, <a class="el" href="classExchangeTracker.html#a424d319d4b3890b8fd2c9d3a3770ca34">framework</a>, and <a class="el" href="classExchangeTracker.html#a2b2660493c234cd66dbf435e706c28e2">logging_</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="afc69bb3a28c177f35f7d9e1556869770"></a>
 <div class="memitem">
@@ -147,7 +231,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">NodeID&#160;</td>
+          <td class="paramtype"><a class="el" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a>&#160;</td>
           <td class="paramname"><em>target_id</em>, </td>
         </tr>
         <tr>
@@ -164,6 +248,131 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>TODO: In current version, the request is only tried once. In the future, the request should be sent repeatedly until the reply is received or the times of timeouts exceeds some threshold.</p>
+
+<p>References <a class="el" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa">curtick()</a>, <a class="el" href="classExchangeTracker.html#a15a45628877f050e8ad01e3a3bbb0b28">endpoint</a>, <a class="el" href="classExchangeTracker.html#a424d319d4b3890b8fd2c9d3a3770ca34">framework</a>, <a class="el" href="structNodeRegisterMessage.html#a866ee9bbead75b8f963e2085f39e7dc3">NodeRegisterMessage::get_ip()</a>, <a class="el" href="structNodeAddress.html#a35155fb99f90f48c70c9d40f2279a2c1">NodeAddress::ip</a>, <a class="el" href="structNodeRegisterMessage.html#a17d4405adecd9daa6e8cbe8c72914896">NodeRegisterMessage::ip</a>, <a class="el" href="structNodeAddress.html#a15fda8493c9e5c687b3a09b2dfb32c1b">NodeAddress::port</a>, <a class="el" href="structNodeRegisterMessage.html#a7333e8e7afdaf26a0cc6db4d75f4c1d3">NodeRegisterMessage::port</a>, and <a class="el" href="classTimeOutReceiver.html#afe32502f21b94a7291e6ada9d4b5d9f9">TimeOutReceiver::~TimeOutReceiver()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee">claims::physical_operator::ExchangeSender::ConnectToUpper()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407">claims::physical_operator::ExchangeMerger::IsOtherMergersRegistered()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExchangeTracker_afc69bb3a28c177f35f7d9e1556869770_cgraph.png" border="0" usemap="#classExchangeTracker_afc69bb3a28c177f35f7d9e1556869770_cgraph" alt=""/></div>
+<map name="classExchangeTracker_afc69bb3a28c177f35f7d9e1556869770_cgraph" id="classExchangeTracker_afc69bb3a28c177f35f7d9e1556869770_cgraph">
+<area shape="rect" id="node2" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="335,5,396,32"/><area shape="rect" id="node3" href="structNodeRegisterMessage.html#a866ee9bbead75b8f963e2085f39e7dc3" title="NodeRegisterMessage\l::get_ip" alt="" coords="288,57,443,98"/><area shape="rect" id="node9" href="classTimeOutReceiver.html#afe32502f21b94a7291e6ada9d4b5d9f9" title="TimeOutReceiver::~TimeOut\lReceiver" alt="" coords="270,122,461,163"/><area shape="rect" id="node4" href="functions_8h.html#ad0ba88eef56eb307a47c7eb3766bd0f4" title="add" alt="" coords="509,64,552,91"/><area shape="rect" id="node5" href="functions_8h.html#acb516d58803b236b70cbb412b8df5597" title="add_in_same_type" alt="" coords="620,13,751,40"/><area shape="rect" id="node7" href="functions_8h.html#aa90c42aec2a0b4f9da19cbb0731f8fde" title="check_data_type_for_add" alt="" coords="600,64,771,91"/><area shape="rect" id="node8" href="ExpressionItem_8h.html#aab6234674955198da498e46c5be82e45" title="getReturnTypeName" alt="" coords="614,115,757,141"/><area shape="rect" id="node6" href="classdecimal_1_1NValue.html#a3f185fe3ab9ccfc9f0b8fa0eef930962" title="decimal::NValue::op_add" alt="" coords="819,13,987,40"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExchangeTracker_afc69bb3a28c177f35f7d9e1556869770_icgraph.png" border="0" usemap="#classExchangeTracker_afc69bb3a28c177f35f7d9e1556869770_icgraph" alt=""/></div>
+<map name="classExchangeTracker_afc69bb3a28c177f35f7d9e1556869770_icgraph" id="classExchangeTracker_afc69bb3a28c177f35f7d9e1556869770_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="270,66,506,107"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="275,132,501,188"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#aae6e373a471dce0bb1914c73e5442a34" title="claims::physical_operator\l::ExchangeSenderMaterialized::Open" alt="" coords="555,5,794,46"/><area shape="rect" id="node4" href="classclaims_1_1physical__operator_1_1ExchangeSenderPipeline.html#a7d58bd7a85462944f855314b1bddd53d" title="claims::physical_operator\l::ExchangeSenderPipeline::Open" alt="" coords="567,70,782,111"/><area shape="rect" id="node6" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="589,139,760,181"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a21d2145ace826765363d303dcbe668bb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ExchangeTracker::LogoutExchange </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structExchangeID.html">ExchangeID</a> &amp;&#160;</td>
+          <td class="paramname"><em>exchange_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExchangeTracker.html#aab55c308ea38647ccd001b413abe47bc">id_to_port</a>, <a class="el" href="classExchangeTracker.html#a26f93b2952c259c2e16e7e10185bdca1">lock_</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classExchangeTracker.html#a2b2660493c234cd66dbf435e706c28e2">logging_</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a">claims::physical_operator::ExchangeMerger::Close()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExchangeTracker_a21d2145ace826765363d303dcbe668bb_cgraph.png" border="0" usemap="#classExchangeTracker_a21d2145ace826765363d303dcbe668bb_cgraph" alt=""/></div>
+<map name="classExchangeTracker_a21d2145ace826765363d303dcbe668bb_cgraph" id="classExchangeTracker_a21d2145ace826765363d303dcbe668bb_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="283,5,383,32"/><area shape="rect" id="node3" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="287,56,379,83"/><area shape="rect" id="node4" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="283,107,383,133"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExchangeTracker_a21d2145ace826765363d303dcbe668bb_icgraph.png" border="0" usemap="#classExchangeTracker_a21d2145ace826765363d303dcbe668bb_icgraph" alt=""/></div>
+<map name="classExchangeTracker_a21d2145ace826765363d303dcbe668bb_icgraph" id="classExchangeTracker_a21d2145ace826765363d303dcbe668bb_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="283,5,453,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae8e0931b1ee0a785a8b6a2ef714a3c11"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ExchangeTracker::printAllExchangeId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classExchangeTracker.html#aab55c308ea38647ccd001b413abe47bc">id_to_port</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abf8302c74e2c57a6098b985e19a4b8d1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ExchangeTracker::RegisterExchange </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structExchangeID.html">ExchangeID</a>&#160;</td>
+          <td class="paramname"><em>exchange_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>port</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="classExchangeTracker.html#aab55c308ea38647ccd001b413abe47bc">id_to_port</a>, <a class="el" href="classExchangeTracker.html#a26f93b2952c259c2e16e7e10185bdca1">lock_</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classExchangeTracker.html#a2b2660493c234cd66dbf435e706c28e2">logging_</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55">claims::physical_operator::ExchangeMerger::RegisterExchange()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExchangeTracker_abf8302c74e2c57a6098b985e19a4b8d1_cgraph.png" border="0" usemap="#classExchangeTracker_abf8302c74e2c57a6098b985e19a4b8d1_cgraph" alt=""/></div>
+<map name="classExchangeTracker_abf8302c74e2c57a6098b985e19a4b8d1_cgraph" id="classExchangeTracker_abf8302c74e2c57a6098b985e19a4b8d1_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="235,5,335,32"/><area shape="rect" id="node3" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="239,56,331,83"/><area shape="rect" id="node4" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="235,107,335,133"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classExchangeTracker_abf8302c74e2c57a6098b985e19a4b8d1_icgraph.png" border="0" usemap="#classExchangeTracker_abf8302c74e2c57a6098b985e19a4b8d1_icgraph" alt=""/></div>
+<map name="classExchangeTracker_abf8302c74e2c57a6098b985e19a4b8d1_icgraph" id="classExchangeTracker_abf8302c74e2c57a6098b985e19a4b8d1_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="235,5,477,46"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aa29b5d365af1611795d418a12f923e6d" title="claims::physical_operator\l::ExchangeMerger::Open" alt="" coords="525,5,696,46"/></map>
+</div>
+</p>
 
 </div>
 </div>
@@ -189,9 +398,142 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aa0a8cc2704879174c15eeed20a134499"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::Actor* ExchangeTracker::actor</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a">ExchangeTracker()</a>, and <a class="el" href="classExchangeTracker.html#ac935fd6e892acca88b11156cfd8720c2">~ExchangeTracker()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a15a45628877f050e8ad01e3a3bbb0b28"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::EndPoint* ExchangeTracker::endpoint</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExchangeTracker.html#afc69bb3a28c177f35f7d9e1556869770">AskForSocketConnectionInfo()</a>, and <a class="el" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a">ExchangeTracker()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a424d319d4b3890b8fd2c9d3a3770ca34"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::Framework* ExchangeTracker::framework</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExchangeTracker.html#afc69bb3a28c177f35f7d9e1556869770">AskForSocketConnectionInfo()</a>, <a class="el" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a">ExchangeTracker()</a>, and <a class="el" href="classExchangeTracker.html#ac935fd6e892acca88b11156cfd8720c2">~ExchangeTracker()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aab55c308ea38647ccd001b413abe47bc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::unordered_map&lt;<a class="el" href="structExchangeID.html">ExchangeID</a>,std::string&gt; ExchangeTracker::id_to_port</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExchangeTracker.html#a21d2145ace826765363d303dcbe668bb">LogoutExchange()</a>, <a class="el" href="classExchangeTracker.html#ae8e0931b1ee0a785a8b6a2ef714a3c11">printAllExchangeId()</a>, and <a class="el" href="classExchangeTracker.html#abf8302c74e2c57a6098b985e19a4b8d1">RegisterExchange()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a26f93b2952c259c2e16e7e10185bdca1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLock.html">Lock</a> ExchangeTracker::lock_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExchangeTracker.html#a21d2145ace826765363d303dcbe668bb">LogoutExchange()</a>, and <a class="el" href="classExchangeTracker.html#abf8302c74e2c57a6098b985e19a4b8d1">RegisterExchange()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2b2660493c234cd66dbf435e706c28e2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLogging.html">Logging</a>* ExchangeTracker::logging_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a">ExchangeTracker()</a>, <a class="el" href="classExchangeTracker.html#a21d2145ace826765363d303dcbe668bb">LogoutExchange()</a>, <a class="el" href="classExchangeTracker.html#abf8302c74e2c57a6098b985e19a4b8d1">RegisterExchange()</a>, and <a class="el" href="classExchangeTracker.html#ac935fd6e892acca88b11156cfd8720c2">~ExchangeTracker()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>Executor/<a class="el" href="ExchangeTracker_8h_source.html">ExchangeTracker.h</a></li>
-<li>Executor/ExchangeTracker.cpp</li>
+<li>Executor/<a class="el" href="exchange__tracker_8h_source.html">exchange_tracker.h</a></li>
+<li>Executor/<a class="el" href="exchange__tracker_8cpp.html">exchange_tracker.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

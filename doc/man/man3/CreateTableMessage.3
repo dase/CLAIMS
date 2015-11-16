@@ -1,4 +1,4 @@
-.TH "CreateTableMessage" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CreateTableMessage" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ CreateTableMessage \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Message\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBCreateTableMessage\fP (unsigned table_id, std::vector< data_type > type_list)"
+.RI "\fBCreateTableMessage\fP ()"
+.br
+.ti -1c
+.RI "\fBCreateTableMessage\fP (unsigned \fBtable_id\fP, std::vector< \fBdata_type\fP > \fBtype_list\fP)"
 .br
 .in -1c
 .SS "Static Public Member Functions"
@@ -20,7 +25,7 @@ CreateTableMessage \-
 .RI "static \fBCreateTableMessage\fP \fBdeserializae\fP (\fBMessage256\fP message)"
 .br
 .ti -1c
-.RI "static \fBMessage256\fP \fBserializae\fP (\fBCreateTableMessage\fP input)"
+.RI "static \fBMessage256\fP \fBserializae\fP (\fBCreateTableMessage\fP \fBinput\fP)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -30,7 +35,14 @@ CreateTableMessage \-
 .RI "unsigned \fBtable_id\fP"
 .br
 .ti -1c
-.RI "std::vector< data_type > \fBtype_list\fP"
+.RI "std::vector< \fBdata_type\fP > \fBtype_list\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
 .br
 .in -1c
 .SS "Friends"
@@ -40,7 +52,39 @@ CreateTableMessage \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CreateTableMessage::CreateTableMessage ()\fC [inline]\fP"
+
+.SS "CreateTableMessage::CreateTableMessage (unsignedtable_id, std::vector< \fBdata_type\fP >type_list)\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "static \fBCreateTableMessage\fP CreateTableMessage::deserializae (\fBMessage256\fPmessage)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static \fBMessage256\fP CreateTableMessage::serializae (\fBCreateTableMessage\fPinput)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References input()\&.
+.SS "template<class Archive > void CreateTableMessage::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References table_id, and type_list\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned CreateTableMessage::table_id"
+
+.PP
+Referenced by serialize()\&.
+.SS "std::vector<\fBdata_type\fP> CreateTableMessage::type_list"
+
+.PP
+Referenced by serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

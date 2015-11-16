@@ -1,4 +1,4 @@
-.TH "Json::Features" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::Features" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -53,6 +53,14 @@ Configuration passed to reader and writer\&. This configuration object can be us
 .SH "Detailed Description"
 .PP 
 Configuration passed to reader and writer\&. This configuration object can be used to force the \fBReader\fP or \fBWriter\fP to behave in a standard conforming way\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Json::Features::Features ()"
+
+.PP
+Initialize the configuration like JsonConfig::allFeatures;\&. 
+.PP
+Referenced by all()\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "\fBFeatures\fP Json::Features::all ()\fC [static]\fP"
@@ -85,6 +93,24 @@ Assumes \fBValue\fP strings are encoded in UTF-8
 References allowComments_, allowDroppedNullPlaceholders_, allowNumericKeys_, and strictRoot_\&.
 .SH "Member Data Documentation"
 .PP 
+.SS "bool Json::Features::allowComments_"
+
+.PP
+\fCtrue\fP if comments are allowed\&. Default: \fCtrue\fP\&. 
+.PP
+Referenced by Json::Reader::parse(), Json::Reader::skipCommentTokens(), and strictMode()\&.
+.SS "bool Json::Features::allowDroppedNullPlaceholders_"
+
+.PP
+\fCtrue\fP if dropped null placeholders are allowed\&. Default: \fCfalse\fP\&. 
+.PP
+Referenced by Json::Reader::readValue(), and strictMode()\&.
+.SS "bool Json::Features::allowNumericKeys_"
+
+.PP
+\fCtrue\fP if numeric object key are allowed\&. Default: \fCfalse\fP\&. 
+.PP
+Referenced by Json::Reader::readObject(), and strictMode()\&.
 .SS "bool Json::Features::strictRoot_"
 \fCtrue\fP if root must be either an array or an object value\&. Default: \fCfalse\fP\&. 
 .PP
@@ -92,4 +118,4 @@ Referenced by Json::Reader::parse(), and strictMode()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

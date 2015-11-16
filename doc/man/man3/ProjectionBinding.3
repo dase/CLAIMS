@@ -1,4 +1,4 @@
-.TH "ProjectionBinding" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ProjectionBinding" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,27 +6,45 @@ ProjectionBinding \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ProjectionBinding\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "bool \fBBindingEntireProjection\fP (\fBPartitioner\fP *, const StorageLevel &desriable_storage_level=MEMORY)"
+.RI "\fBProjectionBinding\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~ProjectionBinding\fP ()"
+.br
+.ti -1c
+.RI "bool \fBBindingEntireProjection\fP (\fBPartitioner\fP *, const \fBStorageLevel\fP &desriable_storage_level=\fBMEMORY\fP)"
 .br
 .ti -1c
 .RI "bool \fBUnbindingEntireProjection\fP (\fBPartitioner\fP *part)"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ProjectionBinding::ProjectionBinding ()"
+
+.SS "ProjectionBinding::~ProjectionBinding ()\fC [virtual]\fP"
+
 .SH "Member Function Documentation"
 .PP 
-.SS "bool ProjectionBinding::BindingEntireProjection (\fBPartitioner\fP *part, const StorageLevel &desriable_storage_level = \fCMEMORY\fP)"
+.SS "bool ProjectionBinding::BindingEntireProjection (\fBPartitioner\fP *part, const \fBStorageLevel\fP &desriable_storage_level = \fC\fBMEMORY\fP\fP)"
 TODO: OneToMany mode where one partition is allowed to be bound to multiple nodes\&.
 .PP
-Referenced by LogicalCSBIndexBuilding::GetPlanContext(), LogicalIndexScan::GetPlanContext(), and claims::logical_operator::LogicalScan::GetPlanContext()\&.
+References ResourceManagerMaster::ApplyDiskBuget(), ResourceManagerMaster::ApplyMemoryBuget(), Partitioner::bindPartitionToNode(), DISK, Partitioner::get_binding_mode_(), Environment::getInstance(), BlockManagerMaster::getInstance(), Partitioner::getNumberOfPartitions(), Partitioner::getPartitionChunks(), Partitioner::getPartitionDataSize(), Partitioner::getProejctionID(), Environment::getResourceManagerMaster(), ResourceManagerMaster::getSlaveIDList(), HDFS, MEMORY, OneToOne, and BlockManagerMaster::SendBindingMessage()\&.
+.PP
+Referenced by BindingTest(), LogicalIndexScan::GetPlanContext(), LogicalCSBIndexBuilding::GetPlanContext(), claims::logical_operator::LogicalScan::GetPlanContext(), test_CSBIndexBuilding(), test_index_scan_iterator(), and variable_schema_test()\&.
 .SS "bool ProjectionBinding::UnbindingEntireProjection (\fBPartitioner\fP *part)"
 TODO: OneToMany mode where one partition is allowed to be bound to multiple nodes\&.
+.PP
+References DESIRIABLE_STORAGE_LEVEL, DISK, Partitioner::get_binding_mode_(), Environment::getInstance(), BlockManagerMaster::getInstance(), Partitioner::getNumberOfPartitions(), Partitioner::getPartitionDataSize(), Partitioner::getPartitionLocation(), Partitioner::getProejctionID(), Environment::getResourceManagerMaster(), MEMORY, OneToOne, ResourceManagerMaster::ReturnDiskBuget(), ResourceManagerMaster::ReturnMemoryBuget(), BlockManagerMaster::SendUnbindingMessage(), and Partitioner::unbindPartitionToNode()\&.
 .PP
 Referenced by HdfsLoader::load()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

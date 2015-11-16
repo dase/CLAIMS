@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Analyzer Class Reference</title>
+<title>Claims: Analyzer Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,40 +106,211 @@ $(document).ready(function(){initNavTree('classAnalyzer.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="classAnalyzer-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Analyzer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="Analyzer_8h_source.html">Analyzer.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a7872e87baeadf041c759f320df38841c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>analysis_level</b> { <b>a_l_table</b>, 
-<b>a_l_attribute</b>
+<tr class="memitem:a7872e87baeadf041c759f320df38841c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a7872e87baeadf041c759f320df38841c">analysis_level</a> { <a class="el" href="classAnalyzer.html#a7872e87baeadf041c759f320df38841ca97865ec2c51a6723db373d98dad9eae1">a_l_table</a>, 
+<a class="el" href="classAnalyzer.html#a7872e87baeadf041c759f320df38841ca0484a906ae854bae41e1f9ed49e8269c">a_l_attribute</a>
  }</td></tr>
 <tr class="separator:a7872e87baeadf041c759f320df38841c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a1be2ff17bba265bdef6e1b44748eaf96"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a1be2ff17bba265bdef6e1b44748eaf96">Analyzer</a> ()</td></tr>
+<tr class="separator:a1be2ff17bba265bdef6e1b44748eaf96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa899ac3a6aabbe59f791f69368ad740"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#afa899ac3a6aabbe59f791f69368ad740">~Analyzer</a> ()</td></tr>
+<tr class="separator:afa899ac3a6aabbe59f791f69368ad740"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:abeafbfe485c086c9f827155c4cabfc11"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abeafbfe485c086c9f827155c4cabfc11"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>analyse</b> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attrID)</td></tr>
+<tr class="memitem:abeafbfe485c086c9f827155c4cabfc11"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#abeafbfe485c086c9f827155c4cabfc11">analyse</a> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attrID)</td></tr>
 <tr class="separator:abeafbfe485c086c9f827155c4cabfc11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f179364dfe6ab271c89ed67dd6b6e44"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1f179364dfe6ab271c89ed67dd6b6e44"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>analyse</b> (TableID tableID, analysis_level level=a_l_table)</td></tr>
+<tr class="memitem:a1f179364dfe6ab271c89ed67dd6b6e44"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a1f179364dfe6ab271c89ed67dd6b6e44">analyse</a> (<a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a> tableID, <a class="el" href="classAnalyzer.html#a7872e87baeadf041c759f320df38841c">analysis_level</a> level=<a class="el" href="classAnalyzer.html#a7872e87baeadf041c759f320df38841ca97865ec2c51a6723db373d98dad9eae1">a_l_table</a>)</td></tr>
 <tr class="separator:a1f179364dfe6ab271c89ed67dd6b6e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a921f4c3c783a763d0ae8254c1025b3a2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a921f4c3c783a763d0ae8254c1025b3a2">analyse_on_project</a> (<a class="el" href="structProjectionID.html">ProjectionID</a> projection_id)</td></tr>
 <tr class="separator:a921f4c3c783a763d0ae8254c1025b3a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c06cc1fc72d09a17f26e29fdd6037e1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c06cc1fc72d09a17f26e29fdd6037e1"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>compute_histogram</b> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr_id)</td></tr>
+<tr class="memitem:a4c06cc1fc72d09a17f26e29fdd6037e1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a4c06cc1fc72d09a17f26e29fdd6037e1">compute_histogram</a> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr_id)</td></tr>
 <tr class="separator:a4c06cc1fc72d09a17f26e29fdd6037e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab26269adde82035786829cbb3cbd33d5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5">compute_attribute_stat</a> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr_id)</td></tr>
 <tr class="separator:ab26269adde82035786829cbb3cbd33d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe5c5c0acaf8cc6fb38ba8f22473ae4b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe5c5c0acaf8cc6fb38ba8f22473ae4b"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>compute_table_stat</b> (const TableID &amp;tab_id)</td></tr>
+<tr class="memitem:afe5c5c0acaf8cc6fb38ba8f22473ae4b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#afe5c5c0acaf8cc6fb38ba8f22473ae4b">compute_table_stat</a> (const <a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a> &amp;tab_id)</td></tr>
 <tr class="separator:afe5c5c0acaf8cc6fb38ba8f22473ae4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:ad4ea1ae66a83a592870657275cfd546c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#ad4ea1ae66a83a592870657275cfd546c">mcvAnalyse</a> (void **list, const unsigned long size, const <a class="el" href="structAttribute.html">Attribute</a> &amp;attr, <a class="el" href="classHistogram.html">Histogram</a> *stat)</td></tr>
+<tr class="separator:ad4ea1ae66a83a592870657275cfd546c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad04f404250da626aeb66cdaedf3ac058"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#ad04f404250da626aeb66cdaedf3ac058">equiDepthAnalyse</a> (void **list, const unsigned long size, const <a class="el" href="structAttribute.html">Attribute</a> &amp;attr, <a class="el" href="classHistogram.html">Histogram</a> *stat)</td></tr>
+<tr class="separator:ad04f404250da626aeb66cdaedf3ac058"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33694816d1cf55b4d52371951ad62d1c"><td class="memItemLeft" align="right" valign="top">static unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a33694816d1cf55b4d52371951ad62d1c">getDistinctCardinality</a> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr_id)</td></tr>
+<tr class="separator:a33694816d1cf55b4d52371951ad62d1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81882b8ea61dc2d481ad7a852c014964"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a81882b8ea61dc2d481ad7a852c014964">isBeneficalFromHistrogram</a> (unsigned distinct_values, unsigned cardinality)</td></tr>
+<tr class="separator:a81882b8ea61dc2d481ad7a852c014964"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6692a412aa7aee26dc2e37086ece310d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classHistogram.html">Histogram</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d">computeHistogram</a> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr, const unsigned nbuckets=20)</td></tr>
+<tr class="separator:a6692a412aa7aee26dc2e37086ece310d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c20377f468d8cb36f011626a4c4202c"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnalyzer.html#a3c20377f468d8cb36f011626a4c4202c">decideNumberOfBucketsForHistogram</a> (const int distinct_cardinality, const int cardinality)</td></tr>
+<tr class="separator:a3c20377f468d8cb36f011626a4c4202c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a class="anchor" id="a7872e87baeadf041c759f320df38841c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classAnalyzer.html#a7872e87baeadf041c759f320df38841c">Analyzer::analysis_level</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a7872e87baeadf041c759f320df38841ca97865ec2c51a6723db373d98dad9eae1"></a>a_l_table</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a7872e87baeadf041c759f320df38841ca0484a906ae854bae41e1f9ed49e8269c"></a>a_l_attribute</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a1be2ff17bba265bdef6e1b44748eaf96"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Analyzer::Analyzer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afa899ac3a6aabbe59f791f69368ad740"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Analyzer::~Analyzer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="abeafbfe485c086c9f827155c4cabfc11"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Analyzer::analyse </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;&#160;</td>
+          <td class="paramname"><em>attrID</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classDynamicBlockBuffer_1_1Iterator.html#a2160c9de11aead7b5ac245bb52bb4db2">DynamicBlockBuffer::Iterator::atomicNextBlock()</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">Attribute::attrType</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23">claims::physical_operator::PhysicalOperatorBase::Close()</a>, <a class="el" href="Analyzer_8cpp.html#a8cac6e5182d6a3be88b8b8f6a1cd2621">compare()</a>, <a class="el" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956">DynamicBlockBuffer::createIterator()</a>, <a class="el" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085">BlockStreamBase::createIterator()</a>, <a class="el" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3">DynamicBlockBuffer::destory()</a>, <a class="el" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414">TableDescriptor::getAttribute()</a>, <a class="el" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f">getFrequency()</a>, <a class="el" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363">StatManager::getInstance()</a>, <a class="el" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340">Catalog::getInstance()</a>, <a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">TableDescriptor::getNumberOfProjection()</a>, <a class="el" href="classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e">DynamicBlockBuffer::getNumberOftuples()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136">claims::logical_operator::LogicalOperator::GetPhysicalPlan()</a>, <a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">TableDescriptor::getProjectoin()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c">claims::physical_operator::PhysicalOperatorBase::GetResultSet()</a>, <a class="el" href="classCatalog.html#af6a880c63298ef6ee194dff714a45318">Catalog::getTable()</a>, <a class="el" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24">StatManager::getTableStatistic()</a>, <a class="el" href="classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7">ProjectionDescriptor::hasAttribute()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a09bf34a461f4d20a89ff6096ca00db9fa5d73bb76685c96cacac786d459fad7d1">claims::logical_operator::LogicalQueryPlanRoot::kResultCollector</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e">claims::physical_operator::PhysicalOperatorBase::Next()</a>, <a class="el" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e">BlockStreamBase::BlockStreamTraverseIterator::nextTuple()</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, <a class="el" href="structAttributeID.html#a0601f008a51a5c9b56c1d832196f1eec">AttributeID::offset</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0">claims::physical_operator::PhysicalOperatorBase::Open()</a>, <a class="el" href="classcolumn__type.html#a8d92c5e0ae992dbef3ac2001f30dd208">column_type::operate</a>, <a class="el" href="classHistogram.html#add0169b2e90d955fdb4d82d8964095bd">Histogram::setTupleCount()</a>, <a class="el" href="classHistogram.html#afb983482144a1ad373464cece94d616f">Histogram::setValueCount()</a>, and <a class="el" href="structAttributeID.html#ae32a3e12e74e57203a3e2fb9ed241b97">AttributeID::table_id</a>.</p>
+
+<p>Referenced by <a class="el" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57">statistic_manager_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_abeafbfe485c086c9f827155c4cabfc11_cgraph.png" border="0" usemap="#classAnalyzer_abeafbfe485c086c9f827155c4cabfc11_cgraph" alt=""/></div>
+<map name="classAnalyzer_abeafbfe485c086c9f827155c4cabfc11_cgraph" id="classAnalyzer_abeafbfe485c086c9f827155c4cabfc11_cgraph">
+<area shape="rect" id="node2" href="classDynamicBlockBuffer_1_1Iterator.html#a2160c9de11aead7b5ac245bb52bb4db2" title="DynamicBlockBuffer\l::Iterator::atomicNextBlock" alt="" coords="205,23,384,65"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23" title="claims::physical_operator\l::PhysicalOperatorBase::Close" alt="" coords="193,89,396,130"/><area shape="rect" id="node6" href="Analyzer_8cpp.html#a8cac6e5182d6a3be88b8b8f6a1cd2621" title="compare" alt="" coords="259,155,331,181"/><area shape="rect" id="node7" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956" title="DynamicBlockBuffer\l::createIterator" alt="" coords="481,227,623,269"/><area shape="rect" id="node8" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085" title="BlockStreamBase::createIterator" alt="" coords="189,388,401,415"/><area shape="rect" id="node9" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3" title="DynamicBlockBuffer\l::destory" alt="" coords="223,257,366,298"/><area shape="rect" id="node12" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414" title="TableDescriptor::getAttribute" alt="" coords="200,439,389,465"/><area shape="rect" id="node13" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f" title="getFrequency" alt="" coords="244,489,345,516"/><area shape="rect" id="node15" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363" title="StatManager::getInstance" alt="" coords="209,540,381,567"/><area shape="rect" id="node17" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="223,591,366,617"/><area shape="rect" id="node19" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40" title="TableDescriptor::getNumber\lOfProjection" alt="" coords="201,642,388,683"/><area shape="rect" id="node20" href="classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e" title="DynamicBlockBuffer\l::getNumberOftuples" alt="" coords="223,322,366,363"/><area shape="rect" id="node22" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136" title="claims::logical_operator\l::LogicalOperator::GetPhysicalPlan" alt="" coords="181,707,408,749"/><area shape="rect" id="node23" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="195,773,394,800"/><area shape="rect" id="node24" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c" title="claims::physical_operator\l::PhysicalOperatorBase\l::GetResultSet" alt="" coords="209,824,380,880"/><area shape="rect" id="node25" href="classCatalog.html#af6a880c63298ef6ee194dff714a45318" title="Catalog::getTable" alt="" coords="232,904,357,931"/><area shape="rect" id="node26" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24" title="StatManager::getTableStatistic" alt="" coords="193,955,396,981"/><area shape="rect" id="node27" href="classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7" title="ProjectionDescriptor\l::hasAttribute" alt="" coords="225,1006,365,1047"/><area shape="rect" id="node28" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e" title="claims::physical_operator\l::PhysicalOperatorBase::Next" alt="" coords="197,1071,393,1113"/><area shape="rect" id="node29" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e" title="BlockStreamBase::BlockStream\lTraverseIterator::nextTuple" alt="" coords="189,1137,400,1178"/><area shape="rect" id="node30" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0" title="claims::physical_operator\l::PhysicalOperatorBase::Open" alt="" coords="195,1202,394,1243"/><area shape="rect" id="node31" href="classHistogram.html#add0169b2e90d955fdb4d82d8964095bd" title="Histogram::setTupleCount" alt="" coords="207,1268,382,1295"/><area shape="rect" id="node32" href="classHistogram.html#afb983482144a1ad373464cece94d616f" title="Histogram::setValueCount" alt="" coords="207,1319,383,1345"/><area shape="rect" id="node3" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="502,5,602,32"/><area shape="rect" id="node4" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="502,56,602,83"/><area shape="rect" id="node10" href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd" title="DynamicBlockBuffer\l::Iterator::nextBlock" alt="" coords="481,293,623,334"/><area shape="rect" id="node11" href="classBlock.html#a106b1a1095930c997df00da51a024fbf" title="Block::getBlock" alt="" coords="696,300,811,327"/><area shape="rect" id="node14" href="classcolumn__type.html#a8a0c22f36455c028f89ccc87f751cbfe" title="column_type::get_length" alt="" coords="470,489,634,516"/><area shape="rect" id="node16" href="classStatManager.html#af6ecf38473038592bec56edce2b24289" title="StatManager::StatManager" alt="" coords="463,540,641,567"/><area shape="rect" id="node18" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="492,591,612,617"/><area shape="rect" id="node21" href="classBlockStreamBase.html#ad50cdcaaf287686de6ca6db643459509" title="BlockStreamBase::getTuples\lInBlock" alt="" coords="456,358,648,399"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_abeafbfe485c086c9f827155c4cabfc11_icgraph.png" border="0" usemap="#classAnalyzer_abeafbfe485c086c9f827155c4cabfc11_icgraph" alt=""/></div>
+<map name="classAnalyzer_abeafbfe485c086c9f827155c4cabfc11_icgraph" id="classAnalyzer_abeafbfe485c086c9f827155c4cabfc11_icgraph">
+<area shape="rect" id="node2" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="181,5,336,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1f179364dfe6ab271c89ed67dd6b6e44"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Analyzer::analyse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a>&#160;</td>
+          <td class="paramname"><em>tableID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classAnalyzer.html#a7872e87baeadf041c759f320df38841c">analysis_level</a>&#160;</td>
+          <td class="paramname"><em>level</em> = <code><a class="el" href="classAnalyzer.html#a7872e87baeadf041c759f320df38841ca97865ec2c51a6723db373d98dad9eae1">a_l_table</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableDescriptor.html#a60c455d9e20eb9e341a58af3e79f2663">TableDescriptor::getAttributes()</a>, <a class="el" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363">StatManager::getInstance()</a>, <a class="el" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340">Catalog::getInstance()</a>, <a class="el" href="classCatalog.html#af6a880c63298ef6ee194dff714a45318">Catalog::getTable()</a>, and <a class="el" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24">StatManager::getTableStatistic()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_a1f179364dfe6ab271c89ed67dd6b6e44_cgraph.png" border="0" usemap="#classAnalyzer_a1f179364dfe6ab271c89ed67dd6b6e44_cgraph" alt=""/></div>
+<map name="classAnalyzer_a1f179364dfe6ab271c89ed67dd6b6e44_cgraph" id="classAnalyzer_a1f179364dfe6ab271c89ed67dd6b6e44_cgraph">
+<area shape="rect" id="node2" href="classTableDescriptor.html#a60c455d9e20eb9e341a58af3e79f2663" title="TableDescriptor::getAttributes" alt="" coords="185,5,381,32"/><area shape="rect" id="node3" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363" title="StatManager::getInstance" alt="" coords="197,56,369,83"/><area shape="rect" id="node5" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="211,107,354,133"/><area shape="rect" id="node7" href="classCatalog.html#af6a880c63298ef6ee194dff714a45318" title="Catalog::getTable" alt="" coords="220,157,345,184"/><area shape="rect" id="node8" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24" title="StatManager::getTableStatistic" alt="" coords="181,208,384,235"/><area shape="rect" id="node4" href="classStatManager.html#af6ecf38473038592bec56edce2b24289" title="StatManager::StatManager" alt="" coords="432,56,611,83"/><area shape="rect" id="node6" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="461,107,581,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="a921f4c3c783a763d0ae8254c1025b3a2"></a>
 <div class="memitem">
 <div class="memproto">
@@ -162,6 +333,17 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>compute_table_
 </table>
 </div><div class="memdoc">
 <p>First make sure that the table statistic is available, and then make attribute-level-analyze on each attribute within this projection.</p>
+
+<p>References <a class="el" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275">ProjectionDescriptor::getAttributeList()</a>, <a class="el" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363">StatManager::getInstance()</a>, <a class="el" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340">Catalog::getInstance()</a>, <a class="el" href="classCatalog.html#adc68e91a9cbc5422998847144e73610b">Catalog::getProjection()</a>, <a class="el" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24">StatManager::getTableStatistic()</a>, and <a class="el" href="structProjectionID.html#a28ad651813cdd11e8450bacd6b82a470">ProjectionID::table_id</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_a921f4c3c783a763d0ae8254c1025b3a2_cgraph.png" border="0" usemap="#classAnalyzer_a921f4c3c783a763d0ae8254c1025b3a2_cgraph" alt=""/></div>
+<map name="classAnalyzer_a921f4c3c783a763d0ae8254c1025b3a2_cgraph" id="classAnalyzer_a921f4c3c783a763d0ae8254c1025b3a2_cgraph">
+<area shape="rect" id="node2" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275" title="ProjectionDescriptor\l::getAttributeList" alt="" coords="231,5,371,46"/><area shape="rect" id="node3" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363" title="StatManager::getInstance" alt="" coords="215,71,387,97"/><area shape="rect" id="node5" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="230,121,373,148"/><area shape="rect" id="node7" href="classCatalog.html#adc68e91a9cbc5422998847144e73610b" title="Catalog::getProjection" alt="" coords="226,172,377,199"/><area shape="rect" id="node10" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24" title="StatManager::getTableStatistic" alt="" coords="200,223,403,249"/><area shape="rect" id="node4" href="classStatManager.html#af6ecf38473038592bec56edce2b24289" title="StatManager::StatManager" alt="" coords="461,71,640,97"/><area shape="rect" id="node6" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="491,121,611,148"/><area shape="rect" id="node8" href="classCatalog.html#af6a880c63298ef6ee194dff714a45318" title="Catalog::getTable" alt="" coords="488,172,613,199"/><area shape="rect" id="node9" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="451,223,650,249"/></map>
+</div>
+</p>
 
 </div>
 </div>
@@ -188,11 +370,377 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>compute_table_
 </div><div class="memdoc">
 <p>for attribute that has UNIQUE property, gathering the number of distinct values is unnecessary.</p>
 
+<p>References <a class="el" href="classTableStatistic.html#a0f6de9761883c12746c21eb01f4ba77a">TableStatistic::addAttributeStatistics()</a>, <a class="el" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d">computeHistogram()</a>, <a class="el" href="classTableStatistic.html#a84764fd56b72df3a725a917658e48dd3">TableStatistic::getAttributeStatistics()</a>, <a class="el" href="classAnalyzer.html#a33694816d1cf55b4d52371951ad62d1c">getDistinctCardinality()</a>, <a class="el" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363">StatManager::getInstance()</a>, <a class="el" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340">Catalog::getInstance()</a>, <a class="el" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24">StatManager::getTableStatistic()</a>, <a class="el" href="classAnalyzer.html#a81882b8ea61dc2d481ad7a852c014964">isBeneficalFromHistrogram()</a>, <a class="el" href="classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924">TableStatistic::number_of_tuples_</a>, <a class="el" href="structAttributeID.html#a0601f008a51a5c9b56c1d832196f1eec">AttributeID::offset</a>, <a class="el" href="classAttributeStatistics.html#a6c2892dd7256108ce9da3d7e52b58a19">AttributeStatistics::print()</a>, <a class="el" href="classHistogram.html#a5c56c7b29aa4a0df792ea8743afc7427">Histogram::Print()</a>, <a class="el" href="classAttributeStatistics.html#ae2d6bee3c508e590eaa84a39fff000b8">AttributeStatistics::setDistinctCardinality()</a>, <a class="el" href="classAttributeStatistics.html#a11a01a3384538ae2fbe68abc86d55ae4">AttributeStatistics::setHistogram()</a>, and <a class="el" href="structAttributeID.html#ae32a3e12e74e57203a3e2fb9ed241b97">AttributeID::table_id</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_ab26269adde82035786829cbb3cbd33d5_cgraph.png" border="0" usemap="#classAnalyzer_ab26269adde82035786829cbb3cbd33d5_cgraph" alt=""/></div>
+<map name="classAnalyzer_ab26269adde82035786829cbb3cbd33d5_cgraph" id="classAnalyzer_ab26269adde82035786829cbb3cbd33d5_cgraph">
+<area shape="rect" id="node2" href="classTableStatistic.html#a0f6de9761883c12746c21eb01f4ba77a" title="TableStatistic::addAttribute\lStatistics" alt="" coords="283,319,463,361"/><area shape="rect" id="node3" href="classAnalyzer.html#a6692a412aa7aee26dc2e37086ece310d" title="Analyzer::computeHistogram" alt="" coords="278,837,469,864"/><area shape="rect" id="node31" href="classTableStatistic.html#a84764fd56b72df3a725a917658e48dd3" title="TableStatistic::getAttribute\lStatistics" alt="" coords="285,889,462,930"/><area shape="rect" id="node32" href="classAnalyzer.html#a33694816d1cf55b4d52371951ad62d1c" title="Analyzer::getDistinctCardinality" alt="" coords="270,436,477,463"/><area shape="rect" id="node35" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363" title="StatManager::getInstance" alt="" coords="287,955,459,981"/><area shape="rect" id="node4" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="569,5,711,32"/><area shape="rect" id="node37" href="classStatManager.html#a0144876543d59f74d63d61d43aed5d24" title="StatManager::getTableStatistic" alt="" coords="272,1005,475,1032"/><area shape="rect" id="node38" href="classAnalyzer.html#a81882b8ea61dc2d481ad7a852c014964" title="Analyzer::isBeneficalFrom\lHistrogram" alt="" coords="286,1057,461,1098"/><area shape="rect" id="node39" href="classAttributeStatistics.html#a6c2892dd7256108ce9da3d7e52b58a19" title="AttributeStatistics\l::print" alt="" coords="310,1122,437,1163"/><area shape="rect" id="node40" href="classHistogram.html#a5c56c7b29aa4a0df792ea8743afc7427" title="Histogram::Print" alt="" coords="315,1188,432,1215"/><area shape="rect" id="node42" href="classAttributeStatistics.html#ae2d6bee3c508e590eaa84a39fff000b8" title="AttributeStatistics\l::setDistinctCardinality" alt="" coords="296,1239,451,1281"/><area shape="rect" id="node43" href="classAttributeStatistics.html#a11a01a3384538ae2fbe68abc86d55ae4" title="AttributeStatistics\l::setHistogram" alt="" coords="310,1305,437,1346"/><area shape="rect" id="node6" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40" title="TableDescriptor::getNumber\lOfProjection" alt="" coords="547,1049,733,1090"/><area shape="rect" id="node7" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414" title="TableDescriptor::getAttribute" alt="" coords="545,1115,735,1141"/><area shape="rect" id="node8" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="541,1165,739,1192"/><area shape="rect" id="node9" href="classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7" title="ProjectionDescriptor\l::hasAttribute" alt="" coords="570,1267,710,1309"/><area shape="rect" id="node10" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136" title="claims::logical_operator\l::LogicalOperator::GetPhysicalPlan" alt="" coords="527,487,753,529"/><area shape="rect" id="node11" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0" title="claims::physical_operator\l::PhysicalOperatorBase::Open" alt="" coords="541,553,739,594"/><area shape="rect" id="node12" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e" title="claims::physical_operator\l::PhysicalOperatorBase::Next" alt="" coords="542,618,738,659"/><area shape="rect" id="node13" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23" title="claims::physical_operator\l::PhysicalOperatorBase::Close" alt="" coords="539,683,741,725"/><area shape="rect" id="node14" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c" title="claims::physical_operator\l::PhysicalOperatorBase\l::GetResultSet" alt="" coords="555,749,725,805"/><area shape="rect" id="node15" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956" title="DynamicBlockBuffer\l::createIterator" alt="" coords="827,599,970,641"/><area shape="rect" id="node16" href="classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e" title="DynamicBlockBuffer\l::getNumberOftuples" alt="" coords="569,830,711,871"/><area shape="rect" id="node20" href="classDynamicBlockBuffer_1_1Iterator.html#a2160c9de11aead7b5ac245bb52bb4db2" title="DynamicBlockBuffer\l::Iterator::atomicNextBlock" alt="" coords="551,1385,729,1426"/><area shape="rect" id="node23" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085" title="BlockStreamBase::createIterator" alt="" coords="534,436,746,463"/><area shape="rect" id="node24" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e" title="BlockStreamBase::BlockStream\lTraverseIterator::nextTuple" alt="" coords="535,305,745,346"/><area shape="rect" id="node25" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f" title="getFrequency" alt="" coords="589,1333,691,1360"/><area shape="rect" id="node27" href="classHistogram.html#afb983482144a1ad373464cece94d616f" title="Histogram::setValueCount" alt="" coords="552,896,728,923"/><area shape="rect" id="node28" href="classHistogram.html#add0169b2e90d955fdb4d82d8964095bd" title="Histogram::setTupleCount" alt="" coords="553,947,727,973"/><area shape="rect" id="node29" href="Analyzer_8cpp.html#a8cac6e5182d6a3be88b8b8f6a1cd2621" title="compare" alt="" coords="604,997,676,1024"/><area shape="rect" id="node30" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3" title="DynamicBlockBuffer\l::destory" alt="" coords="569,370,711,411"/><area shape="rect" id="node5" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="839,5,959,32"/><area shape="rect" id="node17" href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd" title="DynamicBlockBuffer\l::Iterator::nextBlock" alt="" coords="827,370,970,411"/><area shape="rect" id="node19" href="classBlockStreamBase.html#ad50cdcaaf287686de6ca6db643459509" title="BlockStreamBase::getTuples\lInBlock" alt="" coords="803,830,995,871"/><area shape="rect" id="node18" href="classBlock.html#a106b1a1095930c997df00da51a024fbf" title="Block::getBlock" alt="" coords="1043,377,1157,404"/><area shape="rect" id="node21" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="849,1388,949,1415"/><area shape="rect" id="node22" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="849,1439,949,1465"/><area shape="rect" id="node26" href="classcolumn__type.html#a8a0c22f36455c028f89ccc87f751cbfe" title="column_type::get_length" alt="" coords="817,1333,981,1360"/><area shape="rect" id="node33" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a4e97ce54feb668d023e504a54a63cf38" title="claims::physical_operator\l::PhysicalOperatorBase\l::~PhysicalOperatorBase" alt="" coords="555,173,725,229"/><area shape="rect" id="node34" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a71cb2afcb975f44d689289fd2c30f40f" title="claims::logical_operator\l::LogicalOperator::~LogicalOperator" alt="" coords="526,107,754,149"/><area shape="rect" id="node36" href="classStatManager.html#af6ecf38473038592bec56edce2b24289" title="StatManager::StatManager" alt="" coords="551,1451,729,1477"/><area shape="rect" id="node41" href="classOperate.html#a5a9bb41cd24832df38bc42cbd82c877b" title="Operate::toString" alt="" coords="579,1501,701,1528"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a4c06cc1fc72d09a17f26e29fdd6037e1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Analyzer::compute_histogram </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afe5c5c0acaf8cc6fb38ba8f22473ae4b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Analyzer::compute_table_stat </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="ids_8h.html#a3a5820fc61fdb2199526c3a30cec8924">TableID</a> &amp;&#160;</td>
+          <td class="paramname"><em>tab_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Attribute_8h.html#a75326a6b17765cd4ad74a9bdbd0cf227">ATTRIBUTE_ANY</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23">claims::physical_operator::PhysicalOperatorBase::Close()</a>, <a class="el" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956">DynamicBlockBuffer::createIterator()</a>, <a class="el" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085">BlockStreamBase::createIterator()</a>, <a class="el" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3">DynamicBlockBuffer::destory()</a>, <a class="el" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363">StatManager::getInstance()</a>, <a class="el" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340">Catalog::getInstance()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136">claims::logical_operator::LogicalOperator::GetPhysicalPlan()</a>, <a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">TableDescriptor::getProjectoin()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c">claims::physical_operator::PhysicalOperatorBase::GetResultSet()</a>, <a class="el" href="classCatalog.html#af6a880c63298ef6ee194dff714a45318">Catalog::getTable()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a09bf34a461f4d20a89ff6096ca00db9fa5d73bb76685c96cacac786d459fad7d1">claims::logical_operator::LogicalQueryPlanRoot::kResultCollector</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e">claims::physical_operator::PhysicalOperatorBase::Next()</a>, <a class="el" href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd">DynamicBlockBuffer::Iterator::nextBlock()</a>, <a class="el" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e">BlockStreamBase::BlockStreamTraverseIterator::nextTuple()</a>, <a class="el" href="classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924">TableStatistic::number_of_tuples_</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0">claims::physical_operator::PhysicalOperatorBase::Open()</a>, <a class="el" href="classTableStatistic.html#adb2a7f0c9b1e964dc843a1243d28dc94">TableStatistic::print()</a>, <a class="el" href="classStatManager.html#a3d3fa289e4ab9dd1c4812b130733d97b">StatManager::setTableStatistic()</a>, and <a class="el" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a71cb2afcb975f44d689289fd2c30f40f">claims::logical_operator::LogicalOperator::~LogicalOperator()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_afe5c5c0acaf8cc6fb38ba8f22473ae4b_cgraph.png" border="0" usemap="#classAnalyzer_afe5c5c0acaf8cc6fb38ba8f22473ae4b_cgraph" alt=""/></div>
+<map name="classAnalyzer_afe5c5c0acaf8cc6fb38ba8f22473ae4b_cgraph" id="classAnalyzer_afe5c5c0acaf8cc6fb38ba8f22473ae4b_cgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23" title="claims::physical_operator\l::PhysicalOperatorBase::Close" alt="" coords="261,5,464,46"/><area shape="rect" id="node3" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956" title="DynamicBlockBuffer\l::createIterator" alt="" coords="543,77,686,118"/><area shape="rect" id="node4" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085" title="BlockStreamBase::createIterator" alt="" coords="257,239,469,265"/><area shape="rect" id="node5" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3" title="DynamicBlockBuffer\l::destory" alt="" coords="291,122,434,163"/><area shape="rect" id="node8" href="classStatManager.html#a1b668abdb5a0308e1b9d2d98e5e56363" title="StatManager::getInstance" alt="" coords="277,289,449,316"/><area shape="rect" id="node10" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="291,340,434,367"/><area shape="rect" id="node12" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136" title="claims::logical_operator\l::LogicalOperator::GetPhysicalPlan" alt="" coords="249,391,476,433"/><area shape="rect" id="node13" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="263,457,462,484"/><area shape="rect" id="node14" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c" title="claims::physical_operator\l::PhysicalOperatorBase\l::GetResultSet" alt="" coords="277,508,448,564"/><area shape="rect" id="node15" href="classCatalog.html#af6a880c63298ef6ee194dff714a45318" title="Catalog::getTable" alt="" coords="300,588,425,615"/><area shape="rect" id="node16" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e" title="claims::physical_operator\l::PhysicalOperatorBase::Next" alt="" coords="265,639,461,681"/><area shape="rect" id="node6" href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd" title="DynamicBlockBuffer\l::Iterator::nextBlock" alt="" coords="543,167,686,209"/><area shape="rect" id="node17" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e" title="BlockStreamBase::BlockStream\lTraverseIterator::nextTuple" alt="" coords="257,705,468,746"/><area shape="rect" id="node18" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0" title="claims::physical_operator\l::PhysicalOperatorBase::Open" alt="" coords="263,770,462,811"/><area shape="rect" id="node19" href="classTableStatistic.html#adb2a7f0c9b1e964dc843a1243d28dc94" title="TableStatistic::print" alt="" coords="295,836,430,863"/><area shape="rect" id="node20" href="classStatManager.html#a3d3fa289e4ab9dd1c4812b130733d97b" title="StatManager::setTableStatistic" alt="" coords="261,887,464,913"/><area shape="rect" id="node21" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a71cb2afcb975f44d689289fd2c30f40f" title="claims::logical_operator\l::LogicalOperator::~LogicalOperator" alt="" coords="249,938,477,979"/><area shape="rect" id="node7" href="classBlock.html#a106b1a1095930c997df00da51a024fbf" title="Block::getBlock" alt="" coords="752,175,867,201"/><area shape="rect" id="node9" href="classStatManager.html#af6ecf38473038592bec56edce2b24289" title="StatManager::StatManager" alt="" coords="525,289,704,316"/><area shape="rect" id="node11" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="555,340,675,367"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a6692a412aa7aee26dc2e37086ece310d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classHistogram.html">Histogram</a> * Analyzer::computeHistogram </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned&#160;</td>
+          <td class="paramname"><em>nbuckets</em> = <code>20</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>get histogram if any, otherwise compute it. </p>
+
+<p>References <a class="el" href="classDynamicBlockBuffer_1_1Iterator.html#a2160c9de11aead7b5ac245bb52bb4db2">DynamicBlockBuffer::Iterator::atomicNextBlock()</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">Attribute::attrType</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23">claims::physical_operator::PhysicalOperatorBase::Close()</a>, <a class="el" href="Analyzer_8cpp.html#a8cac6e5182d6a3be88b8b8f6a1cd2621">compare()</a>, <a class="el" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956">DynamicBlockBuffer::createIterator()</a>, <a class="el" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085">BlockStreamBase::createIterator()</a>, <a class="el" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3">DynamicBlockBuffer::destory()</a>, <a class="el" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414">TableDescriptor::getAttribute()</a>, <a class="el" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f">getFrequency()</a>, <a class="el" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340">Catalog::getInstance()</a>, <a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">TableDescriptor::getNumberOfProjection()</a>, <a class="el" href="classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e">DynamicBlockBuffer::getNumberOftuples()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136">claims::logical_operator::LogicalOperator::GetPhysicalPlan()</a>, <a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">TableDescriptor::getProjectoin()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c">claims::physical_operator::PhysicalOperatorBase::GetResultSet()</a>, <a class="el" href="classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7">ProjectionDescriptor::hasAttribute()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a09bf34a461f4d20a89ff6096ca00db9fa5d73bb76685c96cacac786d459fad7d1">claims::logical_operator::LogicalQueryPlanRoot::kResultCollector</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e">claims::physical_operator::PhysicalOperatorBase::Next()</a>, <a class="el" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e">BlockStreamBase::BlockStreamTraverseIterator::nextTuple()</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, <a class="el" href="structAttributeID.html#a0601f008a51a5c9b56c1d832196f1eec">AttributeID::offset</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0">claims::physical_operator::PhysicalOperatorBase::Open()</a>, <a class="el" href="classcolumn__type.html#a8d92c5e0ae992dbef3ac2001f30dd208">column_type::operate</a>, <a class="el" href="classHistogram.html#add0169b2e90d955fdb4d82d8964095bd">Histogram::setTupleCount()</a>, <a class="el" href="classHistogram.html#afb983482144a1ad373464cece94d616f">Histogram::setValueCount()</a>, and <a class="el" href="structAttributeID.html#ae32a3e12e74e57203a3e2fb9ed241b97">AttributeID::table_id</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5">compute_attribute_stat()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_a6692a412aa7aee26dc2e37086ece310d_cgraph.png" border="0" usemap="#classAnalyzer_a6692a412aa7aee26dc2e37086ece310d_cgraph" alt=""/></div>
+<map name="classAnalyzer_a6692a412aa7aee26dc2e37086ece310d_cgraph" id="classAnalyzer_a6692a412aa7aee26dc2e37086ece310d_cgraph">
+<area shape="rect" id="node2" href="classDynamicBlockBuffer_1_1Iterator.html#a2160c9de11aead7b5ac245bb52bb4db2" title="DynamicBlockBuffer\l::Iterator::atomicNextBlock" alt="" coords="269,23,448,65"/><area shape="rect" id="node5" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23" title="claims::physical_operator\l::PhysicalOperatorBase::Close" alt="" coords="257,89,460,130"/><area shape="rect" id="node6" href="Analyzer_8cpp.html#a8cac6e5182d6a3be88b8b8f6a1cd2621" title="compare" alt="" coords="323,155,395,181"/><area shape="rect" id="node7" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956" title="DynamicBlockBuffer\l::createIterator" alt="" coords="545,227,687,269"/><area shape="rect" id="node8" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085" title="BlockStreamBase::createIterator" alt="" coords="253,388,465,415"/><area shape="rect" id="node9" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3" title="DynamicBlockBuffer\l::destory" alt="" coords="287,257,430,298"/><area shape="rect" id="node12" href="classTableDescriptor.html#ab01a15fe7003d1641b8ea003c7d94414" title="TableDescriptor::getAttribute" alt="" coords="264,439,453,465"/><area shape="rect" id="node13" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f" title="getFrequency" alt="" coords="308,489,409,516"/><area shape="rect" id="node15" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="287,540,430,567"/><area shape="rect" id="node17" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40" title="TableDescriptor::getNumber\lOfProjection" alt="" coords="265,591,452,633"/><area shape="rect" id="node18" href="classDynamicBlockBuffer.html#acb837fe538f68e89e27ca7cbbc2e344e" title="DynamicBlockBuffer\l::getNumberOftuples" alt="" coords="287,322,430,363"/><area shape="rect" id="node20" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136" title="claims::logical_operator\l::LogicalOperator::GetPhysicalPlan" alt="" coords="245,657,472,698"/><area shape="rect" id="node21" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="259,723,458,749"/><area shape="rect" id="node22" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c" title="claims::physical_operator\l::PhysicalOperatorBase\l::GetResultSet" alt="" coords="273,773,444,829"/><area shape="rect" id="node23" href="classProjectionDescriptor.html#a01507bb38d9c289156d6bc5dac6cd4d7" title="ProjectionDescriptor\l::hasAttribute" alt="" coords="289,854,429,895"/><area shape="rect" id="node24" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e" title="claims::physical_operator\l::PhysicalOperatorBase::Next" alt="" coords="261,919,457,961"/><area shape="rect" id="node25" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e" title="BlockStreamBase::BlockStream\lTraverseIterator::nextTuple" alt="" coords="253,985,464,1026"/><area shape="rect" id="node26" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0" title="claims::physical_operator\l::PhysicalOperatorBase::Open" alt="" coords="259,1050,458,1091"/><area shape="rect" id="node27" href="classHistogram.html#add0169b2e90d955fdb4d82d8964095bd" title="Histogram::setTupleCount" alt="" coords="271,1116,446,1143"/><area shape="rect" id="node28" href="classHistogram.html#afb983482144a1ad373464cece94d616f" title="Histogram::setValueCount" alt="" coords="271,1167,447,1193"/><area shape="rect" id="node3" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="566,56,666,83"/><area shape="rect" id="node4" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="566,5,666,32"/><area shape="rect" id="node10" href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd" title="DynamicBlockBuffer\l::Iterator::nextBlock" alt="" coords="545,293,687,334"/><area shape="rect" id="node11" href="classBlock.html#a106b1a1095930c997df00da51a024fbf" title="Block::getBlock" alt="" coords="760,300,875,327"/><area shape="rect" id="node14" href="classcolumn__type.html#a8a0c22f36455c028f89ccc87f751cbfe" title="column_type::get_length" alt="" coords="534,489,698,516"/><area shape="rect" id="node16" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="556,540,676,567"/><area shape="rect" id="node19" href="classBlockStreamBase.html#ad50cdcaaf287686de6ca6db643459509" title="BlockStreamBase::getTuples\lInBlock" alt="" coords="520,358,712,399"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_a6692a412aa7aee26dc2e37086ece310d_icgraph.png" border="0" usemap="#classAnalyzer_a6692a412aa7aee26dc2e37086ece310d_icgraph" alt=""/></div>
+<map name="classAnalyzer_a6692a412aa7aee26dc2e37086ece310d_icgraph" id="classAnalyzer_a6692a412aa7aee26dc2e37086ece310d_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5" title="Analyzer::compute_attribute_stat" alt="" coords="246,5,461,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a3c20377f468d8cb36f011626a4c4202c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned Analyzer::decideNumberOfBucketsForHistogram </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>distinct_cardinality</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>cardinality</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad04f404250da626aeb66cdaedf3ac058"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Analyzer::equiDepthAnalyse </td>
+          <td>(</td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classHistogram.html">Histogram</a> *&#160;</td>
+          <td class="paramname"><em>stat</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classOperate.html#a6d947b41b95254ef3f9f6df03d2de053">Operate::assign</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">Attribute::attrType</a>, <a class="el" href="classcolumn__type.html#a8a0c22f36455c028f89ccc87f751cbfe">column_type::get_length()</a>, <a class="el" href="classHistogram.html#aaac5cbb8ee7293e628763bb17a36af3e">Histogram::getBucketCnt()</a>, <a class="el" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f">getFrequency()</a>, <a class="el" href="classHistogram.html#a38f6c8fa96128d45f87611ff9ecf747f">Histogram::getTupleCount()</a>, <a class="el" href="classcolumn__type.html#a8d92c5e0ae992dbef3ac2001f30dd208">column_type::operate</a>, and <a class="el" href="classHistogram.html#a162680bbf27c41b6998f55105995c2b9">Histogram::setEquithDepthBound()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_ad04f404250da626aeb66cdaedf3ac058_cgraph.png" border="0" usemap="#classAnalyzer_ad04f404250da626aeb66cdaedf3ac058_cgraph" alt=""/></div>
+<map name="classAnalyzer_ad04f404250da626aeb66cdaedf3ac058_cgraph" id="classAnalyzer_ad04f404250da626aeb66cdaedf3ac058_cgraph">
+<area shape="rect" id="node2" href="classcolumn__type.html#a8a0c22f36455c028f89ccc87f751cbfe" title="column_type::get_length" alt="" coords="470,28,634,55"/><area shape="rect" id="node3" href="classHistogram.html#aaac5cbb8ee7293e628763bb17a36af3e" title="Histogram::getBucketCnt" alt="" coords="245,28,416,55"/><area shape="rect" id="node4" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f" title="getFrequency" alt="" coords="280,79,381,106"/><area shape="rect" id="node5" href="classHistogram.html#a38f6c8fa96128d45f87611ff9ecf747f" title="Histogram::getTupleCount" alt="" coords="243,130,418,156"/><area shape="rect" id="node6" href="classHistogram.html#a162680bbf27c41b6998f55105995c2b9" title="Histogram::setEquithDepth\lBound" alt="" coords="241,181,421,222"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a33694816d1cf55b4d52371951ad62d1c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long Analyzer::getDistinctCardinality </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Attribute_8h.html#a75326a6b17765cd4ad74a9bdbd0cf227">ATTRIBUTE_ANY</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23">claims::physical_operator::PhysicalOperatorBase::Close()</a>, <a class="el" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956">DynamicBlockBuffer::createIterator()</a>, <a class="el" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085">BlockStreamBase::createIterator()</a>, <a class="el" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3">DynamicBlockBuffer::destory()</a>, <a class="el" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340">Catalog::getInstance()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136">claims::logical_operator::LogicalOperator::GetPhysicalPlan()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c">claims::physical_operator::PhysicalOperatorBase::GetResultSet()</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalQueryPlanRoot.html#a09bf34a461f4d20a89ff6096ca00db9fa5d73bb76685c96cacac786d459fad7d1">claims::logical_operator::LogicalQueryPlanRoot::kResultCollector</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e">claims::physical_operator::PhysicalOperatorBase::Next()</a>, <a class="el" href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd">DynamicBlockBuffer::Iterator::nextBlock()</a>, <a class="el" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e">BlockStreamBase::BlockStreamTraverseIterator::nextTuple()</a>, <a class="el" href="structAttributeID.html#a0601f008a51a5c9b56c1d832196f1eec">AttributeID::offset</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0">claims::physical_operator::PhysicalOperatorBase::Open()</a>, <a class="el" href="structAttributeID.html#ae32a3e12e74e57203a3e2fb9ed241b97">AttributeID::table_id</a>, <a class="el" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a71cb2afcb975f44d689289fd2c30f40f">claims::logical_operator::LogicalOperator::~LogicalOperator()</a>, and <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a4e97ce54feb668d023e504a54a63cf38">claims::physical_operator::PhysicalOperatorBase::~PhysicalOperatorBase()</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5">compute_attribute_stat()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_a33694816d1cf55b4d52371951ad62d1c_cgraph.png" border="0" usemap="#classAnalyzer_a33694816d1cf55b4d52371951ad62d1c_cgraph" alt=""/></div>
+<map name="classAnalyzer_a33694816d1cf55b4d52371951ad62d1c_cgraph" id="classAnalyzer_a33694816d1cf55b4d52371951ad62d1c_cgraph">
+<area shape="rect" id="node2" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a7dc29ec451604d0bcbd4c80c14e1ef23" title="claims::physical_operator\l::PhysicalOperatorBase::Close" alt="" coords="275,5,477,46"/><area shape="rect" id="node3" href="classDynamicBlockBuffer.html#ad3fd45b2086e797a3d8130d231571956" title="DynamicBlockBuffer\l::createIterator" alt="" coords="539,90,682,131"/><area shape="rect" id="node4" href="classBlockStreamBase.html#ae0b9bd4ef67d1f8841b99d305eef9085" title="BlockStreamBase::createIterator" alt="" coords="270,121,482,148"/><area shape="rect" id="node5" href="classDynamicBlockBuffer.html#a6b1b8b40c120258380aac49b4050dad3" title="DynamicBlockBuffer\l::destory" alt="" coords="305,173,447,214"/><area shape="rect" id="node8" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="305,503,447,529"/><area shape="rect" id="node10" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a46bc67ea6e54b925a7acfd5db1fd8136" title="claims::logical_operator\l::LogicalOperator::GetPhysicalPlan" alt="" coords="263,290,489,331"/><area shape="rect" id="node11" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#ad4261b759b8421f8627d9518586fc87c" title="claims::physical_operator\l::PhysicalOperatorBase\l::GetResultSet" alt="" coords="291,356,461,412"/><area shape="rect" id="node12" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a64cc638e8e5d585dc4ded7b87b57df5e" title="claims::physical_operator\l::PhysicalOperatorBase::Next" alt="" coords="278,437,474,478"/><area shape="rect" id="node6" href="classDynamicBlockBuffer_1_1Iterator.html#a1fcf55ae05275b6debdabc99e21e10cd" title="DynamicBlockBuffer\l::Iterator::nextBlock" alt="" coords="539,206,682,247"/><area shape="rect" id="node13" href="classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e" title="BlockStreamBase::BlockStream\lTraverseIterator::nextTuple" alt="" coords="271,554,481,595"/><area shape="rect" id="node14" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a9e4834e27915bc0862e63bc0ce8318c0" title="claims::physical_operator\l::PhysicalOperatorBase::Open" alt="" coords="277,619,475,661"/><area shape="rect" id="node15" href="classclaims_1_1logical__operator_1_1LogicalOperator.html#a71cb2afcb975f44d689289fd2c30f40f" title="claims::logical_operator\l::LogicalOperator::~LogicalOperator" alt="" coords="262,685,490,726"/><area shape="rect" id="node16" href="classclaims_1_1physical__operator_1_1PhysicalOperatorBase.html#a4e97ce54feb668d023e504a54a63cf38" title="claims::physical_operator\l::PhysicalOperatorBase\l::~PhysicalOperatorBase" alt="" coords="291,751,461,807"/><area shape="rect" id="node7" href="classBlock.html#a106b1a1095930c997df00da51a024fbf" title="Block::getBlock" alt="" coords="731,213,845,240"/><area shape="rect" id="node9" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="551,503,671,529"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_a33694816d1cf55b4d52371951ad62d1c_icgraph.png" border="0" usemap="#classAnalyzer_a33694816d1cf55b4d52371951ad62d1c_icgraph" alt=""/></div>
+<map name="classAnalyzer_a33694816d1cf55b4d52371951ad62d1c_icgraph" id="classAnalyzer_a33694816d1cf55b4d52371951ad62d1c_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5" title="Analyzer::compute_attribute_stat" alt="" coords="262,5,477,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a81882b8ea61dc2d481ad7a852c014964"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Analyzer::isBeneficalFromHistrogram </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>distinct_values</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>cardinality</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5">compute_attribute_stat()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_a81882b8ea61dc2d481ad7a852c014964_icgraph.png" border="0" usemap="#classAnalyzer_a81882b8ea61dc2d481ad7a852c014964_icgraph" alt=""/></div>
+<map name="classAnalyzer_a81882b8ea61dc2d481ad7a852c014964_icgraph" id="classAnalyzer_a81882b8ea61dc2d481ad7a852c014964_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5" title="Analyzer::compute_attribute_stat" alt="" coords="230,12,445,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ad4ea1ae66a83a592870657275cfd546c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Analyzer::mcvAnalyse </td>
+          <td>(</td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned long&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structAttribute.html">Attribute</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classHistogram.html">Histogram</a> *&#160;</td>
+          <td class="paramname"><em>stat</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classOperate.html#a6d947b41b95254ef3f9f6df03d2de053">Operate::assign</a>, <a class="el" href="structAttribute.html#a5ef686818631a56fbd898a01d5299227">Attribute::attrType</a>, <a class="el" href="classcolumn__type.html#a8a0c22f36455c028f89ccc87f751cbfe">column_type::get_length()</a>, <a class="el" href="classHistogram.html#aaac5cbb8ee7293e628763bb17a36af3e">Histogram::getBucketCnt()</a>, <a class="el" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f">getFrequency()</a>, <a class="el" href="classHistogram.html#a38f6c8fa96128d45f87611ff9ecf747f">Histogram::getTupleCount()</a>, <a class="el" href="classcolumn__type.html#a8d92c5e0ae992dbef3ac2001f30dd208">column_type::operate</a>, and <a class="el" href="classHistogram.html#a2f3826e9205f807123ab74db786023f3">Histogram::setMostCommonValues()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classAnalyzer_ad4ea1ae66a83a592870657275cfd546c_cgraph.png" border="0" usemap="#classAnalyzer_ad4ea1ae66a83a592870657275cfd546c_cgraph" alt=""/></div>
+<map name="classAnalyzer_ad4ea1ae66a83a592870657275cfd546c_cgraph" id="classAnalyzer_ad4ea1ae66a83a592870657275cfd546c_cgraph">
+<area shape="rect" id="node2" href="classcolumn__type.html#a8a0c22f36455c028f89ccc87f751cbfe" title="column_type::get_length" alt="" coords="449,30,613,57"/><area shape="rect" id="node3" href="classHistogram.html#aaac5cbb8ee7293e628763bb17a36af3e" title="Histogram::getBucketCnt" alt="" coords="219,30,389,57"/><area shape="rect" id="node4" href="Analyzer_8cpp.html#aaae892e1e5cc015d9516d0d666b1b34f" title="getFrequency" alt="" coords="253,81,355,108"/><area shape="rect" id="node5" href="classHistogram.html#a38f6c8fa96128d45f87611ff9ecf747f" title="Histogram::getTupleCount" alt="" coords="217,132,391,158"/><area shape="rect" id="node6" href="classHistogram.html#a2f3826e9205f807123ab74db786023f3" title="Histogram::setMostCommon\lValues" alt="" coords="209,183,399,224"/></map>
+</div>
+</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Catalog/stat/<a class="el" href="Analyzer_8h_source.html">Analyzer.h</a></li>
-<li>Catalog/stat/Analyzer.cpp</li>
+<li>Catalog/stat/<a class="el" href="Analyzer_8cpp.html">Analyzer.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

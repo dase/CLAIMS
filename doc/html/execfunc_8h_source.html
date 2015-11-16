@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Expression/execfunc.h Source File</title>
+<title>Claims: common/Expression/execfunc.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('execfunc_8h_source.html','');});
 <div class="title">execfunc.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="execfunc_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * execfunc.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Aug 6, 2014</span></div>
@@ -126,29 +126,41 @@ $(document).ready(function(){initNavTree('execfunc_8h_source.html','');});
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;../../Parsetree/sql_node_struct.h&quot;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;../../Catalog/Attribute.h&quot;</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;../../common/Schema/Schema.h&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;qnode.h&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="qnode_8h.html">qnode.h</a>&quot;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">using namespace </span>std;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keywordtype">bool</span> ExecEvalQual(vector&lt;QNode *&gt;v_qual,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keywordtype">void</span> *Exec_cal(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">void</span> *Exec_cmp(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keywordtype">void</span> *getConst(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">void</span> *getcol(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keywordtype">void</span> *Exec_unary(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keywordtype">void</span> *Exec_ternary(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keywordtype">void</span> *Exec_case_when(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keywordtype">void</span> *Exec_in(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keywordtype">void</span> *Exec_date_add_sub(<a class="code" href="structNode.html">Node</a> *cinfo,<span class="keywordtype">void</span> *tuple,<a class="code" href="classSchema.html">Schema</a> *schema);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keywordtype">void</span> Expr_copy(<a class="code" href="classQNode.html">QNode</a> *node,<a class="code" href="classQNode.html">QNode</a> *&amp;new_node);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="execfunc_8cpp.html#a753d4e0dcb6e5869c7139cbf968d40c1">ExecEvalQual</a>(vector&lt;QNode *&gt; v_qual, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#a7f9a9b7c3f0088f07a6c6d611f4786fa">Exec_cal</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#aa96b2eabf7b45bc9eaee5e2effffdeb8">Exec_cmp</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#a17b806d1345c5c6efa4b253c5c15bd5a">getConst</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#abe60cdc6634067921b34da80cc49c3d5">getcol</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#a15c712aefae148b0c68dfc3d540429f8">Exec_unary</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#a139f3e11e7799408d6dd62fec25f2b00">Exec_ternary</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#a239e892af093c2e3b8c7894fa98e8279">Exec_case_when</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#aff9a4152ffe8518a500100d8fca5bed9">Exec_in</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="execfunc_8cpp.html#ad44ee8abe71672704a34fa5ce9b4235e">Exec_date_add_sub</a>(<a class="code" href="structNode.html">Node</a> *cinfo, <span class="keywordtype">void</span> *tuple, <a class="code" href="classSchema.html">Schema</a> *schema);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keywordtype">void</span> <a class="code" href="execfunc_8cpp.html#a54045e954d6500409d9ccd8fe05493bb">Expr_copy</a>(<a class="code" href="classQNode.html">QNode</a> *node, <a class="code" href="classQNode.html">QNode</a> *&amp;new_node);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* EXECFUNC_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="structNode_html"><div class="ttname"><a href="structNode.html">Node</a></div><div class="ttdef"><b>Definition:</b> sql_node_struct.h:60</div></div>
+<div class="ttc" id="execfunc_8cpp_html_aa96b2eabf7b45bc9eaee5e2effffdeb8"><div class="ttname"><a href="execfunc_8cpp.html#aa96b2eabf7b45bc9eaee5e2effffdeb8">Exec_cmp</a></div><div class="ttdeci">void * Exec_cmp(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:40</div></div>
+<div class="ttc" id="execfunc_8cpp_html_a139f3e11e7799408d6dd62fec25f2b00"><div class="ttname"><a href="execfunc_8cpp.html#a139f3e11e7799408d6dd62fec25f2b00">Exec_ternary</a></div><div class="ttdeci">void * Exec_ternary(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:51</div></div>
+<div class="ttc" id="execfunc_8cpp_html_a239e892af093c2e3b8c7894fa98e8279"><div class="ttname"><a href="execfunc_8cpp.html#a239e892af093c2e3b8c7894fa98e8279">Exec_case_when</a></div><div class="ttdeci">void * Exec_case_when(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:76</div></div>
+<div class="ttc" id="structNode_html"><div class="ttname"><a href="structNode.html">Node</a></div><div class="ttdef"><b>Definition:</b> sql_node_struct.h:108</div></div>
+<div class="ttc" id="execfunc_8cpp_html_abe60cdc6634067921b34da80cc49c3d5"><div class="ttname"><a href="execfunc_8cpp.html#abe60cdc6634067921b34da80cc49c3d5">getcol</a></div><div class="ttdeci">void * getcol(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:69</div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
+<div class="ttc" id="execfunc_8cpp_html_a15c712aefae148b0c68dfc3d540429f8"><div class="ttname"><a href="execfunc_8cpp.html#a15c712aefae148b0c68dfc3d540429f8">Exec_unary</a></div><div class="ttdeci">void * Exec_unary(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:21</div></div>
+<div class="ttc" id="qnode_8h_html"><div class="ttname"><a href="qnode_8h.html">qnode.h</a></div></div>
+<div class="ttc" id="execfunc_8cpp_html_a54045e954d6500409d9ccd8fe05493bb"><div class="ttname"><a href="execfunc_8cpp.html#a54045e954d6500409d9ccd8fe05493bb">Expr_copy</a></div><div class="ttdeci">void Expr_copy(QNode *node, QNode *&amp;new_node)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:139</div></div>
+<div class="ttc" id="execfunc_8cpp_html_ad44ee8abe71672704a34fa5ce9b4235e"><div class="ttname"><a href="execfunc_8cpp.html#ad44ee8abe71672704a34fa5ce9b4235e">Exec_date_add_sub</a></div><div class="ttdeci">void * Exec_date_add_sub(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:128</div></div>
 <div class="ttc" id="classQNode_html"><div class="ttname"><a href="classQNode.html">QNode</a></div><div class="ttdef"><b>Definition:</b> qnode.h:51</div></div>
+<div class="ttc" id="execfunc_8cpp_html_a753d4e0dcb6e5869c7139cbf968d40c1"><div class="ttname"><a href="execfunc_8cpp.html#a753d4e0dcb6e5869c7139cbf968d40c1">ExecEvalQual</a></div><div class="ttdeci">bool ExecEvalQual(vector&lt; QNode * &gt; v_qual, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:10</div></div>
+<div class="ttc" id="execfunc_8cpp_html_a17b806d1345c5c6efa4b253c5c15bd5a"><div class="ttname"><a href="execfunc_8cpp.html#a17b806d1345c5c6efa4b253c5c15bd5a">getConst</a></div><div class="ttdeci">void * getConst(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:63</div></div>
+<div class="ttc" id="execfunc_8cpp_html_a7f9a9b7c3f0088f07a6c6d611f4786fa"><div class="ttname"><a href="execfunc_8cpp.html#a7f9a9b7c3f0088f07a6c6d611f4786fa">Exec_cal</a></div><div class="ttdeci">void * Exec_cal(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:30</div></div>
+<div class="ttc" id="execfunc_8cpp_html_aff9a4152ffe8518a500100d8fca5bed9"><div class="ttname"><a href="execfunc_8cpp.html#aff9a4152ffe8518a500100d8fca5bed9">Exec_in</a></div><div class="ttdeci">void * Exec_in(Node *cinfo, void *tuple, Schema *schema)</div><div class="ttdef"><b>Definition:</b> execfunc.cpp:111</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_9dbf8e5c81ecd7a9be675ee617bf733c.html">Expression</a></li><li class="navelem"><b>execfunc.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_9dbf8e5c81ecd7a9be675ee617bf733c.html">Expression</a></li><li class="navelem"><a class="el" href="execfunc_8h.html">execfunc.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

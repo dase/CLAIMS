@@ -1,4 +1,4 @@
-.TH "Having_list" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Having_list" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Having_list \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBhavingstring\fP"
@@ -19,7 +21,21 @@ Having_list \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "char* Having_list::havingstring"
+
+.PP
+Referenced by newHavingList(), and output()\&.
+.SS "\fBNode\fP* Having_list::next"
+
+.PP
+Referenced by newHavingList()\&.
+.SS "\fBnodetype\fP Having_list::type"
+
+.PP
+Referenced by newHavingList()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

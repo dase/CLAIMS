@@ -1,4 +1,4 @@
-.TH "BufferManager" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BufferManager" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ BufferManager \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <BufferManager\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "virtual \fB~BufferManager\fP ()"
+.br
 .ti -1c
 .RI "bool \fBapplyStorageDedget\fP (unsigned long size)"
 .br
@@ -26,7 +31,144 @@ BufferManager \-
 .RI "static \fBBufferManager\fP * \fBgetInstance\fP ()"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBufferManager\fP ()"
+.br
+.ti -1c
+.RI "unsigned long int \fBgetTotalUsed\fP () const "
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned long int \fBtotol_capacity_\fP"
+.br
+.ti -1c
+.RI "unsigned long int \fBstorage_budget_max_\fP"
+.br
+.ti -1c
+.RI "unsigned long int \fBstorage_used_\fP"
+.br
+.ti -1c
+.RI "unsigned long int \fBstorage_budget_min_\fP"
+.br
+.ti -1c
+.RI "unsigned long int \fBintermediate_buffer_budget_max_\fP"
+.br
+.ti -1c
+.RI "unsigned long int \fBintermediate_buffer_budget_min_\fP"
+.br
+.ti -1c
+.RI "unsigned long int \fBintermediate_buffer_used_\fP"
+.br
+.ti -1c
+.RI "\fBMemoryChunkStore\fP * \fBmemory_storage_\fP"
+.br
+.ti -1c
+.RI "\fBLock\fP \fBlock_\fP"
+.br
+.ti -1c
+.RI "\fBLogging\fP * \fBlogging_\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBBufferManager\fP * \fBinstance_\fP =0"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BufferManager::~BufferManager ()\fC [virtual]\fP"
+
+.PP
+References instance_, and logging_\&.
+.SS "BufferManager::BufferManager ()\fC [private]\fP"
+
+.PP
+References MemoryChunkStore::getInstance(), intermediate_buffer_budget_max_, intermediate_buffer_budget_min_, intermediate_buffer_used_, Logging::log(), logging_, memory_storage_, storage_budget_max_, storage_budget_min_, storage_used_, and totol_capacity_\&.
+.PP
+Referenced by getInstance()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool BufferManager::applyStorageDedget (unsigned longsize)"
+
+.PP
+References Lock::acquire(), lock_, Logging::log(), logging_, Lock::release(), storage_budget_max_, and storage_used_\&.
+.SS "\fBBufferManager\fP * BufferManager::getInstance ()\fC [static]\fP"
+
+.PP
+References BufferManager(), and instance_\&.
+.PP
+Referenced by MemoryChunkStore::applyChunk(), BlockManager::initialize(), Environment::initializeBufferManager(), and MemoryChunkStore::returnChunk()\&.
+.SS "unsigned BufferManager::getStorageMemoryBudegeInMilibyte () const"
+
+.PP
+References storage_budget_max_\&.
+.PP
+Referenced by BlockManager::initialize()\&.
+.SS "unsigned long int BufferManager::getTotalUsed () const\fC [private]\fP"
+
+.PP
+References intermediate_buffer_used_, and storage_used_\&.
+.SS "void BufferManager::returnStorageBudget (unsigned longsize)"
+
+.PP
+References Lock::acquire(), lock_, Lock::release(), and storage_used_\&.
+.PP
+Referenced by MemoryChunkStore::returnChunk()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBBufferManager\fP * BufferManager::instance_ =0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by getInstance(), and ~BufferManager()\&.
+.SS "unsigned long int BufferManager::intermediate_buffer_budget_max_\fC [private]\fP"
+
+.PP
+Referenced by BufferManager()\&.
+.SS "unsigned long int BufferManager::intermediate_buffer_budget_min_\fC [private]\fP"
+
+.PP
+Referenced by BufferManager()\&.
+.SS "unsigned long int BufferManager::intermediate_buffer_used_\fC [private]\fP"
+
+.PP
+Referenced by BufferManager(), and getTotalUsed()\&.
+.SS "\fBLock\fP BufferManager::lock_\fC [private]\fP"
+
+.PP
+Referenced by applyStorageDedget(), and returnStorageBudget()\&.
+.SS "\fBLogging\fP* BufferManager::logging_\fC [private]\fP"
+
+.PP
+Referenced by applyStorageDedget(), BufferManager(), and ~BufferManager()\&.
+.SS "\fBMemoryChunkStore\fP* BufferManager::memory_storage_\fC [private]\fP"
+
+.PP
+Referenced by BufferManager()\&.
+.SS "unsigned long int BufferManager::storage_budget_max_\fC [private]\fP"
+
+.PP
+Referenced by applyStorageDedget(), BufferManager(), and getStorageMemoryBudegeInMilibyte()\&.
+.SS "unsigned long int BufferManager::storage_budget_min_\fC [private]\fP"
+
+.PP
+Referenced by BufferManager()\&.
+.SS "unsigned long int BufferManager::storage_used_\fC [private]\fP"
+
+.PP
+Referenced by applyStorageDedget(), BufferManager(), getTotalUsed(), and returnStorageBudget()\&.
+.SS "unsigned long int BufferManager::totol_capacity_\fC [private]\fP"
+
+.PP
+Referenced by BufferManager()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "BasicHashTable::Iterator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BasicHashTable::Iterator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,14 +6,22 @@ BasicHashTable::Iterator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <hashtable\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBIterator\fP (const unsigned &buck_actual_size, const unsigned &tuplesize)"
+.RI "\fBIterator\fP ()"
+.br
+.ti -1c
+.RI "\fBIterator\fP (const unsigned &\fBbuck_actual_size\fP, const unsigned &\fBtuplesize\fP)"
 .br
 .ti -1c
 .RI "\fBIterator\fP (const \fBIterator\fP &r)"
+.br
+.ti -1c
+.RI "\fB~Iterator\fP ()"
 .br
 .ti -1c
 .RI "void * \fBreadnext\fP ()"
@@ -25,6 +33,25 @@ BasicHashTable::Iterator \-
 .RI "void \fBincrease_cur_\fP ()"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "void * \fBcur\fP"
+.br
+.ti -1c
+.RI "void * \fBfree\fP"
+.br
+.ti -1c
+.RI "void * \fBnext\fP"
+.br
+.ti -1c
+.RI "int \fBbuck_actual_size\fP"
+.br
+.ti -1c
+.RI "int \fBtuplesize\fP"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -32,7 +59,59 @@ BasicHashTable::Iterator \-
 .RI "class \fBBasicHashTable\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BasicHashTable::Iterator::Iterator ()"
+
+.SS "BasicHashTable::Iterator::Iterator (const unsigned &buck_actual_size, const unsigned &tuplesize)"
+
+.SS "BasicHashTable::Iterator::Iterator (const \fBIterator\fP &r)"
+
+.PP
+References buck_actual_size, cur, free, next, and tuplesize\&.
+.SS "BasicHashTable::Iterator::~Iterator ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void BasicHashTable::Iterator::increase_cur_ ()\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::PhysicalAggregation::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::PhysicalHashJoin::Next(), and claims::physical_operator::PhysicalAggregation::Open()\&.
+.SS "void* BasicHashTable::Iterator::readCurrent () const\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::PhysicalAggregation::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::PhysicalHashJoin::Next(), and claims::physical_operator::PhysicalAggregation::Open()\&.
+.SS "void* BasicHashTable::Iterator::readnext ()\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::InOperator::Next(), and BasicHashTable::report_status()\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBBasicHashTable\fP\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "int BasicHashTable::Iterator::buck_actual_size\fC [private]\fP"
+
+.PP
+Referenced by Iterator()\&.
+.SS "void* BasicHashTable::Iterator::cur\fC [private]\fP"
+
+.PP
+Referenced by Iterator(), and BasicHashTable::placeIterator()\&.
+.SS "void* BasicHashTable::Iterator::free\fC [private]\fP"
+
+.PP
+Referenced by Iterator(), and BasicHashTable::placeIterator()\&.
+.SS "void* BasicHashTable::Iterator::next\fC [private]\fP"
+
+.PP
+Referenced by Iterator(), and BasicHashTable::placeIterator()\&.
+.SS "int BasicHashTable::Iterator::tuplesize\fC [private]\fP"
+
+.PP
+Referenced by Iterator()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

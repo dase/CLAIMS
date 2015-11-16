@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Resource/ResourceManagerSlave.h Source File</title>
+<title>Claims: Resource/ResourceManagerSlave.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('ResourceManagerSlave_8h_source.html','
 <div class="title">ResourceManagerSlave.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ResourceManagerSlave_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * ResourceManagerSlave.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Oct 31, 2013</span></div>
@@ -121,32 +121,42 @@ $(document).ready(function(){initNavTree('ResourceManagerSlave_8h_source.html','
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;../common/Message.h&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;../common/Logging.h&quot;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;CPUResource.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">int</span> NodeID;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="CPUResource_8h.html">CPUResource.h</a>&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="ResourceManagerSlave_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">   17</a></span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">int</span> <a class="code" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a>;</div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classInstanceResourceManager.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classInstanceResourceManager.html">InstanceResourceManager</a> {</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="classInstanceResourceManager.html">InstanceResourceManager</a>();</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classInstanceResourceManager.html">InstanceResourceManager</a>();</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    NodeID Register();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> ReportStorageBudget(<a class="code" href="structStorageBudgetMessage.html">StorageBudgetMessage</a>&amp;);</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">void</span> setStorageBudget(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> memory, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> disk);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25">InstanceResourceManager</a>();</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classInstanceResourceManager.html#a008dd346570fe0b00406424bba9e670b">~InstanceResourceManager</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a> <a class="code" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54">Register</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classInstanceResourceManager.html#a10e6142a7a0544c1ce96060af639cee6">ReportStorageBudget</a>(<a class="code" href="structStorageBudgetMessage.html">StorageBudgetMessage</a>&amp;);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classInstanceResourceManager.html#aa19b214bf1cf7c45f82ae0926a62b634">setStorageBudget</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> memory, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> disk);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    Theron::Framework *framework_;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classLogging.html">Logging</a>* logging_;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="classCPUResourceManager.html">CPUResourceManager</a> cpu_resource_;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classInstanceResourceManager.html#a12f74ee832817134ca3889f2e6672612">   26</a></span>&#160;    Theron::Framework *<a class="code" href="classInstanceResourceManager.html#a12f74ee832817134ca3889f2e6672612">framework_</a>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classInstanceResourceManager.html#a072a303668f67caf8baaafa511068e4e">   27</a></span>&#160;    <a class="code" href="classLogging.html">Logging</a>* <a class="code" href="classInstanceResourceManager.html#a072a303668f67caf8baaafa511068e4e">logging_</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classInstanceResourceManager.html#af19f208b6ba2dbaeb41d0d36ad12bb7b">   28</a></span>&#160;    <a class="code" href="classCPUResourceManager.html">CPUResourceManager</a> <a class="code" href="classInstanceResourceManager.html#af19f208b6ba2dbaeb41d0d36ad12bb7b">cpu_resource_</a>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;};</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* RESOURCEMANAGERSLAVE_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classInstanceResourceManager_html_aa501a0d978c7fe57f3e3981e86f39d54"><div class="ttname"><a href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54">InstanceResourceManager::Register</a></div><div class="ttdeci">NodeID Register()</div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.cpp:21</div></div>
+<div class="ttc" id="classInstanceResourceManager_html_a10e6142a7a0544c1ce96060af639cee6"><div class="ttname"><a href="classInstanceResourceManager.html#a10e6142a7a0544c1ce96060af639cee6">InstanceResourceManager::ReportStorageBudget</a></div><div class="ttdeci">void ReportStorageBudget(StorageBudgetMessage &amp;)</div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.cpp:44</div></div>
 <div class="ttc" id="classLogging_html"><div class="ttname"><a href="classLogging.html">Logging</a></div><div class="ttdef"><b>Definition:</b> Logging.h:21</div></div>
 <div class="ttc" id="classInstanceResourceManager_html"><div class="ttname"><a href="classInstanceResourceManager.html">InstanceResourceManager</a></div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.h:18</div></div>
+<div class="ttc" id="classInstanceResourceManager_html_a072a303668f67caf8baaafa511068e4e"><div class="ttname"><a href="classInstanceResourceManager.html#a072a303668f67caf8baaafa511068e4e">InstanceResourceManager::logging_</a></div><div class="ttdeci">Logging * logging_</div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.h:27</div></div>
 <div class="ttc" id="classCPUResourceManager_html"><div class="ttname"><a href="classCPUResourceManager.html">CPUResourceManager</a></div><div class="ttdef"><b>Definition:</b> CPUResource.h:13</div></div>
-<div class="ttc" id="structStorageBudgetMessage_html"><div class="ttname"><a href="structStorageBudgetMessage.html">StorageBudgetMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:43</div></div>
+<div class="ttc" id="ids_8h_html_ae8d9d0f49cd0dc16ba088be027f2939f"><div class="ttname"><a href="ids_8h.html#ae8d9d0f49cd0dc16ba088be027f2939f">NodeID</a></div><div class="ttdeci">int NodeID</div><div class="ttdef"><b>Definition:</b> ids.h:22</div></div>
+<div class="ttc" id="structStorageBudgetMessage_html"><div class="ttname"><a href="structStorageBudgetMessage.html">StorageBudgetMessage</a></div><div class="ttdef"><b>Definition:</b> Message.h:36</div></div>
+<div class="ttc" id="classInstanceResourceManager_html_a008dd346570fe0b00406424bba9e670b"><div class="ttname"><a href="classInstanceResourceManager.html#a008dd346570fe0b00406424bba9e670b">InstanceResourceManager::~InstanceResourceManager</a></div><div class="ttdeci">virtual ~InstanceResourceManager()</div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.cpp:17</div></div>
+<div class="ttc" id="classInstanceResourceManager_html_aa19b214bf1cf7c45f82ae0926a62b634"><div class="ttname"><a href="classInstanceResourceManager.html#aa19b214bf1cf7c45f82ae0926a62b634">InstanceResourceManager::setStorageBudget</a></div><div class="ttdeci">void setStorageBudget(unsigned long memory, unsigned long disk)</div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.cpp:48</div></div>
+<div class="ttc" id="CPUResource_8h_html"><div class="ttname"><a href="CPUResource_8h.html">CPUResource.h</a></div></div>
+<div class="ttc" id="classInstanceResourceManager_html_af19f208b6ba2dbaeb41d0d36ad12bb7b"><div class="ttname"><a href="classInstanceResourceManager.html#af19f208b6ba2dbaeb41d0d36ad12bb7b">InstanceResourceManager::cpu_resource_</a></div><div class="ttdeci">CPUResourceManager cpu_resource_</div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.h:28</div></div>
+<div class="ttc" id="classInstanceResourceManager_html_a1d378f6c1e0ece181a642e30777a7e25"><div class="ttname"><a href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25">InstanceResourceManager::InstanceResourceManager</a></div><div class="ttdeci">InstanceResourceManager()</div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.cpp:12</div></div>
+<div class="ttc" id="classInstanceResourceManager_html_a12f74ee832817134ca3889f2e6672612"><div class="ttname"><a href="classInstanceResourceManager.html#a12f74ee832817134ca3889f2e6672612">InstanceResourceManager::framework_</a></div><div class="ttdeci">Theron::Framework * framework_</div><div class="ttdef"><b>Definition:</b> ResourceManagerSlave.h:26</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_9ddeeb997bc2af5957d3bd0d4b3d2f72.html">Resource</a></li><li class="navelem"><b>ResourceManagerSlave.h</b></li>
+    <li class="navelem"><a class="el" href="dir_9ddeeb997bc2af5957d3bd0d4b3d2f72.html">Resource</a></li><li class="navelem"><a class="el" href="ResourceManagerSlave_8h.html">ResourceManagerSlave.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

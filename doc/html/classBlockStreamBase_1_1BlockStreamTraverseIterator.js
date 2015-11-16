@@ -8,5 +8,7 @@ var classBlockStreamBase_1_1BlockStreamTraverseIterator =
     [ "increase_cur_", "classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a77fce22bdd1c29df1b313a379209d08a", null ],
     [ "nextTuple", "classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6867c94f3866c0d4969adafb4405883e", null ],
     [ "reset", "classBlockStreamBase_1_1BlockStreamTraverseIterator.html#ad97fcc29acb0df14246f775b943fe976", null ],
-    [ "set_cur", "classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6500e7be8375c098af258cd7515d2651", null ]
+    [ "set_cur", "classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a6500e7be8375c098af258cd7515d2651", null ],
+    [ "block_stream_base_", "classBlockStreamBase_1_1BlockStreamTraverseIterator.html#a2457919c5659b4770c1676ce29260413", null ],
+    [ "cur", "classBlockStreamBase_1_1BlockStreamTraverseIterator.html#aa2459959cab662ab89a90afb3070c433", null ]
 ];

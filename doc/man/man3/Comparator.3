@@ -1,4 +1,4 @@
-.TH "Comparator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Comparator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ Comparator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Comparator\&.h>\fP
 .PP
 Inherited by \fBAttributeComparator\fP\&.
 .SS "Classes"
@@ -26,13 +28,19 @@ Inherited by \fBAttributeComparator\fP\&.
 
 .in +1c
 .ti -1c
-.RI "\fBComparator\fP (\fBcolumn_type\fP x, \fBcolumn_type\fP b, Comparator::comparison c)"
+.RI "\fBComparator\fP (\fBcolumn_type\fP x, \fBcolumn_type\fP b, \fBComparator::comparison\fP c)"
+.br
+.ti -1c
+.RI "\fBComparator\fP ()"
 .br
 .ti -1c
 .RI "\fBComparator\fP (const \fBComparator\fP &r)"
 .br
 .ti -1c
-.RI "comparison \fBgetCompareType\fP () const "
+.RI "virtual \fB~Comparator\fP ()"
+.br
+.ti -1c
+.RI "\fBcomparison\fP \fBgetCompareType\fP () const "
 .br
 .in -1c
 .SS "Public Attributes"
@@ -49,7 +57,64 @@ Inherited by \fBAttributeComparator\fP\&.
 .RI "\fBPair\fP \fBpair\fP"
 .br
 .ti -1c
-.RI "comparison \fBcompareType\fP"
+.RI "\fBcomparison\fP \fBcompareType\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBiniatilize\fP ()"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBinitialize_L\fP ()"
+.br
+.ti -1c
+.RI "static void \fBinitialize_GEQ\fP ()"
+.br
+.ti -1c
+.RI "static void \fBinitialize_EQ\fP ()"
+.br
+.ti -1c
+.RI "static void \fBinitialize_NEQ\fP ()"
+.br
+.ti -1c
+.RI "static void \fBinitialize_G\fP ()"
+.br
+.ti -1c
+.RI "static void \fBinitialize_LEQ\fP ()"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static std::map< \fBPair\fP, \fBcomFun\fP > \fBfuns_L\fP"
+.br
+.ti -1c
+.RI "static std::map< \fBPair\fP, \fBcomFun\fP > \fBfuns_GEQ\fP"
+.br
+.ti -1c
+.RI "static std::map< \fBPair\fP, \fBcomFun\fP > \fBfuns_EQ\fP"
+.br
+.ti -1c
+.RI "static std::map< \fBPair\fP, \fBcomFun\fP > \fBfuns_NEQ\fP"
+.br
+.ti -1c
+.RI "static std::map< \fBPair\fP, \fBcomFun\fP > \fBfuns_G\fP"
+.br
+.ti -1c
+.RI "static std::map< \fBPair\fP, \fBcomFun\fP > \fBfuns_LEQ\fP"
+.br
+.ti -1c
+.RI "static \fBLock\fP \fBlock_\fP"
 .br
 .in -1c
 .SS "Friends"
@@ -59,7 +124,138 @@ Inherited by \fBAttributeComparator\fP\&.
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBComparator::comparison\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIL \fP\fP
+.TP
+\fB\fILEQ \fP\fP
+.TP
+\fB\fIEQ \fP\fP
+.TP
+\fB\fINEQ \fP\fP
+.TP
+\fB\fIG \fP\fP
+.TP
+\fB\fIGEQ \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Comparator::Comparator (\fBcolumn_type\fPx, \fBcolumn_type\fPb, \fBComparator::comparison\fPc)"
+
+.PP
+References compare, and iniatilize()\&.
+.SS "Comparator::Comparator ()\fC [inline]\fP"
+
+.SS "Comparator::Comparator (const \fBComparator\fP &r)"
+
+.PP
+References compareType, iniatilize(), and pair\&.
+.SS "Comparator::~Comparator ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBcomparison\fP Comparator::getCompareType () const\fC [inline]\fP"
+
+.PP
+References compareType\&.
+.SS "void Comparator::iniatilize ()\fC [private]\fP"
+
+.PP
+References Lock::acquire(), compare, compareType, EQ, Comparator::Pair::first, funs_EQ, funs_G, funs_GEQ, funs_L, funs_LEQ, funs_NEQ, G, GEQ, initialize_EQ(), initialize_G(), initialize_GEQ(), initialize_L(), initialize_LEQ(), initialize_NEQ(), L, LEQ, lock_, NEQ, pair, Lock::release(), Comparator::Pair::second, and column_type::type\&.
+.PP
+Referenced by Comparator(), and serialize()\&.
+.SS "void Comparator::initialize_EQ ()\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References equal< char *, char * >(), equal< NValue *, NValue * >(), funs_EQ, t_date, t_datetime, t_decimal, t_float, t_int, t_string, t_time, and t_u_long\&.
+.PP
+Referenced by iniatilize()\&.
+.SS "void Comparator::initialize_G ()\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References funs_G, great< char *, char * >(), great< NValue *, NValue * >(), t_date, t_datetime, t_decimal, t_float, t_int, t_string, t_time, and t_u_long\&.
+.PP
+Referenced by iniatilize()\&.
+.SS "void Comparator::initialize_GEQ ()\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References funs_GEQ, t_date, t_datetime, t_decimal, t_float, t_int, t_string, t_time, and t_u_long\&.
+.PP
+Referenced by iniatilize()\&.
+.SS "void Comparator::initialize_L ()\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References funs_L, LESS< char *, char * >(), LESS< char *, float >(), LESS< char *, int >(), LESS< float, char * >(), LESS< int, char * >(), LESS< NValue *, NValue * >(), t_date, t_datetime, t_decimal, t_float, t_int, t_string, t_time, and t_u_long\&.
+.PP
+Referenced by iniatilize()\&.
+.SS "void Comparator::initialize_LEQ ()\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References funs_LEQ, t_date, t_datetime, t_decimal, t_float, t_int, t_string, t_time, and t_u_long\&.
+.PP
+Referenced by iniatilize()\&.
+.SS "void Comparator::initialize_NEQ ()\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References funs_NEQ, t_date, t_datetime, t_decimal, t_float, t_int, t_string, t_time, and t_u_long\&.
+.PP
+Referenced by iniatilize()\&.
+.SS "template<class Archive > void Comparator::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References compare, compareType, iniatilize(), and pair\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "bool(* Comparator::compare)(const void *, const void *)"
+
+.PP
+Referenced by AttributeComparator::AttributeComparator(), Comparator(), AttributeComparator::filter(), iniatilize(), AttributeComparator::serialize(), and serialize()\&.
+.SS "\fBcomparison\fP Comparator::compareType\fC [protected]\fP"
+
+.PP
+Referenced by Comparator(), getCompareType(), iniatilize(), and serialize()\&.
+.SS "std::map< \fBComparator::Pair\fP, \fBcomFun\fP > Comparator::funs_EQ\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by iniatilize(), and initialize_EQ()\&.
+.SS "std::map< \fBComparator::Pair\fP, \fBcomFun\fP > Comparator::funs_G\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by iniatilize(), and initialize_G()\&.
+.SS "std::map< \fBComparator::Pair\fP, \fBcomFun\fP > Comparator::funs_GEQ\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by iniatilize(), and initialize_GEQ()\&.
+.SS "std::map< \fBComparator::Pair\fP, \fBcomFun\fP > Comparator::funs_L\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by iniatilize(), and initialize_L()\&.
+.SS "std::map< \fBComparator::Pair\fP, \fBcomFun\fP > Comparator::funs_LEQ\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by iniatilize(), and initialize_LEQ()\&.
+.SS "std::map< \fBComparator::Pair\fP, \fBcomFun\fP > Comparator::funs_NEQ\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by iniatilize(), and initialize_NEQ()\&.
+.SS "\fBLock\fP Comparator::lock_\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by iniatilize()\&.
+.SS "\fBPair\fP Comparator::pair\fC [protected]\fP"
+
+.PP
+Referenced by AttributeComparator::AttributeComparator(), Comparator(), iniatilize(), AttributeComparator::serialize(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

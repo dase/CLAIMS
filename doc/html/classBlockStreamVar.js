@@ -1,5 +1,6 @@
 var classBlockStreamVar =
 [
+    [ "tail_info", "structBlockStreamVar_1_1tail__info.html", "structBlockStreamVar_1_1tail__info" ],
     [ "BlockStreamVar", "classBlockStreamVar.html#a7ae584d8458e21cc067e3f23f29a9057", null ],
     [ "~BlockStreamVar", "classBlockStreamVar.html#a79706f33c5ab783cbd8cab9e8eaa8784", null ],
     [ "allocateTuple", "classBlockStreamVar.html#a4c13ed5d70fc7cf16198f9c1ceea7c40", null ],
@@ -21,5 +22,11 @@ var classBlockStreamVar =
     [ "serialize", "classBlockStreamVar.html#a0dd1cd1eda704b14ac5ca9c4011db173", null ],
     [ "setEmpty", "classBlockStreamVar.html#acc1b77831d06f31bda149b64432f9fd3", null ],
     [ "switchBlock", "classBlockStreamVar.html#a7149dbf296a3ead5576106296a5b99e0", null ],
-    [ "toDisk", "classBlockStreamVar.html#ace7c115f52cd99b370e8f68ebbb328ac", null ]
+    [ "toDisk", "classBlockStreamVar.html#ace7c115f52cd99b370e8f68ebbb328ac", null ],
+    [ "attributes_", "classBlockStreamVar.html#a32341159b587b66002c00966bb6afd10", null ],
+    [ "cur_tuple_size_", "classBlockStreamVar.html#a50755b2c578f77af0f62ddbf964ed46c", null ],
+    [ "free_end_", "classBlockStreamVar.html#afb6fe9337c230cb4aecf13dcda45b20f", null ],
+    [ "free_front_", "classBlockStreamVar.html#a47525d4188b8fa4e349b2be3e69e0531", null ],
+    [ "schema_", "classBlockStreamVar.html#aa6db6bde8f012fa849effe82af539e17", null ],
+    [ "var_attributes_", "classBlockStreamVar.html#ac23626045530458ee649109eac51c864", null ]
 ];

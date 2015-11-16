@@ -1,4 +1,4 @@
-.TH "Datatype" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Datatype" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Datatype \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBdatatype\fP"
@@ -31,7 +33,37 @@ Datatype \-
 .RI "\fBNode\fP * \fBenum_list\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int Datatype::datatype"
+
+.PP
+Referenced by newDatatype()\&.
+.SS "\fBNode\fP* Datatype::enum_list"
+
+.PP
+Referenced by newDatatype()\&.
+.SS "int Datatype::isbinary"
+
+.PP
+Referenced by newDatatype()\&.
+.SS "\fBNode\fP* Datatype::length"
+
+.PP
+Referenced by newDatatype()\&.
+.SS "\fBNode\fP* Datatype::opt_csc"
+
+.PP
+Referenced by newDatatype()\&.
+.SS "int Datatype::opt_uz"
+
+.PP
+Referenced by newDatatype()\&.
+.SS "\fBnodetype\fP Datatype::type"
+
+.PP
+Referenced by newDatatype()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

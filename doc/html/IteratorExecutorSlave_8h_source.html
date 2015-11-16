@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Executor/IteratorExecutorSlave.h Source File</title>
+<title>Claims: Executor/IteratorExecutorSlave.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('IteratorExecutorSlave_8h_source.html',
 <div class="title">IteratorExecutorSlave.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="IteratorExecutorSlave_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * IteratorExecutorSlave.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Jun 21, 2013</span></div>
@@ -133,7 +133,7 @@ $(document).ready(function(){initNavTree('IteratorExecutorSlave_8h_source.html',
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classIteratorExecutorSlave.html">IteratorExecutorSlave</a> {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">ExecuteIteratorActor</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html#a62fb0365eafb28374681aa0d5d1171ce">   28</a></span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">ExecuteIteratorActor</a>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">   29</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">ExecuteIteratorActor</a>: <span class="keyword">public</span> Theron::Actor</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    {</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">public</span>:</div>
@@ -144,7 +144,7 @@ $(document).ready(function(){initNavTree('IteratorExecutorSlave_8h_source.html',
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">void</span> Handler4K(<span class="keyword">const</span> <a class="code" href="structMessage4K.html">Message4K</a> &amp;message,<span class="keyword">const</span> Theron::Address from);</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">void</span> progation(<span class="keyword">const</span> <span class="keywordtype">int</span> &amp;message,<span class="keyword">const</span> Theron::Address from);</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <a class="code" href="classIteratorExecutorSlave.html">IteratorExecutorSlave</a>* ies;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html#a7a06d60997d02142f7662bbbd3b86ce2">   39</a></span>&#160;        <a class="code" href="classIteratorExecutorSlave.html">IteratorExecutorSlave</a>* <a class="code" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html#a7a06d60997d02142f7662bbbd3b86ce2">ies</a>;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    };</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classIteratorExecutorSlave.html">IteratorExecutorSlave</a>();</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
@@ -156,30 +156,38 @@ $(document).ready(function(){initNavTree('IteratorExecutorSlave_8h_source.html',
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span>* run_iterator(<span class="keywordtype">void</span>*);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="classLogging.html">Logging</a> * logging_;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html#a61b7d0f349636212f291d072ee995aef">   51</a></span>&#160;    <a class="code" href="classLogging.html">Logging</a> * <a class="code" href="classIteratorExecutorSlave.html#a61b7d0f349636212f291d072ee995aef">logging_</a>;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">ExecuteIteratorActor</a>* execute_iterator_actor;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    Theron::Framework* framework;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    Theron::EndPoint* endpoint;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::string slave_id;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="classSpineLock.html">SpineLock</a> lock_;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    std::set&lt;pthread_t&gt; busy_thread_list_;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html#a3135b99f875ccbaa4793475d4ba7d6b1">   53</a></span>&#160;    <a class="code" href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">ExecuteIteratorActor</a>* <a class="code" href="classIteratorExecutorSlave.html#a3135b99f875ccbaa4793475d4ba7d6b1">execute_iterator_actor</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html#a94672707e37c46c806fe85fecb0216ea">   54</a></span>&#160;    Theron::Framework* <a class="code" href="classIteratorExecutorSlave.html#a94672707e37c46c806fe85fecb0216ea">framework</a>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html#a08ed8168d8758d377e7faa7d73eaea96">   55</a></span>&#160;    Theron::EndPoint* <a class="code" href="classIteratorExecutorSlave.html#a08ed8168d8758d377e7faa7d73eaea96">endpoint</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html#ada71067a0f23bdeb5badaff23305323e">   56</a></span>&#160;    std::string <a class="code" href="classIteratorExecutorSlave.html#ada71067a0f23bdeb5badaff23305323e">slave_id</a>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html#a16ec1e85e2c1f239c2b28cc063b3b205">   57</a></span>&#160;    <a class="code" href="classSpineLock.html">SpineLock</a> <a class="code" href="classIteratorExecutorSlave.html#a16ec1e85e2c1f239c2b28cc063b3b205">lock_</a>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classIteratorExecutorSlave.html#aa147c4e706bdca2e4af9c0c195ecbfe2">   58</a></span>&#160;    std::set&lt;pthread_t&gt; <a class="code" href="classIteratorExecutorSlave.html#aa147c4e706bdca2e4af9c0c195ecbfe2">busy_thread_list_</a>;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ITERATOREXECUTORSLAVE_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classIteratorExecutorSlave_html_a16ec1e85e2c1f239c2b28cc063b3b205"><div class="ttname"><a href="classIteratorExecutorSlave.html#a16ec1e85e2c1f239c2b28cc063b3b205">IteratorExecutorSlave::lock_</a></div><div class="ttdeci">SpineLock lock_</div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:57</div></div>
+<div class="ttc" id="classIteratorExecutorSlave_html_ada71067a0f23bdeb5badaff23305323e"><div class="ttname"><a href="classIteratorExecutorSlave.html#ada71067a0f23bdeb5badaff23305323e">IteratorExecutorSlave::slave_id</a></div><div class="ttdeci">std::string slave_id</div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:56</div></div>
 <div class="ttc" id="classLogging_html"><div class="ttname"><a href="classLogging.html">Logging</a></div><div class="ttdef"><b>Definition:</b> Logging.h:21</div></div>
-<div class="ttc" id="classPhysicalQueryPlan_html"><div class="ttname"><a href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a></div><div class="ttdef"><b>Definition:</b> Message.h:403</div></div>
-<div class="ttc" id="structMessage4K_html"><div class="ttname"><a href="structMessage4K.html">Message4K</a></div><div class="ttdef"><b>Definition:</b> Message.h:169</div></div>
+<div class="ttc" id="classPhysicalQueryPlan_html"><div class="ttname"><a href="classPhysicalQueryPlan.html">PhysicalQueryPlan</a></div><div class="ttdef"><b>Definition:</b> Message.h:366</div></div>
+<div class="ttc" id="structMessage4K_html"><div class="ttname"><a href="structMessage4K.html">Message4K</a></div><div class="ttdef"><b>Definition:</b> Message.h:158</div></div>
+<div class="ttc" id="classIteratorExecutorSlave_1_1ExecuteIteratorActor_html_a7a06d60997d02142f7662bbbd3b86ce2"><div class="ttname"><a href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html#a7a06d60997d02142f7662bbbd3b86ce2">IteratorExecutorSlave::ExecuteIteratorActor::ies</a></div><div class="ttdeci">IteratorExecutorSlave * ies</div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:39</div></div>
+<div class="ttc" id="classIteratorExecutorSlave_html_a08ed8168d8758d377e7faa7d73eaea96"><div class="ttname"><a href="classIteratorExecutorSlave.html#a08ed8168d8758d377e7faa7d73eaea96">IteratorExecutorSlave::endpoint</a></div><div class="ttdeci">Theron::EndPoint * endpoint</div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:55</div></div>
 <div class="ttc" id="classSpineLock_html"><div class="ttname"><a href="classSpineLock.html">SpineLock</a></div><div class="ttdef"><b>Definition:</b> lock.h:173</div></div>
+<div class="ttc" id="classIteratorExecutorSlave_html_aa147c4e706bdca2e4af9c0c195ecbfe2"><div class="ttname"><a href="classIteratorExecutorSlave.html#aa147c4e706bdca2e4af9c0c195ecbfe2">IteratorExecutorSlave::busy_thread_list_</a></div><div class="ttdeci">std::set&lt; pthread_t &gt; busy_thread_list_</div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:58</div></div>
+<div class="ttc" id="classIteratorExecutorSlave_html_a61b7d0f349636212f291d072ee995aef"><div class="ttname"><a href="classIteratorExecutorSlave.html#a61b7d0f349636212f291d072ee995aef">IteratorExecutorSlave::logging_</a></div><div class="ttdeci">Logging * logging_</div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:51</div></div>
 <div class="ttc" id="classIteratorExecutorSlave_html"><div class="ttname"><a href="classIteratorExecutorSlave.html">IteratorExecutorSlave</a></div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:26</div></div>
+<div class="ttc" id="classIteratorExecutorSlave_html_a3135b99f875ccbaa4793475d4ba7d6b1"><div class="ttname"><a href="classIteratorExecutorSlave.html#a3135b99f875ccbaa4793475d4ba7d6b1">IteratorExecutorSlave::execute_iterator_actor</a></div><div class="ttdeci">ExecuteIteratorActor * execute_iterator_actor</div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:53</div></div>
 <div class="ttc" id="classIteratorExecutorSlave_1_1ExecuteIteratorActor_html"><div class="ttname"><a href="classIteratorExecutorSlave_1_1ExecuteIteratorActor.html">IteratorExecutorSlave::ExecuteIteratorActor</a></div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:29</div></div>
-<div class="ttc" id="structMessage256_html"><div class="ttname"><a href="structMessage256.html">Message256</a></div><div class="ttdef"><b>Definition:</b> Message.h:159</div></div>
+<div class="ttc" id="classIteratorExecutorSlave_html_a94672707e37c46c806fe85fecb0216ea"><div class="ttname"><a href="classIteratorExecutorSlave.html#a94672707e37c46c806fe85fecb0216ea">IteratorExecutorSlave::framework</a></div><div class="ttdeci">Theron::Framework * framework</div><div class="ttdef"><b>Definition:</b> IteratorExecutorSlave.h:54</div></div>
+<div class="ttc" id="structMessage256_html"><div class="ttname"><a href="structMessage256.html">Message256</a></div><div class="ttdef"><b>Definition:</b> Message.h:152</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c28da5c14a0a8a5cbc4b8a0ff68e9b34.html">Executor</a></li><li class="navelem"><b>IteratorExecutorSlave.h</b></li>
+    <li class="navelem"><a class="el" href="dir_c28da5c14a0a8a5cbc4b8a0ff68e9b34.html">Executor</a></li><li class="navelem"><a class="el" href="IteratorExecutorSlave_8h.html">IteratorExecutorSlave.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

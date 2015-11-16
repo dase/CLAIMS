@@ -8,5 +8,8 @@ var classRoundRobinPartitionFunction =
     [ "get_partition_value", "classRoundRobinPartitionFunction.html#a097077095811306ffe620120bf47e031", null ],
     [ "getNumberOfPartitions", "classRoundRobinPartitionFunction.html#a09f8d64c5a6338c55ccc0b088af84bf0", null ],
     [ "getPartitionFashion", "classRoundRobinPartitionFunction.html#afef0fa4f3d28acca88d1a7fe69feaebe", null ],
-    [ "boost::serialization::access", "classRoundRobinPartitionFunction.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "serialize", "classRoundRobinPartitionFunction.html#a8d7b03c0a0bcab514298a6cc53a02307", null ],
+    [ "boost::serialization::access", "classRoundRobinPartitionFunction.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "cur_", "classRoundRobinPartitionFunction.html#ae9ffccccf26d5dd6d723dc886c00ab70", null ],
+    [ "range_", "classRoundRobinPartitionFunction.html#a5f3a8a80afeb15e41065829ebfa79226", null ]
 ];

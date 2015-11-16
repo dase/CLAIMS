@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: HdfsLoader Class Reference</title>
+<title>Claims: HdfsLoader Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -107,53 +107,336 @@ $(document).ready(function(){initNavTree('classHdfsLoader.html','');});
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classHdfsLoader-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">HdfsLoader Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="Hdfsloader_8h_source.html">Hdfsloader.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for HdfsLoader:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader__coll__graph.png" border="0" usemap="#HdfsLoader_coll__map" alt="Collaboration graph"/></div>
+<map name="HdfsLoader_coll__map" id="HdfsLoader_coll__map">
+<area shape="rect" id="node2" href="classTableDescriptor.html" title="TableDescriptor" alt="" coords="5,5,120,32"/><area shape="rect" id="node3" href="classSchema.html" title="Schema" alt="" coords="162,5,232,32"/><area shape="rect" id="node4" href="classConnector.html" title="Connector" alt="" coords="272,5,355,32"/><area shape="rect" id="node5" href="classBlock.html" title="Block" alt="" coords="386,5,440,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae5a64d09aec9100ff4f3246759cae269"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5a64d09aec9100ff4f3246759cae269"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>HdfsLoader</b> (<a class="el" href="classTableDescriptor.html">TableDescriptor</a> *tableDescriptor, const char c_separator= '|', const char r_separator= '\n', open_flag open_flag_=APPENDD)</td></tr>
+<tr class="memitem:ac95acbdfe0ea565d7a08ce608e55f25b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#ac95acbdfe0ea565d7a08ce608e55f25b">HdfsLoader</a> ()</td></tr>
+<tr class="separator:ac95acbdfe0ea565d7a08ce608e55f25b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5a64d09aec9100ff4f3246759cae269"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader</a> (<a class="el" href="classTableDescriptor.html">TableDescriptor</a> *tableDescriptor, const char c_separator= '|', const char r_separator= '\n', <a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a> <a class="el" href="classHdfsLoader.html#a195cacee6bd312a49ea9170e90a11417">open_flag_</a>=<a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a>)</td></tr>
 <tr class="separator:ae5a64d09aec9100ff4f3246759cae269"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab713a5f00a742954c05fae125db42cb8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab713a5f00a742954c05fae125db42cb8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>HdfsLoader</b> (const char c_separator, const char r_separator, std::vector&lt; std::string &gt; file_name, <a class="el" href="classTableDescriptor.html">TableDescriptor</a> *tableDescriptor, open_flag open_flag_=CREATEE)</td></tr>
+<tr class="memitem:ab713a5f00a742954c05fae125db42cb8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#ab713a5f00a742954c05fae125db42cb8">HdfsLoader</a> (const char c_separator, const char r_separator, std::vector&lt; std::string &gt; file_name, <a class="el" href="classTableDescriptor.html">TableDescriptor</a> *tableDescriptor, <a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a> <a class="el" href="classHdfsLoader.html#a195cacee6bd312a49ea9170e90a11417">open_flag_</a>=<a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949">CREATEE</a>)</td></tr>
 <tr class="separator:ab713a5f00a742954c05fae125db42cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4abb50e64397d843a1d9e236b0ce6da"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4abb50e64397d843a1d9e236b0ce6da"></a>
-const char&#160;</td><td class="memItemRight" valign="bottom"><b>get_c_separator</b> ()</td></tr>
+<tr class="memitem:a54a405058acca64c60e59ba66824d258"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a54a405058acca64c60e59ba66824d258">~HdfsLoader</a> ()</td></tr>
+<tr class="separator:a54a405058acca64c60e59ba66824d258"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4abb50e64397d843a1d9e236b0ce6da"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#ad4abb50e64397d843a1d9e236b0ce6da">get_c_separator</a> ()</td></tr>
 <tr class="separator:ad4abb50e64397d843a1d9e236b0ce6da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeda35a98741b1e7a31cf24d87f960bfd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeda35a98741b1e7a31cf24d87f960bfd"></a>
-const char&#160;</td><td class="memItemRight" valign="bottom"><b>get_r_separator</b> ()</td></tr>
+<tr class="memitem:aeda35a98741b1e7a31cf24d87f960bfd"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#aeda35a98741b1e7a31cf24d87f960bfd">get_r_separator</a> ()</td></tr>
 <tr class="separator:aeda35a98741b1e7a31cf24d87f960bfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af83242d5491e3c247f8319a52a7e8f7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af83242d5491e3c247f8319a52a7e8f7c"></a>
-vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_file_list</b> ()</td></tr>
+<tr class="memitem:af83242d5491e3c247f8319a52a7e8f7c"><td class="memItemLeft" align="right" valign="top">vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#af83242d5491e3c247f8319a52a7e8f7c">get_file_list</a> ()</td></tr>
 <tr class="separator:af83242d5491e3c247f8319a52a7e8f7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac41f68cfe750c0f1b66cefa5fe24455"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords</a> ()</td></tr>
 <tr class="separator:aac41f68cfe750c0f1b66cefa5fe24455"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9121d394709531673052b4c7879a6001"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load</a> (double sample_rate=1)</td></tr>
 <tr class="separator:a9121d394709531673052b4c7879a6001"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a156af868d4cc53d944dd8b7616f126f3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a156af868d4cc53d944dd8b7616f126f3"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>append</b> (std::string tuple_string)</td></tr>
+<tr class="memitem:a156af868d4cc53d944dd8b7616f126f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append</a> (std::string tuple_string)</td></tr>
 <tr class="separator:a156af868d4cc53d944dd8b7616f126f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab053ab8d6977f877a284ef0059b213d2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab053ab8d6977f877a284ef0059b213d2"></a>
-<a class="el" href="classTableDescriptor.html">TableDescriptor</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>table_descriptor_</b></td></tr>
+<tr class="memitem:ab053ab8d6977f877a284ef0059b213d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTableDescriptor.html">TableDescriptor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">table_descriptor_</a></td></tr>
 <tr class="separator:ab053ab8d6977f877a284ef0059b213d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b4293c1543ee4a59b244d342c59d12a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b4293c1543ee4a59b244d342c59d12a"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>row_id</b></td></tr>
+<tr class="memitem:a9b4293c1543ee4a59b244d342c59d12a"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">row_id</a></td></tr>
 <tr class="separator:a9b4293c1543ee4a59b244d342c59d12a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3998f5ea2ad00a0d1e6ae030b48aed99"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3998f5ea2ad00a0d1e6ae030b48aed99"></a>
-vector&lt; <a class="el" href="classPartitionFunction.html">PartitionFunction</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>partition_functin_list_</b></td></tr>
+<tr class="memitem:a3998f5ea2ad00a0d1e6ae030b48aed99"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classPartitionFunction.html">PartitionFunction</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a3998f5ea2ad00a0d1e6ae030b48aed99">partition_functin_list_</a></td></tr>
 <tr class="separator:a3998f5ea2ad00a0d1e6ae030b48aed99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38153637dcff79182e1e65f360b4de69"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a38153637dcff79182e1e65f360b4de69"></a>
-vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>partition_key_index</b></td></tr>
+<tr class="memitem:a38153637dcff79182e1e65f360b4de69"><td class="memItemLeft" align="right" valign="top">vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a38153637dcff79182e1e65f360b4de69">partition_key_index</a></td></tr>
 <tr class="separator:a38153637dcff79182e1e65f360b4de69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a507c869e97a65671ff170f2f9e8e8cfa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classConnector.html">Connector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a507c869e97a65671ff170f2f9e8e8cfa">connector_</a></td></tr>
+<tr class="separator:a507c869e97a65671ff170f2f9e8e8cfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7097c6f1d7c78a87434db8af598ccbb1"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a7097c6f1d7c78a87434db8af598ccbb1">block_size</a></td></tr>
+<tr class="separator:a7097c6f1d7c78a87434db8af598ccbb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94d1296538c38b29c6957b43adddefb7"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a94d1296538c38b29c6957b43adddefb7">col_separator</a></td></tr>
+<tr class="separator:a94d1296538c38b29c6957b43adddefb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a076ba84eccfadfac97f0053e4655e63a"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a076ba84eccfadfac97f0053e4655e63a">row_separator</a></td></tr>
+<tr class="separator:a076ba84eccfadfac97f0053e4655e63a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a966c04389dd3023f6bae8dab75b8f2a9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a966c04389dd3023f6bae8dab75b8f2a9">file_list</a></td></tr>
+<tr class="separator:a966c04389dd3023f6bae8dab75b8f2a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39328eba44e9e8e0b8636163c4fdbbc8"><td class="memItemLeft" align="right" valign="top">vector&lt; vector&lt; string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">writepath</a></td></tr>
+<tr class="separator:a39328eba44e9e8e0b8636163c4fdbbc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefd6bd01a89e97c76203fcde5c0cec42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlock.html">Block</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">sblock</a></td></tr>
+<tr class="separator:aefd6bd01a89e97c76203fcde5c0cec42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae225c4b1a076f079c8edcc1752ad4b7a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#ae225c4b1a076f079c8edcc1752ad4b7a">s_record</a></td></tr>
+<tr class="separator:ae225c4b1a076f079c8edcc1752ad4b7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f88028ba3b79b54a0cdf39fd507ccb3"><td class="memItemLeft" align="right" valign="top">vector&lt; vector<br class="typebreak"/>
+&lt; <a class="el" href="classBlockStreamBase.html">BlockStreamBase</a> * &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">pj_buffer</a></td></tr>
+<tr class="separator:a1f88028ba3b79b54a0cdf39fd507ccb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21b13d97379e0e2bc340d7ebbcc7e211"><td class="memItemLeft" align="right" valign="top">vector&lt; vector&lt; unsigned long &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">blocks_per_partition</a></td></tr>
+<tr class="separator:a21b13d97379e0e2bc340d7ebbcc7e211"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fd59cfc625d2caf0039f5e685dae5bf"><td class="memItemLeft" align="right" valign="top">vector&lt; vector&lt; unsigned long &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a4fd59cfc625d2caf0039f5e685dae5bf">tuples_per_partition</a></td></tr>
+<tr class="separator:a4fd59cfc625d2caf0039f5e685dae5bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dcde959e49746ccf6b8b6408a7963cf"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classSubTuple.html">SubTuple</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a7dcde959e49746ccf6b8b6408a7963cf">sub_tuple_generator</a></td></tr>
+<tr class="separator:a7dcde959e49746ccf6b8b6408a7963cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8d1a40748783b7b359a665df3045d66"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSchema.html">Schema</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#ab8d1a40748783b7b359a665df3045d66">table_schema</a></td></tr>
+<tr class="separator:ab8d1a40748783b7b359a665df3045d66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a7cee4f35908650ababadc320d83822"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="classSchema.html">Schema</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a3a7cee4f35908650ababadc320d83822">projection_schema</a></td></tr>
+<tr class="separator:a3a7cee4f35908650ababadc320d83822"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a195cacee6bd312a49ea9170e90a11417"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHdfsLoader.html#a195cacee6bd312a49ea9170e90a11417">open_flag_</a></td></tr>
+<tr class="separator:a195cacee6bd312a49ea9170e90a11417"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ac95acbdfe0ea565d7a08ce608e55f25b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">HdfsLoader::HdfsLoader </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae5a64d09aec9100ff4f3246759cae269"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">HdfsLoader::HdfsLoader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classTableDescriptor.html">TableDescriptor</a> *&#160;</td>
+          <td class="paramname"><em>tableDescriptor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char&#160;</td>
+          <td class="paramname"><em>c_separator</em> = <code>'|'</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char&#160;</td>
+          <td class="paramname"><em>r_separator</em> = <code>'\n'</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a>&#160;</td>
+          <td class="paramname"><em>open_flag_</em> = <code><a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a>, <a class="el" href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a>, <a class="el" href="classHdfsLoader.html#a7097c6f1d7c78a87434db8af598ccbb1">block_size</a>, <a class="el" href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">blocks_per_partition</a>, <a class="el" href="classBlockStreamBase.html#a95d8d7c85b6615954677f7a9457451e2">BlockStreamBase::createBlock()</a>, <a class="el" href="classProjectionDescriptor.html#a2c8c8b01ca783f9ae16b5b6eec958d6e">ProjectionDescriptor::getAttributeIndex()</a>, <a class="el" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275">ProjectionDescriptor::getAttributeList()</a>, <a class="el" href="classPartitioner.html#ae229b065e10adf769eec24555346494f">Partitioner::getNumberOfPartitions()</a>, <a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">TableDescriptor::getNumberOfProjection()</a>, <a class="el" href="classPartitioner.html#a03b4458d05407d54dcb68abde6e393ae">Partitioner::getPartitionBlocks()</a>, <a class="el" href="classPartitioner.html#aec38a5e1457160663103618731286dda">Partitioner::getPartitionCardinality()</a>, <a class="el" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f">ProjectionDescriptor::getPartitioner()</a>, <a class="el" href="classPartitioner.html#a93d0557af1ab7f80d3188f2ccf315ea2">Partitioner::getPartitionFunction()</a>, <a class="el" href="classPartitioner.html#aaa215075f87ff12e20e3fdb15b83fe54">Partitioner::getPartitionKey()</a>, <a class="el" href="classProjectionDescriptor.html#a65fb1fcd70c352238e0f0c4d39c4facd">ProjectionDescriptor::getProjectionID()</a>, <a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">TableDescriptor::getProjectoin()</a>, <a class="el" href="classTableDescriptor.html#ae942a85aceed60e4c7bd6cde6c76d84d">TableDescriptor::getRowNumber()</a>, <a class="el" href="classProjectionDescriptor.html#ac2622e547dbdbafa8fc3bf3bac1c4606">ProjectionDescriptor::getSchema()</a>, <a class="el" href="classTableDescriptor.html#acd6e310a2ce0b9d5b8b983adf60e402d">TableDescriptor::getSchema()</a>, <a class="el" href="classHdfsLoader.html#a3998f5ea2ad00a0d1e6ae030b48aed99">partition_functin_list_</a>, <a class="el" href="classHdfsLoader.html#a38153637dcff79182e1e65f360b4de69">partition_key_index</a>, <a class="el" href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">pj_buffer</a>, <a class="el" href="classHdfsLoader.html#a3a7cee4f35908650ababadc320d83822">projection_schema</a>, <a class="el" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">row_id</a>, <a class="el" href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">sblock</a>, <a class="el" href="classHdfsLoader.html#a7dcde959e49746ccf6b8b6408a7963cf">sub_tuple_generator</a>, <a class="el" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">table_descriptor_</a>, <a class="el" href="classHdfsLoader.html#ab8d1a40748783b7b359a665df3045d66">table_schema</a>, <a class="el" href="classHdfsLoader.html#a4fd59cfc625d2caf0039f5e685dae5bf">tuples_per_partition</a>, and <a class="el" href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">writepath</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_ae5a64d09aec9100ff4f3246759cae269_cgraph.png" border="0" usemap="#classHdfsLoader_ae5a64d09aec9100ff4f3246759cae269_cgraph" alt=""/></div>
+<map name="classHdfsLoader_ae5a64d09aec9100ff4f3246759cae269_cgraph" id="classHdfsLoader_ae5a64d09aec9100ff4f3246759cae269_cgraph">
+<area shape="rect" id="node2" href="classBlockStreamBase.html#a95d8d7c85b6615954677f7a9457451e2" title="BlockStreamBase::createBlock" alt="" coords="223,31,427,57"/><area shape="rect" id="node5" href="classProjectionDescriptor.html#a2c8c8b01ca783f9ae16b5b6eec958d6e" title="ProjectionDescriptor\l::getAttributeIndex" alt="" coords="255,82,395,123"/><area shape="rect" id="node6" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275" title="ProjectionDescriptor\l::getAttributeList" alt="" coords="509,141,649,182"/><area shape="rect" id="node7" href="classPartitioner.html#ae229b065e10adf769eec24555346494f" title="Partitioner::getNumberOf\lPartitions" alt="" coords="242,811,409,853"/><area shape="rect" id="node9" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40" title="TableDescriptor::getNumber\lOfProjection" alt="" coords="232,265,419,306"/><area shape="rect" id="node10" href="classPartitioner.html#a03b4458d05407d54dcb68abde6e393ae" title="Partitioner::getPartition\lBlocks" alt="" coords="248,330,403,371"/><area shape="rect" id="node11" href="classPartitioner.html#aec38a5e1457160663103618731286dda" title="Partitioner::getPartition\lCardinality" alt="" coords="248,395,403,437"/><area shape="rect" id="node12" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f" title="ProjectionDescriptor\l::getPartitioner" alt="" coords="255,461,395,502"/><area shape="rect" id="node13" href="classPartitioner.html#a93d0557af1ab7f80d3188f2ccf315ea2" title="Partitioner::getPartition\lFunction" alt="" coords="248,526,403,567"/><area shape="rect" id="node14" href="classPartitioner.html#aaa215075f87ff12e20e3fdb15b83fe54" title="Partitioner::getPartitionKey" alt="" coords="236,592,415,619"/><area shape="rect" id="node15" href="classProjectionDescriptor.html#a65fb1fcd70c352238e0f0c4d39c4facd" title="ProjectionDescriptor\l::getProjectionID" alt="" coords="255,643,395,685"/><area shape="rect" id="node16" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="226,709,425,736"/><area shape="rect" id="node17" href="classTableDescriptor.html#ae942a85aceed60e4c7bd6cde6c76d84d" title="TableDescriptor::getRowNumber" alt="" coords="219,760,432,787"/><area shape="rect" id="node18" href="classProjectionDescriptor.html#ac2622e547dbdbafa8fc3bf3bac1c4606" title="ProjectionDescriptor\l::getSchema" alt="" coords="255,199,395,241"/><area shape="rect" id="node19" href="classTableDescriptor.html#acd6e310a2ce0b9d5b8b983adf60e402d" title="TableDescriptor::getSchema" alt="" coords="231,877,419,904"/><area shape="rect" id="node3" href="classSchema.html#ade0ea3c1c495b3434b68f8f177702c41" title="Schema::getSchemaType" alt="" coords="492,56,665,83"/><area shape="rect" id="node4" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c" title="Schema::getTupleMaxSize" alt="" coords="489,5,668,32"/><area shape="rect" id="node8" href="classPartitionFunction.html#a2ae9612d2ec64d04aaca84062a8e9cf6" title="PartitionFunction::\lgetNumberOfPartitions" alt="" coords="501,811,656,853"/><area shape="rect" id="node20" href="classTableDescriptor.html#a60c455d9e20eb9e341a58af3e79f2663" title="TableDescriptor::getAttributes" alt="" coords="481,877,677,904"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab713a5f00a742954c05fae125db42cb8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">HdfsLoader::HdfsLoader </td>
+          <td>(</td>
+          <td class="paramtype">const char&#160;</td>
+          <td class="paramname"><em>c_separator</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char&#160;</td>
+          <td class="paramname"><em>r_separator</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::string &gt;&#160;</td>
+          <td class="paramname"><em>file_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classTableDescriptor.html">TableDescriptor</a> *&#160;</td>
+          <td class="paramname"><em>tableDescriptor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a>&#160;</td>
+          <td class="paramname"><em>open_flag_</em> = <code><a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949">CREATEE</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a>, <a class="el" href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a>, <a class="el" href="classHdfsLoader.html#a7097c6f1d7c78a87434db8af598ccbb1">block_size</a>, <a class="el" href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">blocks_per_partition</a>, <a class="el" href="classBlockStreamBase.html#a95d8d7c85b6615954677f7a9457451e2">BlockStreamBase::createBlock()</a>, <a class="el" href="classProjectionDescriptor.html#a2c8c8b01ca783f9ae16b5b6eec958d6e">ProjectionDescriptor::getAttributeIndex()</a>, <a class="el" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275">ProjectionDescriptor::getAttributeList()</a>, <a class="el" href="classPartitioner.html#ae229b065e10adf769eec24555346494f">Partitioner::getNumberOfPartitions()</a>, <a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">TableDescriptor::getNumberOfProjection()</a>, <a class="el" href="classPartitioner.html#a03b4458d05407d54dcb68abde6e393ae">Partitioner::getPartitionBlocks()</a>, <a class="el" href="classPartitioner.html#aec38a5e1457160663103618731286dda">Partitioner::getPartitionCardinality()</a>, <a class="el" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f">ProjectionDescriptor::getPartitioner()</a>, <a class="el" href="classPartitioner.html#a93d0557af1ab7f80d3188f2ccf315ea2">Partitioner::getPartitionFunction()</a>, <a class="el" href="classPartitioner.html#aaa215075f87ff12e20e3fdb15b83fe54">Partitioner::getPartitionKey()</a>, <a class="el" href="classProjectionDescriptor.html#a65fb1fcd70c352238e0f0c4d39c4facd">ProjectionDescriptor::getProjectionID()</a>, <a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">TableDescriptor::getProjectoin()</a>, <a class="el" href="classTableDescriptor.html#ae942a85aceed60e4c7bd6cde6c76d84d">TableDescriptor::getRowNumber()</a>, <a class="el" href="classProjectionDescriptor.html#ac2622e547dbdbafa8fc3bf3bac1c4606">ProjectionDescriptor::getSchema()</a>, <a class="el" href="classTableDescriptor.html#acd6e310a2ce0b9d5b8b983adf60e402d">TableDescriptor::getSchema()</a>, <a class="el" href="classHdfsLoader.html#a3998f5ea2ad00a0d1e6ae030b48aed99">partition_functin_list_</a>, <a class="el" href="classHdfsLoader.html#a38153637dcff79182e1e65f360b4de69">partition_key_index</a>, <a class="el" href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">pj_buffer</a>, <a class="el" href="classHdfsLoader.html#a3a7cee4f35908650ababadc320d83822">projection_schema</a>, <a class="el" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">row_id</a>, <a class="el" href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">sblock</a>, <a class="el" href="classHdfsLoader.html#a7dcde959e49746ccf6b8b6408a7963cf">sub_tuple_generator</a>, <a class="el" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">table_descriptor_</a>, <a class="el" href="classHdfsLoader.html#ab8d1a40748783b7b359a665df3045d66">table_schema</a>, <a class="el" href="classHdfsLoader.html#a4fd59cfc625d2caf0039f5e685dae5bf">tuples_per_partition</a>, and <a class="el" href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">writepath</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_ab713a5f00a742954c05fae125db42cb8_cgraph.png" border="0" usemap="#classHdfsLoader_ab713a5f00a742954c05fae125db42cb8_cgraph" alt=""/></div>
+<map name="classHdfsLoader_ab713a5f00a742954c05fae125db42cb8_cgraph" id="classHdfsLoader_ab713a5f00a742954c05fae125db42cb8_cgraph">
+<area shape="rect" id="node2" href="classBlockStreamBase.html#a95d8d7c85b6615954677f7a9457451e2" title="BlockStreamBase::createBlock" alt="" coords="223,31,427,57"/><area shape="rect" id="node5" href="classProjectionDescriptor.html#a2c8c8b01ca783f9ae16b5b6eec958d6e" title="ProjectionDescriptor\l::getAttributeIndex" alt="" coords="255,82,395,123"/><area shape="rect" id="node6" href="classProjectionDescriptor.html#a816580301fc1645b633667631e828275" title="ProjectionDescriptor\l::getAttributeList" alt="" coords="509,141,649,182"/><area shape="rect" id="node7" href="classPartitioner.html#ae229b065e10adf769eec24555346494f" title="Partitioner::getNumberOf\lPartitions" alt="" coords="242,811,409,853"/><area shape="rect" id="node9" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40" title="TableDescriptor::getNumber\lOfProjection" alt="" coords="232,265,419,306"/><area shape="rect" id="node10" href="classPartitioner.html#a03b4458d05407d54dcb68abde6e393ae" title="Partitioner::getPartition\lBlocks" alt="" coords="248,330,403,371"/><area shape="rect" id="node11" href="classPartitioner.html#aec38a5e1457160663103618731286dda" title="Partitioner::getPartition\lCardinality" alt="" coords="248,395,403,437"/><area shape="rect" id="node12" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f" title="ProjectionDescriptor\l::getPartitioner" alt="" coords="255,461,395,502"/><area shape="rect" id="node13" href="classPartitioner.html#a93d0557af1ab7f80d3188f2ccf315ea2" title="Partitioner::getPartition\lFunction" alt="" coords="248,526,403,567"/><area shape="rect" id="node14" href="classPartitioner.html#aaa215075f87ff12e20e3fdb15b83fe54" title="Partitioner::getPartitionKey" alt="" coords="236,592,415,619"/><area shape="rect" id="node15" href="classProjectionDescriptor.html#a65fb1fcd70c352238e0f0c4d39c4facd" title="ProjectionDescriptor\l::getProjectionID" alt="" coords="255,643,395,685"/><area shape="rect" id="node16" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="226,709,425,736"/><area shape="rect" id="node17" href="classTableDescriptor.html#ae942a85aceed60e4c7bd6cde6c76d84d" title="TableDescriptor::getRowNumber" alt="" coords="219,760,432,787"/><area shape="rect" id="node18" href="classProjectionDescriptor.html#ac2622e547dbdbafa8fc3bf3bac1c4606" title="ProjectionDescriptor\l::getSchema" alt="" coords="255,199,395,241"/><area shape="rect" id="node19" href="classTableDescriptor.html#acd6e310a2ce0b9d5b8b983adf60e402d" title="TableDescriptor::getSchema" alt="" coords="231,877,419,904"/><area shape="rect" id="node3" href="classSchema.html#ade0ea3c1c495b3434b68f8f177702c41" title="Schema::getSchemaType" alt="" coords="492,56,665,83"/><area shape="rect" id="node4" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c" title="Schema::getTupleMaxSize" alt="" coords="489,5,668,32"/><area shape="rect" id="node8" href="classPartitionFunction.html#a2ae9612d2ec64d04aaca84062a8e9cf6" title="PartitionFunction::\lgetNumberOfPartitions" alt="" coords="501,811,656,853"/><area shape="rect" id="node20" href="classTableDescriptor.html#a60c455d9e20eb9e341a58af3e79f2663" title="TableDescriptor::getAttributes" alt="" coords="481,877,677,904"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a54a405058acca64c60e59ba66824d258"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">HdfsLoader::~HdfsLoader </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classHdfsLoader.html#a507c869e97a65671ff170f2f9e8e8cfa">connector_</a>, <a class="el" href="classHdfsLoader.html#a966c04389dd3023f6bae8dab75b8f2a9">file_list</a>, <a class="el" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">row_id</a>, <a class="el" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">table_descriptor_</a>, and <a class="el" href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">writepath</a>.</p>
+
+<p>Referenced by <a class="el" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463">load_tpc_h_4_partition()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_a54a405058acca64c60e59ba66824d258_icgraph.png" border="0" usemap="#classHdfsLoader_a54a405058acca64c60e59ba66824d258_icgraph" alt=""/></div>
+<map name="classHdfsLoader_a54a405058acca64c60e59ba66824d258_icgraph" id="classHdfsLoader_a54a405058acca64c60e59ba66824d258_icgraph">
+<area shape="rect" id="node2" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="227,5,379,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a156af868d4cc53d944dd8b7616f126f3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool HdfsLoader::append </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>tuple_string</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">blocks_per_partition</a>, <a class="el" href="classConnector.html#a6724afb3abeab5ad794923dda39f8d34">Connector::closeFiles()</a>, <a class="el" href="classHdfsLoader.html#a507c869e97a65671ff170f2f9e8e8cfa">connector_</a>, <a class="el" href="classConnector.html#a26458e411c1463f334dc0f08f795e0e8">Connector::flush()</a>, <a class="el" href="classBlock.html#a106b1a1095930c997df00da51a024fbf">Block::getBlock()</a>, <a class="el" href="classPartitioner.html#ae229b065e10adf769eec24555346494f">Partitioner::getNumberOfPartitions()</a>, <a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">TableDescriptor::getNumberOfProjection()</a>, <a class="el" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f">ProjectionDescriptor::getPartitioner()</a>, <a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">TableDescriptor::getProjectoin()</a>, <a class="el" href="classBlock.html#a8173c589654677bf9f5f1a17111d3866">Block::getsize()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, <a class="el" href="classConfig.html#a0bff35f498d1af7e0f24d440e890a37c">Config::local_disk_mode</a>, <a class="el" href="classHdfsLoader.html#a195cacee6bd312a49ea9170e90a11417">open_flag_</a>, <a class="el" href="classConnector.html#aac8fda58c5049dfa30d7ab20336aebb9">Connector::openFiles()</a>, <a class="el" href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">pj_buffer</a>, <a class="el" href="classPartitioner.html#a312e71b3e09b6bf3ffd5083c8e68acd4">Partitioner::RegisterPartitionWithNumberOfBlocks()</a>, <a class="el" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">row_id</a>, <a class="el" href="classHdfsLoader.html#ae225c4b1a076f079c8edcc1752ad4b7a">s_record</a>, <a class="el" href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">sblock</a>, <a class="el" href="classTableDescriptor.html#a0c9d3afa0aa222819cb3558b2862d138">TableDescriptor::setRowNumber()</a>, <a class="el" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">table_descriptor_</a>, <a class="el" href="classPartitioner.html#a2232c5ea585c56c8842e411d50369519">Partitioner::UpdatePartitionWithNumberOfChunksToBlockManager()</a>, and <a class="el" href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">writepath</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36">claims::stmt_handler::InsertExec::Execute()</a>, and <a class="el" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed">inmemory_append_test()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_a156af868d4cc53d944dd8b7616f126f3_cgraph.png" border="0" usemap="#classHdfsLoader_a156af868d4cc53d944dd8b7616f126f3_cgraph" alt=""/></div>
+<map name="classHdfsLoader_a156af868d4cc53d944dd8b7616f126f3_cgraph" id="classHdfsLoader_a156af868d4cc53d944dd8b7616f126f3_cgraph">
+<area shape="rect" id="node2" href="classConnector.html#a6724afb3abeab5ad794923dda39f8d34" title="Connector::closeFiles" alt="" coords="244,17,393,44"/><area shape="rect" id="node3" href="classConnector.html#a26458e411c1463f334dc0f08f795e0e8" title="Connector::flush" alt="" coords="527,5,646,32"/><area shape="rect" id="node4" href="classBlock.html#a106b1a1095930c997df00da51a024fbf" title="Block::getBlock" alt="" coords="529,224,644,251"/><area shape="rect" id="node5" href="classPartitioner.html#ae229b065e10adf769eec24555346494f" title="Partitioner::getNumberOf\lPartitions" alt="" coords="503,378,670,419"/><area shape="rect" id="node7" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40" title="TableDescriptor::getNumber\lOfProjection" alt="" coords="493,158,680,199"/><area shape="rect" id="node8" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f" title="ProjectionDescriptor\l::getPartitioner" alt="" coords="249,505,389,546"/><area shape="rect" id="node9" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="219,571,418,597"/><area shape="rect" id="node10" href="classBlock.html#a8173c589654677bf9f5f1a17111d3866" title="Block::getsize" alt="" coords="534,275,639,301"/><area shape="rect" id="node11" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455" title="HdfsLoader::insertRecords" alt="" coords="229,119,408,145"/><area shape="rect" id="node14" href="classConnector.html#aac8fda58c5049dfa30d7ab20336aebb9" title="Connector::openFiles" alt="" coords="245,621,392,648"/><area shape="rect" id="node15" href="classPartitioner.html#a312e71b3e09b6bf3ffd5083c8e68acd4" title="Partitioner::RegisterPartition\lWithNumberOfBlocks" alt="" coords="225,322,412,363"/><area shape="rect" id="node16" href="classTableDescriptor.html#a0c9d3afa0aa222819cb3558b2862d138" title="TableDescriptor::setRowNumber" alt="" coords="212,672,425,699"/><area shape="rect" id="node17" href="classPartitioner.html#a2232c5ea585c56c8842e411d50369519" title="Partitioner::UpdatePartition\lWithNumberOfChunksToBlockManager" alt="" coords="193,439,445,481"/><area shape="rect" id="node6" href="classPartitionFunction.html#a2ae9612d2ec64d04aaca84062a8e9cf6" title="PartitionFunction::\lgetNumberOfPartitions" alt="" coords="729,374,884,415"/><area shape="rect" id="node12" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c" title="Schema::getTupleMaxSize" alt="" coords="497,107,676,133"/><area shape="rect" id="node13" href="classSchema.html#a6e18cfa58e2868a5b41bd11d18835a84" title="Schema::toValue" alt="" coords="525,56,648,83"/><area shape="rect" id="node18" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="514,819,659,861"/><area shape="rect" id="node44" href="classBlockManagerMaster.html#ae4d6e5cc3211be9b841de8abd8252da5" title="BlockManagerMaster\l::SendBindingMessage" alt="" coords="729,439,885,481"/><area shape="rect" id="node19" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="730,819,883,861"/><area shape="rect" id="node20" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="953,827,1124,853"/><area shape="rect" id="node21" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="1195,909,1371,936"/><area shape="rect" id="node22" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1743,676,1841,703"/><area shape="rect" id="node23" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="1445,935,1617,961"/><area shape="rect" id="node25" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="1463,985,1599,1012"/><area shape="rect" id="node26" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="1437,1036,1624,1063"/><area shape="rect" id="node28" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="1459,1087,1602,1113"/><area shape="rect" id="node30" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="1432,497,1629,524"/><area shape="rect" id="node33" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="1438,1138,1623,1179"/><area shape="rect" id="node35" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="1439,1203,1623,1245"/><area shape="rect" id="node36" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="1422,1269,1639,1296"/><area shape="rect" id="node37" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="1444,767,1617,809"/><area shape="rect" id="node38" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="1423,1321,1638,1362"/><area shape="rect" id="node39" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="1427,599,1634,641"/><area shape="rect" id="node40" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="1433,1387,1628,1413"/><area shape="rect" id="node41" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="1423,665,1639,692"/><area shape="rect" id="node32" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1945,664,2037,691"/><area shape="rect" id="node42" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="1437,884,1624,911"/><area shape="rect" id="node43" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="1451,548,1611,575"/><area shape="rect" id="node24" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="1703,935,1881,961"/><area shape="rect" id="node27" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="1689,1036,1895,1063"/><area shape="rect" id="node29" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1732,1087,1852,1113"/><area shape="rect" id="node31" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="1700,570,1884,611"/><area shape="rect" id="node34" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="1701,1145,1883,1172"/><area shape="rect" id="node45" href="classBlockManagerMaster.html#a79466978b7f5ecb54e846bed03ca62dd" title="BlockManagerMaster\l::generateSlaveActorName" alt="" coords="949,498,1128,539"/><area shape="rect" id="node46" href="classNodeTracker.html#a117e68443ad648091dcf1566618fbaae" title="NodeTracker::GetInstance" alt="" coords="951,269,1127,296"/><area shape="rect" id="node48" href="classTimeOutReceiver.html#a6525cc1dde5efa7d36c524c608494ae8" title="TimeOutReceiver::TimeOutWait" alt="" coords="934,345,1143,372"/><area shape="rect" id="node47" href="classNodeTracker.html#ad1e4bfa4d53724431d4e6b236f56f6f0" title="NodeTracker::NodeTracker" alt="" coords="1193,244,1373,271"/><area shape="rect" id="node49" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="1500,320,1561,347"/><area shape="rect" id="node50" href="rdtsc_8h.html#aad9fa653ac913a1e9e869ba253f1c844" title="getMilliSecond" alt="" coords="1229,345,1336,372"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_a156af868d4cc53d944dd8b7616f126f3_icgraph.png" border="0" usemap="#classHdfsLoader_a156af868d4cc53d944dd8b7616f126f3_icgraph" alt=""/></div>
+<map name="classHdfsLoader_a156af868d4cc53d944dd8b7616f126f3_icgraph" id="classHdfsLoader_a156af868d4cc53d944dd8b7616f126f3_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="196,5,345,46"/><area shape="rect" id="node3" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed" title="inmemory_append_test" alt="" coords="192,71,349,97"/><area shape="rect" id="node4" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="397,71,472,97"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ad4abb50e64397d843a1d9e236b0ce6da"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char HdfsLoader::get_c_separator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classHdfsLoader.html#a94d1296538c38b29c6957b43adddefb7">col_separator</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af83242d5491e3c247f8319a52a7e8f7c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; string &gt; HdfsLoader::get_file_list </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classHdfsLoader.html#a966c04389dd3023f6bae8dab75b8f2a9">file_list</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aeda35a98741b1e7a31cf24d87f960bfd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char HdfsLoader::get_r_separator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classHdfsLoader.html#a076ba84eccfadfac97f0053e4655e63a">row_separator</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="aac41f68cfe750c0f1b66cefa5fe24455"></a>
 <div class="memitem">
 <div class="memproto">
@@ -169,7 +452,27 @@ vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>partit
 <p><em>for testing begin</em>/</p>
 <p><em>for testing end</em>/ </p>
 
-<p>Referenced by <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>.</p>
+<p>References <a class="el" href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">blocks_per_partition</a>, <a class="el" href="classHdfsLoader.html#a94d1296538c38b29c6957b43adddefb7">col_separator</a>, <a class="el" href="classHdfsLoader.html#a507c869e97a65671ff170f2f9e8e8cfa">connector_</a>, <a class="el" href="classConnector.html#a26458e411c1463f334dc0f08f795e0e8">Connector::flush()</a>, <a class="el" href="classBlock.html#a106b1a1095930c997df00da51a024fbf">Block::getBlock()</a>, <a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">TableDescriptor::getNumberOfProjection()</a>, <a class="el" href="classBlock.html#a8173c589654677bf9f5f1a17111d3866">Block::getsize()</a>, <a class="el" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c">Schema::getTupleMaxSize()</a>, <a class="el" href="classHdfsLoader.html#a3998f5ea2ad00a0d1e6ae030b48aed99">partition_functin_list_</a>, <a class="el" href="classHdfsLoader.html#a38153637dcff79182e1e65f360b4de69">partition_key_index</a>, <a class="el" href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">pj_buffer</a>, <a class="el" href="classHdfsLoader.html#a3a7cee4f35908650ababadc320d83822">projection_schema</a>, <a class="el" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">row_id</a>, <a class="el" href="classHdfsLoader.html#ae225c4b1a076f079c8edcc1752ad4b7a">s_record</a>, <a class="el" href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">sblock</a>, <a class="el" href="classHdfsLoader.html#a7dcde959e49746ccf6b8b6408a7963cf">sub_tuple_generator</a>, <a class="el" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14a66ac3e8d99b4bd9488c93c14b1138799">t_u_long</a>, <a class="el" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">table_descriptor_</a>, <a class="el" href="classHdfsLoader.html#ab8d1a40748783b7b359a665df3045d66">table_schema</a>, <a class="el" href="classSchema.html#a6e18cfa58e2868a5b41bd11d18835a84">Schema::toValue()</a>, and <a class="el" href="classHdfsLoader.html#a4fd59cfc625d2caf0039f5e685dae5bf">tuples_per_partition</a>.</p>
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_aac41f68cfe750c0f1b66cefa5fe24455_cgraph.png" border="0" usemap="#classHdfsLoader_aac41f68cfe750c0f1b66cefa5fe24455_cgraph" alt=""/></div>
+<map name="classHdfsLoader_aac41f68cfe750c0f1b66cefa5fe24455_cgraph" id="classHdfsLoader_aac41f68cfe750c0f1b66cefa5fe24455_cgraph">
+<area shape="rect" id="node2" href="classConnector.html#a26458e411c1463f334dc0f08f795e0e8" title="Connector::flush" alt="" coords="266,5,385,32"/><area shape="rect" id="node3" href="classBlock.html#a106b1a1095930c997df00da51a024fbf" title="Block::getBlock" alt="" coords="268,56,383,83"/><area shape="rect" id="node4" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40" title="TableDescriptor::getNumber\lOfProjection" alt="" coords="232,107,419,149"/><area shape="rect" id="node5" href="classBlock.html#a8173c589654677bf9f5f1a17111d3866" title="Block::getsize" alt="" coords="273,173,378,200"/><area shape="rect" id="node6" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c" title="Schema::getTupleMaxSize" alt="" coords="236,224,415,251"/><area shape="rect" id="node7" href="classSchema.html#a6e18cfa58e2868a5b41bd11d18835a84" title="Schema::toValue" alt="" coords="264,275,387,301"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_aac41f68cfe750c0f1b66cefa5fe24455_icgraph.png" border="0" usemap="#classHdfsLoader_aac41f68cfe750c0f1b66cefa5fe24455_icgraph" alt=""/></div>
+<map name="classHdfsLoader_aac41f68cfe750c0f1b66cefa5fe24455_icgraph" id="classHdfsLoader_aac41f68cfe750c0f1b66cefa5fe24455_icgraph">
+<area shape="rect" id="node2" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3" title="HdfsLoader::append" alt="" coords="232,71,371,97"/><area shape="rect" id="node6" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001" title="HdfsLoader::load" alt="" coords="241,197,362,224"/><area shape="rect" id="node3" href="classclaims_1_1stmt__handler_1_1InsertExec.html#a0f47ddab5aa821fd97264f0d72877a36" title="the concrete operation of insert data to tables. " alt="" coords="423,5,572,46"/><area shape="rect" id="node4" href="test__load_8cpp.html#a70fa9415a8958888c19c62b8275907ed" title="inmemory_append_test" alt="" coords="419,71,576,97"/><area shape="rect" id="node5" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="673,121,748,148"/><area shape="rect" id="node7" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="438,121,557,148"/><area shape="rect" id="node8" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b" title="append_test" alt="" coords="451,172,544,199"/><area shape="rect" id="node9" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed" title="LoadData" alt="" coords="458,223,537,249"/><area shape="rect" id="node13" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="425,274,569,315"/><area shape="rect" id="node14" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="421,340,573,367"/><area shape="rect" id="node10" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="625,223,797,249"/><area shape="rect" id="node11" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="850,197,971,224"/><area shape="rect" id="node12" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="845,248,976,275"/></map>
+</div>
+</p>
 
 </div>
 </div>
@@ -189,13 +492,420 @@ vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>partit
 <p><em>for testing begin</em>/</p>
 <p><em>for testing end</em>/ </p>
 
-<p>References <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, and <a class="el" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720">ProjectionBinding::UnbindingEntireProjection()</a>.</p>
+<p>References <a class="el" href="classPartitioner.html#a1153a680b650ef1de45f2c288a72d9ef">Partitioner::allPartitionBound()</a>, <a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a>, <a class="el" href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">blocks_per_partition</a>, <a class="el" href="classConnector.html#a6724afb3abeab5ad794923dda39f8d34">Connector::closeFiles()</a>, <a class="el" href="classHdfsLoader.html#a507c869e97a65671ff170f2f9e8e8cfa">connector_</a>, <a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949">CREATEE</a>, <a class="el" href="classHdfsLoader.html#a966c04389dd3023f6bae8dab75b8f2a9">file_list</a>, <a class="el" href="classConnector.html#a26458e411c1463f334dc0f08f795e0e8">Connector::flush()</a>, <a class="el" href="classCatalog.html#aa0c6ebae8b1821ff023987175c8f5259">Catalog::getBindingModele()</a>, <a class="el" href="classBlock.html#a106b1a1095930c997df00da51a024fbf">Block::getBlock()</a>, <a class="el" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340">Catalog::getInstance()</a>, <a class="el" href="classPartitioner.html#ae229b065e10adf769eec24555346494f">Partitioner::getNumberOfPartitions()</a>, <a class="el" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40">TableDescriptor::getNumberOfProjection()</a>, <a class="el" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f">ProjectionDescriptor::getPartitioner()</a>, <a class="el" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa">TableDescriptor::getProjectoin()</a>, <a class="el" href="classBlock.html#a8173c589654677bf9f5f1a17111d3866">Block::getsize()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, <a class="el" href="classConfig.html#a0bff35f498d1af7e0f24d440e890a37c">Config::local_disk_mode</a>, <a class="el" href="classHdfsLoader.html#a195cacee6bd312a49ea9170e90a11417">open_flag_</a>, <a class="el" href="classConnector.html#aac8fda58c5049dfa30d7ab20336aebb9">Connector::openFiles()</a>, <a class="el" href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">pj_buffer</a>, <a class="el" href="classPartitioner.html#a312e71b3e09b6bf3ffd5083c8e68acd4">Partitioner::RegisterPartitionWithNumberOfBlocks()</a>, <a class="el" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">row_id</a>, <a class="el" href="classHdfsLoader.html#a076ba84eccfadfac97f0053e4655e63a">row_separator</a>, <a class="el" href="classHdfsLoader.html#ae225c4b1a076f079c8edcc1752ad4b7a">s_record</a>, <a class="el" href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">sblock</a>, <a class="el" href="classTableDescriptor.html#a0c9d3afa0aa222819cb3558b2862d138">TableDescriptor::setRowNumber()</a>, <a class="el" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">table_descriptor_</a>, <a class="el" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720">ProjectionBinding::UnbindingEntireProjection()</a>, <a class="el" href="classPartitioner.html#a2232c5ea585c56c8842e411d50369519">Partitioner::UpdatePartitionWithNumberOfChunksToBlockManager()</a>, and <a class="el" href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">writepath</a>.</p>
+
+<p>Referenced by <a class="el" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b">append_test()</a>, <a class="el" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e">create_load_test()</a>, <a class="el" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f">claims::stmt_handler::LoadExec::Execute()</a>, <a class="el" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463">load_tpc_h_4_partition()</a>, and <a class="el" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed">LoadData()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_a9121d394709531673052b4c7879a6001_cgraph.png" border="0" usemap="#classHdfsLoader_a9121d394709531673052b4c7879a6001_cgraph" alt=""/></div>
+<map name="classHdfsLoader_a9121d394709531673052b4c7879a6001_cgraph" id="classHdfsLoader_a9121d394709531673052b4c7879a6001_cgraph">
+<area shape="rect" id="node2" href="classPartitioner.html#a1153a680b650ef1de45f2c288a72d9ef" title="Partitioner::allPartition\lBound" alt="" coords="227,5,378,46"/><area shape="rect" id="node3" href="classConnector.html#a6724afb3abeab5ad794923dda39f8d34" title="Connector::closeFiles" alt="" coords="228,71,377,97"/><area shape="rect" id="node4" href="classConnector.html#a26458e411c1463f334dc0f08f795e0e8" title="Connector::flush" alt="" coords="511,59,630,85"/><area shape="rect" id="node5" href="classCatalog.html#aa0c6ebae8b1821ff023987175c8f5259" title="Catalog::getBindingModele" alt="" coords="213,375,392,401"/><area shape="rect" id="node6" href="classBlock.html#a106b1a1095930c997df00da51a024fbf" title="Block::getBlock" alt="" coords="513,109,628,136"/><area shape="rect" id="node7" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="1451,419,1594,445"/><area shape="rect" id="node9" href="classPartitioner.html#ae229b065e10adf769eec24555346494f" title="Partitioner::getNumberOf\lPartitions" alt="" coords="487,1158,654,1199"/><area shape="rect" id="node11" href="classTableDescriptor.html#aea8ac99022d03b520d6a29c423998e40" title="TableDescriptor::getNumber\lOfProjection" alt="" coords="477,262,664,303"/><area shape="rect" id="node12" href="classProjectionDescriptor.html#a584f3ae5d8dabc3db1d7a60fd58fc62f" title="ProjectionDescriptor\l::getPartitioner" alt="" coords="233,925,373,966"/><area shape="rect" id="node13" href="classTableDescriptor.html#a545c744806947794c34d36444c2854fa" title="TableDescriptor::getProjectoin" alt="" coords="203,991,402,1017"/><area shape="rect" id="node14" href="classBlock.html#a8173c589654677bf9f5f1a17111d3866" title="Block::getsize" alt="" coords="518,328,623,355"/><area shape="rect" id="node15" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455" title="HdfsLoader::insertRecords" alt="" coords="213,223,392,249"/><area shape="rect" id="node18" href="classConnector.html#aac8fda58c5049dfa30d7ab20336aebb9" title="Connector::openFiles" alt="" coords="229,1041,376,1068"/><area shape="rect" id="node19" href="classPartitioner.html#a312e71b3e09b6bf3ffd5083c8e68acd4" title="Partitioner::RegisterPartition\lWithNumberOfBlocks" alt="" coords="209,807,396,849"/><area shape="rect" id="node20" href="classTableDescriptor.html#a0c9d3afa0aa222819cb3558b2862d138" title="TableDescriptor::setRowNumber" alt="" coords="196,1092,409,1119"/><area shape="rect" id="node21" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="217,677,389,718"/><area shape="rect" id="node49" href="classPartitioner.html#a2232c5ea585c56c8842e411d50369519" title="Partitioner::UpdatePartition\lWithNumberOfChunksToBlockManager" alt="" coords="177,742,429,783"/><area shape="rect" id="node8" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1680,419,1800,445"/><area shape="rect" id="node10" href="classPartitionFunction.html#a2ae9612d2ec64d04aaca84062a8e9cf6" title="PartitionFunction::\lgetNumberOfPartitions" alt="" coords="720,1161,875,1202"/><area shape="rect" id="node16" href="classSchema.html#a8b72b9dd459d92f224ff122dd2a78e9c" title="Schema::getTupleMaxSize" alt="" coords="481,160,660,187"/><area shape="rect" id="node17" href="classSchema.html#a6e18cfa58e2868a5b41bd11d18835a84" title="Schema::toValue" alt="" coords="509,211,632,237"/><area shape="rect" id="node22" href="classPartitioner.html#a952c5c892451cd7afd985f7b9f0bf549" title="Partitioner::get_binding\l_mode_" alt="" coords="493,546,648,587"/><area shape="rect" id="node23" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="951,915,1121,941"/><area shape="rect" id="node36" href="classEnvironment.html#a1819a575f60049f6429e28c31771aa5d" title="Environment::getResource\lManagerMaster" alt="" coords="482,611,659,653"/><area shape="rect" id="node37" href="classPartitioner.html#a4c2547fd66cf3ec8acfd49d7c3da12e7" title="Partitioner::getPartition\lDataSize" alt="" coords="493,677,648,718"/><area shape="rect" id="node38" href="classResourceManagerMaster.html#aa6644ed8297aa4d438078905b0001ed9" title="ResourceManagerMaster\l::ReturnMemoryBuget" alt="" coords="487,742,655,783"/><area shape="rect" id="node39" href="classPartitioner.html#aeca46d95008d55a34ffd04d67be7c6f5" title="Partitioner::getPartition\lLocation" alt="" coords="493,807,648,849"/><area shape="rect" id="node40" href="classResourceManagerMaster.html#a174f4962dbabc10d818fc4f510807901" title="ResourceManagerMaster\l::ReturnDiskBuget" alt="" coords="487,873,655,914"/><area shape="rect" id="node41" href="classPartitioner.html#a4f95dc0ae91e451684e408df90d75f1d" title="Partitioner::getProejctionID" alt="" coords="481,939,660,965"/><area shape="rect" id="node42" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="498,990,643,1031"/><area shape="rect" id="node44" href="classBlockManagerMaster.html#a3a4eb6417085bf165f21f2e289d87575" title="BlockManagerMaster\l::SendUnbindingMessage" alt="" coords="712,1009,883,1050"/><area shape="rect" id="node48" href="classPartitioner.html#a251c47330fa49b49f1068a017a27b6f1" title="Partitioner::unbindPartition\lToNode" alt="" coords="483,481,658,522"/><area shape="rect" id="node24" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="1189,881,1365,908"/><area shape="rect" id="node25" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1691,571,1789,597"/><area shape="rect" id="node26" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="1437,764,1609,791"/><area shape="rect" id="node27" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="1455,881,1591,908"/><area shape="rect" id="node28" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="1429,932,1616,959"/><area shape="rect" id="node29" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="1424,983,1621,1009"/><area shape="rect" id="node30" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="1430,1034,1615,1075"/><area shape="rect" id="node31" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="1431,1099,1615,1141"/><area shape="rect" id="node32" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="1414,647,1631,673"/><area shape="rect" id="node33" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="1436,815,1609,857"/><area shape="rect" id="node35" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="1415,698,1630,739"/><area shape="rect" id="node34" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1694,1191,1786,1217"/><area shape="rect" id="node43" href="classBlockManagerMaster.html#a58c23142829ea91be3aad1b2ab78fcf5" title="BlockManagerMaster\l::BlockManagerMaster" alt="" coords="721,925,874,966"/><area shape="rect" id="node45" href="classBlockManagerMaster.html#a79466978b7f5ecb54e846bed03ca62dd" title="BlockManagerMaster\l::generateSlaveActorName" alt="" coords="947,1118,1125,1159"/><area shape="rect" id="node46" href="classNodeTracker.html#a117e68443ad648091dcf1566618fbaae" title="NodeTracker::GetInstance" alt="" coords="948,1016,1124,1043"/><area shape="rect" id="node47" href="classTimeOutReceiver.html#a6525cc1dde5efa7d36c524c608494ae8" title="TimeOutReceiver::TimeOutWait" alt="" coords="931,1067,1141,1093"/><area shape="rect" id="node50" href="classBlockManagerMaster.html#ae4d6e5cc3211be9b841de8abd8252da5" title="BlockManagerMaster\l::SendBindingMessage" alt="" coords="719,1095,875,1137"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classHdfsLoader_a9121d394709531673052b4c7879a6001_icgraph.png" border="0" usemap="#classHdfsLoader_a9121d394709531673052b4c7879a6001_icgraph" alt=""/></div>
+<map name="classHdfsLoader_a9121d394709531673052b4c7879a6001_icgraph" id="classHdfsLoader_a9121d394709531673052b4c7879a6001_icgraph">
+<area shape="rect" id="node2" href="test__load_8cpp.html#a24facd542996c4364e230045219f860b" title="append_test" alt="" coords="205,5,299,32"/><area shape="rect" id="node4" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="193,56,311,83"/><area shape="rect" id="node5" href="classclaims_1_1stmt__handler_1_1LoadExec.html#a9e32dd058246f335836be6b35235db7f" title="the concrete operation of load data. " alt="" coords="180,107,324,149"/><area shape="rect" id="node6" href="tpc__h__test_8cpp.html#a260ab06e99d14ba67f79eca87cd69463" title="load_tpc_h_4_partition" alt="" coords="176,173,328,200"/><area shape="rect" id="node7" href="ExecuteLogicalQueryPlan_8h.html#a73194b1d3be9ee6bc763e9dad691a9ed" title="LoadData" alt="" coords="213,224,291,251"/><area shape="rect" id="node3" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="425,31,500,57"/><area shape="rect" id="node8" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="377,224,549,251"/><area shape="rect" id="node9" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="602,199,723,225"/><area shape="rect" id="node10" href="classExecuting.html#a10257a728d83cdf3d69fec58980769b6" title="Executing::run_sql" alt="" coords="597,249,728,276"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7097c6f1d7c78a87434db8af598ccbb1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned HdfsLoader::block_size</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a21b13d97379e0e2bc340d7ebbcc7e211"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;vector &lt;unsigned long&gt; &gt; HdfsLoader::blocks_per_partition</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a94d1296538c38b29c6957b43adddefb7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char HdfsLoader::col_separator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ad4abb50e64397d843a1d9e236b0ce6da">get_c_separator()</a>, and <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a507c869e97a65671ff170f2f9e8e8cfa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classConnector.html">Connector</a>* HdfsLoader::connector_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>, and <a class="el" href="classHdfsLoader.html#a54a405058acca64c60e59ba66824d258">~HdfsLoader()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a966c04389dd3023f6bae8dab75b8f2a9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::string&gt; HdfsLoader::file_list</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#af83242d5491e3c247f8319a52a7e8f7c">get_file_list()</a>, <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>, and <a class="el" href="classHdfsLoader.html#a54a405058acca64c60e59ba66824d258">~HdfsLoader()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a195cacee6bd312a49ea9170e90a11417"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a> HdfsLoader::open_flag_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3998f5ea2ad00a0d1e6ae030b48aed99"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="classPartitionFunction.html">PartitionFunction</a>*&gt; HdfsLoader::partition_functin_list_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, and <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a38153637dcff79182e1e65f360b4de69"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;int&gt; HdfsLoader::partition_key_index</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, and <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1f88028ba3b79b54a0cdf39fd507ccb3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; vector&lt;<a class="el" href="classBlockStreamBase.html">BlockStreamBase</a>*&gt; &gt; HdfsLoader::pj_buffer</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3a7cee4f35908650ababadc320d83822"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="classSchema.html">Schema</a>*&gt; HdfsLoader::projection_schema</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, and <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9b4293c1543ee4a59b244d342c59d12a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long HdfsLoader::row_id</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>, and <a class="el" href="classHdfsLoader.html#a54a405058acca64c60e59ba66824d258">~HdfsLoader()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a076ba84eccfadfac97f0053e4655e63a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char HdfsLoader::row_separator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#aeda35a98741b1e7a31cf24d87f960bfd">get_r_separator()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae225c4b1a076f079c8edcc1752ad4b7a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string HdfsLoader::s_record</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aefd6bd01a89e97c76203fcde5c0cec42"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlock.html">Block</a>* HdfsLoader::sblock</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, and <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7dcde959e49746ccf6b8b6408a7963cf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;<a class="el" href="classSubTuple.html">SubTuple</a>*&gt; HdfsLoader::sub_tuple_generator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, and <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab053ab8d6977f877a284ef0059b213d2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classTableDescriptor.html">TableDescriptor</a>* HdfsLoader::table_descriptor_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>, <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>, and <a class="el" href="classHdfsLoader.html#a54a405058acca64c60e59ba66824d258">~HdfsLoader()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab8d1a40748783b7b359a665df3045d66"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSchema.html">Schema</a>* HdfsLoader::table_schema</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, and <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4fd59cfc625d2caf0039f5e685dae5bf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;vector &lt;unsigned long&gt; &gt; HdfsLoader::tuples_per_partition</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, and <a class="el" href="classHdfsLoader.html#aac41f68cfe750c0f1b66cefa5fe24455">insertRecords()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a39328eba44e9e8e0b8636163c4fdbbc8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt;vector&lt;string&gt; &gt; HdfsLoader::writepath</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classHdfsLoader.html#a156af868d4cc53d944dd8b7616f126f3">append()</a>, <a class="el" href="classHdfsLoader.html#ae5a64d09aec9100ff4f3246759cae269">HdfsLoader()</a>, <a class="el" href="classHdfsLoader.html#a9121d394709531673052b4c7879a6001">load()</a>, and <a class="el" href="classHdfsLoader.html#a54a405058acca64c60e59ba66824d258">~HdfsLoader()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Loader/<a class="el" href="Hdfsloader_8h_source.html">Hdfsloader.h</a></li>
-<li>Loader/Hdfsloader.cpp</li>
+<li>Loader/<a class="el" href="Hdfsloader_8cpp.html">Hdfsloader.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

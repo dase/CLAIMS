@@ -4,6 +4,7 @@ var classQExpr__binary =
     [ "~QExpr_binary", "classQExpr__binary.html#a258748107fb1538adf3e78e3eee5550c", null ],
     [ "QExpr_binary", "classQExpr__binary.html#a9480bd483c3b7612d26a94d8f640ced6", null ],
     [ "QExpr_binary", "classQExpr__binary.html#a7e8a5f3590826668cab0d0ac2fd33c50", null ],
+    [ "serialize", "classQExpr__binary.html#ad83fa2d73cb36f79742895a374a63627", null ],
     [ "boost::serialization::access", "classQExpr__binary.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
     [ "function_call", "classQExpr__binary.html#acdddd0c2bdff8d5f8299e008bcad0946", null ],
     [ "lnext", "classQExpr__binary.html#a738abcfc5a75367611d7fc392543709e", null ],

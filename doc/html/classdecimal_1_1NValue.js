@@ -7,6 +7,8 @@ var classdecimal_1_1NValue =
     [ "createStringFromDecimal", "classdecimal_1_1NValue.html#a8ce01d5de4cbcd5b2db941dbf28ee0cd", null ],
     [ "getDecimal", "classdecimal_1_1NValue.html#ae761a7091e5bb8579b53d574b31cf176", null ],
     [ "getDecimal", "classdecimal_1_1NValue.html#afcd757ab4d5acc93cc601d4929b38418", null ],
+    [ "getDecimalValue", "classdecimal_1_1NValue.html#ae0b23e1fd883b7c0e17e216c0e503265", null ],
+    [ "getDecimalValueFromString", "classdecimal_1_1NValue.html#ace9bcc0e6a355509883c47742a358fbd", null ],
     [ "isNull", "classdecimal_1_1NValue.html#a64154c94b7e4b1bfd7c7bf66b71e02e3", null ],
     [ "op_add", "classdecimal_1_1NValue.html#a3f185fe3ab9ccfc9f0b8fa0eef930962", null ],
     [ "op_divide", "classdecimal_1_1NValue.html#a773e8c83b56f696cd001ad953b9627a0", null ],
@@ -25,5 +27,9 @@ var classdecimal_1_1NValue =
     [ "opMultiplyDecimals", "classdecimal_1_1NValue.html#a7c3d4e24cb541906243895ad1e7f5ab1", null ],
     [ "opSubtractDecimals", "classdecimal_1_1NValue.html#ab6691fce343ea64329ed8aa87d1d5d19", null ],
     [ "serializeToExport", "classdecimal_1_1NValue.html#a1ded1e05a2fee28bf8380b9a83e1e10f", null ],
-    [ "m_data", "classdecimal_1_1NValue.html#a8f3db7fa3c9793b8181924c155edf9a6", null ]
+    [ "kMaxDecScale", "classdecimal_1_1NValue.html#a1018823e998d55842f107a6e0e2b636d", null ],
+    [ "kMaxScaleFactor", "classdecimal_1_1NValue.html#a61e1bb0f42d4b35563ecd63b21038c56", null ],
+    [ "m_data", "classdecimal_1_1NValue.html#a8f3db7fa3c9793b8181924c155edf9a6", null ],
+    [ "s_maxDecimalValue", "classdecimal_1_1NValue.html#ac7d8b9ca919e5feabd84864f81f89ab2", null ],
+    [ "s_minDecimalValue", "classdecimal_1_1NValue.html#a122371cab98c31c75c47f340ca32d65c", null ]
 ];

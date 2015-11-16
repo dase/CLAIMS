@@ -1,4 +1,4 @@
-.TH "IndexScanIterator::query_range" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "IndexScanIterator::query_range" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ IndexScanIterator::query_range \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <IndexScanIterator\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBquery_range\fP (void *value_low_, comparison comp_low_, void *value_high_, comparison comp_high_, \fBcolumn_type\fP c_type_)"
+.RI "\fBquery_range\fP ()"
+.br
+.ti -1c
+.RI "\fBquery_range\fP (void *value_low_, \fBcomparison\fP comp_low_, void *value_high_, \fBcomparison\fP comp_high_, \fBcolumn_type\fP c_type_)"
 .br
 .ti -1c
 .RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
@@ -23,13 +28,13 @@ IndexScanIterator::query_range \-
 .RI "void * \fBvalue_low\fP"
 .br
 .ti -1c
-.RI "comparison \fBcomp_low\fP"
+.RI "\fBcomparison\fP \fBcomp_low\fP"
 .br
 .ti -1c
 .RI "void * \fBvalue_high\fP"
 .br
 .ti -1c
-.RI "comparison \fBcomp_high\fP"
+.RI "\fBcomparison\fP \fBcomp_high\fP"
 .br
 .ti -1c
 .RI "\fBcolumn_type\fP \fBc_type\fP"
@@ -48,7 +53,57 @@ IndexScanIterator::query_range \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IndexScanIterator::query_range::query_range ()\fC [inline]\fP"
+
+.PP
+References valuebytes_high, and valuebytes_low\&.
+.SS "IndexScanIterator::query_range::query_range (void *value_low_, \fBcomparison\fPcomp_low_, void *value_high_, \fBcomparison\fPcomp_high_, \fBcolumn_type\fPc_type_)\fC [inline]\fP"
+
+.PP
+References valuebytes_high, and valuebytes_low\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class Archive > void IndexScanIterator::query_range::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP"
+
+.PP
+References c_type, comp_high, comp_low, column_type::get_length(), column_type::operate, value_high, value_low, valuebytes_high, and valuebytes_low\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBcolumn_type\fP IndexScanIterator::query_range::c_type"
+
+.PP
+Referenced by bulk_test_logical_index_scan(), serialize(), test_index_filter_performance(), test_index_scan_iterator(), test_logical_csb_index_building(), and test_logical_index_scan()\&.
+.SS "\fBcomparison\fP IndexScanIterator::query_range::comp_high"
+
+.PP
+Referenced by bulk_test_logical_index_scan(), serialize(), test_index_filter_performance(), test_index_scan_iterator(), test_logical_csb_index_building(), and test_logical_index_scan()\&.
+.SS "\fBcomparison\fP IndexScanIterator::query_range::comp_low"
+
+.PP
+Referenced by bulk_test_logical_index_scan(), serialize(), test_index_filter_performance(), test_index_scan_iterator(), test_logical_csb_index_building(), and test_logical_index_scan()\&.
+.SS "void* IndexScanIterator::query_range::value_high"
+
+.PP
+Referenced by bulk_test_logical_index_scan(), serialize(), test_index_filter_performance(), test_index_scan_iterator(), test_logical_csb_index_building(), and test_logical_index_scan()\&.
+.SS "void* IndexScanIterator::query_range::value_low"
+
+.PP
+Referenced by bulk_test_logical_index_scan(), serialize(), test_index_filter_performance(), test_index_scan_iterator(), test_logical_csb_index_building(), and test_logical_index_scan()\&.
+.SS "std::vector<char> IndexScanIterator::query_range::valuebytes_high"
+
+.PP
+Referenced by query_range(), serialize(), and test_logical_csb_index_building()\&.
+.SS "std::vector<char> IndexScanIterator::query_range::valuebytes_low"
+
+.PP
+Referenced by query_range(), serialize(), and test_logical_csb_index_building()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

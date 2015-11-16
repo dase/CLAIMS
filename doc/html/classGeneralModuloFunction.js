@@ -8,5 +8,8 @@ var classGeneralModuloFunction =
     [ "get_partition_value", "classGeneralModuloFunction.html#ab7c09a99fbfbeb2525d0429455a020c3", null ],
     [ "getNumberOfPartitions", "classGeneralModuloFunction.html#acf2da8ba800b44ae5a9262d1da8c9be2", null ],
     [ "getPartitionFashion", "classGeneralModuloFunction.html#ab5dc429ad98b17dede2a9951c361fc49", null ],
-    [ "boost::serialization::access", "classGeneralModuloFunction.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "serialize", "classGeneralModuloFunction.html#a6f02f94818bc610b3e6c5e346c3703aa", null ],
+    [ "boost::serialization::access", "classGeneralModuloFunction.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "range_", "classGeneralModuloFunction.html#a186fbf21789b4046a1847ccba10b884e", null ],
+    [ "skipbits_", "classGeneralModuloFunction.html#a0a3aaeded120563b00fc56ffb4f105a4", null ]
 ];

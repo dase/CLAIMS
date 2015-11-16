@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Loader/Connector.h Source File</title>
+<title>Claims: Loader/Connector.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('Connector_8h_source.html','');});
 <div class="title">Connector.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="Connector_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Connector.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Sep 19, 2014</span></div>
@@ -120,31 +120,40 @@ $(document).ready(function(){initNavTree('Connector_8h_source.html','');});
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">using</span> std::vector;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">using</span> std::string;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">enum</span> open_flag { CREATEE, APPENDD };</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">   15</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a> { <a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949">CREATEE</a>, <a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a> };</div>
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classConnector.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classConnector.html">Connector</a> {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classConnector.html">Connector</a>(vector&lt;vector&lt;string&gt; &gt; writepath):writepath(writepath){</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classConnector.html#a4283abb7ef71df548ce94b604e2ce87e">   18</a></span>&#160;    <a class="code" href="classConnector.html#a4283abb7ef71df548ce94b604e2ce87e">Connector</a>(vector&lt;vector&lt;string&gt; &gt; <a class="code" href="classConnector.html#a84ae320029803369ace4a4adb90c5b0f">writepath</a>):<a class="code" href="classConnector.html#a84ae320029803369ace4a4adb90c5b0f">writepath</a>(<a class="code" href="classConnector.html#a84ae320029803369ace4a4adb90c5b0f">writepath</a>){</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    };</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classConnector.html">Connector</a>(){};</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classConnector.html#a31ab6c16019de76e3152c8d78472b8aa">   20</a></span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classConnector.html#a31ab6c16019de76e3152c8d78472b8aa">~Connector</a>(){};</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> openFiles(open_flag open_flag_)=0;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> closeFiles()=0;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classConnector.html#aac8fda58c5049dfa30d7ab20336aebb9">openFiles</a>(<a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a> open_flag_)=0;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classConnector.html#a6724afb3abeab5ad794923dda39f8d34">closeFiles</a>()=0;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> flush(<span class="keywordtype">unsigned</span> projection_offset, <span class="keywordtype">unsigned</span> partition_offset, <span class="keywordtype">void</span>* source, <span class="keywordtype">unsigned</span> length)=0;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="classConnector.html#a26458e411c1463f334dc0f08f795e0e8">flush</a>(<span class="keywordtype">unsigned</span> projection_offset, <span class="keywordtype">unsigned</span> partition_offset, <span class="keywordtype">void</span>* source, <span class="keywordtype">unsigned</span> length)=0;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    vector&lt;vector&lt;string&gt; &gt; writepath;</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classConnector.html#a84ae320029803369ace4a4adb90c5b0f">   28</a></span>&#160;    vector&lt;vector&lt;string&gt; &gt; <a class="code" href="classConnector.html#a84ae320029803369ace4a4adb90c5b0f">writepath</a>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;};</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* CONNECTOR_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classConnector_html_a84ae320029803369ace4a4adb90c5b0f"><div class="ttname"><a href="classConnector.html#a84ae320029803369ace4a4adb90c5b0f">Connector::writepath</a></div><div class="ttdeci">vector&lt; vector&lt; string &gt; &gt; writepath</div><div class="ttdef"><b>Definition:</b> Connector.h:28</div></div>
+<div class="ttc" id="classConnector_html_a4283abb7ef71df548ce94b604e2ce87e"><div class="ttname"><a href="classConnector.html#a4283abb7ef71df548ce94b604e2ce87e">Connector::Connector</a></div><div class="ttdeci">Connector(vector&lt; vector&lt; string &gt; &gt; writepath)</div><div class="ttdef"><b>Definition:</b> Connector.h:18</div></div>
+<div class="ttc" id="Connector_8h_html_aa7ef47bda2c422e83d91deb4d4500792"><div class="ttname"><a href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a></div><div class="ttdeci">open_flag</div><div class="ttdef"><b>Definition:</b> Connector.h:15</div></div>
+<div class="ttc" id="Connector_8h_html_aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949"><div class="ttname"><a href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949">CREATEE</a></div><div class="ttdef"><b>Definition:</b> Connector.h:15</div></div>
+<div class="ttc" id="classConnector_html_a31ab6c16019de76e3152c8d78472b8aa"><div class="ttname"><a href="classConnector.html#a31ab6c16019de76e3152c8d78472b8aa">Connector::~Connector</a></div><div class="ttdeci">virtual ~Connector()</div><div class="ttdef"><b>Definition:</b> Connector.h:20</div></div>
+<div class="ttc" id="classConnector_html_a26458e411c1463f334dc0f08f795e0e8"><div class="ttname"><a href="classConnector.html#a26458e411c1463f334dc0f08f795e0e8">Connector::flush</a></div><div class="ttdeci">virtual int flush(unsigned projection_offset, unsigned partition_offset, void *source, unsigned length)=0</div></div>
+<div class="ttc" id="Connector_8h_html_aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479"><div class="ttname"><a href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a></div><div class="ttdef"><b>Definition:</b> Connector.h:15</div></div>
+<div class="ttc" id="classConnector_html_a6724afb3abeab5ad794923dda39f8d34"><div class="ttname"><a href="classConnector.html#a6724afb3abeab5ad794923dda39f8d34">Connector::closeFiles</a></div><div class="ttdeci">virtual bool closeFiles()=0</div></div>
+<div class="ttc" id="classConnector_html_aac8fda58c5049dfa30d7ab20336aebb9"><div class="ttname"><a href="classConnector.html#aac8fda58c5049dfa30d7ab20336aebb9">Connector::openFiles</a></div><div class="ttdeci">virtual bool openFiles(open_flag open_flag_)=0</div></div>
 <div class="ttc" id="classConnector_html"><div class="ttname"><a href="classConnector.html">Connector</a></div><div class="ttdef"><b>Definition:</b> Connector.h:16</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_fd50d1bf4544eeddbf688b84437a3906.html">Loader</a></li><li class="navelem"><b>Connector.h</b></li>
+    <li class="navelem"><a class="el" href="dir_fd50d1bf4544eeddbf688b84437a3906.html">Loader</a></li><li class="navelem"><a class="el" href="Connector_8h.html">Connector.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

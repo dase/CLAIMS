@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Config.h Source File</title>
+<title>Claims: Config.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('Config_8h_source.html','');});
 <div class="title">Config.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="Config_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Config.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Apr 4, 2014</span></div>
@@ -120,56 +120,79 @@ $(document).ready(function(){initNavTree('Config_8h_source.html','');});
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classConfig.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classConfig.html">Config</a> {</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">static</span> <a class="code" href="classConfig.html">Config</a>* getInstance();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> print_configure()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classConfig.html">Config</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">static</span> <a class="code" href="classConfig.html">Config</a>* <a class="code" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5">getInstance</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classConfig.html#aeb381d23fb7d5a70b47bdcc32247171c">print_configure</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classConfig.html#a543dce59b66475c5108088ee4ce1cdfc">~Config</a>();</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classConfig.html">Config</a>();</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">void</span> initialize();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classConfig.html#abd0c571c116924871e30444b192b792a">Config</a>();</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classConfig.html#a25b4d011cfed6f3157560fc4b44ff547">initialize</a>();</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::string getString(std::string attribute_name, std::string default_value);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::string <a class="code" href="classConfig.html#af690d213de63ce2f0c99017fad1f37cc">getString</a>(std::string attribute_name, std::string default_value);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">int</span> getInt(std::string attribute_name, <span class="keywordtype">int</span> default_value);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classConfig.html#aeca74e7db7539347bf18fbb2c3cc7792">getInt</a>(std::string attribute_name, <span class="keywordtype">int</span> default_value);</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">bool</span> getBoolean(std::string attribute_name, <span class="keywordtype">bool</span> defalut_value);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classConfig.html#a166362cb12daf5021cd7a04cc0c503f6">getBoolean</a>(std::string attribute_name, <span class="keywordtype">bool</span> defalut_value);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> setConfigFile(std::string file_name);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classConfig.html#ad7303d7c4b58c76aa63772f705b99a5c">setConfigFile</a>(std::string file_name);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">static</span> std::string config_file;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classConfig.html#a66ee93fe10b62e415657c88fe4de5d7d">   52</a></span>&#160;    <span class="keyword">static</span> std::string <a class="code" href="classConfig.html#a66ee93fe10b62e415657c88fe4de5d7d">config_file</a>;</div>
 <div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classConfig.html#a75b0984449c2677dc9e70609f8ba39a8">   58</a></span>&#160;    <span class="keyword">static</span> std::string <a class="code" href="classConfig.html#a75b0984449c2677dc9e70609f8ba39a8">data_dir</a>;</div>
 <div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classConfig.html#a7a79cc0f3b2aeaff3d6e0755a95e09af">   59</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classConfig.html#a7a79cc0f3b2aeaff3d6e0755a95e09af">max_degree_of_parallelism</a>;</div>
 <div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classConfig.html#a26796209d4eb0791a0f608e1f08262b1">   60</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classConfig.html#a26796209d4eb0791a0f608e1f08262b1">initial_degree_of_parallelism</a>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> enable_expander_adaptivity;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> expander_adaptivity_check_frequency;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> scan_batch;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">static</span> std::string hdfs_master_ip;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> hdfs_master_port;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">static</span> std::string logfile;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> master;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> local_disk_mode;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classConfig.html#a6f03f7c464da9b45183252442c2de224">   61</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classConfig.html#a6f03f7c464da9b45183252442c2de224">enable_expander_adaptivity</a>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classConfig.html#a8b08b453a3fba78b6201bf53135e119c">   62</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classConfig.html#a8b08b453a3fba78b6201bf53135e119c">expander_adaptivity_check_frequency</a>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classConfig.html#a6479047322951455dc01045bf66e5e75">   63</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classConfig.html#a6479047322951455dc01045bf66e5e75">scan_batch</a>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classConfig.html#acc4b0619e445265ead5c90b96684a50a">   64</a></span>&#160;    <span class="keyword">static</span> std::string <a class="code" href="classConfig.html#acc4b0619e445265ead5c90b96684a50a">hdfs_master_ip</a>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classConfig.html#a98738e79e3078c3c2f91bf8fd44f4721">   65</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classConfig.html#a98738e79e3078c3c2f91bf8fd44f4721">hdfs_master_port</a>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classConfig.html#a2592d8ac7bd8543c59e4e64fdb8eded0">   66</a></span>&#160;    <span class="keyword">static</span> std::string <a class="code" href="classConfig.html#a2592d8ac7bd8543c59e4e64fdb8eded0">logfile</a>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classConfig.html#a9b28401b6c0c576f686428f889beeed4">   67</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classConfig.html#a9b28401b6c0c576f686428f889beeed4">master</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classConfig.html#a0bff35f498d1af7e0f24d440e890a37c">   68</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classConfig.html#a0bff35f498d1af7e0f24d440e890a37c">local_disk_mode</a>;</div>
 <div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classConfig.html#a32ffb2cba975be1d96dcba72031408e8">   69</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classConfig.html#a32ffb2cba975be1d96dcba72031408e8">pipelined_exchange</a>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> client_listener_port;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> enable_codegen;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">static</span> std::string catalog_file;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classConfig.html#a077f28fdbceff057a82a91b0b146bec8">   70</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code" href="classConfig.html#a077f28fdbceff057a82a91b0b146bec8">client_listener_port</a>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classConfig.html#a5c3b6e5a9a2012a9bead709bd344c38a">   71</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classConfig.html#a5c3b6e5a9a2012a9bead709bd344c38a">enable_codegen</a>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classConfig.html#ab4fb35be70965298d430156c08dcf380">   72</a></span>&#160;    <span class="keyword">static</span> std::string <a class="code" href="classConfig.html#ab4fb35be70965298d430156c08dcf380">catalog_file</a>;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">static</span> <a class="code" href="classConfig.html">Config</a>* instance_;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    libconfig::Config cfg;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classConfig.html#aa5a8f95a2d06cd1becf4ed79d9b5328f">   74</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classConfig.html">Config</a>* <a class="code" href="classConfig.html#aa5a8f95a2d06cd1becf4ed79d9b5328f">instance_</a>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classConfig.html#a0bd4a94c5d6d9412f5278b8533b0fb75">   75</a></span>&#160;    libconfig::Config <a class="code" href="classConfig.html#a0bd4a94c5d6d9412f5278b8533b0fb75">cfg</a>;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;};</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* CONFIG_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classConfig_html_a66ee93fe10b62e415657c88fe4de5d7d"><div class="ttname"><a href="classConfig.html#a66ee93fe10b62e415657c88fe4de5d7d">Config::config_file</a></div><div class="ttdeci">static std::string config_file</div><div class="ttdef"><b>Definition:</b> Config.h:52</div></div>
 <div class="ttc" id="classConfig_html_a75b0984449c2677dc9e70609f8ba39a8"><div class="ttname"><a href="classConfig.html#a75b0984449c2677dc9e70609f8ba39a8">Config::data_dir</a></div><div class="ttdeci">static std::string data_dir</div><div class="ttdef"><b>Definition:</b> Config.h:58</div></div>
+<div class="ttc" id="classConfig_html_af7d6f89fc34627f15523df0b62acd7e5"><div class="ttname"><a href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5">Config::getInstance</a></div><div class="ttdeci">static Config * getInstance()</div><div class="ttdef"><b>Definition:</b> Config.cpp:88</div></div>
 <div class="ttc" id="classConfig_html_a26796209d4eb0791a0f608e1f08262b1"><div class="ttname"><a href="classConfig.html#a26796209d4eb0791a0f608e1f08262b1">Config::initial_degree_of_parallelism</a></div><div class="ttdeci">static int initial_degree_of_parallelism</div><div class="ttdef"><b>Definition:</b> Config.h:60</div></div>
+<div class="ttc" id="classConfig_html_ab4fb35be70965298d430156c08dcf380"><div class="ttname"><a href="classConfig.html#ab4fb35be70965298d430156c08dcf380">Config::catalog_file</a></div><div class="ttdeci">static std::string catalog_file</div><div class="ttdef"><b>Definition:</b> Config.h:72</div></div>
+<div class="ttc" id="classConfig_html_a077f28fdbceff057a82a91b0b146bec8"><div class="ttname"><a href="classConfig.html#a077f28fdbceff057a82a91b0b146bec8">Config::client_listener_port</a></div><div class="ttdeci">static int client_listener_port</div><div class="ttdef"><b>Definition:</b> Config.h:70</div></div>
+<div class="ttc" id="classConfig_html_a0bff35f498d1af7e0f24d440e890a37c"><div class="ttname"><a href="classConfig.html#a0bff35f498d1af7e0f24d440e890a37c">Config::local_disk_mode</a></div><div class="ttdeci">static bool local_disk_mode</div><div class="ttdef"><b>Definition:</b> Config.h:68</div></div>
 <div class="ttc" id="classConfig_html"><div class="ttname"><a href="classConfig.html">Config</a></div><div class="ttdef"><b>Definition:</b> Config.h:20</div></div>
+<div class="ttc" id="classConfig_html_aeca74e7db7539347bf18fbb2c3cc7792"><div class="ttname"><a href="classConfig.html#aeca74e7db7539347bf18fbb2c3cc7792">Config::getInt</a></div><div class="ttdeci">int getInt(std::string attribute_name, int default_value)</div><div class="ttdef"><b>Definition:</b> Config.cpp:162</div></div>
+<div class="ttc" id="classConfig_html_a166362cb12daf5021cd7a04cc0c503f6"><div class="ttname"><a href="classConfig.html#a166362cb12daf5021cd7a04cc0c503f6">Config::getBoolean</a></div><div class="ttdeci">bool getBoolean(std::string attribute_name, bool defalut_value)</div><div class="ttdef"><b>Definition:</b> Config.cpp:172</div></div>
+<div class="ttc" id="classConfig_html_a8b08b453a3fba78b6201bf53135e119c"><div class="ttname"><a href="classConfig.html#a8b08b453a3fba78b6201bf53135e119c">Config::expander_adaptivity_check_frequency</a></div><div class="ttdeci">static int expander_adaptivity_check_frequency</div><div class="ttdef"><b>Definition:</b> Config.h:62</div></div>
+<div class="ttc" id="classConfig_html_a6f03f7c464da9b45183252442c2de224"><div class="ttname"><a href="classConfig.html#a6f03f7c464da9b45183252442c2de224">Config::enable_expander_adaptivity</a></div><div class="ttdeci">static bool enable_expander_adaptivity</div><div class="ttdef"><b>Definition:</b> Config.h:61</div></div>
+<div class="ttc" id="classConfig_html_a5c3b6e5a9a2012a9bead709bd344c38a"><div class="ttname"><a href="classConfig.html#a5c3b6e5a9a2012a9bead709bd344c38a">Config::enable_codegen</a></div><div class="ttdeci">static bool enable_codegen</div><div class="ttdef"><b>Definition:</b> Config.h:71</div></div>
+<div class="ttc" id="classConfig_html_aeb381d23fb7d5a70b47bdcc32247171c"><div class="ttname"><a href="classConfig.html#aeb381d23fb7d5a70b47bdcc32247171c">Config::print_configure</a></div><div class="ttdeci">void print_configure() const </div><div class="ttdef"><b>Definition:</b> Config.cpp:182</div></div>
+<div class="ttc" id="classConfig_html_ad7303d7c4b58c76aa63772f705b99a5c"><div class="ttname"><a href="classConfig.html#ad7303d7c4b58c76aa63772f705b99a5c">Config::setConfigFile</a></div><div class="ttdeci">static void setConfigFile(std::string file_name)</div><div class="ttdef"><b>Definition:</b> Config.cpp:205</div></div>
+<div class="ttc" id="classConfig_html_aa5a8f95a2d06cd1becf4ed79d9b5328f"><div class="ttname"><a href="classConfig.html#aa5a8f95a2d06cd1becf4ed79d9b5328f">Config::instance_</a></div><div class="ttdeci">static Config * instance_</div><div class="ttdef"><b>Definition:</b> Config.h:74</div></div>
+<div class="ttc" id="classConfig_html_a543dce59b66475c5108088ee4ce1cdfc"><div class="ttname"><a href="classConfig.html#a543dce59b66475c5108088ee4ce1cdfc">Config::~Config</a></div><div class="ttdeci">virtual ~Config()</div><div class="ttdef"><b>Definition:</b> Config.cpp:99</div></div>
+<div class="ttc" id="classConfig_html_acc4b0619e445265ead5c90b96684a50a"><div class="ttname"><a href="classConfig.html#acc4b0619e445265ead5c90b96684a50a">Config::hdfs_master_ip</a></div><div class="ttdeci">static std::string hdfs_master_ip</div><div class="ttdef"><b>Definition:</b> Config.h:64</div></div>
 <div class="ttc" id="classConfig_html_a32ffb2cba975be1d96dcba72031408e8"><div class="ttname"><a href="classConfig.html#a32ffb2cba975be1d96dcba72031408e8">Config::pipelined_exchange</a></div><div class="ttdeci">static bool pipelined_exchange</div><div class="ttdef"><b>Definition:</b> Config.h:69</div></div>
 <div class="ttc" id="classConfig_html_a7a79cc0f3b2aeaff3d6e0755a95e09af"><div class="ttname"><a href="classConfig.html#a7a79cc0f3b2aeaff3d6e0755a95e09af">Config::max_degree_of_parallelism</a></div><div class="ttdeci">static int max_degree_of_parallelism</div><div class="ttdef"><b>Definition:</b> Config.h:59</div></div>
+<div class="ttc" id="classConfig_html_a9b28401b6c0c576f686428f889beeed4"><div class="ttname"><a href="classConfig.html#a9b28401b6c0c576f686428f889beeed4">Config::master</a></div><div class="ttdeci">static bool master</div><div class="ttdef"><b>Definition:</b> Config.h:67</div></div>
+<div class="ttc" id="classConfig_html_a2592d8ac7bd8543c59e4e64fdb8eded0"><div class="ttname"><a href="classConfig.html#a2592d8ac7bd8543c59e4e64fdb8eded0">Config::logfile</a></div><div class="ttdeci">static std::string logfile</div><div class="ttdef"><b>Definition:</b> Config.h:66</div></div>
+<div class="ttc" id="classConfig_html_a98738e79e3078c3c2f91bf8fd44f4721"><div class="ttname"><a href="classConfig.html#a98738e79e3078c3c2f91bf8fd44f4721">Config::hdfs_master_port</a></div><div class="ttdeci">static int hdfs_master_port</div><div class="ttdef"><b>Definition:</b> Config.h:65</div></div>
+<div class="ttc" id="classConfig_html_af690d213de63ce2f0c99017fad1f37cc"><div class="ttname"><a href="classConfig.html#af690d213de63ce2f0c99017fad1f37cc">Config::getString</a></div><div class="ttdeci">std::string getString(std::string attribute_name, std::string default_value)</div><div class="ttdef"><b>Definition:</b> Config.cpp:151</div></div>
+<div class="ttc" id="classConfig_html_a25b4d011cfed6f3157560fc4b44ff547"><div class="ttname"><a href="classConfig.html#a25b4d011cfed6f3157560fc4b44ff547">Config::initialize</a></div><div class="ttdeci">void initialize()</div><div class="ttdef"><b>Definition:</b> Config.cpp:103</div></div>
+<div class="ttc" id="classConfig_html_a0bd4a94c5d6d9412f5278b8533b0fb75"><div class="ttname"><a href="classConfig.html#a0bd4a94c5d6d9412f5278b8533b0fb75">Config::cfg</a></div><div class="ttdeci">libconfig::Config cfg</div><div class="ttdef"><b>Definition:</b> Config.h:75</div></div>
+<div class="ttc" id="classConfig_html_a6479047322951455dc01045bf66e5e75"><div class="ttname"><a href="classConfig.html#a6479047322951455dc01045bf66e5e75">Config::scan_batch</a></div><div class="ttdeci">static int scan_batch</div><div class="ttdef"><b>Definition:</b> Config.h:63</div></div>
+<div class="ttc" id="classConfig_html_abd0c571c116924871e30444b192b792a"><div class="ttname"><a href="classConfig.html#abd0c571c116924871e30444b192b792a">Config::Config</a></div><div class="ttdeci">Config()</div><div class="ttdef"><b>Definition:</b> Config.cpp:95</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>Config.h</b></li>
+    <li class="navelem"><a class="el" href="Config_8h.html">Config.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

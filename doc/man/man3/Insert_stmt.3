@@ -1,4 +1,4 @@
-.TH "Insert_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Insert_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Insert_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBinsert_opt\fP"
@@ -34,7 +36,41 @@ Insert_stmt \-
 .RI "\fBNode\fP * \fBselect_stmt\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Insert_stmt::col_list"
+
+.PP
+Referenced by InsertData(), and newInsertStmt()\&.
+.SS "\fBNode\fP* Insert_stmt::insert_assign_list"
+
+.PP
+Referenced by newInsertStmt()\&.
+.SS "\fBNode\fP* Insert_stmt::insert_assign_list_from_set"
+
+.PP
+Referenced by newInsertStmt()\&.
+.SS "int Insert_stmt::insert_opt"
+
+.PP
+Referenced by newInsertStmt()\&.
+.SS "\fBNode\fP* Insert_stmt::insert_val_list"
+
+.PP
+Referenced by InsertData(), and newInsertStmt()\&.
+.SS "\fBNode\fP* Insert_stmt::select_stmt"
+
+.PP
+Referenced by newInsertStmt()\&.
+.SS "char* Insert_stmt::tablename"
+
+.PP
+Referenced by InsertData(), and newInsertStmt()\&.
+.SS "\fBnodetype\fP Insert_stmt::type"
+
+.PP
+Referenced by newInsertStmt()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

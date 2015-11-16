@@ -1,4 +1,4 @@
-.TH "Insert_vals" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Insert_vals" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Insert_vals \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBvalue_type\fP"
@@ -22,7 +24,25 @@ Insert_vals \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Insert_vals::expr"
+
+.PP
+Referenced by InsertValueToStream(), and newInsertVals()\&.
+.SS "\fBNode\fP* Insert_vals::next"
+
+.PP
+Referenced by InsertData(), and newInsertVals()\&.
+.SS "\fBnodetype\fP Insert_vals::type"
+
+.PP
+Referenced by InsertValueToStream(), and newInsertVals()\&.
+.SS "int Insert_vals::value_type"
+
+.PP
+Referenced by InsertValueToStream(), and newInsertVals()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,6 +1,7 @@
 var structPerformanceInfo =
 [
     [ "entry", "structPerformanceInfo_1_1entry.html", "structPerformanceInfo_1_1entry" ],
+    [ "PerformanceInfo", "structPerformanceInfo.html#a0e19a359e4bf2aff1df263279007dd6f", null ],
     [ "PerformanceInfo", "structPerformanceInfo.html#a0365e3988c1b61faa6895da1a81df469", null ],
     [ "~PerformanceInfo", "structPerformanceInfo.html#a9c87ee812c77360f97334924983f0199", null ],
     [ "eclipseTimeSlices", "structPerformanceInfo.html#aba862c1eea5dd72c38393b55186d6523", null ],

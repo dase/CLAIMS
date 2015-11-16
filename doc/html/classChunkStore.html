@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: ChunkStore Class Reference</title>
+<title>Claims: ChunkStore Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,28 +111,205 @@ $(document).ready(function(){initNavTree('classChunkStore.html','');});
 <div class="title">ChunkStore Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="BlockStore_8h_source.html">BlockStore.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae34f8dad1ee631da3896bcc6e88ce1bc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae34f8dad1ee631da3896bcc6e88ce1bc"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>storeChunk</b> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id, void *value, unsigned length=CHUNK_SIZE)=0</td></tr>
+<tr class="memitem:ab25cfff9dca7e9fe94b5318bca070a69"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChunkStore.html#ab25cfff9dca7e9fe94b5318bca070a69">ChunkStore</a> ()</td></tr>
+<tr class="separator:ab25cfff9dca7e9fe94b5318bca070a69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa357ae4c5ede3676d5e8a030261a358b"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChunkStore.html#aa357ae4c5ede3676d5e8a030261a358b">~ChunkStore</a> ()</td></tr>
+<tr class="separator:aa357ae4c5ede3676d5e8a030261a358b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae34f8dad1ee631da3896bcc6e88ce1bc"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChunkStore.html#ae34f8dad1ee631da3896bcc6e88ce1bc">storeChunk</a> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id, void *value, unsigned length=<a class="el" href="install_2include_2Debug_8h.html#aea3cfda4f3a9f978ec759f206cf186fe">CHUNK_SIZE</a>)=0</td></tr>
 <tr class="separator:ae34f8dad1ee631da3896bcc6e88ce1bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47c85b55507a2a09991b9e4c8f14a989"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a47c85b55507a2a09991b9e4c8f14a989"></a>
-virtual void *&#160;</td><td class="memItemRight" valign="bottom"><b>getChunk</b> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id)=0</td></tr>
+<tr class="memitem:a47c85b55507a2a09991b9e4c8f14a989"><td class="memItemLeft" align="right" valign="top">virtual void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChunkStore.html#a47c85b55507a2a09991b9e4c8f14a989">getChunk</a> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id)=0</td></tr>
 <tr class="separator:a47c85b55507a2a09991b9e4c8f14a989"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54c9df4e99d1b44b80830fb8b94609be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a54c9df4e99d1b44b80830fb8b94609be"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id)=0</td></tr>
+<tr class="memitem:a54c9df4e99d1b44b80830fb8b94609be"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChunkStore.html#a54c9df4e99d1b44b80830fb8b94609be">remove</a> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id)=0</td></tr>
 <tr class="separator:a54c9df4e99d1b44b80830fb8b94609be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2da2b8779462fb0acca54770b840525c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2da2b8779462fb0acca54770b840525c"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>contains</b> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id)=0</td></tr>
+<tr class="memitem:a2da2b8779462fb0acca54770b840525c"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChunkStore.html#a2da2b8779462fb0acca54770b840525c">contains</a> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id)=0</td></tr>
 <tr class="separator:a2da2b8779462fb0acca54770b840525c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c8eaa090e86e4566c3a008a008ee81f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c8eaa090e86e4566c3a008a008ee81f"></a>
-virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>getSize</b> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id)=0</td></tr>
+<tr class="memitem:a9c8eaa090e86e4566c3a008a008ee81f"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChunkStore.html#a9c8eaa090e86e4566c3a008a008ee81f">getSize</a> (<a class="el" href="structChunkID.html">ChunkID</a> chunk_id)=0</td></tr>
 <tr class="separator:a9c8eaa090e86e4566c3a008a008ee81f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ab25cfff9dca7e9fe94b5318bca070a69"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ChunkStore::ChunkStore </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa357ae4c5ede3676d5e8a030261a358b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ChunkStore::~ChunkStore </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a2da2b8779462fb0acca54770b840525c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ChunkStore::contains </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structChunkID.html">ChunkID</a>&#160;</td>
+          <td class="paramname"><em>chunk_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a47c85b55507a2a09991b9e4c8f14a989"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void* ChunkStore::getChunk </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structChunkID.html">ChunkID</a>&#160;</td>
+          <td class="paramname"><em>chunk_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9c8eaa090e86e4566c3a008a008ee81f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual unsigned ChunkStore::getSize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structChunkID.html">ChunkID</a>&#160;</td>
+          <td class="paramname"><em>chunk_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a54c9df4e99d1b44b80830fb8b94609be"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ChunkStore::remove </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structChunkID.html">ChunkID</a>&#160;</td>
+          <td class="paramname"><em>chunk_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae34f8dad1ee631da3896bcc6e88ce1bc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool ChunkStore::storeChunk </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structChunkID.html">ChunkID</a>&#160;</td>
+          <td class="paramname"><em>chunk_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>length</em> = <code><a class="el" href="install_2include_2Debug_8h.html#aea3cfda4f3a9f978ec759f206cf186fe">CHUNK_SIZE</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>storage/<a class="el" href="BlockStore_8h_source.html">BlockStore.h</a></li>
-<li>storage/BlockStore.cpp</li>
+<li>storage/<a class="el" href="BlockStore_8cpp.html">BlockStore.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

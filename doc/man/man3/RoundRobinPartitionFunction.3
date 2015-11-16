@@ -1,4 +1,4 @@
-.TH "RoundRobinPartitionFunction" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "RoundRobinPartitionFunction" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,7 +14,13 @@ Inherits \fBPartitionFunction\fP\&.
 
 .in +1c
 .ti -1c
+.RI "\fBRoundRobinPartitionFunction\fP ()"
+.br
+.ti -1c
 .RI "\fBRoundRobinPartitionFunction\fP (int range)"
+.br
+.ti -1c
+.RI "\fB~RoundRobinPartitionFunction\fP ()"
 .br
 .ti -1c
 .RI "unsigned int \fBget_partition_value\fP (const int &value) const "
@@ -29,7 +35,24 @@ Inherits \fBPartitionFunction\fP\&.
 .RI "unsigned int \fBgetNumberOfPartitions\fP () const "
 .br
 .ti -1c
-.RI "PartitionStyle \fBgetPartitionFashion\fP () const "
+.RI "\fBPartitionStyle\fP \fBgetPartitionFashion\fP () const "
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBrange_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBcur_\fP"
 .br
 .in -1c
 .SS "Friends"
@@ -43,6 +66,14 @@ Inherits \fBPartitionFunction\fP\&.
 .SH "Detailed Description"
 .PP 
 This class is used to achieve Round Robin Partition 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "RoundRobinPartitionFunction::RoundRobinPartitionFunction ()\fC [inline]\fP"
+
+.SS "RoundRobinPartitionFunction::RoundRobinPartitionFunction (intrange)\fC [inline]\fP"
+
+.SS "RoundRobinPartitionFunction::~RoundRobinPartitionFunction ()\fC [inline]\fP"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "unsigned int RoundRobinPartitionFunction::get_partition_value (const int &value) const\fC [inline]\fP, \fC [virtual]\fP"
@@ -61,7 +92,51 @@ Bucket number\&.
 
 .PP
 Implements \fBPartitionFunction\fP\&.
+.PP
+References range_\&.
+.SS "unsigned int RoundRobinPartitionFunction::get_partition_value (const double &value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References range_\&.
+.SS "unsigned int RoundRobinPartitionFunction::get_partition_value (const unsigned long &value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References range_\&.
+.SS "unsigned int RoundRobinPartitionFunction::getNumberOfPartitions () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References range_\&.
+.SS "\fBPartitionFunction::PartitionStyle\fP RoundRobinPartitionFunction::getPartitionFashion () const\fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References PartitionFunction::round_robin_f\&.
+.SS "template<class Archive > void RoundRobinPartitionFunction::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References cur_, and range_\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned RoundRobinPartitionFunction::cur_\fC [private]\fP"
+
+.PP
+Referenced by serialize()\&.
+.SS "int RoundRobinPartitionFunction::range_\fC [private]\fP"
+
+.PP
+Referenced by get_partition_value(), getNumberOfPartitions(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

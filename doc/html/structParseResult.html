@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: ParseResult Struct Reference</title>
+<title>Claims: ParseResult Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,27 +111,84 @@ $(document).ready(function(){initNavTree('structParseResult.html','');});
 <div class="title">ParseResult Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="ast__node_8h_source.html">ast_node.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for ParseResult:</div>
+<div class="dyncontent">
+<div class="center"><img src="structParseResult__coll__graph.png" border="0" usemap="#ParseResult_coll__map" alt="Collaboration graph"/></div>
+<map name="ParseResult_coll__map" id="ParseResult_coll__map">
+<area shape="rect" id="node2" href="classAstNode.html" title="The basic data structure of other AST nodes. " alt="" coords="15,5,88,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ae8edd0bb3e19ee0f024d30913f01d1ae"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8edd0bb3e19ee0f024d30913f01d1ae"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>yyscan_info_</b></td></tr>
+<tr class="memitem:ae8edd0bb3e19ee0f024d30913f01d1ae"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParseResult.html#ae8edd0bb3e19ee0f024d30913f01d1ae">yyscan_info_</a></td></tr>
 <tr class="separator:ae8edd0bb3e19ee0f024d30913f01d1ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa04c6ed3cba109f276e5bc089ca2ff15"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa04c6ed3cba109f276e5bc089ca2ff15"></a>
-<a class="el" href="structNode.html">Node</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>ast</b></td></tr>
-<tr class="separator:aa04c6ed3cba109f276e5bc089ca2ff15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a420893f9e2e32a354d44beac7567699a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a420893f9e2e32a354d44beac7567699a"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>sql_clause</b></td></tr>
+<tr class="memitem:a29a2149f4437b66b30c3aebb2871d9ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAstNode.html">AstNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParseResult.html#a29a2149f4437b66b30c3aebb2871d9ea">ast</a></td></tr>
+<tr class="separator:a29a2149f4437b66b30c3aebb2871d9ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a420893f9e2e32a354d44beac7567699a"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParseResult.html#a420893f9e2e32a354d44beac7567699a">sql_clause</a></td></tr>
 <tr class="separator:a420893f9e2e32a354d44beac7567699a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3cc433188cabf2bb92735aa98f49aba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3cc433188cabf2bb92735aa98f49aba"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>error_number</b></td></tr>
+<tr class="memitem:ad3cc433188cabf2bb92735aa98f49aba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structParseResult.html#ad3cc433188cabf2bb92735aa98f49aba">error_number</a></td></tr>
 <tr class="separator:ad3cc433188cabf2bb92735aa98f49aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9247d6bf5858326aeadb1521fac60b4f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9247d6bf5858326aeadb1521fac60b4f"></a>
-vector&lt; <a class="el" href="structNode.html">Node</a> * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>node_pointer</b></td></tr>
-<tr class="separator:a9247d6bf5858326aeadb1521fac60b4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a29a2149f4437b66b30c3aebb2871d9ea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAstNode.html">AstNode</a>* ParseResult::ast</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classParser.html#ad80c70461e44f2a58c241d1d907aa095">Parser::CreateRawAST()</a>, and <a class="el" href="Parsetree_2sql_8tab_8cpp.html#a85a5dffc192ac2f71933a23b4ae4d392">yyuserAction()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad3cc433188cabf2bb92735aa98f49aba"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ParseResult::error_number</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="Parsetree_2sql_8tab_8cpp.html#a85a5dffc192ac2f71933a23b4ae4d392">yyuserAction()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a420893f9e2e32a354d44beac7567699a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* ParseResult::sql_clause</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae8edd0bb3e19ee0f024d30913f01d1ae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* ParseResult::yyscan_info_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classParser.html#ad80c70461e44f2a58c241d1d907aa095">Parser::CreateRawAST()</a>, and <a class="el" href="sql__parser_2parser_2lex_8yy_8cpp.html#a8fdafe3be7e00ce3d4f0cb50a9a5eb39">while()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>Parsetree/<a class="el" href="sql__node__struct_8h_source.html">sql_node_struct.h</a></li>
+<li>sql_parser/ast_node/<a class="el" href="ast__node_8h_source.html">ast_node.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

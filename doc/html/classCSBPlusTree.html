@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: CSBPlusTree&lt; T &gt; Class Template Reference</title>
+<title>Claims: CSBPlusTree&lt; T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -107,66 +107,927 @@ $(document).ready(function(){initNavTree('classCSBPlusTree.html','');});
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classCSBPlusTree-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">CSBPlusTree&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="CSBPlusTree_8h_source.html">CSBPlusTree.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abd74170559d035fa9aec99871ebc74fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd74170559d035fa9aec99871ebc74fc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>BulkLoad</b> (<a class="el" href="structdata__offset.html">data_offset</a>&lt; T &gt; *aray, unsigned arayNo)</td></tr>
+<tr class="memitem:afa0e4567cfeec42cd15e6b9507294e38"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#afa0e4567cfeec42cd15e6b9507294e38">CSBPlusTree</a> ()</td></tr>
+<tr class="separator:afa0e4567cfeec42cd15e6b9507294e38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81d2e78d9c319517028e2bf359893855"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a81d2e78d9c319517028e2bf359893855">~CSBPlusTree</a> ()</td></tr>
+<tr class="separator:a81d2e78d9c319517028e2bf359893855"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd74170559d035fa9aec99871ebc74fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#abd74170559d035fa9aec99871ebc74fc">BulkLoad</a> (<a class="el" href="structdata__offset.html">data_offset</a>&lt; T &gt; *aray, unsigned arayNo)</td></tr>
 <tr class="separator:abd74170559d035fa9aec99871ebc74fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a374ed0005629d13da928f2ad9269c643"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a374ed0005629d13da928f2ad9269c643"></a>
-map&lt; index_offset, vector<br class="typebreak"/>
-&lt; index_offset &gt; * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>Search</b> (T key)</td></tr>
+<tr class="memitem:a374ed0005629d13da928f2ad9269c643"><td class="memItemLeft" align="right" valign="top">map&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a>, vector<br class="typebreak"/>
+&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a> &gt; * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a374ed0005629d13da928f2ad9269c643">Search</a> (T key)</td></tr>
 <tr class="separator:a374ed0005629d13da928f2ad9269c643"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1165d35ae57b452fcad9ef5b131d9ca5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1165d35ae57b452fcad9ef5b131d9ca5"></a>
-map&lt; index_offset, vector<br class="typebreak"/>
-&lt; index_offset &gt; * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>rangeQuery</b> (T lower_key, T upper_key)</td></tr>
+<tr class="memitem:a1165d35ae57b452fcad9ef5b131d9ca5"><td class="memItemLeft" align="right" valign="top">map&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a>, vector<br class="typebreak"/>
+&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a> &gt; * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a1165d35ae57b452fcad9ef5b131d9ca5">rangeQuery</a> (T lower_key, T upper_key)</td></tr>
 <tr class="separator:a1165d35ae57b452fcad9ef5b131d9ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8feff45348d18d242da7b7b4f55b2fd5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8feff45348d18d242da7b7b4f55b2fd5"></a>
-map&lt; index_offset, vector<br class="typebreak"/>
-&lt; index_offset &gt; * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>rangeQuery</b> (T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)</td></tr>
+<tr class="memitem:a8feff45348d18d242da7b7b4f55b2fd5"><td class="memItemLeft" align="right" valign="top">map&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a>, vector<br class="typebreak"/>
+&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a> &gt; * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a8feff45348d18d242da7b7b4f55b2fd5">rangeQuery</a> (T lower_key, <a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46">comparison</a> comp_lower, T upper_key, <a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46">comparison</a> comp_upper)</td></tr>
 <tr class="separator:a8feff45348d18d242da7b7b4f55b2fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96b41abd9b0dd52f7818820492de41eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a96b41abd9b0dd52f7818820492de41eb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>Insert</b> (<a class="el" href="structdata__offset.html">data_offset</a>&lt; T &gt; data)</td></tr>
+<tr class="memitem:a96b41abd9b0dd52f7818820492de41eb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a96b41abd9b0dd52f7818820492de41eb">Insert</a> (<a class="el" href="structdata__offset.html">data_offset</a>&lt; T &gt; data)</td></tr>
 <tr class="separator:a96b41abd9b0dd52f7818820492de41eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad640c5f18d8119dd527949e8adfbb561"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad640c5f18d8119dd527949e8adfbb561"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>Delete</b> (T key)</td></tr>
+<tr class="memitem:ad640c5f18d8119dd527949e8adfbb561"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#ad640c5f18d8119dd527949e8adfbb561">Delete</a> (T key)</td></tr>
 <tr class="separator:ad640c5f18d8119dd527949e8adfbb561"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af464988c82d28869c8875897336c8604"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af464988c82d28869c8875897336c8604"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>serialize</b> (FILE *filename)</td></tr>
+<tr class="memitem:af464988c82d28869c8875897336c8604"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#af464988c82d28869c8875897336c8604">serialize</a> (FILE *filename)</td></tr>
 <tr class="separator:af464988c82d28869c8875897336c8604"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd4900017f05362a5c7175720863f337"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd4900017f05362a5c7175720863f337"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>deserialize</b> (FILE *filename)</td></tr>
+<tr class="memitem:afd4900017f05362a5c7175720863f337"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#afd4900017f05362a5c7175720863f337">deserialize</a> (FILE *filename)</td></tr>
 <tr class="separator:afd4900017f05362a5c7175720863f337"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a582c6cf211b4d7f36233b50f4403bfea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a582c6cf211b4d7f36233b50f4403bfea"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>printTree</b> ()</td></tr>
+<tr class="memitem:a582c6cf211b4d7f36233b50f4403bfea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a582c6cf211b4d7f36233b50f4403bfea">printTree</a> ()</td></tr>
 <tr class="separator:a582c6cf211b4d7f36233b50f4403bfea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:accd814de839c8a8a53035f1d46dcb727"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="accd814de839c8a8a53035f1d46dcb727"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>printDoubleLinkedList</b> ()</td></tr>
+<tr class="memitem:accd814de839c8a8a53035f1d46dcb727"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#accd814de839c8a8a53035f1d46dcb727">printDoubleLinkedList</a> ()</td></tr>
 <tr class="separator:accd814de839c8a8a53035f1d46dcb727"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0eb4ebf98795f641b7e1b53c804df44f"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
+<tr class="memitem:a0eb4ebf98795f641b7e1b53c804df44f"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a0eb4ebf98795f641b7e1b53c804df44f">~CSBPlusTree</a> ()</td></tr>
+<tr class="separator:a0eb4ebf98795f641b7e1b53c804df44f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:addb2f9737944e8a8bcbc907b64bf588f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="addb2f9737944e8a8bcbc907b64bf588f"></a>
-<a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>leaf_header</b></td></tr>
+<tr class="memitem:addb2f9737944e8a8bcbc907b64bf588f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#addb2f9737944e8a8bcbc907b64bf588f">leaf_header</a></td></tr>
 <tr class="separator:addb2f9737944e8a8bcbc907b64bf588f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f254a412f45b6d04e6824f41ffd9f49"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4f254a412f45b6d04e6824f41ffd9f49"></a>
-<a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>leaf_tailer</b></td></tr>
+<tr class="memitem:a4f254a412f45b6d04e6824f41ffd9f49"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a4f254a412f45b6d04e6824f41ffd9f49">leaf_tailer</a></td></tr>
 <tr class="separator:a4f254a412f45b6d04e6824f41ffd9f49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac486a4445f61949567b5ffd61375ab3f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac486a4445f61949567b5ffd61375ab3f"></a>
-<a class="el" href="classCCSBNode.html">CCSBNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>csb_root</b></td></tr>
+<tr class="memitem:ac486a4445f61949567b5ffd61375ab3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCCSBNode.html">CCSBNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#ac486a4445f61949567b5ffd61375ab3f">csb_root</a></td></tr>
 <tr class="separator:ac486a4445f61949567b5ffd61375ab3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cdd0faa799e759cd48b6090d8b83dd2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5cdd0faa799e759cd48b6090d8b83dd2"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>csb_depth</b></td></tr>
+<tr class="memitem:a5cdd0faa799e759cd48b6090d8b83dd2"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a5cdd0faa799e759cd48b6090d8b83dd2">csb_depth</a></td></tr>
 <tr class="separator:a5cdd0faa799e759cd48b6090d8b83dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a14752619c62be6b3032c6de7c450d1c7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a14752619c62be6b3032c6de7c450d1c7">makeLeafNodeGroup</a> (<a class="el" href="structdata__offset.html">data_offset</a>&lt; T &gt; *aray, unsigned aray_num, <a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; **leaf, T *internal_key_array)</td></tr>
+<tr class="separator:a14752619c62be6b3032c6de7c450d1c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1598ac7a6194678c01b5e504cedc92b6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a1598ac7a6194678c01b5e504cedc92b6">makeInternalNodeGroup</a> (T *internalAray, int iArayNo, <a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; **internal, int leafNGNo, T *in2Aray, <a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; **leaf)</td></tr>
+<tr class="separator:a1598ac7a6194678c01b5e504cedc92b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c5eb495943782762f8b6c9fb37ba659"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCCSBNode.html">CCSBNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a8c5eb495943782762f8b6c9fb37ba659">SearchLeafNode</a> (T data)</td></tr>
+<tr class="separator:a8c5eb495943782762f8b6c9fb37ba659"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a247cd98de083cdbd12907601b3db7534"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a247cd98de083cdbd12907601b3db7534">InsertInternalNode</a> (<a class="el" href="classCCSBInternalNode.html">CCSBInternalNode</a>&lt; T &gt; *pNode, T key, <a class="el" href="classCCSBNode.html">CCSBNode</a>&lt; T &gt; *pRightSon)</td></tr>
+<tr class="separator:a247cd98de083cdbd12907601b3db7534"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af85afcf58ba8f74dd274765941f9fbe0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#af85afcf58ba8f74dd274765941f9fbe0">DeleteInternalNode</a> (<a class="el" href="classCCSBInternalNode.html">CCSBInternalNode</a>&lt; T &gt; *pNode, T key)</td></tr>
+<tr class="separator:af85afcf58ba8f74dd274765941f9fbe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d113c1cbb0f93c50cbb6a0811400ff1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a5d113c1cbb0f93c50cbb6a0811400ff1">ClearTree</a> ()</td></tr>
+<tr class="separator:a5d113c1cbb0f93c50cbb6a0811400ff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aff604b8f0b974df736b48ed4df96b468"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#aff604b8f0b974df736b48ed4df96b468">max_keys</a></td></tr>
+<tr class="separator:aff604b8f0b974df736b48ed4df96b468"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e11f989263709ac29423f93e8e37c05"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCSBPlusTree.html#a5e11f989263709ac29423f93e8e37c05">max_datas</a></td></tr>
+<tr class="separator:a5e11f989263709ac29423f93e8e37c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="afa0e4567cfeec42cd15e6b9507294e38"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::<a class="el" href="classCSBPlusTree.html">CSBPlusTree</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCCSBNode.html#af62bac89800e97f8fa101e70c1468e1b">CCSBNode&lt; T &gt;::getMaxDatas()</a>, and <a class="el" href="classCCSBNode.html#a88f1030b814536fee9ff14c566546542">CCSBNode&lt; T &gt;::getMaxKeys()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_afa0e4567cfeec42cd15e6b9507294e38_cgraph.png" border="0" usemap="#classCSBPlusTree_afa0e4567cfeec42cd15e6b9507294e38_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_afa0e4567cfeec42cd15e6b9507294e38_cgraph" id="classCSBPlusTree_afa0e4567cfeec42cd15e6b9507294e38_cgraph">
+<area shape="rect" id="node2" href="classCCSBNode.html#af62bac89800e97f8fa101e70c1468e1b" title="CCSBNode::getMaxDatas" alt="" coords="246,5,423,32"/><area shape="rect" id="node3" href="classCCSBNode.html#a88f1030b814536fee9ff14c566546542" title="CCSBNode::getMaxKeys" alt="" coords="249,56,421,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a81d2e78d9c319517028e2bf359893855"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::~<a class="el" href="classCSBPlusTree.html">CSBPlusTree</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0eb4ebf98795f641b7e1b53c804df44f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; int &gt;::~<a class="el" href="classCSBPlusTree.html">CSBPlusTree</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="abd74170559d035fa9aec99871ebc74fc"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::BulkLoad </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdata__offset.html">data_offset</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>aray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>arayNo</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBInternalNodeGroup.html#a3dd2b6f008311fa9a28a752549c34377">CCSBInternalNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBInternalNodeGroup.html#acdd1576aa2b62ff045d52751c0cbd066">CCSBInternalNodeGroup&lt; T &gt;::internal_nodes</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, <a class="el" href="classCCSBNodeGroup.html#a96ccb90363ee5d288dc520b2006294a1">CCSBNodeGroup&lt; T &gt;::setHeaderNG()</a>, <a class="el" href="classCCSBNodeGroup.html#ade0fd473c7ff1db9bba5149119a5c54b">CCSBNodeGroup&lt; T &gt;::setTailerNG()</a>, and <a class="el" href="classCCSBNodeGroup.html#a9059aba5c9d12e232e4e61124a591c64">CCSBNodeGroup&lt; T &gt;::used_nodes</a>.</p>
+
+<p>Referenced by <a class="el" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71">cheak_com()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_abd74170559d035fa9aec99871ebc74fc_cgraph.png" border="0" usemap="#classCSBPlusTree_abd74170559d035fa9aec99871ebc74fc_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_abd74170559d035fa9aec99871ebc74fc_cgraph" id="classCSBPlusTree_abd74170559d035fa9aec99871ebc74fc_cgraph">
+<area shape="rect" id="node2" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="235,5,418,32"/><area shape="rect" id="node3" href="classCCSBInternalNodeGroup.html#a3dd2b6f008311fa9a28a752549c34377" title="CCSBInternalNodeGroup\l::getNode" alt="" coords="242,57,411,98"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#a96ccb90363ee5d288dc520b2006294a1" title="CCSBNodeGroup::setHeaderNG" alt="" coords="219,123,434,149"/><area shape="rect" id="node5" href="classCCSBNodeGroup.html#ade0fd473c7ff1db9bba5149119a5c54b" title="CCSBNodeGroup::setTailerNG" alt="" coords="225,173,429,200"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_abd74170559d035fa9aec99871ebc74fc_icgraph.png" border="0" usemap="#classCSBPlusTree_abd74170559d035fa9aec99871ebc74fc_icgraph" alt=""/></div>
+<map name="classCSBPlusTree_abd74170559d035fa9aec99871ebc74fc_icgraph" id="classCSBPlusTree_abd74170559d035fa9aec99871ebc74fc_icgraph">
+<area shape="rect" id="node2" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71" title="cheak_com" alt="" coords="219,5,309,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5d113c1cbb0f93c50cbb6a0811400ff1"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::ClearTree </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad640c5f18d8119dd527949e8adfbb561"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::Delete </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af85afcf58ba8f74dd274765941f9fbe0"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::DeleteInternalNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCCSBInternalNode.html">CCSBInternalNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>pNode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afd4900017f05362a5c7175720863f337"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::deserialize </td>
+          <td>(</td>
+          <td class="paramtype">FILE *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCCSBInternalNodeGroup.html#aac91cca8daa000606cf94447d3db0b34">CCSBInternalNodeGroup&lt; T &gt;::deserialize()</a>, <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBInternalNodeGroup.html#a3dd2b6f008311fa9a28a752549c34377">CCSBInternalNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218">CCSBNodeGroup&lt; T &gt;::getUsedNodes()</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, <a class="el" href="classCCSBNodeGroup.html#a96ccb90363ee5d288dc520b2006294a1">CCSBNodeGroup&lt; T &gt;::setHeaderNG()</a>, and <a class="el" href="classCCSBNodeGroup.html#ade0fd473c7ff1db9bba5149119a5c54b">CCSBNodeGroup&lt; T &gt;::setTailerNG()</a>.</p>
+
+<p>Referenced by <a class="el" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71">cheak_com()</a>, and <a class="el" href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc">IndexManager::deserialize()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_afd4900017f05362a5c7175720863f337_cgraph.png" border="0" usemap="#classCSBPlusTree_afd4900017f05362a5c7175720863f337_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_afd4900017f05362a5c7175720863f337_cgraph" id="classCSBPlusTree_afd4900017f05362a5c7175720863f337_cgraph">
+<area shape="rect" id="node2" href="classCCSBInternalNodeGroup.html#aac91cca8daa000606cf94447d3db0b34" title="CCSBInternalNodeGroup\l::deserialize" alt="" coords="253,5,422,46"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="246,71,429,97"/><area shape="rect" id="node5" href="classCCSBInternalNodeGroup.html#a3dd2b6f008311fa9a28a752549c34377" title="CCSBInternalNodeGroup\l::getNode" alt="" coords="253,122,422,163"/><area shape="rect" id="node6" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218" title="CCSBNodeGroup::getUsedNodes" alt="" coords="227,188,448,215"/><area shape="rect" id="node7" href="classCCSBNodeGroup.html#a96ccb90363ee5d288dc520b2006294a1" title="CCSBNodeGroup::setHeaderNG" alt="" coords="230,239,445,265"/><area shape="rect" id="node8" href="classCCSBNodeGroup.html#ade0fd473c7ff1db9bba5149119a5c54b" title="CCSBNodeGroup::setTailerNG" alt="" coords="235,289,439,316"/><area shape="rect" id="node3" href="classCCSBInternalNode.html#afa87320644fdd7380554a05e2cc6f8d4" title="CCSBInternalNode::deserialize" alt="" coords="497,12,701,39"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_afd4900017f05362a5c7175720863f337_icgraph.png" border="0" usemap="#classCSBPlusTree_afd4900017f05362a5c7175720863f337_icgraph" alt=""/></div>
+<map name="classCSBPlusTree_afd4900017f05362a5c7175720863f337_icgraph" id="classCSBPlusTree_afd4900017f05362a5c7175720863f337_icgraph">
+<area shape="rect" id="node2" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71" title="cheak_com" alt="" coords="270,5,359,32"/><area shape="rect" id="node3" href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc" title="IndexManager::deserialize" alt="" coords="227,56,402,83"/><area shape="rect" id="node4" href="test__IndexManager__serialize_8cpp.html#a215e6940bbc4e40dd81cbbddbe69951f" title="test_deserialize" alt="" coords="451,56,565,83"/><area shape="rect" id="node5" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="613,56,752,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a96b41abd9b0dd52f7818820492de41eb"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::Insert </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdata__offset.html">data_offset</a>&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structdata__offset.html#a2d8bd5a72d6f904c538122d9139aa2b7">data_offset&lt; T &gt;::_key</a>, <a class="el" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d">CCSBNode&lt; T &gt;::getElement()</a>, <a class="el" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c">CCSBNode&lt; T &gt;::getFather()</a>, <a class="el" href="classCCSBNodeGroup.html#a006a69249fbccafdafeffb07a0c681fc">CCSBNodeGroup&lt; T &gt;::getHeaderNG()</a>, <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBLeafNodeGroup.html#a1c1647a10e3459f06e543eace80c3a14">CCSBLeafNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70">CCSBNodeGroup&lt; T &gt;::getTailerNG()</a>, <a class="el" href="classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8">CCSBNode&lt; T &gt;::getUsedKeys()</a>, <a class="el" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218">CCSBNodeGroup&lt; T &gt;::getUsedNodes()</a>, <a class="el" href="classCCSBNode.html#a70e8897cd0e8bf2d7dff1fd4737a159d">CCSBNode&lt; T &gt;::Insert()</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, <a class="el" href="classCCSBNodeGroup.html#a96ccb90363ee5d288dc520b2006294a1">CCSBNodeGroup&lt; T &gt;::setHeaderNG()</a>, <a class="el" href="classCCSBLeafNodeGroup.html#ab8eb0ec9f12aea49e886029d06c489c7">CCSBLeafNodeGroup&lt; T &gt;::setHeaderNG()</a>, <a class="el" href="classCCSBNodeGroup.html#a109f3c55303e8629358ac9a4a88eadc4">CCSBNodeGroup&lt; T &gt;::setNode()</a>, <a class="el" href="classCCSBNodeGroup.html#ade0fd473c7ff1db9bba5149119a5c54b">CCSBNodeGroup&lt; T &gt;::setTailerNG()</a>, <a class="el" href="classCCSBLeafNodeGroup.html#a78f5b7e7e000119eeac3ddd5e018ced4">CCSBLeafNodeGroup&lt; T &gt;::setTailerNG()</a>, and <a class="el" href="classCCSBNodeGroup.html#a05db187a379eba8d320318fddcaf7eae">CCSBNodeGroup&lt; T &gt;::setUsedNodes()</a>.</p>
+
+<p>Referenced by <a class="el" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71">cheak_com()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a96b41abd9b0dd52f7818820492de41eb_cgraph.png" border="0" usemap="#classCSBPlusTree_a96b41abd9b0dd52f7818820492de41eb_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_a96b41abd9b0dd52f7818820492de41eb_cgraph" id="classCSBPlusTree_a96b41abd9b0dd52f7818820492de41eb_cgraph">
+<area shape="rect" id="node2" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d" title="CCSBNode::getElement" alt="" coords="225,5,391,32"/><area shape="rect" id="node3" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c" title="CCSBNode::getFather" alt="" coords="231,56,385,83"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#a006a69249fbccafdafeffb07a0c681fc" title="CCSBNodeGroup::getHeaderNG" alt="" coords="201,107,415,133"/><area shape="rect" id="node5" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="217,157,399,184"/><area shape="rect" id="node6" href="classCCSBLeafNodeGroup.html#a1c1647a10e3459f06e543eace80c3a14" title="CCSBLeafNodeGroup::\lgetNode" alt="" coords="229,209,387,250"/><area shape="rect" id="node7" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70" title="CCSBNodeGroup::getTailerNG" alt="" coords="206,275,410,301"/><area shape="rect" id="node8" href="classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8" title="CCSBNode::getUsedKeys" alt="" coords="219,325,397,352"/><area shape="rect" id="node9" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218" title="CCSBNodeGroup::getUsedNodes" alt="" coords="197,376,419,403"/><area shape="rect" id="node10" href="classCCSBNode.html#a70e8897cd0e8bf2d7dff1fd4737a159d" title="CCSBNode::Insert" alt="" coords="242,427,374,453"/><area shape="rect" id="node11" href="classCCSBNodeGroup.html#a96ccb90363ee5d288dc520b2006294a1" title="CCSBNodeGroup::setHeaderNG" alt="" coords="201,477,415,504"/><area shape="rect" id="node12" href="classCCSBLeafNodeGroup.html#ab8eb0ec9f12aea49e886029d06c489c7" title="CCSBLeafNodeGroup::\lsetHeaderNG" alt="" coords="229,529,387,570"/><area shape="rect" id="node13" href="classCCSBNodeGroup.html#a109f3c55303e8629358ac9a4a88eadc4" title="CCSBNodeGroup::setNode" alt="" coords="217,595,399,621"/><area shape="rect" id="node14" href="classCCSBNodeGroup.html#ade0fd473c7ff1db9bba5149119a5c54b" title="CCSBNodeGroup::setTailerNG" alt="" coords="206,645,410,672"/><area shape="rect" id="node15" href="classCCSBLeafNodeGroup.html#a78f5b7e7e000119eeac3ddd5e018ced4" title="CCSBLeafNodeGroup::\lsetTailerNG" alt="" coords="229,697,387,738"/><area shape="rect" id="node16" href="classCCSBNodeGroup.html#a05db187a379eba8d320318fddcaf7eae" title="CCSBNodeGroup::setUsedNodes" alt="" coords="197,763,419,789"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a96b41abd9b0dd52f7818820492de41eb_icgraph.png" border="0" usemap="#classCSBPlusTree_a96b41abd9b0dd52f7818820492de41eb_icgraph" alt=""/></div>
+<map name="classCSBPlusTree_a96b41abd9b0dd52f7818820492de41eb_icgraph" id="classCSBPlusTree_a96b41abd9b0dd52f7818820492de41eb_icgraph">
+<area shape="rect" id="node2" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71" title="cheak_com" alt="" coords="198,5,287,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a247cd98de083cdbd12907601b3db7534"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::InsertInternalNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCCSBInternalNode.html">CCSBInternalNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>pNode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCCSBNode.html">CCSBNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>pRightSon</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a1598ac7a6194678c01b5e504cedc92b6"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::makeInternalNodeGroup </td>
+          <td>(</td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>internalAray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>iArayNo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; **&#160;</td>
+          <td class="paramname"><em>internal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>leafNGNo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>in2Aray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; **&#160;</td>
+          <td class="paramname"><em>leaf</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218">CCSBNodeGroup&lt; T &gt;::getUsedNodes()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a1598ac7a6194678c01b5e504cedc92b6_cgraph.png" border="0" usemap="#classCSBPlusTree_a1598ac7a6194678c01b5e504cedc92b6_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_a1598ac7a6194678c01b5e504cedc92b6_cgraph" id="classCSBPlusTree_a1598ac7a6194678c01b5e504cedc92b6_cgraph">
+<area shape="rect" id="node2" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218" title="CCSBNodeGroup::getUsedNodes" alt="" coords="240,12,461,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a14752619c62be6b3032c6de7c450d1c7"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::makeLeafNodeGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdata__offset.html">data_offset</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>aray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>aray_num</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt; T &gt; **&#160;</td>
+          <td class="paramname"><em>leaf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>internal_key_array</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structdata__offset.html#a2d8bd5a72d6f904c538122d9139aa2b7">data_offset&lt; T &gt;::_key</a>, <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, <a class="el" href="classCCSBNodeGroup.html#a96ccb90363ee5d288dc520b2006294a1">CCSBNodeGroup&lt; T &gt;::setHeaderNG()</a>, <a class="el" href="classCCSBNodeGroup.html#ade0fd473c7ff1db9bba5149119a5c54b">CCSBNodeGroup&lt; T &gt;::setTailerNG()</a>, and <a class="el" href="classCCSBNodeGroup.html#a9059aba5c9d12e232e4e61124a591c64">CCSBNodeGroup&lt; T &gt;::used_nodes</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a14752619c62be6b3032c6de7c450d1c7_cgraph.png" border="0" usemap="#classCSBPlusTree_a14752619c62be6b3032c6de7c450d1c7_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_a14752619c62be6b3032c6de7c450d1c7_cgraph" id="classCSBPlusTree_a14752619c62be6b3032c6de7c450d1c7_cgraph">
+<area shape="rect" id="node2" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="270,5,453,32"/><area shape="rect" id="node3" href="classCCSBNodeGroup.html#a96ccb90363ee5d288dc520b2006294a1" title="CCSBNodeGroup::setHeaderNG" alt="" coords="254,56,469,83"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#ade0fd473c7ff1db9bba5149119a5c54b" title="CCSBNodeGroup::setTailerNG" alt="" coords="259,107,463,133"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="accd814de839c8a8a53035f1d46dcb727"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::printDoubleLinkedList </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCCSBNodeGroup.html#a006a69249fbccafdafeffb07a0c681fc">CCSBNodeGroup&lt; T &gt;::getHeaderNG()</a>, <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70">CCSBNodeGroup&lt; T &gt;::getTailerNG()</a>, <a class="el" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218">CCSBNodeGroup&lt; T &gt;::getUsedNodes()</a>, and <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>.</p>
+
+<p>Referenced by <a class="el" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71">cheak_com()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_accd814de839c8a8a53035f1d46dcb727_cgraph.png" border="0" usemap="#classCSBPlusTree_accd814de839c8a8a53035f1d46dcb727_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_accd814de839c8a8a53035f1d46dcb727_cgraph" id="classCSBPlusTree_accd814de839c8a8a53035f1d46dcb727_cgraph">
+<area shape="rect" id="node2" href="classCCSBNodeGroup.html#a006a69249fbccafdafeffb07a0c681fc" title="CCSBNodeGroup::getHeaderNG" alt="" coords="233,5,447,32"/><area shape="rect" id="node3" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="249,56,431,83"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70" title="CCSBNodeGroup::getTailerNG" alt="" coords="238,107,442,133"/><area shape="rect" id="node5" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218" title="CCSBNodeGroup::getUsedNodes" alt="" coords="229,157,451,184"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_accd814de839c8a8a53035f1d46dcb727_icgraph.png" border="0" usemap="#classCSBPlusTree_accd814de839c8a8a53035f1d46dcb727_icgraph" alt=""/></div>
+<map name="classCSBPlusTree_accd814de839c8a8a53035f1d46dcb727_icgraph" id="classCSBPlusTree_accd814de839c8a8a53035f1d46dcb727_icgraph">
+<area shape="rect" id="node2" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71" title="cheak_com" alt="" coords="230,12,319,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a582c6cf211b4d7f36233b50f4403bfea"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::printTree </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>.</p>
+
+<p>Referenced by <a class="el" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71">cheak_com()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a582c6cf211b4d7f36233b50f4403bfea_icgraph.png" border="0" usemap="#classCSBPlusTree_a582c6cf211b4d7f36233b50f4403bfea_icgraph" alt=""/></div>
+<map name="classCSBPlusTree_a582c6cf211b4d7f36233b50f4403bfea_icgraph" id="classCSBPlusTree_a582c6cf211b4d7f36233b50f4403bfea_icgraph">
+<area shape="rect" id="node2" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71" title="cheak_com" alt="" coords="217,5,306,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1165d35ae57b452fcad9ef5b131d9ca5"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a>, vector&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a> &gt; * &gt; * <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::rangeQuery </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>lower_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>upper_key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d">CCSBNode&lt; T &gt;::getElement()</a>, <a class="el" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c">CCSBNode&lt; T &gt;::getFather()</a>, <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBNode.html#a34696da5897218053ef56b5d59216230">CCSBNode&lt; T &gt;::getPointer()</a>, <a class="el" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70">CCSBNodeGroup&lt; T &gt;::getTailerNG()</a>, <a class="el" href="classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8">CCSBNode&lt; T &gt;::getUsedKeys()</a>, <a class="el" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218">CCSBNodeGroup&lt; T &gt;::getUsedNodes()</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, and <a class="el" href="classCCSBNode.html#aa8b25a3220f70b933107dae911fd109b">CCSBNode&lt; T &gt;::used_keys</a>.</p>
+
+<p>Referenced by <a class="el" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71">cheak_com()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a1165d35ae57b452fcad9ef5b131d9ca5_cgraph.png" border="0" usemap="#classCSBPlusTree_a1165d35ae57b452fcad9ef5b131d9ca5_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_a1165d35ae57b452fcad9ef5b131d9ca5_cgraph" id="classCSBPlusTree_a1165d35ae57b452fcad9ef5b131d9ca5_cgraph">
+<area shape="rect" id="node2" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d" title="CCSBNode::getElement" alt="" coords="260,5,425,32"/><area shape="rect" id="node3" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c" title="CCSBNode::getFather" alt="" coords="265,56,420,83"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="251,107,434,133"/><area shape="rect" id="node5" href="classCCSBNode.html#a34696da5897218053ef56b5d59216230" title="CCSBNode::getPointer" alt="" coords="263,157,422,184"/><area shape="rect" id="node6" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70" title="CCSBNodeGroup::getTailerNG" alt="" coords="241,208,445,235"/><area shape="rect" id="node7" href="classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8" title="CCSBNode::getUsedKeys" alt="" coords="253,259,432,285"/><area shape="rect" id="node8" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218" title="CCSBNodeGroup::getUsedNodes" alt="" coords="232,309,453,336"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a1165d35ae57b452fcad9ef5b131d9ca5_icgraph.png" border="0" usemap="#classCSBPlusTree_a1165d35ae57b452fcad9ef5b131d9ca5_icgraph" alt=""/></div>
+<map name="classCSBPlusTree_a1165d35ae57b452fcad9ef5b131d9ca5_icgraph" id="classCSBPlusTree_a1165d35ae57b452fcad9ef5b131d9ca5_icgraph">
+<area shape="rect" id="node2" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71" title="cheak_com" alt="" coords="233,5,322,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8feff45348d18d242da7b7b4f55b2fd5"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a>, vector&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a> &gt; * &gt; * <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::rangeQuery </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>lower_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46">comparison</a>&#160;</td>
+          <td class="paramname"><em>comp_lower</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>upper_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46">comparison</a>&#160;</td>
+          <td class="paramname"><em>comp_upper</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46a9efdc855f3c1477957fb50affec07f8f">EQ</a>, <a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46a2fe993340f6abb2234e543cd427df70b">G</a>, <a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46a99705e9593e3e5c078150b293c86561e">GEQ</a>, <a class="el" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d">CCSBNode&lt; T &gt;::getElement()</a>, <a class="el" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c">CCSBNode&lt; T &gt;::getFather()</a>, <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBNode.html#a34696da5897218053ef56b5d59216230">CCSBNode&lt; T &gt;::getPointer()</a>, <a class="el" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70">CCSBNodeGroup&lt; T &gt;::getTailerNG()</a>, <a class="el" href="classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8">CCSBNode&lt; T &gt;::getUsedKeys()</a>, <a class="el" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218">CCSBNodeGroup&lt; T &gt;::getUsedNodes()</a>, <a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46aef31cc6fe9479955961311ee18ac205f">L</a>, <a class="el" href="CSBPlusTree_8h.html#ac360ae7ad52be4fd45d8df8111e47f46a5eba1d52e68e10fb2dafcb363cec49b7">LEQ</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, and <a class="el" href="classCCSBNode.html#aa8b25a3220f70b933107dae911fd109b">CCSBNode&lt; T &gt;::used_keys</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a8feff45348d18d242da7b7b4f55b2fd5_cgraph.png" border="0" usemap="#classCSBPlusTree_a8feff45348d18d242da7b7b4f55b2fd5_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_a8feff45348d18d242da7b7b4f55b2fd5_cgraph" id="classCSBPlusTree_a8feff45348d18d242da7b7b4f55b2fd5_cgraph">
+<area shape="rect" id="node2" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d" title="CCSBNode::getElement" alt="" coords="260,5,425,32"/><area shape="rect" id="node3" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c" title="CCSBNode::getFather" alt="" coords="265,56,420,83"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="251,107,434,133"/><area shape="rect" id="node5" href="classCCSBNode.html#a34696da5897218053ef56b5d59216230" title="CCSBNode::getPointer" alt="" coords="263,157,422,184"/><area shape="rect" id="node6" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70" title="CCSBNodeGroup::getTailerNG" alt="" coords="241,208,445,235"/><area shape="rect" id="node7" href="classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8" title="CCSBNode::getUsedKeys" alt="" coords="253,259,432,285"/><area shape="rect" id="node8" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218" title="CCSBNodeGroup::getUsedNodes" alt="" coords="232,309,453,336"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a374ed0005629d13da928f2ad9269c643"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a>, vector&lt; <a class="el" href="CSBPlusTree_8h.html#a0be8f6ad29462a61afc85fec40be386d">index_offset</a> &gt; * &gt; * <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::Search </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d">CCSBNode&lt; T &gt;::getElement()</a>, <a class="el" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c">CCSBNode&lt; T &gt;::getFather()</a>, <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBNode.html#a34696da5897218053ef56b5d59216230">CCSBNode&lt; T &gt;::getPointer()</a>, <a class="el" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70">CCSBNodeGroup&lt; T &gt;::getTailerNG()</a>, <a class="el" href="classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8">CCSBNode&lt; T &gt;::getUsedKeys()</a>, <a class="el" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218">CCSBNodeGroup&lt; T &gt;::getUsedNodes()</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, and <a class="el" href="classCCSBNode.html#aa8b25a3220f70b933107dae911fd109b">CCSBNode&lt; T &gt;::used_keys</a>.</p>
+
+<p>Referenced by <a class="el" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71">cheak_com()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a374ed0005629d13da928f2ad9269c643_cgraph.png" border="0" usemap="#classCSBPlusTree_a374ed0005629d13da928f2ad9269c643_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_a374ed0005629d13da928f2ad9269c643_cgraph" id="classCSBPlusTree_a374ed0005629d13da928f2ad9269c643_cgraph">
+<area shape="rect" id="node2" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d" title="CCSBNode::getElement" alt="" coords="233,5,399,32"/><area shape="rect" id="node3" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c" title="CCSBNode::getFather" alt="" coords="239,56,393,83"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="225,107,407,133"/><area shape="rect" id="node5" href="classCCSBNode.html#a34696da5897218053ef56b5d59216230" title="CCSBNode::getPointer" alt="" coords="237,157,395,184"/><area shape="rect" id="node6" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70" title="CCSBNodeGroup::getTailerNG" alt="" coords="214,208,418,235"/><area shape="rect" id="node7" href="classCCSBNode.html#a4e3977b876e9ea6370d9d3ea9bdc70d8" title="CCSBNode::getUsedKeys" alt="" coords="227,259,405,285"/><area shape="rect" id="node8" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218" title="CCSBNodeGroup::getUsedNodes" alt="" coords="205,309,427,336"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a374ed0005629d13da928f2ad9269c643_icgraph.png" border="0" usemap="#classCSBPlusTree_a374ed0005629d13da928f2ad9269c643_icgraph" alt=""/></div>
+<map name="classCSBPlusTree_a374ed0005629d13da928f2ad9269c643_icgraph" id="classCSBPlusTree_a374ed0005629d13da928f2ad9269c643_icgraph">
+<area shape="rect" id="node2" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71" title="cheak_com" alt="" coords="206,5,295,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8c5eb495943782762f8b6c9fb37ba659"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCCSBNode.html">CCSBNode</a>&lt; T &gt; * <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::SearchLeafNode </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d">CCSBNode&lt; T &gt;::getElement()</a>, <a class="el" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c">CCSBNode&lt; T &gt;::getFather()</a>, <a class="el" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e">CCSBNodeGroup&lt; T &gt;::getNode()</a>, <a class="el" href="classCCSBNode.html#a34696da5897218053ef56b5d59216230">CCSBNode&lt; T &gt;::getPointer()</a>, <a class="el" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70">CCSBNodeGroup&lt; T &gt;::getTailerNG()</a>, <a class="el" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218">CCSBNodeGroup&lt; T &gt;::getUsedNodes()</a>, and <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_a8c5eb495943782762f8b6c9fb37ba659_cgraph.png" border="0" usemap="#classCSBPlusTree_a8c5eb495943782762f8b6c9fb37ba659_cgraph" alt=""/></div>
+<map name="classCSBPlusTree_a8c5eb495943782762f8b6c9fb37ba659_cgraph" id="classCSBPlusTree_a8c5eb495943782762f8b6c9fb37ba659_cgraph">
+<area shape="rect" id="node2" href="classCCSBNode.html#a5784315a39a4160419959ffb38b1606d" title="CCSBNode::getElement" alt="" coords="289,5,455,32"/><area shape="rect" id="node3" href="classCCSBNode.html#a9431708787dd6b859006aef74ea3f88c" title="CCSBNode::getFather" alt="" coords="295,56,449,83"/><area shape="rect" id="node4" href="classCCSBNodeGroup.html#a1910678c9d9811b008adcdd6abe7e89e" title="CCSBNodeGroup::getNode" alt="" coords="281,107,463,133"/><area shape="rect" id="node5" href="classCCSBNode.html#a34696da5897218053ef56b5d59216230" title="CCSBNode::getPointer" alt="" coords="293,157,451,184"/><area shape="rect" id="node6" href="classCCSBNodeGroup.html#a51b3aa197224040836d0f07e203d2e70" title="CCSBNodeGroup::getTailerNG" alt="" coords="270,208,474,235"/><area shape="rect" id="node7" href="classCCSBNodeGroup.html#a6e4330687ccdb255884f86e8f72fc218" title="CCSBNodeGroup::getUsedNodes" alt="" coords="261,259,483,285"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af464988c82d28869c8875897336c8604"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::serialize </td>
+          <td>(</td>
+          <td class="paramtype">FILE *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>.</p>
+
+<p>Referenced by <a class="el" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71">cheak_com()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCSBPlusTree_af464988c82d28869c8875897336c8604_icgraph.png" border="0" usemap="#classCSBPlusTree_af464988c82d28869c8875897336c8604_icgraph" alt=""/></div>
+<map name="classCSBPlusTree_af464988c82d28869c8875897336c8604_icgraph" id="classCSBPlusTree_af464988c82d28869c8875897336c8604_icgraph">
+<area shape="rect" id="node2" href="CSBPlusTree_8cpp.html#aae8650cce4b72b13e706a648d3085b71" title="cheak_com" alt="" coords="214,5,303,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a5cdd0faa799e759cd48b6090d8b83dd2"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::csb_depth</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac486a4445f61949567b5ffd61375ab3f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCCSBNode.html">CCSBNode</a>&lt;T&gt;* <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::csb_root</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="addb2f9737944e8a8bcbc907b64bf588f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt;T&gt;* <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::leaf_header</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4f254a412f45b6d04e6824f41ffd9f49"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCCSBNodeGroup.html">CCSBNodeGroup</a>&lt;T&gt;* <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::leaf_tailer</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a5e11f989263709ac29423f93e8e37c05"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::max_datas</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aff604b8f0b974df736b48ed4df96b468"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned <a class="el" href="classCSBPlusTree.html">CSBPlusTree</a>&lt; T &gt;::max_keys</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>IndexManager/<a class="el" href="CSBPlusTree_8h_source.html">CSBPlusTree.h</a></li>
-<li>IndexManager/CSBPlusTree.cpp</li>
+<li>IndexManager/<a class="el" href="CSBPlusTree_8cpp.html">CSBPlusTree.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

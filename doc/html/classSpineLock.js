@@ -5,5 +5,7 @@ var classSpineLock =
     [ "fakelock", "classSpineLock.html#af0c3add3737009a83eb601623eb47315", null ],
     [ "getvalue", "classSpineLock.html#ae0b422da676eb08e0f7bd63f475ec39a", null ],
     [ "release", "classSpineLock.html#abef911b1f34767662e4adc11536f7148", null ],
-    [ "try_lock", "classSpineLock.html#a995cd2d86c5f85de165d8edcede20135", null ]
+    [ "tas", "classSpineLock.html#a931c8522ee240a14ab94ebcab1bd5fd5", null ],
+    [ "try_lock", "classSpineLock.html#a995cd2d86c5f85de165d8edcede20135", null ],
+    [ "_l", "classSpineLock.html#ab60576577513e3c4595401c0486e3e8a", null ]
 ];

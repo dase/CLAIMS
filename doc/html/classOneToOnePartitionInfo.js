@@ -13,6 +13,8 @@ var classOneToOnePartitionInfo =
     [ "get_mode", "classOneToOnePartitionInfo.html#a35287679ae6cb711d3c83b8484f0b822", null ],
     [ "is_all_blocks_bound", "classOneToOnePartitionInfo.html#ac05af699ed7aac192652cb3fa599254e", null ],
     [ "is_colocated", "classOneToOnePartitionInfo.html#af0c8bde5ef561a579099e7a6205fee12", null ],
+    [ "serialize", "classOneToOnePartitionInfo.html#a4e9b0e06b736d436a48fc6ed604e4798", null ],
     [ "unbind_all_blocks", "classOneToOnePartitionInfo.html#ab5ea90ab0efaab4db79ee2248e3c3f34", null ],
-    [ "boost::serialization::access", "classOneToOnePartitionInfo.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "boost::serialization::access", "classOneToOnePartitionInfo.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "binding_node_id_", "classOneToOnePartitionInfo.html#af57f573c0b3a1f710cee1dd8c497b756", null ]
 ];

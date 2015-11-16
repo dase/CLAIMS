@@ -1,4 +1,4 @@
-.TH "ThreadPool" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ThreadPool" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,24 @@ ThreadPool \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ThreadPool\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBTask\fP"
+.br
+.in -1c
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBThreadPool\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~ThreadPool\fP ()"
+.br
 .ti -1c
 .RI "bool \fBThread_Pool_init\fP (int thread_count_in_pool_)"
 .br
@@ -32,7 +47,119 @@ ThreadPool \-
 .RI "static void \fBdestroy_pool\fP (\fBThreadPool\fP *tp)"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "sem_t \fBundo_task_sem\fP"
+.br
+.ti -1c
+.RI "pthread_t * \fBthread_list_\fP"
+.br
+.ti -1c
+.RI "queue< \fBTask\fP * > \fBtask_queue_\fP"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBtask_queue_lock\fP"
+.br
+.ti -1c
+.RI "int \fBthread_count\fP"
+.br
+.ti -1c
+.RI "int \fBfree_thread_count\fP"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBfree_thread_count_lock\fP"
+.br
+.ti -1c
+.RI "int \fBtask_count\fP"
+.br
+.ti -1c
+.RI "int \fBundo_task_count\fP"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBundo_task_count_lock\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ThreadPool::ThreadPool ()"
+
+.SS "ThreadPool::~ThreadPool ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void ThreadPool::add_task (void **)(void *, void *arg, boole = \fCfalse\fP)"
+
+.PP
+References task_queue_, task_queue_lock, and undo_task_sem\&.
+.PP
+Referenced by claims::physical_operator::ExchangeSenderMaterialized::CreateWorkerThread(), claims::physical_operator::Expander::CreateWorkingThread(), destroy_pool(), and claims::physical_operator::ResultCollector::Open()\&.
+.SS "void ThreadPool::bind_cpu ()"
+
+.PP
+References ThreadPoolLogging::elog(), and ThreadPoolLogging::log()\&.
+.PP
+Referenced by thread_exec()\&.
+.SS "void ThreadPool::destroy_pool (\fBThreadPool\fP *tp)\fC [static]\fP"
+
+.PP
+References add_task(), ThreadPool::Task::destroy_task(), free_thread_count_lock, NULL, task_queue_, task_queue_lock, thread_count, thread_list_, undo_task_count_lock, and undo_task_sem\&.
+.SS "void * ThreadPool::thread_exec (void *arg)\fC [static]\fP"
+
+.PP
+References ThreadPool::Task::arg, bind_cpu(), ThreadPool::Task::destroy_task(), ThreadPool::Task::end, ThreadPool::Task::func, ThreadPoolLogging::log(), NULL, task_queue_, task_queue_lock, and undo_task_sem\&.
+.PP
+Referenced by Thread_Pool_init()\&.
+.SS "void* ThreadPool::thread_exec_with_cond (void *arg)"
+
+.SS "bool ThreadPool::Thread_Pool_init (intthread_count_in_pool_)"
+
+.PP
+References free_thread_count, free_thread_count_lock, NULL, task_queue_, task_queue_lock, thread_count, thread_exec(), thread_list_, undo_task_count, undo_task_count_lock, and undo_task_sem\&.
+.PP
+Referenced by Environment::initializeThreadPool()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "int ThreadPool::free_thread_count\fC [private]\fP"
+
+.PP
+Referenced by Thread_Pool_init()\&.
+.SS "pthread_mutex_t ThreadPool::free_thread_count_lock\fC [private]\fP"
+
+.PP
+Referenced by destroy_pool(), and Thread_Pool_init()\&.
+.SS "int ThreadPool::task_count\fC [private]\fP"
+
+.SS "queue<\fBTask\fP*> ThreadPool::task_queue_\fC [private]\fP"
+
+.PP
+Referenced by add_task(), destroy_pool(), thread_exec(), and Thread_Pool_init()\&.
+.SS "pthread_mutex_t ThreadPool::task_queue_lock\fC [private]\fP"
+
+.PP
+Referenced by add_task(), destroy_pool(), thread_exec(), and Thread_Pool_init()\&.
+.SS "int ThreadPool::thread_count\fC [private]\fP"
+
+.PP
+Referenced by destroy_pool(), and Thread_Pool_init()\&.
+.SS "pthread_t* ThreadPool::thread_list_\fC [private]\fP"
+
+.PP
+Referenced by destroy_pool(), and Thread_Pool_init()\&.
+.SS "int ThreadPool::undo_task_count\fC [private]\fP"
+
+.PP
+Referenced by Thread_Pool_init()\&.
+.SS "pthread_mutex_t ThreadPool::undo_task_count_lock\fC [private]\fP"
+
+.PP
+Referenced by destroy_pool(), and Thread_Pool_init()\&.
+.SS "sem_t ThreadPool::undo_task_sem\fC [private]\fP"
+
+.PP
+Referenced by add_task(), destroy_pool(), thread_exec(), and Thread_Pool_init()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -12,6 +12,8 @@ var classOneToManyPartitionInfo =
     [ "get_mode", "classOneToManyPartitionInfo.html#a2fbd4065f15d02fb1e890151fb8fd00e", null ],
     [ "is_all_blocks_bound", "classOneToManyPartitionInfo.html#ae816d532ccca62f33bd9dfb46d1a9772", null ],
     [ "is_colocated", "classOneToManyPartitionInfo.html#aa09698610a0ddee54b596f07059137f1", null ],
+    [ "serialize", "classOneToManyPartitionInfo.html#ab6258a644743888d4cda1e52aae8a820", null ],
     [ "unbind_all_blocks", "classOneToManyPartitionInfo.html#a51b745cd1b47e20662213ac59f460750", null ],
-    [ "boost::serialization::access", "classOneToManyPartitionInfo.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "boost::serialization::access", "classOneToManyPartitionInfo.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "block_to_node", "classOneToManyPartitionInfo.html#acf038e39db17ed10f4457a8f664c9a4c", null ]
 ];

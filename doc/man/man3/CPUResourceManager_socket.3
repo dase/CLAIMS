@@ -1,4 +1,4 @@
-.TH "CPUResourceManager::socket" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CPUResourceManager::socket" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ CPUResourceManager::socket \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <CPUResource\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBsocket\fP (int number_of_cores)"
+.RI "\fBsocket\fP (int \fBnumber_of_cores\fP)"
+.br
+.ti -1c
+.RI "\fBsocket\fP ()"
 .br
 .ti -1c
 .RI "void \fBaddCore\fP (int core_id)"
@@ -47,7 +52,45 @@ CPUResourceManager::socket \-
 .RI "std::vector< \fBcore\fP > \fBcores\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CPUResourceManager::socket::socket (intnumber_of_cores)"
+
+.PP
+References sem_in_socket_available_cores, and semaphore::set_value()\&.
+.SS "CPUResourceManager::socket::socket ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void CPUResourceManager::socket::addCore (intcore_id)"
+
+.PP
+References CPUResourceManager::core::available, CPUResourceManager::core::id, and CPUResourceManager::core::offset\&.
+.SS "int CPUResourceManager::socket::applyCore ()"
+
+.SS "bool CPUResourceManager::socket::freeCore (intcore_id)"
+
+.SS "int CPUResourceManager::socket::getNumberOfFreeCores ()"
+
+.PP
+References semaphore::get_value(), and sem_in_socket_available_cores\&.
+.SS "void CPUResourceManager::socket::print ()"
+
+.SS "int CPUResourceManager::socket::tryApplyCore ()"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "int CPUResourceManager::socket::busy_cores"
+
+.SS "std::vector<\fBcore\fP> CPUResourceManager::socket::cores"
+
+.SS "int CPUResourceManager::socket::number_of_cores"
+
+.SS "\fBsemaphore\fP CPUResourceManager::socket::sem_in_socket_available_cores"
+
+.PP
+Referenced by getNumberOfFreeCores(), and socket()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

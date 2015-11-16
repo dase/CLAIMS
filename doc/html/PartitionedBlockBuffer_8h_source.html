@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Block/PartitionedBlockBuffer.h Source File</title>
+<title>Claims: common/Block/PartitionedBlockBuffer.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('PartitionedBlockBuffer_8h_source.html'
 <div class="title">PartitionedBlockBuffer.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="PartitionedBlockBuffer_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * PartitoinedBlockBuffer.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Aug 15, 2013</span></div>
@@ -120,62 +120,82 @@ $(document).ready(function(){initNavTree('PartitionedBlockBuffer_8h_source.html'
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#ifdef DMALLOC</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;dmalloc.h&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;Block.h&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="Block_8h.html">Block.h</a>&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;../../utility/lock.h&quot;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html">   17</a></span>&#160;<span class="keyword">class </span><a class="code" href="classPartitionedBlockBuffer.html">PartitionedBlockBuffer</a> {</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="classPartitionedBlockBuffer.html">PartitionedBlockBuffer</a>(<span class="keywordtype">unsigned</span> nPartitions,<span class="keywordtype">unsigned</span> block_size,<span class="keywordtype">unsigned</span> nBlocks);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="classPartitionedBlockBuffer.html">PartitionedBlockBuffer</a>(<span class="keywordtype">unsigned</span> nPartitions,<span class="keywordtype">unsigned</span> block_size);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="classPartitionedBlockBuffer.html#a7233509d99ba437fb63c107ef53d173b">PartitionedBlockBuffer</a>(<span class="keywordtype">unsigned</span> <a class="code" href="classPartitionedBlockBuffer.html#abd2552b6e379ef8747471b82b6208c9c">nPartitions</a>,<span class="keywordtype">unsigned</span> <a class="code" href="hash__table__test_8h.html#a9766f5ceca5e25981858ec7384456072">block_size</a>,<span class="keywordtype">unsigned</span> <a class="code" href="classPartitionedBlockBuffer.html#a6412ac67a5769362da77ddf85e96f005">nBlocks</a>);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="classPartitionedBlockBuffer.html#a7233509d99ba437fb63c107ef53d173b">PartitionedBlockBuffer</a>(<span class="keywordtype">unsigned</span> nPartitions,<span class="keywordtype">unsigned</span> block_size);</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classPartitionedBlockBuffer.html">PartitionedBlockBuffer</a>();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">bool</span> hasEmptyBlock()<span class="keyword">const</span> ;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">bool</span> isEmpty();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classPartitionedBlockBuffer.html#a08b9fd48380e395bfd67d85365939530">~PartitionedBlockBuffer</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classPartitionedBlockBuffer.html#ae34fcea8902d77bd6826119f8739c9c2">hasEmptyBlock</a>()<span class="keyword">const</span> ;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classPartitionedBlockBuffer.html#a184b0e948e0d24522276fc8a44c8966b">isEmpty</a>();</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classPartitionedBlockBuffer.html#aa18cd180dd54f7d7d03a0d71d1e08155">insertBlockToPartitionedList</a>(<a class="code" href="classBlock.html">Block</a>* src, <span class="keywordtype">unsigned</span> partition_id);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">/* In current implementation, each non-empty partition list has the same</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">     * probability to be consumed a block.</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">     * TODO: a better solution is that the partiton lish containing more</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">     * block should have bigger probability to be consumed a block*/</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> getBlock(<a class="code" href="classBlock.html">Block</a> &amp;desc);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classPartitionedBlockBuffer.html#a1481725cd55cb4101e1246517b292173">getBlock</a>(<a class="code" href="classBlock.html">Block</a> &amp;desc);</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">bool</span> getBlock(<a class="code" href="classBlock.html">Block</a> &amp;desc,<span class="keywordtype">unsigned</span> partition_id);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">unsigned</span> getBlockInBuffer();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classPartitionedBlockBuffer.html#a1481725cd55cb4101e1246517b292173">getBlock</a>(<a class="code" href="classBlock.html">Block</a> &amp;desc,<span class="keywordtype">unsigned</span> partition_id);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classPartitionedBlockBuffer.html#a9361edd381f8315fcf054ffaeb9dff9c">getBlockInBuffer</a>();</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="comment">/* this is not thread-safe */</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">bool</span> getBlockInPartitionedBlockList(<a class="code" href="classBlock.html">Block</a> &amp;desc,<span class="keywordtype">unsigned</span> partition_id);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">unsigned</span> getBlockNumberOfPartitionInBuffer(<span class="keywordtype">unsigned</span> partition_id);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> destoryEmptyBlocks();</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classPartitionedBlockBuffer.html#ab92293ac1f97c2ae15ebbfec33738baa">getBlockInPartitionedBlockList</a>(<a class="code" href="classBlock.html">Block</a> &amp;desc,<span class="keywordtype">unsigned</span> partition_id);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classPartitionedBlockBuffer.html#a2f864787679b0befbc61ed539fa4929c">getBlockNumberOfPartitionInBuffer</a>(<span class="keywordtype">unsigned</span> partition_id);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classPartitionedBlockBuffer.html#a58c5c03504309d4b20a858e680d49db5">destoryEmptyBlocks</a>();</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">unsigned</span> nPartitions;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">unsigned</span> nBlocks;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    std::list&lt;Block*&gt;* blocks_in_partition_list;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    std::list&lt;Block*&gt; empty_block_list;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#abd2552b6e379ef8747471b82b6208c9c">   43</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classPartitionedBlockBuffer.html#abd2552b6e379ef8747471b82b6208c9c">nPartitions</a>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#a6412ac67a5769362da77ddf85e96f005">   44</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classPartitionedBlockBuffer.html#a6412ac67a5769362da77ddf85e96f005">nBlocks</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#a6e5cfe8d25be48631a0d2637219ec370">   45</a></span>&#160;    std::list&lt;Block*&gt;* <a class="code" href="classPartitionedBlockBuffer.html#a6e5cfe8d25be48631a0d2637219ec370">blocks_in_partition_list</a>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#a2e779060eced8929cf7cf24ce19a703b">   46</a></span>&#160;    std::list&lt;Block*&gt; <a class="code" href="classPartitionedBlockBuffer.html#a2e779060eced8929cf7cf24ce19a703b">empty_block_list</a>;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="comment">/* keeping the consistency while multiple threads are accessing</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">     * the same instance of this class*/</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classLock.html">Lock</a> lock;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> empty_blocks;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> used_blocks;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#ad9117db0eec5522ddc6e9570e9c689b6">   50</a></span>&#160;    <a class="code" href="classLock.html">Lock</a> <a class="code" href="classPartitionedBlockBuffer.html#ad9117db0eec5522ddc6e9570e9c689b6">lock</a>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#a4143bbff5aaaa933ced6dfa89daa2de3">   51</a></span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> <a class="code" href="classPartitionedBlockBuffer.html#a4143bbff5aaaa933ced6dfa89daa2de3">empty_blocks</a>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#a51f04fecc56d93877d2ebf2829fbca8f">   52</a></span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> <a class="code" href="classPartitionedBlockBuffer.html#a51f04fecc56d93877d2ebf2829fbca8f">used_blocks</a>;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="comment">//debug</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">unsigned</span> inserted;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">unsigned</span> removed;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#acfaa745faf19785a4f4ef6351aa5fbcc">   55</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classPartitionedBlockBuffer.html#acfaa745faf19785a4f4ef6351aa5fbcc">inserted</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classPartitionedBlockBuffer.html#a34accb97db2e873e1c1214fb752642b7">   56</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classPartitionedBlockBuffer.html#a34accb97db2e873e1c1214fb752642b7">removed</a>;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* PARTITOINEDBLOCKBUFFER_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_ae34fcea8902d77bd6826119f8739c9c2"><div class="ttname"><a href="classPartitionedBlockBuffer.html#ae34fcea8902d77bd6826119f8739c9c2">PartitionedBlockBuffer::hasEmptyBlock</a></div><div class="ttdeci">bool hasEmptyBlock() const </div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:54</div></div>
 <div class="ttc" id="classPartitionedBlockBuffer_html_aa18cd180dd54f7d7d03a0d71d1e08155"><div class="ttname"><a href="classPartitionedBlockBuffer.html#aa18cd180dd54f7d7d03a0d71d1e08155">PartitionedBlockBuffer::insertBlockToPartitionedList</a></div><div class="ttdeci">bool insertBlockToPartitionedList(Block *src, unsigned partition_id)</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:78</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a34accb97db2e873e1c1214fb752642b7"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a34accb97db2e873e1c1214fb752642b7">PartitionedBlockBuffer::removed</a></div><div class="ttdeci">unsigned removed</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:56</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a1481725cd55cb4101e1246517b292173"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a1481725cd55cb4101e1246517b292173">PartitionedBlockBuffer::getBlock</a></div><div class="ttdeci">int getBlock(Block &amp;desc)</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:121</div></div>
 <div class="ttc" id="classLock_html"><div class="ttname"><a href="classLock.html">Lock</a></div><div class="ttdef"><b>Definition:</b> lock.h:18</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a7233509d99ba437fb63c107ef53d173b"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a7233509d99ba437fb63c107ef53d173b">PartitionedBlockBuffer::PartitionedBlockBuffer</a></div><div class="ttdeci">PartitionedBlockBuffer(unsigned nPartitions, unsigned block_size, unsigned nBlocks)</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:14</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a6412ac67a5769362da77ddf85e96f005"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a6412ac67a5769362da77ddf85e96f005">PartitionedBlockBuffer::nBlocks</a></div><div class="ttdeci">unsigned nBlocks</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:44</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a58c5c03504309d4b20a858e680d49db5"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a58c5c03504309d4b20a858e680d49db5">PartitionedBlockBuffer::destoryEmptyBlocks</a></div><div class="ttdeci">void destoryEmptyBlocks()</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:61</div></div>
 <div class="ttc" id="classsemaphore_html"><div class="ttname"><a href="classsemaphore.html">semaphore</a></div><div class="ttdef"><b>Definition:</b> lock.h:46</div></div>
 <div class="ttc" id="classPartitionedBlockBuffer_html"><div class="ttname"><a href="classPartitionedBlockBuffer.html">PartitionedBlockBuffer</a></div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:17</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a08b9fd48380e395bfd67d85365939530"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a08b9fd48380e395bfd67d85365939530">PartitionedBlockBuffer::~PartitionedBlockBuffer</a></div><div class="ttdeci">virtual ~PartitionedBlockBuffer()</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:42</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a4143bbff5aaaa933ced6dfa89daa2de3"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a4143bbff5aaaa933ced6dfa89daa2de3">PartitionedBlockBuffer::empty_blocks</a></div><div class="ttdeci">semaphore empty_blocks</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:51</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a184b0e948e0d24522276fc8a44c8966b"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a184b0e948e0d24522276fc8a44c8966b">PartitionedBlockBuffer::isEmpty</a></div><div class="ttdeci">bool isEmpty()</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:57</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_acfaa745faf19785a4f4ef6351aa5fbcc"><div class="ttname"><a href="classPartitionedBlockBuffer.html#acfaa745faf19785a4f4ef6351aa5fbcc">PartitionedBlockBuffer::inserted</a></div><div class="ttdeci">unsigned inserted</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:55</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a2e779060eced8929cf7cf24ce19a703b"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a2e779060eced8929cf7cf24ce19a703b">PartitionedBlockBuffer::empty_block_list</a></div><div class="ttdeci">std::list&lt; Block * &gt; empty_block_list</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:46</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a9361edd381f8315fcf054ffaeb9dff9c"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a9361edd381f8315fcf054ffaeb9dff9c">PartitionedBlockBuffer::getBlockInBuffer</a></div><div class="ttdeci">unsigned getBlockInBuffer()</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:109</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_ad9117db0eec5522ddc6e9570e9c689b6"><div class="ttname"><a href="classPartitionedBlockBuffer.html#ad9117db0eec5522ddc6e9570e9c689b6">PartitionedBlockBuffer::lock</a></div><div class="ttdeci">Lock lock</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:50</div></div>
+<div class="ttc" id="hash__table__test_8h_html_a9766f5ceca5e25981858ec7384456072"><div class="ttname"><a href="hash__table__test_8h.html#a9766f5ceca5e25981858ec7384456072">block_size</a></div><div class="ttdeci">#define block_size</div><div class="ttdef"><b>Definition:</b> hash_table_test.h:21</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a2f864787679b0befbc61ed539fa4929c"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a2f864787679b0befbc61ed539fa4929c">PartitionedBlockBuffer::getBlockNumberOfPartitionInBuffer</a></div><div class="ttdeci">unsigned getBlockNumberOfPartitionInBuffer(unsigned partition_id)</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:115</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a51f04fecc56d93877d2ebf2829fbca8f"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a51f04fecc56d93877d2ebf2829fbca8f">PartitionedBlockBuffer::used_blocks</a></div><div class="ttdeci">semaphore used_blocks</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:52</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_abd2552b6e379ef8747471b82b6208c9c"><div class="ttname"><a href="classPartitionedBlockBuffer.html#abd2552b6e379ef8747471b82b6208c9c">PartitionedBlockBuffer::nPartitions</a></div><div class="ttdeci">unsigned nPartitions</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:43</div></div>
 <div class="ttc" id="classBlock_html"><div class="ttname"><a href="classBlock.html">Block</a></div><div class="ttdef"><b>Definition:</b> Block.h:13</div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_a6e5cfe8d25be48631a0d2637219ec370"><div class="ttname"><a href="classPartitionedBlockBuffer.html#a6e5cfe8d25be48631a0d2637219ec370">PartitionedBlockBuffer::blocks_in_partition_list</a></div><div class="ttdeci">std::list&lt; Block * &gt; * blocks_in_partition_list</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.h:45</div></div>
+<div class="ttc" id="Block_8h_html"><div class="ttname"><a href="Block_8h.html">Block.h</a></div></div>
+<div class="ttc" id="classPartitionedBlockBuffer_html_ab92293ac1f97c2ae15ebbfec33738baa"><div class="ttname"><a href="classPartitionedBlockBuffer.html#ab92293ac1f97c2ae15ebbfec33738baa">PartitionedBlockBuffer::getBlockInPartitionedBlockList</a></div><div class="ttdeci">bool getBlockInPartitionedBlockList(Block &amp;desc, unsigned partition_id)</div><div class="ttdef"><b>Definition:</b> PartitionedBlockBuffer.cpp:162</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><b>PartitionedBlockBuffer.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_c2a04d7826aaee572261123b6528dddc.html">Block</a></li><li class="navelem"><a class="el" href="PartitionedBlockBuffer_8h.html">PartitionedBlockBuffer.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

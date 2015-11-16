@@ -1,4 +1,4 @@
-.TH "HDFSChunkReaderIterator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "HDFSChunkReaderIterator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,17 @@ HDFSChunkReaderIterator \-
 .br
 .PP
 .PP
+\fC#include <ChunkStorage\&.h>\fP
+.PP
 Inherits \fBChunkReaderIterator\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBHDFSChunkReaderIterator\fP (const \fBChunkID\fP &chunk_id, unsigned &chunk_size, const unsigned &block_size)"
+.RI "\fBHDFSChunkReaderIterator\fP (const \fBChunkID\fP &chunk_id, unsigned &chunk_size, const unsigned &\fBblock_size\fP)"
+.br
+.ti -1c
+.RI "virtual \fB~HDFSChunkReaderIterator\fP ()"
 .br
 .ti -1c
 .RI "bool \fBnextBlock\fP (\fBBlockStreamBase\fP *&block)"
@@ -21,9 +26,59 @@ Inherits \fBChunkReaderIterator\fP\&.
 .RI "bool \fBgetNextBlockAccessor\fP (\fBblock_accessor\fP *&ba)"
 .br
 .in -1c
-.SS "Additional Inherited Members"
+.SS "Private Attributes"
 
+.in +1c
+.ti -1c
+.RI "\fBBlock\fP * \fBblock_buffer_\fP"
+.br
+.ti -1c
+.RI "hdfsFS \fBfs_\fP"
+.br
+.ti -1c
+.RI "hdfsFile \fBhdfs_fd_\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HDFSChunkReaderIterator::HDFSChunkReaderIterator (const \fBChunkID\fP &chunk_id, unsigned &chunk_size, const unsigned &block_size)"
+
+.PP
+References block_buffer_, ChunkReaderIterator::block_size_, ChunkReaderIterator::chunk_id_, ChunkID::chunk_off, CHUNK_SIZE, fs_, PartitionID::getName(), hdfs_fd_, Config::hdfs_master_ip, Config::hdfs_master_port, ChunkReaderIterator::number_of_blocks_, and ChunkID::partition_id\&.
+.SS "HDFSChunkReaderIterator::~HDFSChunkReaderIterator ()\fC [virtual]\fP"
+
+.PP
+References block_buffer_, fs_, hdfs_fd_, and Block::~Block()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool HDFSChunkReaderIterator::getNextBlockAccessor (\fBblock_accessor\fP *&ba)\fC [virtual]\fP"
+
+.PP
+Implements \fBChunkReaderIterator\fP\&.
+.PP
+References Lock::acquire(), ChunkReaderIterator::block_size_, ChunkReaderIterator::chunk_id_, ChunkReaderIterator::chunk_size_, ChunkReaderIterator::cur_block_, ChunkReaderIterator::lock_, ChunkReaderIterator::number_of_blocks_, Lock::release(), ChunkReaderIterator::InHDFSBlockAccessor::setBlockCur(), ChunkReaderIterator::block_accessor::setBlockSize(), and ChunkReaderIterator::InHDFSBlockAccessor::setChunkId()\&.
+.SS "bool HDFSChunkReaderIterator::nextBlock (\fBBlockStreamBase\fP *&block)\fC [virtual]\fP"
+
+.PP
+Implements \fBChunkReaderIterator\fP\&.
+.PP
+References Lock::acquire(), block_buffer_, ChunkReaderIterator::block_size_, CHUNK_SIZE, BlockStreamBase::constructFromBlock(), ChunkReaderIterator::cur_block_, fs_, Block::getBlock(), hdfs_fd_, ChunkReaderIterator::lock_, ChunkReaderIterator::number_of_blocks_, and Lock::release()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBBlock\fP* HDFSChunkReaderIterator::block_buffer_\fC [private]\fP"
+
+.PP
+Referenced by HDFSChunkReaderIterator(), nextBlock(), and ~HDFSChunkReaderIterator()\&.
+.SS "hdfsFS HDFSChunkReaderIterator::fs_\fC [private]\fP"
+
+.PP
+Referenced by HDFSChunkReaderIterator(), nextBlock(), and ~HDFSChunkReaderIterator()\&.
+.SS "hdfsFile HDFSChunkReaderIterator::hdfs_fd_\fC [private]\fP"
+
+.PP
+Referenced by HDFSChunkReaderIterator(), nextBlock(), and ~HDFSChunkReaderIterator()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

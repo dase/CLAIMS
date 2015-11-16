@@ -28,11 +28,14 @@ var searchData=
   ['columnheader',['ColumnHeader',['../structColumnHeader.html',1,'']]],
   ['columnid',['ColumnID',['../structColumnID.html',1,'']]],
   ['columns',['Columns',['../structColumns.html',1,'']]],
+  ['combinetuple',['CombineTuple',['../classclaims_1_1physical__operator_1_1CombineTuple.html',1,'claims::physical_operator']]],
+  ['commentinfo',['CommentInfo',['../structJson_1_1Value_1_1CommentInfo.html',1,'Json::Value']]],
   ['commit_5fstmt',['Commit_stmt',['../structCommit__stmt.html',1,'']]],
   ['comparator',['Comparator',['../classComparator.html',1,'']]],
   ['compare_5fnode',['compare_node',['../structbottomLayerSorting_1_1compare__node.html',1,'bottomLayerSorting']]],
   ['condition',['Condition',['../structCondition.html',1,'']]],
   ['config',['Config',['../classConfig.html',1,'']]],
+  ['connectionactor',['ConnectionActor',['../classAdaptiveEndPoint_1_1ConnectionActor.html',1,'AdaptiveEndPoint']]],
   ['connector',['Connector',['../classConnector.html',1,'']]],
   ['conv',['Conv',['../structttmath_1_1Conv.html',1,'ttmath']]],
   ['coordinateactor',['CoordinateActor',['../classCoordinator_1_1CoordinateActor.html',1,'Coordinator']]],
@@ -48,8 +51,9 @@ var searchData=
   ['create_5fselect_5fstmt',['Create_select_stmt',['../structCreate__select__stmt.html',1,'']]],
   ['create_5ftable_5fstmt',['Create_table_stmt',['../structCreate__table__stmt.html',1,'']]],
   ['createindex_5fstmt',['Createindex_stmt',['../structCreateindex__stmt.html',1,'']]],
+  ['createtableexec',['CreateTableExec',['../classclaims_1_1stmt__handler_1_1CreateTableExec.html',1,'claims::stmt_handler']]],
   ['createtablemessage',['CreateTableMessage',['../classCreateTableMessage.html',1,'']]],
   ['createtablerespond',['CreateTableRespond',['../classCreateTableRespond.html',1,'']]],
   ['csbplustree',['CSBPlusTree',['../classCSBPlusTree.html',1,'']]],
-  ['current_5fblock',['current_block',['../structExpandableBlockStreamHdfsScan_1_1current__block.html',1,'ExpandableBlockStreamHdfsScan']]]
+  ['czstring',['CZString',['../classJson_1_1Value_1_1CZString.html',1,'Json::Value']]]
 ];

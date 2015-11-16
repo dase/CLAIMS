@@ -1,4 +1,4 @@
-.TH "PerformanceInfo::entry" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PerformanceInfo::entry" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ PerformanceInfo::entry \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ExpandedThreadTracker\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBentry\fP ()"
+.br
 .ti -1c
 .RI "bool \fBisUpdateToDate\fP ()"
 .br
@@ -20,10 +25,28 @@ PerformanceInfo::entry \-
 .RI "float \fBperformance\fP"
 .br
 .ti -1c
-.RI "timestamp \fBlast_update\fP"
+.RI "\fBtimestamp\fP \fBlast_update\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PerformanceInfo::entry::entry ()\fC [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool PerformanceInfo::entry::isUpdateToDate ()"
+
+.PP
+References curtick(), last_update, and VALID_FRECY\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBtimestamp\fP PerformanceInfo::entry::last_update"
+
+.PP
+Referenced by isUpdateToDate()\&.
+.SS "float PerformanceInfo::entry::performance"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

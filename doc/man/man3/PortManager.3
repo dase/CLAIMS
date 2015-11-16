@@ -1,4 +1,4 @@
-.TH "PortManager" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PortManager" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,17 @@ PortManager \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <PortManager\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBPortManager\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~PortManager\fP ()"
+.br
 .ti -1c
 .RI "int \fBapplyPort\fP ()"
 .br
@@ -23,7 +31,111 @@ PortManager \-
 .RI "static \fBPortManager\fP * \fBgetInstance\fP ()"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBgetConfigure\fP ()"
+.br
+.ti -1c
+.RI "void \fBgenerateFreePorts\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBstart\fP"
+.br
+.ti -1c
+.RI "unsigned \fBend\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBfree_ports\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBused_ports\fP"
+.br
+.ti -1c
+.RI "\fBLock\fP \fBl\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBPortManager\fP * \fB_instance\fP =0"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PortManager::PortManager ()"
+
+.PP
+References end, generateFreePorts(), getConfigure(), Logging_PortManager(), and start\&.
+.PP
+Referenced by getInstance()\&.
+.SS "PortManager::~PortManager ()\fC [virtual]\fP"
+
+.PP
+References _instance\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "int PortManager::applyPort ()"
+
+.PP
+References Lock::acquire(), free_ports, l, and Lock::release()\&.
+.PP
+Referenced by Environment::initializeEndPoint(), and Coordinator::SetupTheTheron()\&.
+.SS "void PortManager::generateFreePorts ()\fC [private]\fP"
+
+.PP
+References end, free_ports, and start\&.
+.PP
+Referenced by PortManager()\&.
+.SS "void PortManager::getConfigure ()\fC [private]\fP"
+
+.PP
+References Config::config_file, end, and start\&.
+.PP
+Referenced by PortManager()\&.
+.SS "\fBPortManager\fP * PortManager::getInstance ()\fC [static]\fP"
+
+.PP
+References _instance, and PortManager()\&.
+.PP
+Referenced by claims::physical_operator::ExchangeMerger::CloseSocket(), Environment::Environment(), claims::physical_operator::ExchangeMerger::PrepareSocket(), and Coordinator::SetupTheTheron()\&.
+.SS "void PortManager::returnPort (unsignedport)"
+
+.PP
+References Lock::acquire(), free_ports, l, and Lock::release()\&.
+.PP
+Referenced by claims::physical_operator::ExchangeMerger::CloseSocket()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPortManager\fP * PortManager::_instance =0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by getInstance(), and ~PortManager()\&.
+.SS "unsigned PortManager::end\fC [private]\fP"
+
+.PP
+Referenced by generateFreePorts(), getConfigure(), and PortManager()\&.
+.SS "std::vector<unsigned> PortManager::free_ports\fC [private]\fP"
+
+.PP
+Referenced by applyPort(), generateFreePorts(), and returnPort()\&.
+.SS "\fBLock\fP PortManager::l\fC [private]\fP"
+
+.PP
+Referenced by applyPort(), and returnPort()\&.
+.SS "unsigned PortManager::start\fC [private]\fP"
+
+.PP
+Referenced by generateFreePorts(), getConfigure(), and PortManager()\&.
+.SS "std::vector<unsigned> PortManager::used_ports\fC [private]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

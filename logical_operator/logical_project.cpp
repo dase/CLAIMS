@@ -1,4 +1,3 @@
-
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -30,6 +29,8 @@
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <vector>
+#include <map>
+#include <string>
 #include "../logical_operator/logical_project.h"
 #include "../logical_operator/logical_operator.h"
 #include "../common/ids.h"
@@ -84,9 +85,8 @@ PlanContext LogicalProject::GetPlanContext() {
   ret.plan_partitioner_ = child_plan_context.plan_partitioner_;
   std::vector<Attribute> ret_attrs;
   // construct an input schema from attribute list of child
-  Schema* input_ = GetSchema(child_plan_context.attribute_list_);
-  // get the index of attributes in child PlanContext
-  SetColumnID(child_plan_context);
+  Schema* input_schema = GetSchema(child_plan_context.attribute_list_);
+// get the index of attributes in child PlanContext
 /**
  * if the expression type is compare,then the new column will be boolean
  * type,
@@ -96,11 +96,12 @@ PlanContext LogicalProject::GetPlanContext() {
 #ifdef NEWCONDI
   for (int i = 0; i < expression_tree_.size(); ++i) {
     if (expression_tree_[i]->type == t_qexpr_cmp) {
-      InitExprAtLogicalPlan(expression_tree_[i], t_boolean, column_id_, input_);
+      InitExprAtLogicalPlan(expression_tree_[i], t_boolean, column_id_,
+                            input_schema);
     } else {
       InitExprAtLogicalPlan(expression_tree_[i],
                             expression_tree_[i]->actual_type, column_id_,
-                            input_);
+                            input_schema);
     }
   }
   // clean the attribute list of PlanContext to be returned
@@ -129,28 +130,15 @@ PlanContext LogicalProject::GetPlanContext() {
     ret_attrs.push_back(attr_alais);
   }
 #else
+  ret_attrs.clear();
+  map<string, int> column_to_id;
+  GetColumnToId(child_plan_context.attribute_list_, column_to_id);
   for (int i = 0; i < expr_list_.size(); ++i) {
     expr_list_[i]->InitExprAtLogicalPlan(expr_list_[i]->actual_type_,
-                                         column_id_, input_);
+                                         column_to_id, input_schema);
+    ret_attrs.push_back(expr_list_[i]->ExprNodeToAttr(i));
   }
-  ret_attrs.clear();
-  for (int i = 0; i < expr_list_.size(); ++i) {
-    column_type* column = NULL;
-    if (t_string == expr_list_[i]->return_type_ ||
-        t_decimal == expr_list_[i]->return_type_) {
-      column = new column_type(expr_list_[i]->return_type_,
-                               expr_list_[i]->value_size_);
-    } else {
-      column = new column_type(expr_list_[i]->return_type_);
-    }
-    // set TableID
-    const unsigned kTableID = INTERMEIDATE_TABLEID;
-    // construct attribute
-    Attribute attr_alais(kTableID, i, expr_list_[i]->alias_, column->type,
-                         column->size);
-    // construct an attribute list
-    ret_attrs.push_back(attr_alais);
-  }
+
 #endif
   // set the attribute list of the PlanContext to be returned
   ret.attribute_list_ = ret_attrs;
@@ -159,16 +147,6 @@ PlanContext LogicalProject::GetPlanContext() {
   *plan_context_ = ret;
   lock_->release();
   return ret;
-}
-
-/**
- * Traverse the attribute_list_，
- * store the attribute name and index into colindex_.
- */
-void LogicalProject::SetColumnID(PlanContext plan_context) {
-  for (int i = 0; i < plan_context.attribute_list_.size(); ++i) {
-    column_id_[plan_context.attribute_list_[i].attrName] = i;
-  }
 }
 
 // get PlanContext and child physical plan from child ,
@@ -197,19 +175,22 @@ Schema* LogicalProject::GetOutputSchema() {
 
 // Print the whole logical operation tree
 void LogicalProject::Print(int level) const {
-  printf("project:\n");
-  LOG(INFO) << "project:\n" << endl;
+  cout << setw(level * kTabSize) << " "
+       << "Project:" << endl;
+  LOG(INFO) << "Project:\n" << endl;
 #ifdef NEWCONDI
   for (int i = 0; i < expression_tree_.size(); i++) {
     printf("%s\n", expression_tree_[i]->alias.c_str());
     LOG(INFO) << expression_tree_[i]->alias.c_str() << endl;
   }
 #else
+  ++level;
   for (int i = 0; i < expr_list_.size(); ++i) {
-    cout << "   " << expr_list_[i]->alias_ << endl;
+    cout << setw(level * kTabSize) << " " << expr_list_[i]->alias_ << endl;
   }
+  --level;
 #endif
-  child_->Print(level + 1);
+  child_->Print(level);
 }
 
 }  // namespace logical_operator

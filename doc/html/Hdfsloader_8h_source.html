@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Loader/Hdfsloader.h Source File</title>
+<title>Claims: Loader/Hdfsloader.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('Hdfsloader_8h_source.html','');});
 <div class="title">Hdfsloader.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="Hdfsloader_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Hdfsloader.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Dec 23, 2013</span></div>
@@ -128,15 +128,15 @@ $(document).ready(function(){initNavTree('Hdfsloader_8h_source.html','');});
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;../Catalog/ProjectionBinding.h&quot;</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;../common/Schema/TupleConvertor.h&quot;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;../common/hash.h&quot;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;Connector.h&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Connector_8h.html">Connector.h</a>&quot;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">using namespace </span>std;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classHdfsLoader.html">   27</a></span>&#160;<span class="keyword">class </span><a class="code" href="classHdfsLoader.html">HdfsLoader</a> {</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="classHdfsLoader.html">HdfsLoader</a>();</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classHdfsLoader.html">HdfsLoader</a>(<a class="code" href="classTableDescriptor.html">TableDescriptor</a>* tableDescriptor, <span class="keyword">const</span> <span class="keywordtype">char</span> c_separator = <span class="charliteral">&#39;|&#39;</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> r_separator = <span class="charliteral">&#39;\n&#39;</span>, open_flag open_flag_=APPENDD);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classHdfsLoader.html">HdfsLoader</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> c_separator, <span class="keyword">const</span> <span class="keywordtype">char</span> r_separator, std::vector&lt;std::string&gt; file_name, <a class="code" href="classTableDescriptor.html">TableDescriptor</a>* tableDescriptor, open_flag open_flag_=CREATEE);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classHdfsLoader.html">HdfsLoader</a>(<a class="code" href="classTableDescriptor.html">TableDescriptor</a>* tableDescriptor, <span class="keyword">const</span> <span class="keywordtype">char</span> c_separator = <span class="charliteral">&#39;|&#39;</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> r_separator = <span class="charliteral">&#39;\n&#39;</span>, <a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a> open_flag_=<a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a>);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classHdfsLoader.html">HdfsLoader</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> c_separator, <span class="keyword">const</span> <span class="keywordtype">char</span> r_separator, std::vector&lt;std::string&gt; file_name, <a class="code" href="classTableDescriptor.html">TableDescriptor</a>* tableDescriptor, <a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a> open_flag_=<a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949">CREATEE</a>);</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classHdfsLoader.html">HdfsLoader</a>();</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> get_c_separator();</div>
@@ -145,53 +145,77 @@ $(document).ready(function(){initNavTree('Hdfsloader_8h_source.html','');});
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">bool</span> insertRecords();</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">bool</span> load(<span class="keywordtype">double</span> sample_rate=1);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="namespaceboost_1_1serialization.html#af091cb6dca21a89d2e971ef24f9ad4e3">load</a>(<span class="keywordtype">double</span> sample_rate=1);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">bool</span> append(std::string tuple_string);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="classTableDescriptor.html">TableDescriptor</a>* table_descriptor_;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">   45</a></span>&#160;    <a class="code" href="classTableDescriptor.html">TableDescriptor</a>* <a class="code" href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">table_descriptor_</a>;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> row_id;</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">   47</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">row_id</a>;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    vector&lt;PartitionFunction*&gt; partition_functin_list_;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    vector&lt;int&gt; partition_key_index;</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a3998f5ea2ad00a0d1e6ae030b48aed99">   49</a></span>&#160;    vector&lt;PartitionFunction*&gt; <a class="code" href="classHdfsLoader.html#a3998f5ea2ad00a0d1e6ae030b48aed99">partition_functin_list_</a>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a38153637dcff79182e1e65f360b4de69">   50</a></span>&#160;    vector&lt;int&gt; <a class="code" href="classHdfsLoader.html#a38153637dcff79182e1e65f360b4de69">partition_key_index</a>;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="classConnector.html">Connector</a>* connector_;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">unsigned</span> block_size;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> col_separator;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> row_separator;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    std::vector&lt;std::string&gt; file_list;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    vector&lt;vector&lt;string&gt; &gt; writepath;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="classBlock.html">Block</a>* sblock;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    std::string s_record;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    vector &lt; vector&lt;BlockStreamBase*&gt; &gt; pj_buffer;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a507c869e97a65671ff170f2f9e8e8cfa">   54</a></span>&#160;    <a class="code" href="classConnector.html">Connector</a>* <a class="code" href="classHdfsLoader.html#a507c869e97a65671ff170f2f9e8e8cfa">connector_</a>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a7097c6f1d7c78a87434db8af598ccbb1">   55</a></span>&#160;    <span class="keywordtype">unsigned</span> <a class="code" href="classHdfsLoader.html#a7097c6f1d7c78a87434db8af598ccbb1">block_size</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a94d1296538c38b29c6957b43adddefb7">   56</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> <a class="code" href="classHdfsLoader.html#a94d1296538c38b29c6957b43adddefb7">col_separator</a>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a076ba84eccfadfac97f0053e4655e63a">   57</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> <a class="code" href="classHdfsLoader.html#a076ba84eccfadfac97f0053e4655e63a">row_separator</a>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a966c04389dd3023f6bae8dab75b8f2a9">   58</a></span>&#160;    std::vector&lt;std::string&gt; <a class="code" href="classHdfsLoader.html#a966c04389dd3023f6bae8dab75b8f2a9">file_list</a>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">   59</a></span>&#160;    vector&lt;vector&lt;string&gt; &gt; <a class="code" href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">writepath</a>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">   60</a></span>&#160;    <a class="code" href="classBlock.html">Block</a>* <a class="code" href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">sblock</a>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#ae225c4b1a076f079c8edcc1752ad4b7a">   61</a></span>&#160;    std::string <a class="code" href="classHdfsLoader.html#ae225c4b1a076f079c8edcc1752ad4b7a">s_record</a>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">   62</a></span>&#160;    vector &lt; vector&lt;BlockStreamBase*&gt; &gt; <a class="code" href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">pj_buffer</a>;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    vector&lt;vector &lt;unsigned long&gt; &gt; blocks_per_partition;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    vector&lt;vector &lt;unsigned long&gt; &gt; tuples_per_partition;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    vector&lt;SubTuple*&gt; sub_tuple_generator;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">   64</a></span>&#160;    vector&lt;vector &lt;unsigned long&gt; &gt; <a class="code" href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">blocks_per_partition</a>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a4fd59cfc625d2caf0039f5e685dae5bf">   65</a></span>&#160;    vector&lt;vector &lt;unsigned long&gt; &gt; <a class="code" href="classHdfsLoader.html#a4fd59cfc625d2caf0039f5e685dae5bf">tuples_per_partition</a>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a7dcde959e49746ccf6b8b6408a7963cf">   66</a></span>&#160;    vector&lt;SubTuple*&gt; <a class="code" href="classHdfsLoader.html#a7dcde959e49746ccf6b8b6408a7963cf">sub_tuple_generator</a>;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="classSchema.html">Schema</a>* table_schema;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    vector&lt;Schema*&gt; projection_schema;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#ab8d1a40748783b7b359a665df3045d66">   68</a></span>&#160;    <a class="code" href="classSchema.html">Schema</a>* <a class="code" href="classHdfsLoader.html#ab8d1a40748783b7b359a665df3045d66">table_schema</a>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a3a7cee4f35908650ababadc320d83822">   69</a></span>&#160;    vector&lt;Schema*&gt; <a class="code" href="classHdfsLoader.html#a3a7cee4f35908650ababadc320d83822">projection_schema</a>;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    open_flag open_flag_;</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classHdfsLoader.html#a195cacee6bd312a49ea9170e90a11417">   71</a></span>&#160;    <a class="code" href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a> <a class="code" href="classHdfsLoader.html#a195cacee6bd312a49ea9170e90a11417">open_flag_</a>;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;};</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* HDFSLOADER_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classHdfsLoader_html_ab053ab8d6977f877a284ef0059b213d2"><div class="ttname"><a href="classHdfsLoader.html#ab053ab8d6977f877a284ef0059b213d2">HdfsLoader::table_descriptor_</a></div><div class="ttdeci">TableDescriptor * table_descriptor_</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:45</div></div>
+<div class="ttc" id="classHdfsLoader_html_a1f88028ba3b79b54a0cdf39fd507ccb3"><div class="ttname"><a href="classHdfsLoader.html#a1f88028ba3b79b54a0cdf39fd507ccb3">HdfsLoader::pj_buffer</a></div><div class="ttdeci">vector&lt; vector&lt; BlockStreamBase * &gt; &gt; pj_buffer</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:62</div></div>
+<div class="ttc" id="classHdfsLoader_html_a507c869e97a65671ff170f2f9e8e8cfa"><div class="ttname"><a href="classHdfsLoader.html#a507c869e97a65671ff170f2f9e8e8cfa">HdfsLoader::connector_</a></div><div class="ttdeci">Connector * connector_</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:54</div></div>
+<div class="ttc" id="classHdfsLoader_html_a7097c6f1d7c78a87434db8af598ccbb1"><div class="ttname"><a href="classHdfsLoader.html#a7097c6f1d7c78a87434db8af598ccbb1">HdfsLoader::block_size</a></div><div class="ttdeci">unsigned block_size</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:55</div></div>
 <div class="ttc" id="classTableDescriptor_html"><div class="ttname"><a href="classTableDescriptor.html">TableDescriptor</a></div><div class="ttdef"><b>Definition:</b> table.h:104</div></div>
+<div class="ttc" id="namespaceboost_1_1serialization_html_af091cb6dca21a89d2e971ef24f9ad4e3"><div class="ttname"><a href="namespaceboost_1_1serialization.html#af091cb6dca21a89d2e971ef24f9ad4e3">boost::serialization::load</a></div><div class="ttdeci">void load(Archive &amp;ar, std::tr1::unordered_map&lt; Key, HashFcn, EqualKey, Allocator &gt; &amp;t, const unsigned int)</div><div class="ttdef"><b>Definition:</b> unordered_map.hpp:191</div></div>
+<div class="ttc" id="classHdfsLoader_html_a195cacee6bd312a49ea9170e90a11417"><div class="ttname"><a href="classHdfsLoader.html#a195cacee6bd312a49ea9170e90a11417">HdfsLoader::open_flag_</a></div><div class="ttdeci">open_flag open_flag_</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:71</div></div>
+<div class="ttc" id="classHdfsLoader_html_a3a7cee4f35908650ababadc320d83822"><div class="ttname"><a href="classHdfsLoader.html#a3a7cee4f35908650ababadc320d83822">HdfsLoader::projection_schema</a></div><div class="ttdeci">vector&lt; Schema * &gt; projection_schema</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:69</div></div>
 <div class="ttc" id="classSchema_html"><div class="ttname"><a href="classSchema.html">Schema</a></div><div class="ttdef"><b>Definition:</b> Schema.h:21</div></div>
+<div class="ttc" id="classHdfsLoader_html_a21b13d97379e0e2bc340d7ebbcc7e211"><div class="ttname"><a href="classHdfsLoader.html#a21b13d97379e0e2bc340d7ebbcc7e211">HdfsLoader::blocks_per_partition</a></div><div class="ttdeci">vector&lt; vector&lt; unsigned long &gt; &gt; blocks_per_partition</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:64</div></div>
+<div class="ttc" id="Connector_8h_html_aa7ef47bda2c422e83d91deb4d4500792"><div class="ttname"><a href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792">open_flag</a></div><div class="ttdeci">open_flag</div><div class="ttdef"><b>Definition:</b> Connector.h:15</div></div>
+<div class="ttc" id="classHdfsLoader_html_a966c04389dd3023f6bae8dab75b8f2a9"><div class="ttname"><a href="classHdfsLoader.html#a966c04389dd3023f6bae8dab75b8f2a9">HdfsLoader::file_list</a></div><div class="ttdeci">std::vector&lt; std::string &gt; file_list</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:58</div></div>
+<div class="ttc" id="classHdfsLoader_html_a4fd59cfc625d2caf0039f5e685dae5bf"><div class="ttname"><a href="classHdfsLoader.html#a4fd59cfc625d2caf0039f5e685dae5bf">HdfsLoader::tuples_per_partition</a></div><div class="ttdeci">vector&lt; vector&lt; unsigned long &gt; &gt; tuples_per_partition</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:65</div></div>
+<div class="ttc" id="Connector_8h_html"><div class="ttname"><a href="Connector_8h.html">Connector.h</a></div></div>
+<div class="ttc" id="classHdfsLoader_html_a076ba84eccfadfac97f0053e4655e63a"><div class="ttname"><a href="classHdfsLoader.html#a076ba84eccfadfac97f0053e4655e63a">HdfsLoader::row_separator</a></div><div class="ttdeci">const char row_separator</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:57</div></div>
+<div class="ttc" id="classHdfsLoader_html_ae225c4b1a076f079c8edcc1752ad4b7a"><div class="ttname"><a href="classHdfsLoader.html#ae225c4b1a076f079c8edcc1752ad4b7a">HdfsLoader::s_record</a></div><div class="ttdeci">std::string s_record</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:61</div></div>
+<div class="ttc" id="classHdfsLoader_html_a94d1296538c38b29c6957b43adddefb7"><div class="ttname"><a href="classHdfsLoader.html#a94d1296538c38b29c6957b43adddefb7">HdfsLoader::col_separator</a></div><div class="ttdeci">const char col_separator</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:56</div></div>
+<div class="ttc" id="Connector_8h_html_aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949"><div class="ttname"><a href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792a3589a64768c3b15de6f697aec5d7c949">CREATEE</a></div><div class="ttdef"><b>Definition:</b> Connector.h:15</div></div>
+<div class="ttc" id="classHdfsLoader_html_a39328eba44e9e8e0b8636163c4fdbbc8"><div class="ttname"><a href="classHdfsLoader.html#a39328eba44e9e8e0b8636163c4fdbbc8">HdfsLoader::writepath</a></div><div class="ttdeci">vector&lt; vector&lt; string &gt; &gt; writepath</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:59</div></div>
+<div class="ttc" id="classHdfsLoader_html_ab8d1a40748783b7b359a665df3045d66"><div class="ttname"><a href="classHdfsLoader.html#ab8d1a40748783b7b359a665df3045d66">HdfsLoader::table_schema</a></div><div class="ttdeci">Schema * table_schema</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:68</div></div>
+<div class="ttc" id="classHdfsLoader_html_aefd6bd01a89e97c76203fcde5c0cec42"><div class="ttname"><a href="classHdfsLoader.html#aefd6bd01a89e97c76203fcde5c0cec42">HdfsLoader::sblock</a></div><div class="ttdeci">Block * sblock</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:60</div></div>
+<div class="ttc" id="classHdfsLoader_html_a3998f5ea2ad00a0d1e6ae030b48aed99"><div class="ttname"><a href="classHdfsLoader.html#a3998f5ea2ad00a0d1e6ae030b48aed99">HdfsLoader::partition_functin_list_</a></div><div class="ttdeci">vector&lt; PartitionFunction * &gt; partition_functin_list_</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:49</div></div>
+<div class="ttc" id="classHdfsLoader_html_a38153637dcff79182e1e65f360b4de69"><div class="ttname"><a href="classHdfsLoader.html#a38153637dcff79182e1e65f360b4de69">HdfsLoader::partition_key_index</a></div><div class="ttdeci">vector&lt; int &gt; partition_key_index</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:50</div></div>
+<div class="ttc" id="Connector_8h_html_aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479"><div class="ttname"><a href="Connector_8h.html#aa7ef47bda2c422e83d91deb4d4500792ab1c46e90fda1b8165452d6e25b210479">APPENDD</a></div><div class="ttdef"><b>Definition:</b> Connector.h:15</div></div>
+<div class="ttc" id="classHdfsLoader_html_a7dcde959e49746ccf6b8b6408a7963cf"><div class="ttname"><a href="classHdfsLoader.html#a7dcde959e49746ccf6b8b6408a7963cf">HdfsLoader::sub_tuple_generator</a></div><div class="ttdeci">vector&lt; SubTuple * &gt; sub_tuple_generator</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:66</div></div>
 <div class="ttc" id="classHdfsLoader_html"><div class="ttname"><a href="classHdfsLoader.html">HdfsLoader</a></div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:27</div></div>
 <div class="ttc" id="classBlock_html"><div class="ttname"><a href="classBlock.html">Block</a></div><div class="ttdef"><b>Definition:</b> Block.h:13</div></div>
+<div class="ttc" id="classHdfsLoader_html_a9b4293c1543ee4a59b244d342c59d12a"><div class="ttname"><a href="classHdfsLoader.html#a9b4293c1543ee4a59b244d342c59d12a">HdfsLoader::row_id</a></div><div class="ttdeci">unsigned long row_id</div><div class="ttdef"><b>Definition:</b> Hdfsloader.h:47</div></div>
 <div class="ttc" id="classConnector_html"><div class="ttname"><a href="classConnector.html">Connector</a></div><div class="ttdef"><b>Definition:</b> Connector.h:16</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_fd50d1bf4544eeddbf688b84437a3906.html">Loader</a></li><li class="navelem"><b>Hdfsloader.h</b></li>
+    <li class="navelem"><a class="el" href="dir_fd50d1bf4544eeddbf688b84437a3906.html">Loader</a></li><li class="navelem"><a class="el" href="Hdfsloader_8h.html">Hdfsloader.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Resource/CPUResource.h Source File</title>
+<title>Claims: Resource/CPUResource.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('CPUResource_8h_source.html','');});
 <div class="title">CPUResource.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="CPUResource_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * CPUResource.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Sep 11, 2014</span></div>
@@ -122,44 +122,44 @@ $(document).ready(function(){initNavTree('CPUResource_8h_source.html','');});
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1core.html">   15</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structCPUResourceManager_1_1core.html">core</a>{</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="comment">/* the offset in its socket*/</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keywordtype">int</span> offset;</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1core.html#ab8efb2692ed91bb44b194b844937578c">   17</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structCPUResourceManager_1_1core.html#ab8efb2692ed91bb44b194b844937578c">offset</a>;</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="comment">/* false if is allocated */</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordtype">bool</span> available;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1core.html#a33fb9d231490a906d53257ae1dc375d8">   20</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="structCPUResourceManager_1_1core.html#a33fb9d231490a906d53257ae1dc375d8">available</a>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <span class="comment">/* the id of this Core,</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">         * this value is specified at the system startup */</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keywordtype">int</span> id;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1core.html#ae1af58103da5ee8d3a337815cb0570a4">   24</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structCPUResourceManager_1_1core.html#ae1af58103da5ee8d3a337815cb0570a4">id</a>;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    };</div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1socket.html">   26</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structCPUResourceManager_1_1socket.html">socket</a>{</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordtype">int</span> busy_cores;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classsemaphore.html">semaphore</a> sem_in_socket_available_cores;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">int</span> number_of_cores;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        std::vector&lt;core&gt; cores;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="structCPUResourceManager_1_1socket.html">socket</a>(<span class="keywordtype">int</span> number_of_cores);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="structCPUResourceManager_1_1socket.html">socket</a>();</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1socket.html#af4062d48f2938b98b3baa7e1a251543c">   27</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structCPUResourceManager_1_1socket.html#af4062d48f2938b98b3baa7e1a251543c">busy_cores</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1socket.html#a73a04262674ab39dfef6051b982876ca">   28</a></span>&#160;        <a class="code" href="classsemaphore.html">semaphore</a> <a class="code" href="structCPUResourceManager_1_1socket.html#a73a04262674ab39dfef6051b982876ca">sem_in_socket_available_cores</a>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1socket.html#a9402a118ce912593c661c87b92931a24">   29</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structCPUResourceManager_1_1socket.html#a9402a118ce912593c661c87b92931a24">number_of_cores</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structCPUResourceManager_1_1socket.html#a5978b71cfae25788ecff9245806549d2">   30</a></span>&#160;        std::vector&lt;core&gt; <a class="code" href="structCPUResourceManager_1_1socket.html#a5978b71cfae25788ecff9245806549d2">cores</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="structCPUResourceManager_1_1socket.html#af03cda04cb505091acbc176ec22061e0">socket</a>(<span class="keywordtype">int</span> <a class="code" href="structCPUResourceManager_1_1socket.html#a9402a118ce912593c661c87b92931a24">number_of_cores</a>);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="structCPUResourceManager_1_1socket.html#af03cda04cb505091acbc176ec22061e0">socket</a>();</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">void</span> addCore(<span class="keywordtype">int</span> core_id);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">int</span> getNumberOfFreeCores();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structCPUResourceManager_1_1socket.html#a792d47c837bc94c02869e41c0573b8d8">addCore</a>(<span class="keywordtype">int</span> core_id);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structCPUResourceManager_1_1socket.html#a59412f4bbf4c7d089ed304cdfd44533c">getNumberOfFreeCores</a>();</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="comment">/* apply for a core, return the id of the allocated core or return -1 if no cores are currently available.*/</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">int</span> tryApplyCore();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structCPUResourceManager_1_1socket.html#a3a81844ed450f2276fc595f89e57341f">tryApplyCore</a>();</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="comment">/* apply for a core. This function will be blocked until a core is</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">         * successfully obtained.</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">         * return the id of allocated core.</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">         */</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">int</span> applyCore();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">int</span> <a class="code" href="structCPUResourceManager_1_1socket.html#ac1ab2dae4333f08171225cc3e3cc4bcc">applyCore</a>();</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="comment">/* return a core to the CPU resource manager*/</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">bool</span> freeCore(<span class="keywordtype">int</span> core_id);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="structCPUResourceManager_1_1socket.html#abf1f47e092e35461133f5399ff3192d2">freeCore</a>(<span class="keywordtype">int</span> core_id);</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="comment">/* print the availability of the cores on this socket*/</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">void</span> print();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="structCPUResourceManager_1_1socket.html#a15fbd18e812ae89c14a2ca344adfb570">print</a>();</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    };</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCPUResourceManager.html">CPUResourceManager</a>* getInstance();</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classCPUResourceManager.html">CPUResourceManager</a>();</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classCPUResourceManager.html">CPUResourceManager</a>();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCPUResourceManager.html">CPUResourceManager</a>* <a class="code" href="classCPUResourceManager.html#aada48903c2f46f4e092415b8a72bd71e">getInstance</a>();</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="classCPUResourceManager.html#a40c6ef3561cb9293066d4415e9d16f34">CPUResourceManager</a>();</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classCPUResourceManager.html#aa9262590db6b61f3a96ff6dc86f02f84">~CPUResourceManager</a>();</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classCPUResourceManager.html#a50013a45a5680fe0ab849ba276d58aae">tryApplyCore</a>();</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
@@ -169,27 +169,48 @@ $(document).ready(function(){initNavTree('CPUResource_8h_source.html','');});
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classCPUResourceManager.html#aafa63b6d6d95d177b1356dd7f11a8197">print</a>();</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> sem_available_cores_;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">int</span> number_of_sockets_;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    std::vector&lt;socket&gt; sockets_;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCPUResourceManager.html">CPUResourceManager</a>* instance_;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classCPUResourceManager.html#a970ba3f70e0270c469e2f0f7d97ed1cc">   75</a></span>&#160;    <a class="code" href="classsemaphore.html">semaphore</a> <a class="code" href="classCPUResourceManager.html#a970ba3f70e0270c469e2f0f7d97ed1cc">sem_available_cores_</a>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classCPUResourceManager.html#ad2b7327d0c6d74b049758538a0d93fd5">   76</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classCPUResourceManager.html#ad2b7327d0c6d74b049758538a0d93fd5">number_of_sockets_</a>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classCPUResourceManager.html#ac3600b7c8cc1f98a8ecca1c2804edb64">   77</a></span>&#160;    std::vector&lt;socket&gt; <a class="code" href="classCPUResourceManager.html#ac3600b7c8cc1f98a8ecca1c2804edb64">sockets_</a>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classCPUResourceManager.html#a6d828c958b0a760fda63a65bfd2c8a6c">   78</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classCPUResourceManager.html">CPUResourceManager</a>* <a class="code" href="classCPUResourceManager.html#a6d828c958b0a760fda63a65bfd2c8a6c">instance_</a>;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* CPURESOURCE_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_abf1f47e092e35461133f5399ff3192d2"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#abf1f47e092e35461133f5399ff3192d2">CPUResourceManager::socket::freeCore</a></div><div class="ttdeci">bool freeCore(int core_id)</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:128</div></div>
 <div class="ttc" id="classCPUResourceManager_html_aafa63b6d6d95d177b1356dd7f11a8197"><div class="ttname"><a href="classCPUResourceManager.html#aafa63b6d6d95d177b1356dd7f11a8197">CPUResourceManager::print</a></div><div class="ttdeci">void print()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:147</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1core_html_a33fb9d231490a906d53257ae1dc375d8"><div class="ttname"><a href="structCPUResourceManager_1_1core.html#a33fb9d231490a906d53257ae1dc375d8">CPUResourceManager::core::available</a></div><div class="ttdeci">bool available</div><div class="ttdef"><b>Definition:</b> CPUResource.h:20</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_af4062d48f2938b98b3baa7e1a251543c"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#af4062d48f2938b98b3baa7e1a251543c">CPUResourceManager::socket::busy_cores</a></div><div class="ttdeci">int busy_cores</div><div class="ttdef"><b>Definition:</b> CPUResource.h:27</div></div>
 <div class="ttc" id="structCPUResourceManager_1_1core_html"><div class="ttname"><a href="structCPUResourceManager_1_1core.html">CPUResourceManager::core</a></div><div class="ttdef"><b>Definition:</b> CPUResource.h:15</div></div>
+<div class="ttc" id="classCPUResourceManager_html_a970ba3f70e0270c469e2f0f7d97ed1cc"><div class="ttname"><a href="classCPUResourceManager.html#a970ba3f70e0270c469e2f0f7d97ed1cc">CPUResourceManager::sem_available_cores_</a></div><div class="ttdeci">semaphore sem_available_cores_</div><div class="ttdef"><b>Definition:</b> CPUResource.h:75</div></div>
+<div class="ttc" id="classCPUResourceManager_html_a6d828c958b0a760fda63a65bfd2c8a6c"><div class="ttname"><a href="classCPUResourceManager.html#a6d828c958b0a760fda63a65bfd2c8a6c">CPUResourceManager::instance_</a></div><div class="ttdeci">static CPUResourceManager * instance_</div><div class="ttdef"><b>Definition:</b> CPUResource.h:78</div></div>
 <div class="ttc" id="classsemaphore_html"><div class="ttname"><a href="classsemaphore.html">semaphore</a></div><div class="ttdef"><b>Definition:</b> lock.h:46</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1core_html_ab8efb2692ed91bb44b194b844937578c"><div class="ttname"><a href="structCPUResourceManager_1_1core.html#ab8efb2692ed91bb44b194b844937578c">CPUResourceManager::core::offset</a></div><div class="ttdeci">int offset</div><div class="ttdef"><b>Definition:</b> CPUResource.h:17</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_a59412f4bbf4c7d089ed304cdfd44533c"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#a59412f4bbf4c7d089ed304cdfd44533c">CPUResourceManager::socket::getNumberOfFreeCores</a></div><div class="ttdeci">int getNumberOfFreeCores()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:35</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_a73a04262674ab39dfef6051b982876ca"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#a73a04262674ab39dfef6051b982876ca">CPUResourceManager::socket::sem_in_socket_available_cores</a></div><div class="ttdeci">semaphore sem_in_socket_available_cores</div><div class="ttdef"><b>Definition:</b> CPUResource.h:28</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_a5978b71cfae25788ecff9245806549d2"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#a5978b71cfae25788ecff9245806549d2">CPUResourceManager::socket::cores</a></div><div class="ttdeci">std::vector&lt; core &gt; cores</div><div class="ttdef"><b>Definition:</b> CPUResource.h:30</div></div>
+<div class="ttc" id="classCPUResourceManager_html_ad2b7327d0c6d74b049758538a0d93fd5"><div class="ttname"><a href="classCPUResourceManager.html#ad2b7327d0c6d74b049758538a0d93fd5">CPUResourceManager::number_of_sockets_</a></div><div class="ttdeci">int number_of_sockets_</div><div class="ttdef"><b>Definition:</b> CPUResource.h:76</div></div>
 <div class="ttc" id="classCPUResourceManager_html_ae887635fe810dc22f2f459503739c0c5"><div class="ttname"><a href="classCPUResourceManager.html#ae887635fe810dc22f2f459503739c0c5">CPUResourceManager::freeCore</a></div><div class="ttdeci">void freeCore(int core_id=-1)</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:102</div></div>
+<div class="ttc" id="classCPUResourceManager_html_aada48903c2f46f4e092415b8a72bd71e"><div class="ttname"><a href="classCPUResourceManager.html#aada48903c2f46f4e092415b8a72bd71e">CPUResourceManager::getInstance</a></div><div class="ttdeci">static CPUResourceManager * getInstance()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:140</div></div>
 <div class="ttc" id="classCPUResourceManager_html"><div class="ttname"><a href="classCPUResourceManager.html">CPUResourceManager</a></div><div class="ttdef"><b>Definition:</b> CPUResource.h:13</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_a792d47c837bc94c02869e41c0573b8d8"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#a792d47c837bc94c02869e41c0573b8d8">CPUResourceManager::socket::addCore</a></div><div class="ttdeci">void addCore(int core_id)</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:118</div></div>
 <div class="ttc" id="structCPUResourceManager_1_1socket_html"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html">CPUResourceManager::socket</a></div><div class="ttdef"><b>Definition:</b> CPUResource.h:26</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_a3a81844ed450f2276fc595f89e57341f"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#a3a81844ed450f2276fc595f89e57341f">CPUResourceManager::socket::tryApplyCore</a></div><div class="ttdeci">int tryApplyCore()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:72</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_a15fbd18e812ae89c14a2ca344adfb570"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#a15fbd18e812ae89c14a2ca344adfb570">CPUResourceManager::socket::print</a></div><div class="ttdeci">void print()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:154</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_a9402a118ce912593c661c87b92931a24"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#a9402a118ce912593c661c87b92931a24">CPUResourceManager::socket::number_of_cores</a></div><div class="ttdeci">int number_of_cores</div><div class="ttdef"><b>Definition:</b> CPUResource.h:29</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1core_html_ae1af58103da5ee8d3a337815cb0570a4"><div class="ttname"><a href="structCPUResourceManager_1_1core.html#ae1af58103da5ee8d3a337815cb0570a4">CPUResourceManager::core::id</a></div><div class="ttdeci">int id</div><div class="ttdef"><b>Definition:</b> CPUResource.h:24</div></div>
+<div class="ttc" id="classCPUResourceManager_html_ac3600b7c8cc1f98a8ecca1c2804edb64"><div class="ttname"><a href="classCPUResourceManager.html#ac3600b7c8cc1f98a8ecca1c2804edb64">CPUResourceManager::sockets_</a></div><div class="ttdeci">std::vector&lt; socket &gt; sockets_</div><div class="ttdef"><b>Definition:</b> CPUResource.h:77</div></div>
 <div class="ttc" id="classCPUResourceManager_html_a842403c5f8bb0da1f94fc98615989390"><div class="ttname"><a href="classCPUResourceManager.html#a842403c5f8bb0da1f94fc98615989390">CPUResourceManager::applyCore</a></div><div class="ttdeci">int applyCore()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:54</div></div>
 <div class="ttc" id="classCPUResourceManager_html_a50013a45a5680fe0ab849ba276d58aae"><div class="ttname"><a href="classCPUResourceManager.html#a50013a45a5680fe0ab849ba276d58aae">CPUResourceManager::tryApplyCore</a></div><div class="ttdeci">int tryApplyCore()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:40</div></div>
+<div class="ttc" id="classCPUResourceManager_html_a40c6ef3561cb9293066d4415e9d16f34"><div class="ttname"><a href="classCPUResourceManager.html#a40c6ef3561cb9293066d4415e9d16f34">CPUResourceManager::CPUResourceManager</a></div><div class="ttdeci">CPUResourceManager()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:14</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_ac1ab2dae4333f08171225cc3e3cc4bcc"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#ac1ab2dae4333f08171225cc3e3cc4bcc">CPUResourceManager::socket::applyCore</a></div><div class="ttdeci">int applyCore()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:88</div></div>
+<div class="ttc" id="classCPUResourceManager_html_aa9262590db6b61f3a96ff6dc86f02f84"><div class="ttname"><a href="classCPUResourceManager.html#aa9262590db6b61f3a96ff6dc86f02f84">CPUResourceManager::~CPUResourceManager</a></div><div class="ttdeci">virtual ~CPUResourceManager()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:31</div></div>
+<div class="ttc" id="structCPUResourceManager_1_1socket_html_af03cda04cb505091acbc176ec22061e0"><div class="ttname"><a href="structCPUResourceManager_1_1socket.html#af03cda04cb505091acbc176ec22061e0">CPUResourceManager::socket::socket</a></div><div class="ttdeci">socket()</div><div class="ttdef"><b>Definition:</b> CPUResource.cpp:114</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_9ddeeb997bc2af5957d3bd0d4b3d2f72.html">Resource</a></li><li class="navelem"><b>CPUResource.h</b></li>
+    <li class="navelem"><a class="el" href="dir_9ddeeb997bc2af5957d3bd0d4b3d2f72.html">Resource</a></li><li class="navelem"><a class="el" href="CPUResource_8h.html">CPUResource.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

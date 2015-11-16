@@ -1,4 +1,4 @@
-.TH "Mapping" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Mapping" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,17 +6,39 @@ Mapping \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Mapping\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "bool \fBatomicPushExpressionMapping\fP (ExpressionMapping &expression_mapping)"
+.RI "\fBMapping\fP ()"
 .br
 .ti -1c
-.RI "ExpressionMapping \fBatomicPopExpressionMapping\fP (int i)"
+.RI "virtual \fB~Mapping\fP ()"
 .br
 .ti -1c
-.RI "std::vector< ExpressionMapping > \fBgetMapping\fP ()"
+.RI "bool \fBatomicPushExpressionMapping\fP (\fBExpressionMapping\fP &expression_mapping)"
+.br
+.ti -1c
+.RI "\fBExpressionMapping\fP \fBatomicPopExpressionMapping\fP (int i)"
+.br
+.ti -1c
+.RI "std::vector< \fBExpressionMapping\fP > \fBgetMapping\fP ()"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "std::vector< \fBExpressionMapping\fP > \fBExpressionMappingArray_\fP"
 .br
 .in -1c
 .SS "Friends"
@@ -26,7 +48,41 @@ Mapping \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Mapping::Mapping ()"
+
+.SS "Mapping::~Mapping ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBExpressionMapping\fP Mapping::atomicPopExpressionMapping (inti)"
+
+.PP
+References ExpressionMappingArray_\&.
+.SS "bool Mapping::atomicPushExpressionMapping (\fBExpressionMapping\fP &expression_mapping)"
+
+.PP
+References ExpressionMappingArray_\&.
+.SS "std::vector< \fBExpressionMapping\fP > Mapping::getMapping ()"
+
+.PP
+References ExpressionMappingArray_\&.
+.SS "template<class Archive > void Mapping::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References ExpressionMappingArray_\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<\fBExpressionMapping\fP> Mapping::ExpressionMappingArray_\fC [private]\fP"
+
+.PP
+Referenced by atomicPopExpressionMapping(), atomicPushExpressionMapping(), getMapping(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

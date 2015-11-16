@@ -1,4 +1,4 @@
-.TH "Column_atts" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Column_atts" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Column_atts \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBdatatype\fP"
@@ -28,7 +30,33 @@ Column_atts \-
 .RI "\fBNode\fP * \fBcol_list\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Column_atts::col_list"
+
+.PP
+Referenced by newColumnAtts(), and yyuserAction()\&.
+.SS "int Column_atts::datatype"
+
+.PP
+Referenced by CreateTable(), newColumnAtts(), and yyuserAction()\&.
+.SS "int Column_atts::num1"
+
+.PP
+Referenced by newColumnAtts(), and yyuserAction()\&.
+.SS "double Column_atts::num2"
+
+.PP
+Referenced by newColumnAtts(), and yyuserAction()\&.
+.SS "char* Column_atts::s"
+
+.PP
+Referenced by newColumnAtts(), and yyuserAction()\&.
+.SS "\fBnodetype\fP Column_atts::type"
+
+.PP
+Referenced by newColumnAtts()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

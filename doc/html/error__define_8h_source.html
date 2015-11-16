@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/error_define.h Source File</title>
+<title>Claims: common/error_define.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('error__define_8h_source.html','');});
 <div class="title">error_define.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="error__define_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright [2012-2015] DaSE@ECNU</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Licensed to the Apache Software Foundation (ASF) under one or more</span></div>
@@ -129,7 +129,7 @@ $(document).ready(function(){initNavTree('error__define_8h_source.html','');});
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> *  Created on: Aug 5, 2015</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"> *      Author: yukai</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment"> *       Email: yukai2014@gmail.com</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"> * </span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment"> * Description:</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment"> */</span></div>
@@ -139,51 +139,89 @@ $(document).ready(function(){initNavTree('error__define_8h_source.html','');});
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment"> * have to add Error Message in error_no.h and error_no.cpp, if new error no is add</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"> * have to add Error Message in error_no.h and error_no.cpp, if new error no is</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment"> * add</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespaceclaims.html">   38</a></span>&#160;<span class="keyword">namespace </span>claims {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">namespace </span>common {</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html">   39</a></span>&#160;<span class="keyword">namespace </span>common {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kErrorMaxNumber = 10000;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* kErrorMessage[kErrorMaxNumber];</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#aae57c825cc2dca253bd5ca58eb45b508">   41</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#aae57c825cc2dca253bd5ca58eb45b508">kErrorMaxNumber</a> = 10000;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a38b6efb616f1ee8b49740e1aadcd39b3">   42</a></span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="namespaceclaims_1_1common.html#a38b6efb616f1ee8b49740e1aadcd39b3">kErrorMessage</a>[<a class="code" href="namespaceclaims_1_1common.html#aae57c825cc2dca253bd5ca58eb45b508">kErrorMaxNumber</a>];</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kSuccess = EXIT_SUCCESS;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kFailure = EXIT_FAILURE;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a1409c3e8c322b1e544dc36a85ec61095">   44</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a1409c3e8c322b1e544dc36a85ec61095">kSuccess</a> = EXIT_SUCCESS;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#aba2fc17762fc1d5754eaf685bafb3818">   45</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#aba2fc17762fc1d5754eaf685bafb3818">kFailure</a> = EXIT_FAILURE;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">/* errorno begin from here   */</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">/* errorno for common  -1 ~ -1000 */</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kTypeError = -1;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kNotInit = -2;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a69378125758d0c84cc5b90ab8deabf6c">   50</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a69378125758d0c84cc5b90ab8deabf6c">kTypeError</a> = -1;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a30f8f70f69e6124114c66bc1871e7bf8">   51</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a30f8f70f69e6124114c66bc1871e7bf8">kNotInit</a> = -2;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">/* errorno for SQL parser -1001 ~ -2000  */</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kNoTableFound = -1001;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#ae7d3d6f62e529a0b506f20d6c8ed7ac7">   54</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#ae7d3d6f62e529a0b506f20d6c8ed7ac7">kNoTableFound</a> = -1001;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">/* errorno for Loader -2001 ~ -3000  */</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">/* errorno for codegen -3001 ~ -4000 */</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kTestError = -3001;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">/* errorno for logical_operator -4001 ~ -5000*/</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kUninitializedJoinPolicy = -4001;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kGeneratePlanContextFailed = -4002;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">/* errorno for codegen -3001 ~ -4000 */</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a7db74bde4a2d18e340c63a57098ea59d">   59</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a7db74bde4a2d18e340c63a57098ea59d">kTestError</a> = -3001;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">/* errorno for logical_operator -4001 ~ -5000*/</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#af95897682fa0a13891aa6ecae05c2a5d">   62</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#af95897682fa0a13891aa6ecae05c2a5d">kUninitializedJoinPolicy</a> = -4001;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#abe4687b611dcbed42bd7d9e254f861e9">   64</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#abe4687b611dcbed42bd7d9e254f861e9">kGeneratePlanContextFailed</a> = -4002;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">/* errorno for physical_operator -5001 ~ -6000 */</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> kGenerateSubPhyPlanFailed = -5001;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}  <span class="comment">// end namespace common</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}  <span class="comment">// end namespace claims</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif  // COMMON_ERROR_DEFINE_H_</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a617ab35815b10f87301a0be56dbad293">   66</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a617ab35815b10f87301a0be56dbad293">kGenerateDataflowFailed</a> = -4003;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">/* errorno for physical_operator -5001 ~ -6000 */</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#ad40183ecbe8fa52f7d4643087f00c6fd">   69</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#ad40183ecbe8fa52f7d4643087f00c6fd">kGenerateSubPhyPlanFailed</a> = -5001;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a974157fd735ce6cb31a27f1ec80ba96a">   70</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a974157fd735ce6cb31a27f1ec80ba96a">kNoPartitionIdScan</a> = -5002;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">// the optimization of filter function failed;</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#ac28c43791403424a1f2002bdf12d21a5">   72</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#ac28c43791403424a1f2002bdf12d21a5">kCodegenFailed</a> = -5003;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">/* errorno for stmt_handler -14001 ~ -15000*/</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#aacad3b09a5a68236cf4267714759b5b2">   75</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#aacad3b09a5a68236cf4267714759b5b2">kStmtHandlerOk</a> = -14001;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#af305bfb6db0830ab7ecd22671618fd31">   76</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#af305bfb6db0830ab7ecd22671618fd31">kStmtHandlerTableExistDuringCreate</a> = -14002;</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a88ce13d15915d80cc4d7d639e64307fa">   77</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a88ce13d15915d80cc4d7d639e64307fa">kStmtHandlerTypeNotSupport</a> = -14003;</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a387754d2c58a5597ad60c17421043ef9">   78</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a387754d2c58a5597ad60c17421043ef9">kStmtHandlerCreateTableSuccess</a> = -14004;</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#abf4e446edf6a4b2e5a3f931f9d411b20">   79</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#abf4e446edf6a4b2e5a3f931f9d411b20">kStmtHandlerTableNotExistDuringLoad</a> = -14005;</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a7042175754dc118fc1a754f0726e337e">   80</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a7042175754dc118fc1a754f0726e337e">kStmtHandlerLoadDataSuccess</a> = -14006;</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#aeabf3abf5ca0351e34b3d5302c3afa00">   81</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#aeabf3abf5ca0351e34b3d5302c3afa00">kStmtHandlerTableNotExistDuringInsert</a> = -14007;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#a769b2ac3c19d69111627c02996320cd5">   82</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#a769b2ac3c19d69111627c02996320cd5">kStmtHandlerInsertDataSuccess</a> = -14008;</div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="namespaceclaims_1_1common.html#ac1fa59a10b7155e2f26077d8abebd4e3">   83</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">int</span> <a class="code" href="namespaceclaims_1_1common.html#ac1fa59a10b7155e2f26077d8abebd4e3">kStmtHandlerInsertNoValue</a> = -14009;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}  <span class="comment">// end namespace common</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}  <span class="comment">// end namespace claims</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#endif  // COMMON_ERROR_DEFINE_H_</span></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_af305bfb6db0830ab7ecd22671618fd31"><div class="ttname"><a href="namespaceclaims_1_1common.html#af305bfb6db0830ab7ecd22671618fd31">claims::common::kStmtHandlerTableExistDuringCreate</a></div><div class="ttdeci">const int kStmtHandlerTableExistDuringCreate</div><div class="ttdef"><b>Definition:</b> error_define.h:76</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a30f8f70f69e6124114c66bc1871e7bf8"><div class="ttname"><a href="namespaceclaims_1_1common.html#a30f8f70f69e6124114c66bc1871e7bf8">claims::common::kNotInit</a></div><div class="ttdeci">const int kNotInit</div><div class="ttdef"><b>Definition:</b> error_define.h:51</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_aacad3b09a5a68236cf4267714759b5b2"><div class="ttname"><a href="namespaceclaims_1_1common.html#aacad3b09a5a68236cf4267714759b5b2">claims::common::kStmtHandlerOk</a></div><div class="ttdeci">const int kStmtHandlerOk</div><div class="ttdef"><b>Definition:</b> error_define.h:75</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_ae7d3d6f62e529a0b506f20d6c8ed7ac7"><div class="ttname"><a href="namespaceclaims_1_1common.html#ae7d3d6f62e529a0b506f20d6c8ed7ac7">claims::common::kNoTableFound</a></div><div class="ttdeci">const int kNoTableFound</div><div class="ttdef"><b>Definition:</b> error_define.h:54</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a387754d2c58a5597ad60c17421043ef9"><div class="ttname"><a href="namespaceclaims_1_1common.html#a387754d2c58a5597ad60c17421043ef9">claims::common::kStmtHandlerCreateTableSuccess</a></div><div class="ttdeci">const int kStmtHandlerCreateTableSuccess</div><div class="ttdef"><b>Definition:</b> error_define.h:78</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_aba2fc17762fc1d5754eaf685bafb3818"><div class="ttname"><a href="namespaceclaims_1_1common.html#aba2fc17762fc1d5754eaf685bafb3818">claims::common::kFailure</a></div><div class="ttdeci">const int kFailure</div><div class="ttdef"><b>Definition:</b> error_define.h:45</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_abf4e446edf6a4b2e5a3f931f9d411b20"><div class="ttname"><a href="namespaceclaims_1_1common.html#abf4e446edf6a4b2e5a3f931f9d411b20">claims::common::kStmtHandlerTableNotExistDuringLoad</a></div><div class="ttdeci">const int kStmtHandlerTableNotExistDuringLoad</div><div class="ttdef"><b>Definition:</b> error_define.h:79</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_abe4687b611dcbed42bd7d9e254f861e9"><div class="ttname"><a href="namespaceclaims_1_1common.html#abe4687b611dcbed42bd7d9e254f861e9">claims::common::kGeneratePlanContextFailed</a></div><div class="ttdeci">const int kGeneratePlanContextFailed</div><div class="ttdef"><b>Definition:</b> error_define.h:64</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a1409c3e8c322b1e544dc36a85ec61095"><div class="ttname"><a href="namespaceclaims_1_1common.html#a1409c3e8c322b1e544dc36a85ec61095">claims::common::kSuccess</a></div><div class="ttdeci">const int kSuccess</div><div class="ttdef"><b>Definition:</b> error_define.h:44</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a7042175754dc118fc1a754f0726e337e"><div class="ttname"><a href="namespaceclaims_1_1common.html#a7042175754dc118fc1a754f0726e337e">claims::common::kStmtHandlerLoadDataSuccess</a></div><div class="ttdeci">const int kStmtHandlerLoadDataSuccess</div><div class="ttdef"><b>Definition:</b> error_define.h:80</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a7db74bde4a2d18e340c63a57098ea59d"><div class="ttname"><a href="namespaceclaims_1_1common.html#a7db74bde4a2d18e340c63a57098ea59d">claims::common::kTestError</a></div><div class="ttdeci">const int kTestError</div><div class="ttdef"><b>Definition:</b> error_define.h:59</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_ac1fa59a10b7155e2f26077d8abebd4e3"><div class="ttname"><a href="namespaceclaims_1_1common.html#ac1fa59a10b7155e2f26077d8abebd4e3">claims::common::kStmtHandlerInsertNoValue</a></div><div class="ttdeci">const int kStmtHandlerInsertNoValue</div><div class="ttdef"><b>Definition:</b> error_define.h:83</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a769b2ac3c19d69111627c02996320cd5"><div class="ttname"><a href="namespaceclaims_1_1common.html#a769b2ac3c19d69111627c02996320cd5">claims::common::kStmtHandlerInsertDataSuccess</a></div><div class="ttdeci">const int kStmtHandlerInsertDataSuccess</div><div class="ttdef"><b>Definition:</b> error_define.h:82</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a974157fd735ce6cb31a27f1ec80ba96a"><div class="ttname"><a href="namespaceclaims_1_1common.html#a974157fd735ce6cb31a27f1ec80ba96a">claims::common::kNoPartitionIdScan</a></div><div class="ttdeci">const int kNoPartitionIdScan</div><div class="ttdef"><b>Definition:</b> error_define.h:70</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a38b6efb616f1ee8b49740e1aadcd39b3"><div class="ttname"><a href="namespaceclaims_1_1common.html#a38b6efb616f1ee8b49740e1aadcd39b3">claims::common::kErrorMessage</a></div><div class="ttdeci">static const char * kErrorMessage[kErrorMaxNumber]</div><div class="ttdef"><b>Definition:</b> error_define.h:42</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a69378125758d0c84cc5b90ab8deabf6c"><div class="ttname"><a href="namespaceclaims_1_1common.html#a69378125758d0c84cc5b90ab8deabf6c">claims::common::kTypeError</a></div><div class="ttdeci">const int kTypeError</div><div class="ttdef"><b>Definition:</b> error_define.h:50</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_ad40183ecbe8fa52f7d4643087f00c6fd"><div class="ttname"><a href="namespaceclaims_1_1common.html#ad40183ecbe8fa52f7d4643087f00c6fd">claims::common::kGenerateSubPhyPlanFailed</a></div><div class="ttdeci">const int kGenerateSubPhyPlanFailed</div><div class="ttdef"><b>Definition:</b> error_define.h:69</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_af95897682fa0a13891aa6ecae05c2a5d"><div class="ttname"><a href="namespaceclaims_1_1common.html#af95897682fa0a13891aa6ecae05c2a5d">claims::common::kUninitializedJoinPolicy</a></div><div class="ttdeci">const int kUninitializedJoinPolicy</div><div class="ttdef"><b>Definition:</b> error_define.h:62</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_aae57c825cc2dca253bd5ca58eb45b508"><div class="ttname"><a href="namespaceclaims_1_1common.html#aae57c825cc2dca253bd5ca58eb45b508">claims::common::kErrorMaxNumber</a></div><div class="ttdeci">const int kErrorMaxNumber</div><div class="ttdef"><b>Definition:</b> error_define.h:41</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_ac28c43791403424a1f2002bdf12d21a5"><div class="ttname"><a href="namespaceclaims_1_1common.html#ac28c43791403424a1f2002bdf12d21a5">claims::common::kCodegenFailed</a></div><div class="ttdeci">const int kCodegenFailed</div><div class="ttdef"><b>Definition:</b> error_define.h:72</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a88ce13d15915d80cc4d7d639e64307fa"><div class="ttname"><a href="namespaceclaims_1_1common.html#a88ce13d15915d80cc4d7d639e64307fa">claims::common::kStmtHandlerTypeNotSupport</a></div><div class="ttdeci">const int kStmtHandlerTypeNotSupport</div><div class="ttdef"><b>Definition:</b> error_define.h:77</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_aeabf3abf5ca0351e34b3d5302c3afa00"><div class="ttname"><a href="namespaceclaims_1_1common.html#aeabf3abf5ca0351e34b3d5302c3afa00">claims::common::kStmtHandlerTableNotExistDuringInsert</a></div><div class="ttdeci">const int kStmtHandlerTableNotExistDuringInsert</div><div class="ttdef"><b>Definition:</b> error_define.h:81</div></div>
+<div class="ttc" id="namespaceclaims_1_1common_html_a617ab35815b10f87301a0be56dbad293"><div class="ttname"><a href="namespaceclaims_1_1common.html#a617ab35815b10f87301a0be56dbad293">claims::common::kGenerateDataflowFailed</a></div><div class="ttdeci">const int kGenerateDataflowFailed</div><div class="ttdef"><b>Definition:</b> error_define.h:66</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><b>error_define.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="error__define_8h.html">error_define.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

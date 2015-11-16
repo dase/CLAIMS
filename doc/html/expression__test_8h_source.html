@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: common/Expression/expression_test.h Source File</title>
+<title>Claims: common/Expression/expression_test.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('expression__test_8h_source.html','');}
 <div class="title">expression_test.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="expression__test_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * expression_test.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Aug 26, 2014</span></div>
@@ -122,109 +122,128 @@ $(document).ready(function(){initNavTree('expression__test_8h_source.html','');}
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include&lt;string.h&gt;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include&lt;string&gt;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include&lt;math.h&gt;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;queryfunc.h&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;qnode.h&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="queryfunc_8h.html">queryfunc.h</a>&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="qnode_8h.html">qnode.h</a>&quot;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">using namespace </span>std;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#define VAL_SIZE 256</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor"></span><span class="keywordtype">int</span> test_string_like(<span class="keywordtype">char</span> *str,<span class="keywordtype">char</span> *pat)</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="expression__test_8h.html#aaa8008886226ab2871b307c456cfdbb7">   20</a></span>&#160;<span class="preprocessor">#define VAL_SIZE 256</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="expression__test_8h.html#a80f64661b86cd30decd6ee17532bfd6f">   21</a></span>&#160;<span class="preprocessor"></span><span class="keywordtype">int</span> <a class="code" href="expression__test_8h.html#a80f64661b86cd30decd6ee17532bfd6f">test_string_like</a>(<span class="keywordtype">char</span> *str,<span class="keywordtype">char</span> *pat)</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="structFuncCallInfoData.html">FuncCallInfo</a> finfo;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">char</span> val[VAL_SIZE];</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    finfo-&gt;args[0]=str;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    finfo-&gt;args[1]=pat;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    finfo-&gt;results=(<span class="keywordtype">void</span> *)val;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    finfo-&gt;nargs=2;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    string_like(finfo);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">return</span> *(<span class="keywordtype">bool</span> *)finfo-&gt;results;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">char</span> val[<a class="code" href="expression__test_8h.html#aaa8008886226ab2871b307c456cfdbb7">VAL_SIZE</a>];</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[0]=str;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[1]=pat;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>=(<span class="keywordtype">void</span> *)val;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a64eec49d16836d6793ac1d6100231a23">nargs</a>=2;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="queryfunc_8h.html#a71f6e351896c39de231687508f8b0f24">string_like</a>(finfo);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">return</span> *(<span class="keywordtype">bool</span> *)finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keywordtype">string</span> test_string_upper(<span class="keywordtype">char</span> * str)</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="expression__test_8h.html#afa0276dd43e43054daee5cccdaa67b74">   32</a></span>&#160;<span class="keywordtype">string</span> <a class="code" href="expression__test_8h.html#afa0276dd43e43054daee5cccdaa67b74">test_string_upper</a>(<span class="keywordtype">char</span> * str)</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="structFuncCallInfoData.html">FuncCallInfo</a> finfo;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">char</span> val[VAL_SIZE];</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    finfo-&gt;args[0]=str;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    finfo-&gt;results=(<span class="keywordtype">void</span> *)val;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    finfo-&gt;nargs=1;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    string_upper(finfo);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;results);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">char</span> val[<a class="code" href="expression__test_8h.html#aaa8008886226ab2871b307c456cfdbb7">VAL_SIZE</a>];</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[0]=str;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>=(<span class="keywordtype">void</span> *)val;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a64eec49d16836d6793ac1d6100231a23">nargs</a>=1;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="queryfunc_8h.html#ac100eea58f3660ec781f228cb367152b">string_upper</a>(finfo);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">string</span> test_string_substring(<span class="keywordtype">char</span> *str,<span class="keywordtype">int</span> frompoint,<span class="keywordtype">int</span> endpoint)</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="expression__test_8h.html#a81fa7c747b22553ad5bdb5c001f4df21">   42</a></span>&#160;<span class="keywordtype">string</span> <a class="code" href="expression__test_8h.html#a81fa7c747b22553ad5bdb5c001f4df21">test_string_substring</a>(<span class="keywordtype">char</span> *str,<span class="keywordtype">int</span> frompoint,<span class="keywordtype">int</span> endpoint)</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="structFuncCallInfoData.html">FuncCallInfo</a> finfo;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">char</span> val[VAL_SIZE];</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    finfo-&gt;args[0]=str;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    finfo-&gt;args[1]=&amp;frompoint;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    finfo-&gt;args[2]=&amp;endpoint;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    finfo-&gt;results=(<span class="keywordtype">void</span> *)val;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    finfo-&gt;nargs=3;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    string_substring(finfo);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;results);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">char</span> val[<a class="code" href="expression__test_8h.html#aaa8008886226ab2871b307c456cfdbb7">VAL_SIZE</a>];</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[0]=str;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[1]=&amp;frompoint;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[2]=&amp;endpoint;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>=(<span class="keywordtype">void</span> *)val;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a64eec49d16836d6793ac1d6100231a23">nargs</a>=3;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="queryfunc_8h.html#a3701393237b721d6ced2f5176ce3a39f">string_substring</a>(finfo);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>);</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keywordtype">string</span> test_string_both_trim(<span class="keywordtype">char</span> *str,<span class="keywordtype">char</span> *trimstr)</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="expression__test_8h.html#a7a66b27d4edfb1c0bbea332508a330fe">   55</a></span>&#160;<span class="keywordtype">string</span> <a class="code" href="expression__test_8h.html#a7a66b27d4edfb1c0bbea332508a330fe">test_string_both_trim</a>(<span class="keywordtype">char</span> *str,<span class="keywordtype">char</span> *trimstr)</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;{</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="structFuncCallInfoData.html">FuncCallInfo</a> finfo;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">char</span> val[VAL_SIZE];</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    finfo-&gt;args[0]=str;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    finfo-&gt;args[1]=trimstr;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    finfo-&gt;results=(<span class="keywordtype">void</span> *)val;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    finfo-&gt;nargs=2;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    string_both_trim(finfo);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;results);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">char</span> val[<a class="code" href="expression__test_8h.html#aaa8008886226ab2871b307c456cfdbb7">VAL_SIZE</a>];</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[0]=str;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[1]=trimstr;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>=(<span class="keywordtype">void</span> *)val;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a64eec49d16836d6793ac1d6100231a23">nargs</a>=2;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <a class="code" href="queryfunc_8h.html#aab468f65c231c2950cb08f22d8fdeb90">string_both_trim</a>(finfo);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>);</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keywordtype">string</span> test_string_leading_trim(<span class="keywordtype">char</span> *str,<span class="keywordtype">char</span> *trimstr)</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="expression__test_8h.html#a01ffb9b498d4e2244d33d7b881515212">   66</a></span>&#160;<span class="keywordtype">string</span> <a class="code" href="expression__test_8h.html#a01ffb9b498d4e2244d33d7b881515212">test_string_leading_trim</a>(<span class="keywordtype">char</span> *str,<span class="keywordtype">char</span> *trimstr)</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;{</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="structFuncCallInfoData.html">FuncCallInfo</a> finfo;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">char</span> val[VAL_SIZE];</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    finfo-&gt;args[0]=str;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    finfo-&gt;args[1]=trimstr;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    finfo-&gt;results=(<span class="keywordtype">void</span> *)val;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    finfo-&gt;nargs=2;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    string_leading_trim(finfo);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;results);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">char</span> val[<a class="code" href="expression__test_8h.html#aaa8008886226ab2871b307c456cfdbb7">VAL_SIZE</a>];</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[0]=str;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[1]=trimstr;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>=(<span class="keywordtype">void</span> *)val;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a64eec49d16836d6793ac1d6100231a23">nargs</a>=2;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="queryfunc_8h.html#ad57d8debfbc623b2687d5647c2927c5d">string_leading_trim</a>(finfo);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>);</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keywordtype">string</span> test_string_trailing_trim(<span class="keywordtype">char</span> *str,<span class="keywordtype">char</span> *trimstr)</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="expression__test_8h.html#a78203e69a7aea9b7b21e7a27e08dfdb3">   77</a></span>&#160;<span class="keywordtype">string</span> <a class="code" href="expression__test_8h.html#a78203e69a7aea9b7b21e7a27e08dfdb3">test_string_trailing_trim</a>(<span class="keywordtype">char</span> *str,<span class="keywordtype">char</span> *trimstr)</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;{</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="structFuncCallInfoData.html">FuncCallInfo</a> finfo;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">char</span> val[VAL_SIZE];</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    finfo-&gt;args[0]=str;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    finfo-&gt;args[1]=trimstr;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    finfo-&gt;results=(<span class="keywordtype">void</span> *)val;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    finfo-&gt;nargs=2;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    string_trailing_trim(finfo);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;results);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">char</span> val[<a class="code" href="expression__test_8h.html#aaa8008886226ab2871b307c456cfdbb7">VAL_SIZE</a>];</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[0]=str;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">args</a>[1]=trimstr;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>=(<span class="keywordtype">void</span> *)val;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    finfo-&gt;<a class="code" href="structFuncCallInfoData.html#a64eec49d16836d6793ac1d6100231a23">nargs</a>=2;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <a class="code" href="queryfunc_8h.html#a8112790ea12adc08599c97871bebed46">string_trailing_trim</a>(finfo);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">return</span> string((<span class="keywordtype">char</span> *)finfo-&gt;<a class="code" href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">results</a>);</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;}</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;TEST(DATA_TYPE,STRING_LIKE)</div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="expression__test_8h.html#acc539375cf53bf0ecb5daffa7fadefe7">   88</a></span>&#160;<a class="code" href="table_8h.html#ab946e2e7f7679350627acfded8e2658b">TEST</a>(DATA_TYPE,STRING_LIKE)</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;{</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    EXPECT_EQ(1,test_string_like(<span class="stringliteral">&quot;abcdefe&quot;</span>,<span class="stringliteral">&quot;%a_c%&quot;</span>));</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    EXPECT_EQ(1,<a class="code" href="expression__test_8h.html#a80f64661b86cd30decd6ee17532bfd6f">test_string_like</a>(<span class="stringliteral">&quot;abcdefe&quot;</span>,<span class="stringliteral">&quot;%a_c%&quot;</span>));</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;TEST(DATA_TYPE,STRING_UPPER)</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="expression__test_8h.html#ae305bf1696299062b74f20ecb974db3b">   92</a></span>&#160;<a class="code" href="table_8h.html#ab946e2e7f7679350627acfded8e2658b">TEST</a>(DATA_TYPE,STRING_UPPER)</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;{</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;  STRING_UPPER+-*/STRING &quot;</span>,test_string_upper(<span class="stringliteral">&quot;  string_upper+-*/string &quot;</span>));</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;  STRING_UPPER+-*/STRING &quot;</span>,<a class="code" href="expression__test_8h.html#afa0276dd43e43054daee5cccdaa67b74">test_string_upper</a>(<span class="stringliteral">&quot;  string_upper+-*/string &quot;</span>));</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;TEST(DATA_TYPE,STRING_SUBSTRING)</div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="expression__test_8h.html#ae09a94b9266d8b6d0561b9215a01e001">   96</a></span>&#160;<a class="code" href="table_8h.html#ab946e2e7f7679350627acfded8e2658b">TEST</a>(DATA_TYPE,STRING_SUBSTRING)</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;{</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;string&quot;</span>,test_string_substring(<span class="stringliteral">&quot; string_substring &quot;</span>,1,7));</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;string&quot;</span>,<a class="code" href="expression__test_8h.html#a81fa7c747b22553ad5bdb5c001f4df21">test_string_substring</a>(<span class="stringliteral">&quot; string_substring &quot;</span>,1,7));</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;}</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;TEST(DATA_TYPE,STRING_BOTH_TRIM)</div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="expression__test_8h.html#a181f9327f18197a8c8006678f4813964">  100</a></span>&#160;<a class="code" href="table_8h.html#ab946e2e7f7679350627acfded8e2658b">TEST</a>(DATA_TYPE,STRING_BOTH_TRIM)</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;{</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;trim_blank&quot;</span>,test_string_both_trim(<span class="stringliteral">&quot;  trim_blank   &quot;</span>,<span class="stringliteral">&quot; &quot;</span>));</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;trim_blank&quot;</span>,<a class="code" href="expression__test_8h.html#a7a66b27d4edfb1c0bbea332508a330fe">test_string_both_trim</a>(<span class="stringliteral">&quot;  trim_blank   &quot;</span>,<span class="stringliteral">&quot; &quot;</span>));</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;}</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;TEST(DATA_TYPE,STRING_LEADING_TRIM)</div>
+<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="expression__test_8h.html#a5e1115e1149655eead3a8bb50f5047c1">  104</a></span>&#160;<a class="code" href="table_8h.html#ab946e2e7f7679350627acfded8e2658b">TEST</a>(DATA_TYPE,STRING_LEADING_TRIM)</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;{</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;trim_blank   &quot;</span>,test_string_leading_trim(<span class="stringliteral">&quot;  trim_blank   &quot;</span>,<span class="stringliteral">&quot; &quot;</span>));</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;trim_blank   &quot;</span>,<a class="code" href="expression__test_8h.html#a01ffb9b498d4e2244d33d7b881515212">test_string_leading_trim</a>(<span class="stringliteral">&quot;  trim_blank   &quot;</span>,<span class="stringliteral">&quot; &quot;</span>));</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;}</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;TEST(DATA_TYPE,STRING_TRAILING_TRIM)</div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="expression__test_8h.html#a70cd7192f02104e16e25de9178d808cf">  108</a></span>&#160;<a class="code" href="table_8h.html#ab946e2e7f7679350627acfded8e2658b">TEST</a>(DATA_TYPE,STRING_TRAILING_TRIM)</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;{</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;  trim_blank&quot;</span>,test_string_trailing_trim(<span class="stringliteral">&quot;  trim_blank   &quot;</span>,<span class="stringliteral">&quot; &quot;</span>));</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    EXPECT_STREQ(<span class="stringliteral">&quot;  trim_blank&quot;</span>,<a class="code" href="expression__test_8h.html#a78203e69a7aea9b7b21e7a27e08dfdb3">test_string_trailing_trim</a>(<span class="stringliteral">&quot;  trim_blank   &quot;</span>,<span class="stringliteral">&quot; &quot;</span>));</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* EXPRESSION_TEST_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="queryfunc_8h_html_a71f6e351896c39de231687508f8b0f24"><div class="ttname"><a href="queryfunc_8h.html#a71f6e351896c39de231687508f8b0f24">string_like</a></div><div class="ttdeci">void string_like(FuncCallInfo fcinfo)</div><div class="ttdef"><b>Definition:</b> queryfunc.h:728</div></div>
+<div class="ttc" id="expression__test_8h_html_a78203e69a7aea9b7b21e7a27e08dfdb3"><div class="ttname"><a href="expression__test_8h.html#a78203e69a7aea9b7b21e7a27e08dfdb3">test_string_trailing_trim</a></div><div class="ttdeci">string test_string_trailing_trim(char *str, char *trimstr)</div><div class="ttdef"><b>Definition:</b> expression_test.h:77</div></div>
+<div class="ttc" id="expression__test_8h_html_aaa8008886226ab2871b307c456cfdbb7"><div class="ttname"><a href="expression__test_8h.html#aaa8008886226ab2871b307c456cfdbb7">VAL_SIZE</a></div><div class="ttdeci">#define VAL_SIZE</div><div class="ttdef"><b>Definition:</b> expression_test.h:20</div></div>
+<div class="ttc" id="queryfunc_8h_html_a8112790ea12adc08599c97871bebed46"><div class="ttname"><a href="queryfunc_8h.html#a8112790ea12adc08599c97871bebed46">string_trailing_trim</a></div><div class="ttdeci">void string_trailing_trim(FuncCallInfo fcinfo)</div><div class="ttdef"><b>Definition:</b> queryfunc.h:720</div></div>
+<div class="ttc" id="structFuncCallInfoData_html_a64eec49d16836d6793ac1d6100231a23"><div class="ttname"><a href="structFuncCallInfoData.html#a64eec49d16836d6793ac1d6100231a23">FuncCallInfoData::nargs</a></div><div class="ttdeci">int nargs</div><div class="ttdef"><b>Definition:</b> qnode.h:25</div></div>
+<div class="ttc" id="queryfunc_8h_html_ac100eea58f3660ec781f228cb367152b"><div class="ttname"><a href="queryfunc_8h.html#ac100eea58f3660ec781f228cb367152b">string_upper</a></div><div class="ttdeci">void string_upper(FuncCallInfo fcinfo)</div><div class="ttdef"><b>Definition:</b> queryfunc.h:738</div></div>
+<div class="ttc" id="expression__test_8h_html_a7a66b27d4edfb1c0bbea332508a330fe"><div class="ttname"><a href="expression__test_8h.html#a7a66b27d4edfb1c0bbea332508a330fe">test_string_both_trim</a></div><div class="ttdeci">string test_string_both_trim(char *str, char *trimstr)</div><div class="ttdef"><b>Definition:</b> expression_test.h:55</div></div>
+<div class="ttc" id="structFuncCallInfoData_html_ae863b66b9f6327cc6c9ccec8718aac25"><div class="ttname"><a href="structFuncCallInfoData.html#ae863b66b9f6327cc6c9ccec8718aac25">FuncCallInfoData::results</a></div><div class="ttdeci">void * results</div><div class="ttdef"><b>Definition:</b> qnode.h:27</div></div>
+<div class="ttc" id="expression__test_8h_html_afa0276dd43e43054daee5cccdaa67b74"><div class="ttname"><a href="expression__test_8h.html#afa0276dd43e43054daee5cccdaa67b74">test_string_upper</a></div><div class="ttdeci">string test_string_upper(char *str)</div><div class="ttdef"><b>Definition:</b> expression_test.h:32</div></div>
+<div class="ttc" id="qnode_8h_html"><div class="ttname"><a href="qnode_8h.html">qnode.h</a></div></div>
 <div class="ttc" id="structFuncCallInfoData_html"><div class="ttname"><a href="structFuncCallInfoData.html">FuncCallInfoData</a></div><div class="ttdef"><b>Definition:</b> qnode.h:23</div></div>
+<div class="ttc" id="queryfunc_8h_html_a3701393237b721d6ced2f5176ce3a39f"><div class="ttname"><a href="queryfunc_8h.html#a3701393237b721d6ced2f5176ce3a39f">string_substring</a></div><div class="ttdeci">void string_substring(FuncCallInfo fcinfo)</div><div class="ttdef"><b>Definition:</b> queryfunc.h:750</div></div>
+<div class="ttc" id="table_8h_html_ab946e2e7f7679350627acfded8e2658b"><div class="ttname"><a href="table_8h.html#ab946e2e7f7679350627acfded8e2658b">TEST</a></div><div class="ttdeci">#define TEST</div><div class="ttdef"><b>Definition:</b> table.h:26</div></div>
+<div class="ttc" id="queryfunc_8h_html_ad57d8debfbc623b2687d5647c2927c5d"><div class="ttname"><a href="queryfunc_8h.html#ad57d8debfbc623b2687d5647c2927c5d">string_leading_trim</a></div><div class="ttdeci">void string_leading_trim(FuncCallInfo fcinfo)</div><div class="ttdef"><b>Definition:</b> queryfunc.h:712</div></div>
+<div class="ttc" id="expression__test_8h_html_a81fa7c747b22553ad5bdb5c001f4df21"><div class="ttname"><a href="expression__test_8h.html#a81fa7c747b22553ad5bdb5c001f4df21">test_string_substring</a></div><div class="ttdeci">string test_string_substring(char *str, int frompoint, int endpoint)</div><div class="ttdef"><b>Definition:</b> expression_test.h:42</div></div>
+<div class="ttc" id="expression__test_8h_html_a80f64661b86cd30decd6ee17532bfd6f"><div class="ttname"><a href="expression__test_8h.html#a80f64661b86cd30decd6ee17532bfd6f">test_string_like</a></div><div class="ttdeci">int test_string_like(char *str, char *pat)</div><div class="ttdef"><b>Definition:</b> expression_test.h:21</div></div>
+<div class="ttc" id="structFuncCallInfoData_html_a349d764b0592159111e642ea2a00317d"><div class="ttname"><a href="structFuncCallInfoData.html#a349d764b0592159111e642ea2a00317d">FuncCallInfoData::args</a></div><div class="ttdeci">void * args[MAX_ARGS]</div><div class="ttdef"><b>Definition:</b> qnode.h:26</div></div>
+<div class="ttc" id="queryfunc_8h_html"><div class="ttname"><a href="queryfunc_8h.html">queryfunc.h</a></div></div>
+<div class="ttc" id="expression__test_8h_html_a01ffb9b498d4e2244d33d7b881515212"><div class="ttname"><a href="expression__test_8h.html#a01ffb9b498d4e2244d33d7b881515212">test_string_leading_trim</a></div><div class="ttdeci">string test_string_leading_trim(char *str, char *trimstr)</div><div class="ttdef"><b>Definition:</b> expression_test.h:66</div></div>
+<div class="ttc" id="queryfunc_8h_html_aab468f65c231c2950cb08f22d8fdeb90"><div class="ttname"><a href="queryfunc_8h.html#aab468f65c231c2950cb08f22d8fdeb90">string_both_trim</a></div><div class="ttdeci">void string_both_trim(FuncCallInfo fcinfo)</div><div class="ttdef"><b>Definition:</b> queryfunc.h:702</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_9dbf8e5c81ecd7a9be675ee617bf733c.html">Expression</a></li><li class="navelem"><b>expression_test.h</b></li>
+    <li class="navelem"><a class="el" href="dir_bdd9a5d540de89e9fe90efdfc6973a4f.html">common</a></li><li class="navelem"><a class="el" href="dir_9dbf8e5c81ecd7a9be675ee617bf733c.html">Expression</a></li><li class="navelem"><a class="el" href="expression__test_8h.html">expression_test.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

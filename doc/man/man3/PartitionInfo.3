@@ -1,4 +1,4 @@
-.TH "PartitionInfo" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PartitionInfo" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,10 +7,15 @@ PartitionInfo \-
 .br
 .PP
 .PP
+\fC#include <Partitioner\&.h>\fP
+.PP
 Inherited by \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBPartitionInfo\fP ()"
+.br
 .ti -1c
 .RI "\fBPartitionInfo\fP (\fBPartitionID\fP partition_id)"
 .br
@@ -18,10 +23,10 @@ Inherited by \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
 .RI "\fBPartitionInfo\fP (\fBPartitionID\fP partition_id, string file_name)"
 .br
 .ti -1c
-.RI "\fBPartitionInfo\fP (\fBPartitionID\fP partition_id, string file_name, int number_of_blocks, unsigned long number_of_tuples)"
+.RI "\fBPartitionInfo\fP (\fBPartitionID\fP partition_id, string file_name, int \fBnumber_of_blocks\fP, unsigned long number_of_tuples)"
 .br
 .ti -1c
-.RI "virtual binding_mode \fBget_mode\fP () const =0"
+.RI "virtual \fBbinding_mode\fP \fBget_mode\fP () const =0"
 .br
 .ti -1c
 .RI "virtual void \fBadd_one_block\fP ()=0"
@@ -30,10 +35,10 @@ Inherited by \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
 .RI "virtual void \fBadd_mutiple_block\fP (unsigned number_of_new_blocks)=0"
 .br
 .ti -1c
-.RI "virtual bool \fBbind_one_block\fP (BlockID blockid, NodeID target)=0"
+.RI "virtual bool \fBbind_one_block\fP (\fBBlockID\fP blockid, \fBNodeID\fP target)=0"
 .br
 .ti -1c
-.RI "virtual bool \fBbind_all_blocks\fP (NodeID target)=0"
+.RI "virtual bool \fBbind_all_blocks\fP (\fBNodeID\fP target)=0"
 .br
 .ti -1c
 .RI "virtual void \fBunbind_all_blocks\fP ()=0"
@@ -48,7 +53,7 @@ Inherited by \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
 .RI "int \fBget_number_of_blocks\fP () const "
 .br
 .ti -1c
-.RI "virtual NodeID \fBget_location\fP () const =0"
+.RI "virtual \fBNodeID\fP \fBget_location\fP () const =0"
 .br
 .in -1c
 .SS "Protected Member Functions"
@@ -84,7 +89,77 @@ Inherited by \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PartitionInfo::PartitionInfo ()\fC [inline]\fP, \fC [explicit]\fP"
+
+.SS "PartitionInfo::PartitionInfo (\fBPartitionID\fPpartition_id)\fC [inline]\fP, \fC [explicit]\fP"
+
+.SS "PartitionInfo::PartitionInfo (\fBPartitionID\fPpartition_id, stringfile_name)\fC [inline]\fP, \fC [explicit]\fP"
+
+.SS "PartitionInfo::PartitionInfo (\fBPartitionID\fPpartition_id, stringfile_name, intnumber_of_blocks, unsigned longnumber_of_tuples)\fC [inline]\fP, \fC [explicit]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void PartitionInfo::add_mutiple_block (unsignednumber_of_new_blocks)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SS "virtual void PartitionInfo::add_one_block ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SS "virtual bool PartitionInfo::bind_all_blocks (\fBNodeID\fPtarget)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SS "virtual bool PartitionInfo::bind_one_block (\fBBlockID\fPblockid, \fBNodeID\fPtarget)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SS "virtual \fBNodeID\fP PartitionInfo::get_location () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SS "virtual \fBbinding_mode\fP PartitionInfo::get_mode () const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.PP
+Referenced by OneToOnePartitionInfo::is_colocated()\&.
+.SS "int PartitionInfo::get_number_of_blocks () const\fC [inline]\fP"
+
+.SS "virtual bool PartitionInfo::is_all_blocks_bound ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SS "virtual bool PartitionInfo::is_colocated (const \fBPartitionInfo\fP &) const\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SS "template<class Archive > void PartitionInfo::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [protected]\fP"
+
+.SS "virtual void PartitionInfo::unbind_all_blocks ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBOneToManyPartitionInfo\fP, and \fBOneToOnePartitionInfo\fP\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SS "friend class \fBPartitioner\fP\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "string PartitionInfo::hdfs_file_name\fC [protected]\fP"
+
+.SS "int long PartitionInfo::number_of_blocks\fC [protected]\fP"
+
+.SS "int long PartitionInfo::number_of_tuples_\fC [protected]\fP"
+
+.SS "\fBPartitionID\fP PartitionInfo::partition_id_\fC [protected]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

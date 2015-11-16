@@ -7,6 +7,8 @@ var classExpressionItem =
     ] ],
     [ "ExpressionItem", "classExpressionItem.html#a3c825c70d6e14d1e7378f2be5a64cfeb", null ],
     [ "~ExpressionItem", "classExpressionItem.html#a35421c63fcd598be9c4b93a6a7813f15", null ],
+    [ "data_value_to_string", "classExpressionItem.html#a0d19c954696513f4bb0ecb00158f4e75", null ],
+    [ "getItemTypeName", "classExpressionItem.html#a9a51cf66808f71cd8ef171a84d4498d4", null ],
     [ "getOperatorName", "classExpressionItem.html#aaffb2bf9b7c3258bae7bd3a873e7732a", null ],
     [ "getType", "classExpressionItem.html#a003f99f61df651ce904f452d017ad977", null ],
     [ "print", "classExpressionItem.html#aa689876c0993ad73681ff42311cdf568", null ],

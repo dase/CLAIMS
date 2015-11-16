@@ -1,4 +1,4 @@
-.TH "CSBPlusTree< T >" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "CSBPlusTree< T >" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,26 +6,34 @@ CSBPlusTree< T > \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <CSBPlusTree\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
+.RI "\fBCSBPlusTree\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~CSBPlusTree\fP ()"
+.br
+.ti -1c
 .RI "void \fBBulkLoad\fP (\fBdata_offset\fP< T > *aray, unsigned arayNo)"
 .br
 .ti -1c
-.RI "map< index_offset, vector
+.RI "map< \fBindex_offset\fP, vector
 .br
-< index_offset > * > * \fBSearch\fP (T key)"
-.br
-.ti -1c
-.RI "map< index_offset, vector
-.br
-< index_offset > * > * \fBrangeQuery\fP (T lower_key, T upper_key)"
+< \fBindex_offset\fP > * > * \fBSearch\fP (T key)"
 .br
 .ti -1c
-.RI "map< index_offset, vector
+.RI "map< \fBindex_offset\fP, vector
 .br
-< index_offset > * > * \fBrangeQuery\fP (T lower_key, comparison comp_lower, T upper_key, comparison comp_upper)"
+< \fBindex_offset\fP > * > * \fBrangeQuery\fP (T lower_key, T upper_key)"
+.br
+.ti -1c
+.RI "map< \fBindex_offset\fP, vector
+.br
+< \fBindex_offset\fP > * > * \fBrangeQuery\fP (T lower_key, \fBcomparison\fP comp_lower, T upper_key, \fBcomparison\fP comp_upper)"
 .br
 .ti -1c
 .RI "bool \fBInsert\fP (\fBdata_offset\fP< T > data)"
@@ -45,6 +53,9 @@ CSBPlusTree< T > \-
 .ti -1c
 .RI "void \fBprintDoubleLinkedList\fP ()"
 .br
+.ti -1c
+.RI "template<> \fB~CSBPlusTree\fP ()"
+.br
 .in -1c
 .SS "Public Attributes"
 
@@ -62,7 +73,139 @@ CSBPlusTree< T > \-
 .RI "unsigned \fBcsb_depth\fP"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBmakeLeafNodeGroup\fP (\fBdata_offset\fP< T > *aray, unsigned aray_num, \fBCCSBNodeGroup\fP< T > **leaf, T *internal_key_array)"
+.br
+.ti -1c
+.RI "int \fBmakeInternalNodeGroup\fP (T *internalAray, int iArayNo, \fBCCSBNodeGroup\fP< T > **internal, int leafNGNo, T *in2Aray, \fBCCSBNodeGroup\fP< T > **leaf)"
+.br
+.ti -1c
+.RI "\fBCCSBNode\fP< T > * \fBSearchLeafNode\fP (T data)"
+.br
+.ti -1c
+.RI "bool \fBInsertInternalNode\fP (\fBCCSBInternalNode\fP< T > *pNode, T key, \fBCCSBNode\fP< T > *pRightSon)"
+.br
+.ti -1c
+.RI "bool \fBDeleteInternalNode\fP (\fBCCSBInternalNode\fP< T > *pNode, T key)"
+.br
+.ti -1c
+.RI "void \fBClearTree\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBmax_keys\fP"
+.br
+.ti -1c
+.RI "unsigned \fBmax_datas\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T> \fBCSBPlusTree\fP< T >::\fBCSBPlusTree\fP ()\fC [inline]\fP"
+
+.PP
+References CCSBNode< T >::getMaxDatas(), and CCSBNode< T >::getMaxKeys()\&.
+.SS "template<typename T > \fBCSBPlusTree\fP< T >::~\fBCSBPlusTree\fP ()\fC [virtual]\fP"
+
+.SS "template<> \fBCSBPlusTree\fP< int >::~\fBCSBPlusTree\fP ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T > void \fBCSBPlusTree\fP< T >::BulkLoad (\fBdata_offset\fP< T > *aray, unsignedarayNo)"
+
+.PP
+References CCSBNodeGroup< T >::getNode(), CCSBInternalNodeGroup< T >::getNode(), CCSBInternalNodeGroup< T >::internal_nodes, NULL, CCSBNodeGroup< T >::setHeaderNG(), CCSBNodeGroup< T >::setTailerNG(), and CCSBNodeGroup< T >::used_nodes\&.
+.PP
+Referenced by cheak_com()\&.
+.SS "template<typename T > void \fBCSBPlusTree\fP< T >::ClearTree ()\fC [private]\fP"
+
+.PP
+References NULL\&.
+.SS "template<typename T > bool \fBCSBPlusTree\fP< T >::Delete (Tkey)"
+
+.SS "template<typename T> bool \fBCSBPlusTree\fP< T >::DeleteInternalNode (\fBCCSBInternalNode\fP< T > *pNode, Tkey)\fC [private]\fP"
+
+.SS "template<typename T > bool \fBCSBPlusTree\fP< T >::deserialize (FILE *filename)"
+
+.PP
+References CCSBInternalNodeGroup< T >::deserialize(), CCSBNodeGroup< T >::getNode(), CCSBInternalNodeGroup< T >::getNode(), CCSBNodeGroup< T >::getUsedNodes(), NULL, CCSBNodeGroup< T >::setHeaderNG(), and CCSBNodeGroup< T >::setTailerNG()\&.
+.PP
+Referenced by cheak_com(), and IndexManager::deserialize()\&.
+.SS "template<typename T > bool \fBCSBPlusTree\fP< T >::Insert (\fBdata_offset\fP< T >data)"
+
+.PP
+References data_offset< T >::_key, CCSBNode< T >::getElement(), CCSBNode< T >::getFather(), CCSBNodeGroup< T >::getHeaderNG(), CCSBNodeGroup< T >::getNode(), CCSBLeafNodeGroup< T >::getNode(), CCSBNodeGroup< T >::getTailerNG(), CCSBNode< T >::getUsedKeys(), CCSBNodeGroup< T >::getUsedNodes(), CCSBNode< T >::Insert(), NULL, CCSBNodeGroup< T >::setHeaderNG(), CCSBLeafNodeGroup< T >::setHeaderNG(), CCSBNodeGroup< T >::setNode(), CCSBNodeGroup< T >::setTailerNG(), CCSBLeafNodeGroup< T >::setTailerNG(), and CCSBNodeGroup< T >::setUsedNodes()\&.
+.PP
+Referenced by cheak_com()\&.
+.SS "template<typename T> bool \fBCSBPlusTree\fP< T >::InsertInternalNode (\fBCCSBInternalNode\fP< T > *pNode, Tkey, \fBCCSBNode\fP< T > *pRightSon)\fC [private]\fP"
+
+.SS "template<typename T > int \fBCSBPlusTree\fP< T >::makeInternalNodeGroup (T *internalAray, intiArayNo, \fBCCSBNodeGroup\fP< T > **internal, intleafNGNo, T *in2Aray, \fBCCSBNodeGroup\fP< T > **leaf)\fC [private]\fP"
+
+.PP
+References CCSBNodeGroup< T >::getUsedNodes()\&.
+.SS "template<typename T > int \fBCSBPlusTree\fP< T >::makeLeafNodeGroup (\fBdata_offset\fP< T > *aray, unsignedaray_num, \fBCCSBNodeGroup\fP< T > **leaf, T *internal_key_array)\fC [private]\fP"
+
+.PP
+References data_offset< T >::_key, CCSBNodeGroup< T >::getNode(), NULL, CCSBNodeGroup< T >::setHeaderNG(), CCSBNodeGroup< T >::setTailerNG(), and CCSBNodeGroup< T >::used_nodes\&.
+.SS "template<typename T > void \fBCSBPlusTree\fP< T >::printDoubleLinkedList ()"
+
+.PP
+References CCSBNodeGroup< T >::getHeaderNG(), CCSBNodeGroup< T >::getNode(), CCSBNodeGroup< T >::getTailerNG(), CCSBNodeGroup< T >::getUsedNodes(), and NULL\&.
+.PP
+Referenced by cheak_com()\&.
+.SS "template<typename T > void \fBCSBPlusTree\fP< T >::printTree ()"
+
+.PP
+References NULL\&.
+.PP
+Referenced by cheak_com()\&.
+.SS "template<typename T > map< \fBindex_offset\fP, vector< \fBindex_offset\fP > * > * \fBCSBPlusTree\fP< T >::rangeQuery (Tlower_key, Tupper_key)"
+
+.PP
+References CCSBNode< T >::getElement(), CCSBNode< T >::getFather(), CCSBNodeGroup< T >::getNode(), CCSBNode< T >::getPointer(), CCSBNodeGroup< T >::getTailerNG(), CCSBNode< T >::getUsedKeys(), CCSBNodeGroup< T >::getUsedNodes(), NULL, and CCSBNode< T >::used_keys\&.
+.PP
+Referenced by cheak_com()\&.
+.SS "template<typename T > map< \fBindex_offset\fP, vector< \fBindex_offset\fP > * > * \fBCSBPlusTree\fP< T >::rangeQuery (Tlower_key, \fBcomparison\fPcomp_lower, Tupper_key, \fBcomparison\fPcomp_upper)"
+
+.PP
+References EQ, G, GEQ, CCSBNode< T >::getElement(), CCSBNode< T >::getFather(), CCSBNodeGroup< T >::getNode(), CCSBNode< T >::getPointer(), CCSBNodeGroup< T >::getTailerNG(), CCSBNode< T >::getUsedKeys(), CCSBNodeGroup< T >::getUsedNodes(), L, LEQ, NULL, and CCSBNode< T >::used_keys\&.
+.SS "template<typename T > map< \fBindex_offset\fP, vector< \fBindex_offset\fP > * > * \fBCSBPlusTree\fP< T >::Search (Tkey)"
+
+.PP
+References CCSBNode< T >::getElement(), CCSBNode< T >::getFather(), CCSBNodeGroup< T >::getNode(), CCSBNode< T >::getPointer(), CCSBNodeGroup< T >::getTailerNG(), CCSBNode< T >::getUsedKeys(), CCSBNodeGroup< T >::getUsedNodes(), NULL, and CCSBNode< T >::used_keys\&.
+.PP
+Referenced by cheak_com()\&.
+.SS "template<typename T > \fBCCSBNode\fP< T > * \fBCSBPlusTree\fP< T >::SearchLeafNode (Tdata)\fC [private]\fP"
+
+.PP
+References CCSBNode< T >::getElement(), CCSBNode< T >::getFather(), CCSBNodeGroup< T >::getNode(), CCSBNode< T >::getPointer(), CCSBNodeGroup< T >::getTailerNG(), CCSBNodeGroup< T >::getUsedNodes(), and NULL\&.
+.SS "template<typename T > bool \fBCSBPlusTree\fP< T >::serialize (FILE *filename)"
+
+.PP
+References NULL\&.
+.PP
+Referenced by cheak_com()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "template<typename T> unsigned \fBCSBPlusTree\fP< T >::csb_depth"
+
+.SS "template<typename T> \fBCCSBNode\fP<T>* \fBCSBPlusTree\fP< T >::csb_root"
+
+.SS "template<typename T> \fBCCSBNodeGroup\fP<T>* \fBCSBPlusTree\fP< T >::leaf_header"
+
+.SS "template<typename T> \fBCCSBNodeGroup\fP<T>* \fBCSBPlusTree\fP< T >::leaf_tailer"
+
+.SS "template<typename T> unsigned \fBCSBPlusTree\fP< T >::max_datas\fC [private]\fP"
+
+.SS "template<typename T> unsigned \fBCSBPlusTree\fP< T >::max_keys\fC [private]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

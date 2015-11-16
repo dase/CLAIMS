@@ -1,4 +1,4 @@
-.TH "PartitionBindingMessage" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PartitionBindingMessage" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ PartitionBindingMessage \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Message\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBPartitionBindingMessage\fP (const \fBPartitionID\fP &pid, const unsigned &num, const StorageLevel &level)"
+.RI "\fBPartitionBindingMessage\fP (const \fBPartitionID\fP &pid, const unsigned &num, const \fBStorageLevel\fP &level)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -23,10 +25,28 @@ PartitionBindingMessage \-
 .RI "unsigned \fBnumber_of_chunks\fP"
 .br
 .ti -1c
-.RI "StorageLevel \fBstorage_level\fP"
+.RI "\fBStorageLevel\fP \fBstorage_level\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PartitionBindingMessage::PartitionBindingMessage (const \fBPartitionID\fP &pid, const unsigned &num, const \fBStorageLevel\fP &level)\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned PartitionBindingMessage::number_of_chunks"
+
+.PP
+Referenced by BlockManager::BlockManagerWorkerActor::BindingPartition()\&.
+.SS "\fBPartitionID\fP PartitionBindingMessage::partition_id"
+
+.PP
+Referenced by BlockManager::BlockManagerWorkerActor::BindingPartition()\&.
+.SS "\fBStorageLevel\fP PartitionBindingMessage::storage_level"
+
+.PP
+Referenced by BlockManager::BlockManagerWorkerActor::BindingPartition()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

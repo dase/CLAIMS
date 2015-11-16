@@ -1,4 +1,4 @@
-.TH "PartitionFunctionFactory" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PartitionFunctionFactory" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ PartitionFunctionFactory \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <hash\&.h>\fP
 .SS "Static Public Member Functions"
 
 .in +1c
@@ -25,7 +27,23 @@ PartitionFunctionFactory \-
 .RI "static \fBPartitionFunction\fP * \fBcreateBoostHashFunction\fP (const int &range)"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "static \fBPartitionFunction\fP* PartitionFunctionFactory::createBoostHashFunction (const int &range)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Referenced by claims::logical_operator::LogicalEqualJoin::DecideOutputDataflowProperty(), fill_basic_hash_table(), claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan(), claims::physical_operator::InOperator::Open(), claims::physical_operator::ExchangeSenderPipeline::Open(), claims::physical_operator::PhysicalHashJoin::Open(), and projection_scan()\&.
+.SS "\fBPartitionFunction\fP * PartitionFunctionFactory::createGeneralModuloFunction (const int &range, const int &min = \fC0\fP, const int &skipbits = \fC0\fP)\fC [static]\fP"
+
+.PP
+Referenced by TableDescriptor::createHashPartitionedProjection(), TableDescriptor::createHashPartitionedProjectionOnAllAttribute(), and claims::physical_operator::PhysicalAggregation::Open()\&.
+.SS "\fBPartitionFunction\fP * PartitionFunctionFactory::createModuloFunction (const int &range, const int &min = \fC0\fP, const int &skipbits = \fC0\fP)\fC [static]\fP"
+
+.SS "\fBPartitionFunction\fP * PartitionFunctionFactory::createRoundRobinPartitionHashFunction (intrange)\fC [static]\fP"
+
+.SS "\fBPartitionFunction\fP * PartitionFunctionFactory::createUniformRangeHashFunction (const int &range, const int &min, const int &max)\fC [static]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

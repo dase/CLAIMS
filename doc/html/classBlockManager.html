@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: BlockManager Class Reference</title>
+<title>Claims: BlockManager Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -109,12 +109,24 @@ $(document).ready(function(){initNavTree('classBlockManager.html','');});
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classBlockManager-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">BlockManager Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="BlockManager_8h_source.html">BlockManager.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for BlockManager:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager__coll__graph.png" border="0" usemap="#BlockManager_coll__map" alt="Collaboration graph"/></div>
+<map name="BlockManager_coll__map" id="BlockManager_coll__map">
+<area shape="rect" id="node5" href="classBlockManager_1_1BlockManagerWorkerActor.html" title="BlockManager::BlockManager\lWorkerActor" alt="" coords="657,55,853,97"/><area shape="rect" id="node2" href="classLogging.html" title="Logging" alt="" coords="177,5,244,32"/><area shape="rect" id="node3" href="classBlockManagerId.html" title="BlockManagerId" alt="" coords="153,56,269,83"/><area shape="rect" id="node4" href="classLock.html" title="Lock" alt="" coords="5,141,56,168"/><area shape="rect" id="node7" href="classMemoryChunkStore.html" title="MemoryChunkStore" alt="" coords="141,208,280,235"/><area shape="rect" id="node6" href="classTimeOutReceiver.html" title="TimeOutReceiver" alt="" coords="433,17,557,44"/><area shape="rect" id="node8" href="classDiskStore.html" title="DiskStore" alt="" coords="171,259,251,285"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -125,90 +137,544 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a3832725bc9a4a3460cc3abd44d58c069"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>storageLevel</b> { <b>memory</b>, 
-<b>disk</b>, 
-<b>offline</b>
+<tr class="memitem:a3832725bc9a4a3460cc3abd44d58c069"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069">storageLevel</a> { <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069a0d2adb87565aea3dc88dfa8468d7c799">memory</a>, 
+<a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069a6f028c6632422ebb9bea407fc9891e60">disk</a>, 
+<a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069aca012ed4e00aea5a1157b93e658d016c">offline</a>
  }</td></tr>
 <tr class="separator:a3832725bc9a4a3460cc3abd44d58c069"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae4f0a3a061c1a7a15898872e50bfff8f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae4f0a3a061c1a7a15898872e50bfff8f"></a>
-<a class="el" href="classMemoryChunkStore.html">MemoryChunkStore</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getMemoryChunkStore</b> () const </td></tr>
+<tr class="memitem:ae4f0a3a061c1a7a15898872e50bfff8f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMemoryChunkStore.html">MemoryChunkStore</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ae4f0a3a061c1a7a15898872e50bfff8f">getMemoryChunkStore</a> () const </td></tr>
 <tr class="separator:ae4f0a3a061c1a7a15898872e50bfff8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c31dd479e07890a5885485fe8d1ccbe"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a3c31dd479e07890a5885485fe8d1ccbe">~BlockManager</a> ()</td></tr>
+<tr class="separator:a3c31dd479e07890a5885485fe8d1ccbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a646625bacabedc95cbf3ea747eab86e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2">initialize</a> ()</td></tr>
 <tr class="separator:a646625bacabedc95cbf3ea747eab86e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3d1826a64cae0d5fbe679b47ba21def"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab3d1826a64cae0d5fbe679b47ba21def"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>registerToMaster</b> (<a class="el" href="classBlockManagerId.html">BlockManagerId</a> *blockManagerId)</td></tr>
+<tr class="memitem:ab3d1826a64cae0d5fbe679b47ba21def"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ab3d1826a64cae0d5fbe679b47ba21def">registerToMaster</a> (<a class="el" href="classBlockManagerId.html">BlockManagerId</a> *blockManagerId)</td></tr>
 <tr class="separator:ab3d1826a64cae0d5fbe679b47ba21def"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3af0d19fa5b73ba57dc3ccc3e2746f1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af3af0d19fa5b73ba57dc3ccc3e2746f1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>heartBeat</b> ()</td></tr>
+<tr class="memitem:af3af0d19fa5b73ba57dc3ccc3e2746f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1">heartBeat</a> ()</td></tr>
 <tr class="separator:af3af0d19fa5b73ba57dc3ccc3e2746f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03eeb279604d57078e7e4a81e24ff1fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a03eeb279604d57078e7e4a81e24ff1fb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>asyncReregister</b> ()</td></tr>
+<tr class="memitem:a03eeb279604d57078e7e4a81e24ff1fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a03eeb279604d57078e7e4a81e24ff1fb">asyncReregister</a> ()</td></tr>
 <tr class="separator:a03eeb279604d57078e7e4a81e24ff1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6ee16362ccf4599ec6abb16d8d78331"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6ee16362ccf4599ec6abb16d8d78331"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>reregister</b> ()</td></tr>
+<tr class="memitem:ae6ee16362ccf4599ec6abb16d8d78331"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ae6ee16362ccf4599ec6abb16d8d78331">reregister</a> ()</td></tr>
 <tr class="separator:ae6ee16362ccf4599ec6abb16d8d78331"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34a4e70f042c1f8ad323da3d092c5a84"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a34a4e70f042c1f8ad323da3d092c5a84"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>reportAllBlocks</b> ()</td></tr>
+<tr class="memitem:a34a4e70f042c1f8ad323da3d092c5a84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a34a4e70f042c1f8ad323da3d092c5a84">reportAllBlocks</a> ()</td></tr>
 <tr class="separator:a34a4e70f042c1f8ad323da3d092c5a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33f6d335c31b26eca7ad0a376e67f367"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a33f6d335c31b26eca7ad0a376e67f367"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>reportBlockStatus</b> (string blockId)</td></tr>
+<tr class="memitem:a33f6d335c31b26eca7ad0a376e67f367"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367">reportBlockStatus</a> (string blockId)</td></tr>
 <tr class="separator:a33f6d335c31b26eca7ad0a376e67f367"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac63827b4a2315bbc7aceef51130603d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac63827b4a2315bbc7aceef51130603d0"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>tryToReportBlockStatus</b> (string blockId)</td></tr>
+<tr class="memitem:ac63827b4a2315bbc7aceef51130603d0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0">tryToReportBlockStatus</a> (string blockId)</td></tr>
 <tr class="separator:ac63827b4a2315bbc7aceef51130603d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0ab2b2c356970380595461f650a7042"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae0ab2b2c356970380595461f650a7042"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> (string blockId)</td></tr>
+<tr class="memitem:ae0ab2b2c356970380595461f650a7042"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042">get</a> (string blockId)</td></tr>
 <tr class="separator:ae0ab2b2c356970380595461f650a7042"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acaf5d3f8a9f1ff9211cf6b70688bf558"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acaf5d3f8a9f1ff9211cf6b70688bf558"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>getLocal</b> (string blockId)</td></tr>
+<tr class="memitem:acaf5d3f8a9f1ff9211cf6b70688bf558"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558">getLocal</a> (string blockId)</td></tr>
 <tr class="separator:acaf5d3f8a9f1ff9211cf6b70688bf558"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50fabe2bdaaf2d89b4148c9a45b4f3e1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50fabe2bdaaf2d89b4148c9a45b4f3e1"></a>
-<a class="el" href="structChunkInfo.html">ChunkInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><b>loadFromHdfs</b> (string file_name)</td></tr>
+<tr class="memitem:a50fabe2bdaaf2d89b4148c9a45b4f3e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structChunkInfo.html">ChunkInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a50fabe2bdaaf2d89b4148c9a45b4f3e1">loadFromHdfs</a> (string file_name)</td></tr>
 <tr class="separator:a50fabe2bdaaf2d89b4148c9a45b4f3e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d512b812b7e35e1ac3d1ddaf70c9bcb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5d512b812b7e35e1ac3d1ddaf70c9bcb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>loadFromHdfs</b> (const <a class="el" href="structChunkID.html">ChunkID</a> &amp;, void *const &amp;desc, const unsigned &amp;)</td></tr>
+<tr class="memitem:a5d512b812b7e35e1ac3d1ddaf70c9bcb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a5d512b812b7e35e1ac3d1ddaf70c9bcb">loadFromHdfs</a> (const <a class="el" href="structChunkID.html">ChunkID</a> &amp;, void *const &amp;desc, const unsigned &amp;)</td></tr>
 <tr class="separator:a5d512b812b7e35e1ac3d1ddaf70c9bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c092c34f5065b8ff06632533eb2a3cb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c092c34f5065b8ff06632533eb2a3cb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>loadFromDisk</b> (const <a class="el" href="structChunkID.html">ChunkID</a> &amp;, void *const &amp;desc, const unsigned &amp;) const </td></tr>
+<tr class="memitem:a1c092c34f5065b8ff06632533eb2a3cb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a1c092c34f5065b8ff06632533eb2a3cb">loadFromDisk</a> (const <a class="el" href="structChunkID.html">ChunkID</a> &amp;, void *const &amp;desc, const unsigned &amp;) const </td></tr>
 <tr class="separator:a1c092c34f5065b8ff06632533eb2a3cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaba409b0fefd5ec8c71c147a245ead14"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaba409b0fefd5ec8c71c147a245ead14"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>put</b> (string blockId, storageLevel level, void *value)</td></tr>
+<tr class="memitem:aaba409b0fefd5ec8c71c147a245ead14"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14">put</a> (string blockId, <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069">storageLevel</a> level, void *value)</td></tr>
 <tr class="separator:aaba409b0fefd5ec8c71c147a245ead14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab54877265aa654fca48fbb9655ac3198"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab54877265aa654fca48fbb9655ac3198"></a>
-<a class="el" href="classBlockManagerId.html">BlockManagerId</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getId</b> ()</td></tr>
+<tr class="memitem:ab54877265aa654fca48fbb9655ac3198"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlockManagerId.html">BlockManagerId</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ab54877265aa654fca48fbb9655ac3198">getId</a> ()</td></tr>
 <tr class="separator:ab54877265aa654fca48fbb9655ac3198"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae32ee78daa8c53787401fc4d438c58c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae32ee78daa8c53787401fc4d438c58c4"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>askForMatch</b> (string filename, <a class="el" href="classBlockManagerId.html">BlockManagerId</a> bmi)</td></tr>
+<tr class="memitem:ae32ee78daa8c53787401fc4d438c58c4"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ae32ee78daa8c53787401fc4d438c58c4">askForMatch</a> (string filename, <a class="el" href="classBlockManagerId.html">BlockManagerId</a> bmi)</td></tr>
 <tr class="separator:ae32ee78daa8c53787401fc4d438c58c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef887f84cd2e5ba4d3027319233dd181"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aef887f84cd2e5ba4d3027319233dd181"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>containsPartition</b> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;part) const </td></tr>
+<tr class="memitem:aef887f84cd2e5ba4d3027319233dd181"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#aef887f84cd2e5ba4d3027319233dd181">containsPartition</a> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;part) const </td></tr>
 <tr class="separator:aef887f84cd2e5ba4d3027319233dd181"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1046961c4107766bb57b376c07aecdb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad1046961c4107766bb57b376c07aecdb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>addPartition</b> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;, const unsigned &amp;number_of_chunks, const StorageLevel &amp;desirable_storage_level)</td></tr>
+<tr class="memitem:ad1046961c4107766bb57b376c07aecdb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ad1046961c4107766bb57b376c07aecdb">addPartition</a> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;, const unsigned &amp;number_of_chunks, const <a class="el" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a> &amp;desirable_storage_level)</td></tr>
 <tr class="separator:ad1046961c4107766bb57b376c07aecdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada43823568a58d2dc10679489875e177"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada43823568a58d2dc10679489875e177"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>removePartition</b> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;)</td></tr>
+<tr class="memitem:ada43823568a58d2dc10679489875e177"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ada43823568a58d2dc10679489875e177">removePartition</a> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;)</td></tr>
 <tr class="separator:ada43823568a58d2dc10679489875e177"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12f753739e865549cb2307ab42e81890"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a12f753739e865549cb2307ab42e81890"></a>
-<a class="el" href="classPartitionStorage.html">PartitionStorage</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getPartitionHandle</b> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;partition_id) const </td></tr>
+<tr class="memitem:a12f753739e865549cb2307ab42e81890"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPartitionStorage.html">PartitionStorage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a12f753739e865549cb2307ab42e81890">getPartitionHandle</a> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;partition_id) const </td></tr>
 <tr class="separator:a12f753739e865549cb2307ab42e81890"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ab585bf1e1b3995428d89dd9180a4fb92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab585bf1e1b3995428d89dd9180a4fb92"></a>
-static <a class="el" href="classBlockManager.html">BlockManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getInstance</b> ()</td></tr>
+<tr class="memitem:ab585bf1e1b3995428d89dd9180a4fb92"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlockManager.html">BlockManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92">getInstance</a> ()</td></tr>
 <tr class="separator:ab585bf1e1b3995428d89dd9180a4fb92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a93282216d97540def52c1fa4029eb693"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693">BlockManager</a> ()</td></tr>
+<tr class="separator:a93282216d97540def52c1fa4029eb693"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ad412c155f8b2933cfaa5a74268927bfe"><td class="memItemLeft" align="right" valign="top">map&lt; string, <a class="el" href="structBlockManager_1_1BlockInfo.html">BlockInfo</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ad412c155f8b2933cfaa5a74268927bfe">blockInfoPool_</a></td></tr>
+<tr class="separator:ad412c155f8b2933cfaa5a74268927bfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a972196fdf61348fd5f2d567d57ba845d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html">BlockManagerWorkerActor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a972196fdf61348fd5f2d567d57ba845d">worker_</a></td></tr>
+<tr class="separator:a972196fdf61348fd5f2d567d57ba845d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb38f940dd808ed994b97fb64440e0d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlockManagerId.html">BlockManagerId</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#abb38f940dd808ed994b97fb64440e0d4">blockManagerId_</a></td></tr>
+<tr class="separator:abb38f940dd808ed994b97fb64440e0d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45f73d423513d2dfbd71415bc6b32e69"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMemoryChunkStore.html">MemoryChunkStore</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a45f73d423513d2dfbd71415bc6b32e69">memstore_</a></td></tr>
+<tr class="separator:a45f73d423513d2dfbd71415bc6b32e69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20b2e66969497219288c72f788ffba17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDiskStore.html">DiskStore</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a20b2e66969497219288c72f788ffba17">diskstore_</a></td></tr>
+<tr class="separator:a20b2e66969497219288c72f788ffba17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf757af6c4fc8690997ce6f4e02d4192"><td class="memItemLeft" align="right" valign="top">map&lt; string, string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#abf757af6c4fc8690997ce6f4e02d4192">file_proj_</a></td></tr>
+<tr class="separator:abf757af6c4fc8690997ce6f4e02d4192"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9d59ee884f93c25ee26827a489bf088"><td class="memItemLeft" align="right" valign="top">Theron::Framework *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#ae9d59ee884f93c25ee26827a489bf088">framework_</a></td></tr>
+<tr class="separator:ae9d59ee884f93c25ee26827a489bf088"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19f59618de62e5251c9212ca52e4141a"><td class="memItemLeft" align="right" valign="top">Theron::Actor *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a19f59618de62e5251c9212ca52e4141a">actor_</a></td></tr>
+<tr class="separator:a19f59618de62e5251c9212ca52e4141a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6404e33c0f25357ce2485ecbfce614c5"><td class="memItemLeft" align="right" valign="top">boost::unordered_map<br class="typebreak"/>
+&lt; <a class="el" href="structPartitionID.html">PartitionID</a>, <br class="typebreak"/>
+<a class="el" href="classPartitionStorage.html">PartitionStorage</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a6404e33c0f25357ce2485ecbfce614c5">partition_id_to_storage_</a></td></tr>
+<tr class="separator:a6404e33c0f25357ce2485ecbfce614c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10343a3dd8925edaad51d0bb21852184"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogging.html">Logging</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a10343a3dd8925edaad51d0bb21852184">logging_</a></td></tr>
+<tr class="separator:a10343a3dd8925edaad51d0bb21852184"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f2433e4dad0d3e55035e6cdaba64371"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLock.html">Lock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a8f2433e4dad0d3e55035e6cdaba64371">lock</a></td></tr>
+<tr class="separator:a8f2433e4dad0d3e55035e6cdaba64371"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a2ee03876f74a71cab65fcfdd451bd456"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classBlockManager.html">BlockManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a2ee03876f74a71cab65fcfdd451bd456">blockmanager_</a> =0</td></tr>
+<tr class="separator:a2ee03876f74a71cab65fcfdd451bd456"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a6aaa44c442e5f67c335f5831dce4568a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6aaa44c442e5f67c335f5831dce4568a"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>BlockManagerWorkerActor</b></td></tr>
+<tr class="memitem:a6aaa44c442e5f67c335f5831dce4568a"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager.html#a6aaa44c442e5f67c335f5831dce4568a">BlockManagerWorkerActor</a></td></tr>
 <tr class="separator:a6aaa44c442e5f67c335f5831dce4568a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a class="anchor" id="a3832725bc9a4a3460cc3abd44d58c069"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069">BlockManager::storageLevel</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="a3832725bc9a4a3460cc3abd44d58c069a0d2adb87565aea3dc88dfa8468d7c799"></a>memory</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a3832725bc9a4a3460cc3abd44d58c069a6f028c6632422ebb9bea407fc9891e60"></a>disk</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><em><a class="anchor" id="a3832725bc9a4a3460cc3abd44d58c069aca012ed4e00aea5a1157b93e658d016c"></a>offline</em>&nbsp;</td><td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a3c31dd479e07890a5885485fe8d1ccbe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BlockManager::~BlockManager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#a19f59618de62e5251c9212ca52e4141a">actor_</a>, <a class="el" href="classBlockManager.html#a2ee03876f74a71cab65fcfdd451bd456">blockmanager_</a>, <a class="el" href="classBlockManager.html#ae9d59ee884f93c25ee26827a489bf088">framework_</a>, <a class="el" href="classBlockManager.html#a10343a3dd8925edaad51d0bb21852184">logging_</a>, and <a class="el" href="classBlockManager.html#a45f73d423513d2dfbd71415bc6b32e69">memstore_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a93282216d97540def52c1fa4029eb693"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BlockManager::BlockManager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#a19f59618de62e5251c9212ca52e4141a">actor_</a>, <a class="el" href="classBlockManager.html#a6aaa44c442e5f67c335f5831dce4568a">BlockManagerWorkerActor</a>, <a class="el" href="classBlockManager.html#ae9d59ee884f93c25ee26827a489bf088">framework_</a>, <a class="el" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61">Environment::getInstance()</a>, <a class="el" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f">MemoryChunkStore::getInstance()</a>, <a class="el" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057">Environment::getNodeID()</a>, <a class="el" href="classBlockManager.html#a10343a3dd8925edaad51d0bb21852184">logging_</a>, and <a class="el" href="classBlockManager.html#a45f73d423513d2dfbd71415bc6b32e69">memstore_</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92">getInstance()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a93282216d97540def52c1fa4029eb693_cgraph.png" border="0" usemap="#classBlockManager_a93282216d97540def52c1fa4029eb693_cgraph" alt=""/></div>
+<map name="classBlockManager_a93282216d97540def52c1fa4029eb693_cgraph" id="classBlockManager_a93282216d97540def52c1fa4029eb693_cgraph">
+<area shape="rect" id="node2" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="251,827,421,854"/><area shape="rect" id="node42" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f" title="MemoryChunkStore::getInstance" alt="" coords="1233,1299,1447,1326"/><area shape="rect" id="node45" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057" title="Environment::getNodeID" alt="" coords="1257,1350,1423,1377"/><area shape="rect" id="node3" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="469,450,645,477"/><area shape="rect" id="node4" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="735,475,871,502"/><area shape="rect" id="node5" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="709,374,896,401"/><area shape="rect" id="node7" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="709,577,896,603"/><area shape="rect" id="node8" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="695,695,910,736"/><area shape="rect" id="node23" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="717,977,889,1003"/><area shape="rect" id="node25" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1294,311,1386,338"/><area shape="rect" id="node26" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="694,54,911,81"/><area shape="rect" id="node27" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="731,273,874,299"/><area shape="rect" id="node29" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="723,155,883,182"/><area shape="rect" id="node31" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="695,323,911,350"/><area shape="rect" id="node30" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1291,135,1389,162"/><area shape="rect" id="node33" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="985,73,1159,115"/><area shape="rect" id="node35" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="699,207,906,248"/><area shape="rect" id="node37" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="705,1153,900,1179"/><area shape="rect" id="node46" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="710,851,895,892"/><area shape="rect" id="node47" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="704,526,901,553"/><area shape="rect" id="node49" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="711,1255,895,1296"/><area shape="rect" id="node6" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="969,374,1175,401"/><area shape="rect" id="node9" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="991,855,1153,896"/><area shape="rect" id="node10" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="1005,920,1139,961"/><area shape="rect" id="node18" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="1011,541,1133,583"/><area shape="rect" id="node19" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="985,607,1159,648"/><area shape="rect" id="node20" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="961,673,1183,699"/><area shape="rect" id="node21" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="977,724,1167,765"/><area shape="rect" id="node22" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="985,789,1159,831"/><area shape="rect" id="node11" href="TypeCast_8h.html#a8f1ecd64ef3a9a77550061aee836e60d" title="boolean_to_boolean" alt="" coords="1271,877,1409,903"/><area shape="rect" id="node12" href="TypeCast_8h.html#a8d342d77ca15152b24a5a6188762f9f4" title="boolean_to_decimal" alt="" coords="1271,927,1409,954"/><area shape="rect" id="node13" href="TypeCast_8h.html#a842736534e9c99fb52092f59d77ca065" title="boolean_to_double" alt="" coords="1275,978,1405,1005"/><area shape="rect" id="node14" href="TypeCast_8h.html#ae45d191bf454694efb88dd3be6bbaee2" title="boolean_to_float" alt="" coords="1281,1029,1399,1055"/><area shape="rect" id="node15" href="TypeCast_8h.html#a387fd3c601f4207bc426602975803d56" title="boolean_to_int" alt="" coords="1287,1079,1393,1106"/><area shape="rect" id="node16" href="TypeCast_8h.html#a3ef8f124f4892112be8e23ec4bd69eb2" title="boolean_to_smallInt" alt="" coords="1271,775,1409,802"/><area shape="rect" id="node17" href="TypeCast_8h.html#aa55b320797cb8d7ee17f3f9892f81264" title="boolean_to_ulong" alt="" coords="1279,826,1401,853"/><area shape="rect" id="node24" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="983,1037,1161,1063"/><area shape="rect" id="node28" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1012,257,1132,283"/><area shape="rect" id="node32" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="1004,308,1140,349"/><area shape="rect" id="node34" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="1261,81,1419,107"/><area shape="rect" id="node36" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54" title="InstanceResourceManager\l::Register" alt="" coords="983,191,1161,232"/><area shape="rect" id="node38" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="999,1153,1145,1195"/><area shape="rect" id="node39" href="classBlockManagerMaster.html#a41f5fb3487ce3bac55b6eec9c38d26e1" title="BlockManagerMaster\l::initialize" alt="" coords="999,1088,1145,1129"/><area shape="rect" id="node40" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92" title="BlockManager::getInstance" alt="" coords="981,1321,1163,1347"/><area shape="rect" id="node41" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="992,1219,1152,1246"/><area shape="rect" id="node44" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="1249,1175,1431,1202"/><area shape="rect" id="node43" href="classMemoryChunkStore.html#a9c11c67ff2cbdce8ec543a9a76a5cdb8" title="MemoryChunkStore::Memory\lChunkStore" alt="" coords="1497,1292,1690,1333"/><area shape="rect" id="node48" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="980,476,1164,517"/><area shape="rect" id="node50" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="991,1270,1153,1297"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a93282216d97540def52c1fa4029eb693_icgraph.png" border="0" usemap="#classBlockManager_a93282216d97540def52c1fa4029eb693_icgraph" alt=""/></div>
+<map name="classBlockManager_a93282216d97540def52c1fa4029eb693_icgraph" id="classBlockManager_a93282216d97540def52c1fa4029eb693_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92" title="BlockManager::getInstance" alt="" coords="251,1385,432,1412"/><area shape="rect" id="node3" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="487,1276,681,1303"/><area shape="rect" id="node47" href="classbottomLayerCollecting.html#a2ed9464072a1790b5547a0dc1da3bdc6" title="bottomLayerCollecting\l::Open" alt="" coords="508,1561,660,1602"/><area shape="rect" id="node48" href="classIndexScanIterator.html#a75cc90e38f3f96de7982d13e625860e2" title="IndexScanIterator::Open" alt="" coords="502,1327,666,1353"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="481,1378,687,1419"/><area shape="rect" id="node50" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1" title="ChunkStorage::createChunk\lReaderIterator" alt="" coords="491,1443,677,1485"/><area shape="rect" id="node46" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0" title="projection_scan" alt="" coords="1243,2229,1357,2256"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="736,1276,912,1303"/><area shape="rect" id="node5" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="960,1225,1131,1252"/><area shape="rect" id="node6" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1221,318,1379,359"/><area shape="rect" id="node11" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="1214,486,1386,527"/><area shape="rect" id="node7" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1511,231,1601,257"/><area shape="rect" id="node12" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="1223,552,1377,579"/><area shape="rect" id="node13" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="1263,603,1337,629"/><area shape="rect" id="node14" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="1242,653,1358,680"/><area shape="rect" id="node8" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1481,311,1631,337"/><area shape="rect" id="node15" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1250,704,1350,731"/><area shape="rect" id="node16" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1203,755,1397,781"/><area shape="rect" id="node17" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1205,806,1395,847"/><area shape="rect" id="node18" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1183,871,1417,913"/><area shape="rect" id="node19" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="1219,937,1381,978"/><area shape="rect" id="node20" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1199,1003,1401,1059"/><area shape="rect" id="node21" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="1222,1083,1378,1125"/><area shape="rect" id="node22" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="1231,1149,1369,1176"/><area shape="rect" id="node9" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1477,373,1635,400"/><area shape="rect" id="node10" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1474,429,1638,456"/><area shape="rect" id="node23" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1227,1200,1373,1227"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1234,1301,1366,1328"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1487,1225,1625,1252"/><area shape="rect" id="node26" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="1223,1353,1377,1394"/><area shape="rect" id="node27" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1241,1419,1359,1445"/><area shape="rect" id="node28" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1519,1444,1593,1471"/><area shape="rect" id="node29" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1470,1596,1642,1623"/><area shape="rect" id="node31" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1253,1621,1347,1648"/><area shape="rect" id="node32" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1259,1672,1341,1699"/><area shape="rect" id="node33" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="1221,1723,1379,1749"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1227,1773,1373,1800"/><area shape="rect" id="node35" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="1237,1925,1363,1952"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1227,2077,1373,2104"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1237,2128,1363,2155"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1475,1969,1637,1996"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1491,1849,1621,1876"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1240,2179,1360,2205"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1481,2027,1631,2053"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1496,1907,1616,1933"/><area shape="rect" id="node30" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1691,1545,1813,1572"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1215,5,1385,46"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="1179,70,1421,111"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="1187,136,1413,192"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad1046961c4107766bb57b376c07aecdb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::addPartition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;&#160;</td>
+          <td class="paramname"><em>partition_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned &amp;&#160;</td>
+          <td class="paramname"><em>number_of_chunks</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a> &amp;&#160;</td>
+          <td class="paramname"><em>desirable_storage_level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structPartitionID.html#a0bfdb5800b5825b90f110ad3662e12d3">PartitionID::getName()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classBlockManager.html#a10343a3dd8925edaad51d0bb21852184">logging_</a>, and <a class="el" href="classBlockManager.html#a6404e33c0f25357ce2485ecbfce614c5">partition_id_to_storage_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ad1046961c4107766bb57b376c07aecdb_cgraph.png" border="0" usemap="#classBlockManager_ad1046961c4107766bb57b376c07aecdb_cgraph" alt=""/></div>
+<map name="classBlockManager_ad1046961c4107766bb57b376c07aecdb_cgraph" id="classBlockManager_ad1046961c4107766bb57b376c07aecdb_cgraph">
+<area shape="rect" id="node2" href="structPartitionID.html#a0bfdb5800b5825b90f110ad3662e12d3" title="PartitionID::getName" alt="" coords="238,5,383,32"/><area shape="rect" id="node3" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="265,56,357,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae32ee78daa8c53787401fc4d438c58c4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string BlockManager::askForMatch </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classBlockManagerId.html">BlockManagerId</a>&#160;</td>
+          <td class="paramname"><em>bmi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a13eaed17f9ac43153394d1e048e4ec78">BlockManager::BlockManagerWorkerActor::_askformatch()</a>, <a class="el" href="classBlockManager.html#abf757af6c4fc8690997ce6f4e02d4192">file_proj_</a>, and <a class="el" href="classBlockManager.html#a972196fdf61348fd5f2d567d57ba845d">worker_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ae32ee78daa8c53787401fc4d438c58c4_cgraph.png" border="0" usemap="#classBlockManager_ae32ee78daa8c53787401fc4d438c58c4_cgraph" alt=""/></div>
+<map name="classBlockManager_ae32ee78daa8c53787401fc4d438c58c4_cgraph" id="classBlockManager_ae32ee78daa8c53787401fc4d438c58c4_cgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#a13eaed17f9ac43153394d1e048e4ec78" title="BlockManager::BlockManager\lWorkerActor::_askformatch" alt="" coords="243,5,439,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a03eeb279604d57078e7e4a81e24ff1fb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::asyncReregister </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367">reportBlockStatus()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a03eeb279604d57078e7e4a81e24ff1fb_icgraph.png" border="0" usemap="#classBlockManager_a03eeb279604d57078e7e4a81e24ff1fb_icgraph" alt=""/></div>
+<map name="classBlockManager_a03eeb279604d57078e7e4a81e24ff1fb_icgraph" id="classBlockManager_a03eeb279604d57078e7e4a81e24ff1fb_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367" title="BlockManager::reportBlock\lStatus" alt="" coords="261,5,440,46"/><area shape="rect" id="node3" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14" title="BlockManager::put" alt="" coords="488,12,619,39"/><area shape="rect" id="node4" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558" title="BlockManager::getLocal" alt="" coords="667,12,829,39"/><area shape="rect" id="node5" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042" title="BlockManager::get" alt="" coords="877,12,1008,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aef887f84cd2e5ba4d3027319233dd181"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::containsPartition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;&#160;</td>
+          <td class="paramname"><em>part</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#a6404e33c0f25357ce2485ecbfce614c5">partition_id_to_storage_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae0ab2b2c356970380595461f650a7042"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::get </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558">getLocal()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ae0ab2b2c356970380595461f650a7042_cgraph.png" border="0" usemap="#classBlockManager_ae0ab2b2c356970380595461f650a7042_cgraph" alt=""/></div>
+<map name="classBlockManager_ae0ab2b2c356970380595461f650a7042_cgraph" id="classBlockManager_ae0ab2b2c356970380595461f650a7042_cgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558" title="BlockManager::getLocal" alt="" coords="184,56,347,83"/><area shape="rect" id="node3" href="classMemoryChunkStore.html#ab88e14ef66898609b0beb9e51e44b132" title="MemoryChunkStore::getChunk" alt="" coords="395,5,597,32"/><area shape="rect" id="node4" href="classBlockManager.html#a50fabe2bdaaf2d89b4148c9a45b4f3e1" title="BlockManager::loadFromHdfs" alt="" coords="399,56,593,83"/><area shape="rect" id="node5" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14" title="BlockManager::put" alt="" coords="431,107,561,133"/><area shape="rect" id="node6" href="classMemoryChunkStore.html#a41ac7b17a47733f09b2077398d043344" title="MemoryChunkStore::putValue" alt="" coords="645,56,843,83"/><area shape="rect" id="node7" href="classDiskStore.html#a62d2b78239f85f156ddf262f99c59789" title="DiskStore::putValue" alt="" coords="675,107,813,133"/><area shape="rect" id="node8" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367" title="BlockManager::reportBlock\lStatus" alt="" coords="655,158,833,199"/><area shape="rect" id="node9" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0" title="BlockManager::tryToReport\lBlockStatus" alt="" coords="903,129,1086,170"/><area shape="rect" id="node11" href="classBlockManager.html#a03eeb279604d57078e7e4a81e24ff1fb" title="BlockManager::asyncReregister" alt="" coords="891,195,1099,221"/><area shape="rect" id="node10" href="classBlockManager_1_1BlockManagerWorkerActor.html#a578a0fb75d8162c73bceabb75da92333" title="BlockManager::BlockManager\lWorkerActor::_reportBlockStatus" alt="" coords="1147,129,1362,170"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab54877265aa654fca48fbb9655ac3198"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlockManagerId.html">BlockManagerId</a> * BlockManager::getId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#abb38f940dd808ed994b97fb64440e0d4">blockManagerId_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab585bf1e1b3995428d89dd9180a4fb92"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlockManager.html">BlockManager</a> * BlockManager::getInstance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693">BlockManager()</a>, and <a class="el" href="classBlockManager.html#a2ee03876f74a71cab65fcfdd451bd456">blockmanager_</a>.</p>
+
+<p>Referenced by <a class="el" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1">ChunkStorage::createChunkReaderIterator()</a>, <a class="el" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5">Environment::initializeStorage()</a>, <a class="el" href="classbottomLayerCollecting.html#a2ed9464072a1790b5547a0dc1da3bdc6">bottomLayerCollecting::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41">claims::physical_operator::PhysicalProjectionScan::Open()</a>, <a class="el" href="classIndexScanIterator.html#a75cc90e38f3f96de7982d13e625860e2">IndexScanIterator::Open()</a>, and <a class="el" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0">projection_scan()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ab585bf1e1b3995428d89dd9180a4fb92_cgraph.png" border="0" usemap="#classBlockManager_ab585bf1e1b3995428d89dd9180a4fb92_cgraph" alt=""/></div>
+<map name="classBlockManager_ab585bf1e1b3995428d89dd9180a4fb92_cgraph" id="classBlockManager_ab585bf1e1b3995428d89dd9180a4fb92_cgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693" title="BlockManager::BlockManager" alt="" coords="235,1304,431,1331"/><area shape="rect" id="node3" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="480,803,651,830"/><area shape="rect" id="node42" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f" title="MemoryChunkStore::getInstance" alt="" coords="1462,1328,1677,1355"/><area shape="rect" id="node45" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057" title="Environment::getNodeID" alt="" coords="1486,1212,1653,1239"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="699,476,875,503"/><area shape="rect" id="node5" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="964,670,1100,696"/><area shape="rect" id="node6" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="939,619,1125,646"/><area shape="rect" id="node8" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="939,720,1125,747"/><area shape="rect" id="node9" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="925,814,1139,856"/><area shape="rect" id="node24" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="946,248,1118,275"/><area shape="rect" id="node26" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1523,331,1615,358"/><area shape="rect" id="node27" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="923,131,1141,158"/><area shape="rect" id="node28" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="961,400,1103,427"/><area shape="rect" id="node30" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="952,80,1112,107"/><area shape="rect" id="node32" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="924,502,1140,528"/><area shape="rect" id="node31" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1520,116,1619,143"/><area shape="rect" id="node34" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="1215,265,1388,306"/><area shape="rect" id="node36" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="929,182,1135,224"/><area shape="rect" id="node38" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="935,1271,1129,1298"/><area shape="rect" id="node46" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="939,1002,1125,1044"/><area shape="rect" id="node47" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="933,350,1131,376"/><area shape="rect" id="node49" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="940,553,1124,594"/><area shape="rect" id="node7" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="1198,615,1405,642"/><area shape="rect" id="node10" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="1221,914,1382,956"/><area shape="rect" id="node11" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="1235,1045,1368,1086"/><area shape="rect" id="node19" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="1240,980,1363,1021"/><area shape="rect" id="node20" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="1215,666,1388,708"/><area shape="rect" id="node21" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="1190,732,1413,759"/><area shape="rect" id="node22" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="1206,784,1397,825"/><area shape="rect" id="node23" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="1215,849,1388,890"/><area shape="rect" id="node12" href="TypeCast_8h.html#a8f1ecd64ef3a9a77550061aee836e60d" title="boolean_to_boolean" alt="" coords="1501,1010,1638,1036"/><area shape="rect" id="node13" href="TypeCast_8h.html#a8d342d77ca15152b24a5a6188762f9f4" title="boolean_to_decimal" alt="" coords="1501,1060,1638,1087"/><area shape="rect" id="node14" href="TypeCast_8h.html#a842736534e9c99fb52092f59d77ca065" title="boolean_to_double" alt="" coords="1504,1111,1635,1138"/><area shape="rect" id="node15" href="TypeCast_8h.html#ae45d191bf454694efb88dd3be6bbaee2" title="boolean_to_float" alt="" coords="1511,807,1628,834"/><area shape="rect" id="node16" href="TypeCast_8h.html#a387fd3c601f4207bc426602975803d56" title="boolean_to_int" alt="" coords="1516,858,1623,884"/><area shape="rect" id="node17" href="TypeCast_8h.html#a3ef8f124f4892112be8e23ec4bd69eb2" title="boolean_to_smallInt" alt="" coords="1500,908,1639,935"/><area shape="rect" id="node18" href="TypeCast_8h.html#aa55b320797cb8d7ee17f3f9892f81264" title="boolean_to_ulong" alt="" coords="1508,959,1631,986"/><area shape="rect" id="node25" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="1212,214,1391,240"/><area shape="rect" id="node29" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1241,396,1361,423"/><area shape="rect" id="node33" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="1233,498,1369,540"/><area shape="rect" id="node35" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="1490,272,1649,299"/><area shape="rect" id="node37" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54" title="InstanceResourceManager\l::Register" alt="" coords="1212,140,1391,181"/><area shape="rect" id="node39" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="1229,1264,1374,1305"/><area shape="rect" id="node40" href="classBlockManagerMaster.html#a41f5fb3487ce3bac55b6eec9c38d26e1" title="BlockManagerMaster\l::initialize" alt="" coords="1229,1329,1374,1370"/><area shape="rect" id="node41" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="1221,1162,1381,1188"/><area shape="rect" id="node44" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="1478,1162,1661,1188"/><area shape="rect" id="node43" href="classMemoryChunkStore.html#a9c11c67ff2cbdce8ec543a9a76a5cdb8" title="MemoryChunkStore::Memory\lChunkStore" alt="" coords="1726,1321,1919,1362"/><area shape="rect" id="node48" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="1209,330,1393,372"/><area shape="rect" id="node50" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="1220,564,1383,591"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ab585bf1e1b3995428d89dd9180a4fb92_icgraph.png" border="0" usemap="#classBlockManager_ab585bf1e1b3995428d89dd9180a4fb92_icgraph" alt=""/></div>
+<map name="classBlockManager_ab585bf1e1b3995428d89dd9180a4fb92_icgraph" id="classBlockManager_ab585bf1e1b3995428d89dd9180a4fb92_icgraph">
+<area shape="rect" id="node2" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1" title="ChunkStorage::createChunk\lReaderIterator" alt="" coords="245,1933,432,1974"/><area shape="rect" id="node3" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="241,1999,436,2025"/><area shape="rect" id="node48" href="classbottomLayerCollecting.html#a2ed9464072a1790b5547a0dc1da3bdc6" title="bottomLayerCollecting\l::Open" alt="" coords="263,2101,415,2142"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="235,2166,442,2207"/><area shape="rect" id="node50" href="classIndexScanIterator.html#a75cc90e38f3f96de7982d13e625860e2" title="IndexScanIterator::Open" alt="" coords="257,2232,421,2259"/><area shape="rect" id="node47" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0" title="projection_scan" alt="" coords="998,2297,1111,2324"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="491,1749,667,1776"/><area shape="rect" id="node5" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="715,1252,885,1279"/><area shape="rect" id="node6" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="976,319,1133,361"/><area shape="rect" id="node11" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="969,487,1141,529"/><area shape="rect" id="node7" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1265,232,1356,259"/><area shape="rect" id="node12" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="977,553,1132,580"/><area shape="rect" id="node13" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="1017,604,1092,631"/><area shape="rect" id="node14" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="997,655,1113,681"/><area shape="rect" id="node8" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1236,312,1385,339"/><area shape="rect" id="node15" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1005,705,1105,732"/><area shape="rect" id="node16" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="958,756,1151,783"/><area shape="rect" id="node17" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="959,807,1150,849"/><area shape="rect" id="node18" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="937,873,1172,914"/><area shape="rect" id="node19" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="973,938,1136,979"/><area shape="rect" id="node20" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="954,1004,1155,1060"/><area shape="rect" id="node21" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="977,1085,1133,1126"/><area shape="rect" id="node22" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="986,1151,1123,1177"/><area shape="rect" id="node9" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1232,375,1389,401"/><area shape="rect" id="node10" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1229,431,1393,457"/><area shape="rect" id="node23" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="982,1252,1127,1279"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="989,1303,1121,1329"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1241,1227,1380,1253"/><area shape="rect" id="node26" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="977,1354,1132,1395"/><area shape="rect" id="node27" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="995,1471,1114,1497"/><area shape="rect" id="node28" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1273,1445,1348,1472"/><area shape="rect" id="node29" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1225,1597,1397,1624"/><area shape="rect" id="node31" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1008,1623,1101,1649"/><area shape="rect" id="node32" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1013,1673,1096,1700"/><area shape="rect" id="node33" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="975,1724,1134,1751"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="981,1775,1128,1801"/><area shape="rect" id="node35" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="991,1927,1118,1953"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="981,2079,1128,2105"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="991,2129,1118,2156"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1230,1971,1391,1997"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1245,1851,1376,1877"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="995,2180,1115,2207"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1235,2028,1386,2055"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1251,1908,1371,1935"/><area shape="rect" id="node30" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1446,1547,1567,1573"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="969,2231,1140,2273"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="933,5,1176,46"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="941,71,1168,127"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="937,151,1173,193"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="acaf5d3f8a9f1ff9211cf6b70688bf558"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * BlockManager::getLocal </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#ad412c155f8b2933cfaa5a74268927bfe">blockInfoPool_</a>, <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069a6f028c6632422ebb9bea407fc9891e60">disk</a>, <a class="el" href="classMemoryChunkStore.html#ab88e14ef66898609b0beb9e51e44b132">MemoryChunkStore::getChunk()</a>, <a class="el" href="structChunkInfo.html#a18e8c41e7bb295d4241c04978cf2690b">ChunkInfo::hook</a>, <a class="el" href="classBlockManager.html#a50fabe2bdaaf2d89b4148c9a45b4f3e1">loadFromHdfs()</a>, <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069a0d2adb87565aea3dc88dfa8468d7c799">memory</a>, <a class="el" href="classBlockManager.html#a45f73d423513d2dfbd71415bc6b32e69">memstore_</a>, and <a class="el" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14">put()</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042">get()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_acaf5d3f8a9f1ff9211cf6b70688bf558_cgraph.png" border="0" usemap="#classBlockManager_acaf5d3f8a9f1ff9211cf6b70688bf558_cgraph" alt=""/></div>
+<map name="classBlockManager_acaf5d3f8a9f1ff9211cf6b70688bf558_cgraph" id="classBlockManager_acaf5d3f8a9f1ff9211cf6b70688bf558_cgraph">
+<area shape="rect" id="node2" href="classMemoryChunkStore.html#ab88e14ef66898609b0beb9e51e44b132" title="MemoryChunkStore::getChunk" alt="" coords="216,5,419,32"/><area shape="rect" id="node3" href="classBlockManager.html#a50fabe2bdaaf2d89b4148c9a45b4f3e1" title="BlockManager::loadFromHdfs" alt="" coords="220,56,415,83"/><area shape="rect" id="node4" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14" title="BlockManager::put" alt="" coords="252,107,383,133"/><area shape="rect" id="node5" href="classMemoryChunkStore.html#a41ac7b17a47733f09b2077398d043344" title="MemoryChunkStore::putValue" alt="" coords="467,56,664,83"/><area shape="rect" id="node6" href="classDiskStore.html#a62d2b78239f85f156ddf262f99c59789" title="DiskStore::putValue" alt="" coords="496,107,635,133"/><area shape="rect" id="node7" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367" title="BlockManager::reportBlock\lStatus" alt="" coords="476,158,655,199"/><area shape="rect" id="node8" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0" title="BlockManager::tryToReport\lBlockStatus" alt="" coords="725,129,907,170"/><area shape="rect" id="node10" href="classBlockManager.html#a03eeb279604d57078e7e4a81e24ff1fb" title="BlockManager::asyncReregister" alt="" coords="712,195,920,221"/><area shape="rect" id="node9" href="classBlockManager_1_1BlockManagerWorkerActor.html#a578a0fb75d8162c73bceabb75da92333" title="BlockManager::BlockManager\lWorkerActor::_reportBlockStatus" alt="" coords="969,129,1183,170"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_acaf5d3f8a9f1ff9211cf6b70688bf558_icgraph.png" border="0" usemap="#classBlockManager_acaf5d3f8a9f1ff9211cf6b70688bf558_icgraph" alt=""/></div>
+<map name="classBlockManager_acaf5d3f8a9f1ff9211cf6b70688bf558_icgraph" id="classBlockManager_acaf5d3f8a9f1ff9211cf6b70688bf558_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042" title="BlockManager::get" alt="" coords="216,5,347,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae4f0a3a061c1a7a15898872e50bfff8f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMemoryChunkStore.html">MemoryChunkStore</a> * BlockManager::getMemoryChunkStore </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#a45f73d423513d2dfbd71415bc6b32e69">memstore_</a>.</p>
+
+<p>Referenced by <a class="el" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1">ChunkStorage::createChunkReaderIterator()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ae4f0a3a061c1a7a15898872e50bfff8f_icgraph.png" border="0" usemap="#classBlockManager_ae4f0a3a061c1a7a15898872e50bfff8f_icgraph" alt=""/></div>
+<map name="classBlockManager_ae4f0a3a061c1a7a15898872e50bfff8f_icgraph" id="classBlockManager_ae4f0a3a061c1a7a15898872e50bfff8f_icgraph">
+<area shape="rect" id="node2" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1" title="ChunkStorage::createChunk\lReaderIterator" alt="" coords="269,5,456,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a12f753739e865549cb2307ab42e81890"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPartitionStorage.html">PartitionStorage</a> * BlockManager::getPartitionHandle </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;&#160;</td>
+          <td class="paramname"><em>partition_id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#a6404e33c0f25357ce2485ecbfce614c5">partition_id_to_storage_</a>.</p>
+
+<p>Referenced by <a class="el" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0">projection_scan()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a12f753739e865549cb2307ab42e81890_icgraph.png" border="0" usemap="#classBlockManager_a12f753739e865549cb2307ab42e81890_icgraph" alt=""/></div>
+<map name="classBlockManager_a12f753739e865549cb2307ab42e81890_icgraph" id="classBlockManager_a12f753739e865549cb2307ab42e81890_icgraph">
+<area shape="rect" id="node2" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0" title="projection_scan" alt="" coords="233,12,346,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af3af0d19fa5b73ba57dc3ccc3e2746f1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::heartBeat </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#af676be8980b3b90d608307d45c729f3b">BlockManager::BlockManagerWorkerActor::_sendHeartBeat()</a>, <a class="el" href="classBlockManager.html#ae6ee16362ccf4599ec6abb16d8d78331">reregister()</a>, and <a class="el" href="classBlockManager.html#a972196fdf61348fd5f2d567d57ba845d">worker_</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2">initialize()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_af3af0d19fa5b73ba57dc3ccc3e2746f1_cgraph.png" border="0" usemap="#classBlockManager_af3af0d19fa5b73ba57dc3ccc3e2746f1_cgraph" alt=""/></div>
+<map name="classBlockManager_af3af0d19fa5b73ba57dc3ccc3e2746f1_cgraph" id="classBlockManager_af3af0d19fa5b73ba57dc3ccc3e2746f1_cgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#af676be8980b3b90d608307d45c729f3b" title="BlockManager::BlockManager\lWorkerActor::_sendHeartBeat" alt="" coords="224,5,421,46"/><area shape="rect" id="node3" href="classBlockManager.html#ae6ee16362ccf4599ec6abb16d8d78331" title="BlockManager::reregister" alt="" coords="239,71,406,97"/><area shape="rect" id="node4" href="classBlockManager.html#a34a4e70f042c1f8ad323da3d092c5a84" title="BlockManager::reportAllBlocks" alt="" coords="470,71,671,97"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_af3af0d19fa5b73ba57dc3ccc3e2746f1_icgraph.png" border="0" usemap="#classBlockManager_af3af0d19fa5b73ba57dc3ccc3e2746f1_icgraph" alt=""/></div>
+<map name="classBlockManager_af3af0d19fa5b73ba57dc3ccc3e2746f1_icgraph" id="classBlockManager_af3af0d19fa5b73ba57dc3ccc3e2746f1_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="224,1268,384,1294"/><area shape="rect" id="node3" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="432,1242,627,1269"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="675,1242,851,1269"/><area shape="rect" id="node5" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="899,1268,1069,1294"/><area shape="rect" id="node6" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1160,116,1317,158"/><area shape="rect" id="node11" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="1153,284,1325,326"/><area shape="rect" id="node7" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1449,29,1540,56"/><area shape="rect" id="node12" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="1161,350,1316,377"/><area shape="rect" id="node13" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="1201,401,1276,428"/><area shape="rect" id="node14" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="1181,452,1297,478"/><area shape="rect" id="node8" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1420,109,1569,136"/><area shape="rect" id="node15" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1189,502,1289,529"/><area shape="rect" id="node16" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1142,553,1335,580"/><area shape="rect" id="node17" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1143,604,1334,646"/><area shape="rect" id="node18" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1121,670,1356,711"/><area shape="rect" id="node19" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="1157,735,1320,776"/><area shape="rect" id="node20" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1138,801,1339,857"/><area shape="rect" id="node21" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="1161,882,1317,923"/><area shape="rect" id="node22" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="1170,948,1307,974"/><area shape="rect" id="node9" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1416,172,1573,198"/><area shape="rect" id="node10" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1413,228,1577,254"/><area shape="rect" id="node23" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1166,998,1311,1025"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1173,1100,1305,1126"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1425,1024,1564,1050"/><area shape="rect" id="node26" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="1161,1151,1316,1192"/><area shape="rect" id="node27" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1179,1217,1298,1244"/><area shape="rect" id="node28" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1457,1242,1532,1269"/><area shape="rect" id="node29" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1409,1394,1581,1421"/><area shape="rect" id="node31" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1192,1420,1285,1446"/><area shape="rect" id="node32" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1197,1470,1280,1497"/><area shape="rect" id="node33" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="1159,1521,1318,1548"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1165,1572,1312,1598"/><area shape="rect" id="node35" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="1175,1724,1302,1750"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1165,1876,1312,1902"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1175,1926,1302,1953"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1414,1768,1575,1794"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1429,1648,1560,1674"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1179,1977,1299,2004"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1419,1825,1570,1852"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1435,1705,1555,1732"/><area shape="rect" id="node30" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1630,1344,1751,1370"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1153,2028,1324,2070"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="1117,2094,1360,2135"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="1125,2160,1352,2216"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1121,2240,1357,2282"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1139,2306,1338,2362"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1129,2387,1349,2428"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1ResultCollector.html#ad4e492a894477ccbf7dedded8733626c" title="claims::physical_operator\l::ResultCollector::Open" alt="" coords="1153,2452,1324,2494"/><area shape="rect" id="node50" href="classResourceManagerMaster.html#aa193416dd1d8871846488ebbab7c20cb" title="ResourceManagerMaster\l::ResourceManagerMaster" alt="" coords="1151,2518,1327,2559"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="a646625bacabedc95cbf3ea747eab86e2"></a>
 <div class="memitem">
 <div class="memproto">
@@ -223,11 +689,705 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>BlockManagerWorkerAc
 </div><div class="memdoc">
 <p>the version written by zhanglei///////////////////////////////// </p>
 
+<p>References <a class="el" href="classBlockManager.html#abb38f940dd808ed994b97fb64440e0d4">blockManagerId_</a>, <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069a6f028c6632422ebb9bea407fc9891e60">disk</a>, <a class="el" href="Debug_8h.html#a58457c39bade83390ce2b7dfb8cadea3">DISKDIR</a>, <a class="el" href="classBlockManager.html#a20b2e66969497219288c72f788ffba17">diskstore_</a>, <a class="el" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0">BufferManager::getInstance()</a>, <a class="el" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61">Environment::getInstance()</a>, <a class="el" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f">MemoryChunkStore::getInstance()</a>, <a class="el" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057">Environment::getNodeID()</a>, <a class="el" href="classEnvironment.html#a5440280686c56aa78fd69d28e3647c86">Environment::getResourceManagerSlave()</a>, <a class="el" href="classBufferManager.html#a65210c02c43210981840ab5a6a1dc020">BufferManager::getStorageMemoryBudegeInMilibyte()</a>, <a class="el" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1">heartBeat()</a>, <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069a0d2adb87565aea3dc88dfa8468d7c799">memory</a>, <a class="el" href="classBlockManager.html#a45f73d423513d2dfbd71415bc6b32e69">memstore_</a>, <a class="el" href="classBlockManager.html#ab3d1826a64cae0d5fbe679b47ba21def">registerToMaster()</a>, and <a class="el" href="classInstanceResourceManager.html#a10e6142a7a0544c1ce96060af639cee6">InstanceResourceManager::ReportStorageBudget()</a>.</p>
+
+<p>Referenced by <a class="el" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5">Environment::initializeStorage()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a646625bacabedc95cbf3ea747eab86e2_cgraph.png" border="0" usemap="#classBlockManager_a646625bacabedc95cbf3ea747eab86e2_cgraph" alt=""/></div>
+<map name="classBlockManager_a646625bacabedc95cbf3ea747eab86e2_cgraph" id="classBlockManager_a646625bacabedc95cbf3ea747eab86e2_cgraph">
+<area shape="rect" id="node2" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="986,488,1169,515"/><area shape="rect" id="node7" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="217,1204,388,1231"/><area shape="rect" id="node4" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f" title="MemoryChunkStore::getInstance" alt="" coords="1486,240,1701,267"/><area shape="rect" id="node41" href="classEnvironment.html#a6e28e82ca0d3e52aa4e4ce67a3bc0057" title="Environment::getNodeID" alt="" coords="219,1305,386,1332"/><area shape="rect" id="node42" href="classEnvironment.html#a5440280686c56aa78fd69d28e3647c86" title="Environment::getResource\lManagerSlave" alt="" coords="214,1357,391,1398"/><area shape="rect" id="node43" href="classBufferManager.html#a65210c02c43210981840ab5a6a1dc020" title="BufferManager::getStorage\lMemoryBudegeInMilibyte" alt="" coords="213,1422,392,1463"/><area shape="rect" id="node44" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1" title="BlockManager::heartBeat" alt="" coords="218,1488,387,1515"/><area shape="rect" id="node48" href="classBlockManager.html#ab3d1826a64cae0d5fbe679b47ba21def" title="BlockManager::registerTo\lMaster" alt="" coords="217,1539,388,1581"/><area shape="rect" id="node50" href="classInstanceResourceManager.html#a10e6142a7a0544c1ce96060af639cee6" title="InstanceResourceManager\l::ReportStorageBudget" alt="" coords="213,1605,392,1646"/><area shape="rect" id="node3" href="classBufferManager.html#a0b8362fcbc407aea3e8324e69ce5c569" title="BufferManager::BufferManager" alt="" coords="1237,488,1437,515"/><area shape="rect" id="node6" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1547,753,1639,780"/><area shape="rect" id="node5" href="classMemoryChunkStore.html#a9c11c67ff2cbdce8ec543a9a76a5cdb8" title="MemoryChunkStore::Memory\lChunkStore" alt="" coords="1750,233,1943,274"/><area shape="rect" id="node8" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="457,792,633,819"/><area shape="rect" id="node9" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="740,1087,876,1113"/><area shape="rect" id="node10" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="715,1036,901,1063"/><area shape="rect" id="node12" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="715,396,901,423"/><area shape="rect" id="node13" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="701,253,915,294"/><area shape="rect" id="node21" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="722,513,894,540"/><area shape="rect" id="node23" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="699,564,917,591"/><area shape="rect" id="node24" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="737,665,879,692"/><area shape="rect" id="node26" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="728,716,888,743"/><area shape="rect" id="node28" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="700,817,916,844"/><area shape="rect" id="node27" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1288,777,1387,804"/><area shape="rect" id="node30" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="991,883,1164,925"/><area shape="rect" id="node32" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="705,1138,911,1179"/><area shape="rect" id="node34" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="711,1255,905,1281"/><area shape="rect" id="node38" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="715,447,901,489"/><area shape="rect" id="node39" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="709,868,907,895"/><area shape="rect" id="node40" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="716,970,900,1011"/><area shape="rect" id="node11" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="974,1036,1181,1063"/><area shape="rect" id="node14" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="997,291,1158,333"/><area shape="rect" id="node15" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="1011,357,1144,398"/><area shape="rect" id="node16" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="1016,422,1139,463"/><area shape="rect" id="node17" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="991,43,1164,85"/><area shape="rect" id="node18" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="966,109,1189,136"/><area shape="rect" id="node19" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="982,161,1173,202"/><area shape="rect" id="node20" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="991,226,1164,267"/><area shape="rect" id="node22" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="988,539,1167,565"/><area shape="rect" id="node25" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1017,665,1137,692"/><area shape="rect" id="node29" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="1009,818,1145,859"/><area shape="rect" id="node31" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="1258,840,1417,867"/><area shape="rect" id="node33" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54" title="InstanceResourceManager\l::Register" alt="" coords="988,1102,1167,1143"/><area shape="rect" id="node35" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="1005,1182,1150,1223"/><area shape="rect" id="node36" href="classBlockManagerMaster.html#a41f5fb3487ce3bac55b6eec9c38d26e1" title="BlockManagerMaster\l::initialize" alt="" coords="1005,1247,1150,1289"/><area shape="rect" id="node37" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92" title="BlockManager::getInstance" alt="" coords="987,1313,1168,1340"/><area shape="rect" id="node45" href="classBlockManager_1_1BlockManagerWorkerActor.html#af676be8980b3b90d608307d45c729f3b" title="BlockManager::BlockManager\lWorkerActor::_sendHeartBeat" alt="" coords="447,1422,644,1463"/><area shape="rect" id="node46" href="classBlockManager.html#ae6ee16362ccf4599ec6abb16d8d78331" title="BlockManager::reregister" alt="" coords="462,1488,629,1515"/><area shape="rect" id="node47" href="classBlockManager.html#a34a4e70f042c1f8ad323da3d092c5a84" title="BlockManager::reportAllBlocks" alt="" coords="707,1488,909,1515"/><area shape="rect" id="node49" href="classBlockManager_1_1BlockManagerWorkerActor.html#a1b335bd0be064b12d86290c7cd12e8a1" title="BlockManager::BlockManager\lWorkerActor::_reigisterToMaster" alt="" coords="440,1539,651,1581"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a646625bacabedc95cbf3ea747eab86e2_icgraph.png" border="0" usemap="#classBlockManager_a646625bacabedc95cbf3ea747eab86e2_icgraph" alt=""/></div>
+<map name="classBlockManager_a646625bacabedc95cbf3ea747eab86e2_icgraph" id="classBlockManager_a646625bacabedc95cbf3ea747eab86e2_icgraph">
+<area shape="rect" id="node2" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="213,1268,408,1294"/><area shape="rect" id="node3" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="456,1268,632,1294"/><area shape="rect" id="node4" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="680,1293,851,1320"/><area shape="rect" id="node5" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="941,116,1099,158"/><area shape="rect" id="node10" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="934,284,1106,326"/><area shape="rect" id="node6" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1231,29,1321,56"/><area shape="rect" id="node11" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="943,350,1097,377"/><area shape="rect" id="node12" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="983,401,1057,428"/><area shape="rect" id="node13" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="962,452,1078,478"/><area shape="rect" id="node7" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1201,109,1351,136"/><area shape="rect" id="node14" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="970,502,1070,529"/><area shape="rect" id="node15" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="923,553,1117,580"/><area shape="rect" id="node16" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="925,604,1115,646"/><area shape="rect" id="node17" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="903,670,1137,711"/><area shape="rect" id="node18" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="939,735,1101,776"/><area shape="rect" id="node19" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="919,801,1121,857"/><area shape="rect" id="node20" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="942,882,1098,923"/><area shape="rect" id="node21" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="951,948,1089,974"/><area shape="rect" id="node8" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1197,172,1355,198"/><area shape="rect" id="node9" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1194,228,1358,254"/><area shape="rect" id="node22" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="947,1049,1093,1076"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="954,1100,1086,1126"/><area shape="rect" id="node23" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1207,1024,1345,1050"/><area shape="rect" id="node25" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="943,1151,1097,1192"/><area shape="rect" id="node26" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="961,1268,1079,1294"/><area shape="rect" id="node27" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1239,1242,1313,1269"/><area shape="rect" id="node28" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1190,1394,1362,1421"/><area shape="rect" id="node30" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="973,1420,1067,1446"/><area shape="rect" id="node31" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="979,1470,1061,1497"/><area shape="rect" id="node32" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="941,1521,1099,1548"/><area shape="rect" id="node33" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="947,1572,1093,1598"/><area shape="rect" id="node34" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="957,1724,1083,1750"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="947,1876,1093,1902"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="957,1926,1083,1953"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1195,1768,1357,1794"/><area shape="rect" id="node35" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1211,1648,1341,1674"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="960,1977,1080,2004"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1201,1825,1351,1852"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1216,1705,1336,1732"/><area shape="rect" id="node29" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1411,1344,1533,1370"/><area shape="rect" id="node42" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="935,2028,1105,2070"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="899,2094,1141,2135"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="907,2160,1133,2216"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="902,2240,1138,2282"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="921,2306,1119,2362"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="910,2387,1130,2428"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ResultCollector.html#ad4e492a894477ccbf7dedded8733626c" title="claims::physical_operator\l::ResultCollector::Open" alt="" coords="935,2452,1105,2494"/><area shape="rect" id="node49" href="classResourceManagerMaster.html#aa193416dd1d8871846488ebbab7c20cb" title="ResourceManagerMaster\l::ResourceManagerMaster" alt="" coords="932,2518,1108,2559"/><area shape="rect" id="node50" href="classInstanceResourceManager.html#a1d378f6c1e0ece181a642e30777a7e25" title="InstanceResourceManager\l::InstanceResourceManager" alt="" coords="927,2583,1113,2624"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1c092c34f5065b8ff06632533eb2a3cb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int BlockManager::loadFromDisk </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChunkID.html">ChunkID</a> &amp;&#160;</td>
+          <td class="paramname"><em>chunk_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *const &amp;&#160;</td>
+          <td class="paramname"><em>desc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned &amp;&#160;</td>
+          <td class="paramname"><em>length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structChunkID.html#ae331f9711e3acf58969756c8ee5eb6ce">ChunkID::chunk_off</a>, <a class="el" href="Debug_8h.html#aea3cfda4f3a9f978ec759f206cf186fe">CHUNK_SIZE</a>, <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>, <a class="el" href="rename_8h.html#a8051a16e1848df8482ae4371d465cf4b">FileClose()</a>, <a class="el" href="rename_8h.html#a2121bf579f7261cf21549f242ad40e77">FileOpen</a>, <a class="el" href="structPartitionID.html#a71636afe991be88296956331f2a5aee0">PartitionID::getPathAndName()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classBlockManager.html#a10343a3dd8925edaad51d0bb21852184">logging_</a>, and <a class="el" href="structChunkID.html#a601de715dd92d3b4ed9ae5ffe11e62d0">ChunkID::partition_id</a>.</p>
+
+<p>Referenced by <a class="el" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1">ChunkStorage::createChunkReaderIterator()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a1c092c34f5065b8ff06632533eb2a3cb_cgraph.png" border="0" usemap="#classBlockManager_a1c092c34f5065b8ff06632533eb2a3cb_cgraph" alt=""/></div>
+<map name="classBlockManager_a1c092c34f5065b8ff06632533eb2a3cb_cgraph" id="classBlockManager_a1c092c34f5065b8ff06632533eb2a3cb_cgraph">
+<area shape="rect" id="node2" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="296,5,395,32"/><area shape="rect" id="node3" href="rename_8h.html#a8051a16e1848df8482ae4371d465cf4b" title="FileClose" alt="" coords="307,56,384,83"/><area shape="rect" id="node4" href="structPartitionID.html#a71636afe991be88296956331f2a5aee0" title="PartitionID::getPathAndName" alt="" coords="248,107,443,133"/><area shape="rect" id="node5" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="299,157,391,184"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a1c092c34f5065b8ff06632533eb2a3cb_icgraph.png" border="0" usemap="#classBlockManager_a1c092c34f5065b8ff06632533eb2a3cb_icgraph" alt=""/></div>
+<map name="classBlockManager_a1c092c34f5065b8ff06632533eb2a3cb_icgraph" id="classBlockManager_a1c092c34f5065b8ff06632533eb2a3cb_icgraph">
+<area shape="rect" id="node2" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1" title="ChunkStorage::createChunk\lReaderIterator" alt="" coords="248,5,435,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a50fabe2bdaaf2d89b4148c9a45b4f3e1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structChunkInfo.html">ChunkInfo</a> BlockManager::loadFromHdfs </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>file_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Debug_8h.html#aea3cfda4f3a9f978ec759f206cf186fe">CHUNK_SIZE</a>, <a class="el" href="classConfig.html#acc4b0619e445265ead5c90b96684a50a">Config::hdfs_master_ip</a>, <a class="el" href="classConfig.html#a98738e79e3078c3c2f91bf8fd44f4721">Config::hdfs_master_port</a>, and <a class="el" href="structChunkInfo.html#a18e8c41e7bb295d4241c04978cf2690b">ChunkInfo::hook</a>.</p>
+
+<p>Referenced by <a class="el" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1">ChunkStorage::createChunkReaderIterator()</a>, and <a class="el" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558">getLocal()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a50fabe2bdaaf2d89b4148c9a45b4f3e1_icgraph.png" border="0" usemap="#classBlockManager_a50fabe2bdaaf2d89b4148c9a45b4f3e1_icgraph" alt=""/></div>
+<map name="classBlockManager_a50fabe2bdaaf2d89b4148c9a45b4f3e1_icgraph" id="classBlockManager_a50fabe2bdaaf2d89b4148c9a45b4f3e1_icgraph">
+<area shape="rect" id="node2" href="classChunkStorage.html#ad8ed555eeb7ecf5100925686fca041a1" title="ChunkStorage::createChunk\lReaderIterator" alt="" coords="248,5,435,46"/><area shape="rect" id="node3" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558" title="BlockManager::getLocal" alt="" coords="260,71,423,97"/><area shape="rect" id="node4" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042" title="BlockManager::get" alt="" coords="483,71,613,97"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5d512b812b7e35e1ac3d1ddaf70c9bcb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int BlockManager::loadFromHdfs </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChunkID.html">ChunkID</a> &amp;&#160;</td>
+          <td class="paramname"><em>chunk_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *const &amp;&#160;</td>
+          <td class="paramname"><em>desc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned &amp;&#160;</td>
+          <td class="paramname"><em>length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557">Lock::acquire()</a>, <a class="el" href="structChunkID.html#ae331f9711e3acf58969756c8ee5eb6ce">ChunkID::chunk_off</a>, <a class="el" href="Debug_8h.html#aea3cfda4f3a9f978ec759f206cf186fe">CHUNK_SIZE</a>, <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>, <a class="el" href="structPartitionID.html#a71636afe991be88296956331f2a5aee0">PartitionID::getPathAndName()</a>, <a class="el" href="classConfig.html#acc4b0619e445265ead5c90b96684a50a">Config::hdfs_master_ip</a>, <a class="el" href="classConfig.html#a98738e79e3078c3c2f91bf8fd44f4721">Config::hdfs_master_port</a>, <a class="el" href="classBlockManager.html#a8f2433e4dad0d3e55035e6cdaba64371">lock</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classBlockManager.html#a10343a3dd8925edaad51d0bb21852184">logging_</a>, <a class="el" href="structChunkID.html#a601de715dd92d3b4ed9ae5ffe11e62d0">ChunkID::partition_id</a>, and <a class="el" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1">Lock::release()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a5d512b812b7e35e1ac3d1ddaf70c9bcb_cgraph.png" border="0" usemap="#classBlockManager_a5d512b812b7e35e1ac3d1ddaf70c9bcb_cgraph" alt=""/></div>
+<map name="classBlockManager_a5d512b812b7e35e1ac3d1ddaf70c9bcb_cgraph" id="classBlockManager_a5d512b812b7e35e1ac3d1ddaf70c9bcb_cgraph">
+<area shape="rect" id="node2" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="295,5,395,32"/><area shape="rect" id="node3" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="296,56,395,83"/><area shape="rect" id="node4" href="structPartitionID.html#a71636afe991be88296956331f2a5aee0" title="PartitionID::getPathAndName" alt="" coords="248,107,443,133"/><area shape="rect" id="node5" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="299,157,391,184"/><area shape="rect" id="node6" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="295,208,395,235"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aaba409b0fefd5ec8c71c147a245ead14"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::put </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069">storageLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#ad412c155f8b2933cfaa5a74268927bfe">blockInfoPool_</a>, <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069a6f028c6632422ebb9bea407fc9891e60">disk</a>, <a class="el" href="classBlockManager.html#a20b2e66969497219288c72f788ffba17">diskstore_</a>, <a class="el" href="classBlockManager.html#a3832725bc9a4a3460cc3abd44d58c069a0d2adb87565aea3dc88dfa8468d7c799">memory</a>, <a class="el" href="classBlockManager.html#a45f73d423513d2dfbd71415bc6b32e69">memstore_</a>, <a class="el" href="classDiskStore.html#a62d2b78239f85f156ddf262f99c59789">DiskStore::putValue()</a>, <a class="el" href="classMemoryChunkStore.html#a41ac7b17a47733f09b2077398d043344">MemoryChunkStore::putValue()</a>, and <a class="el" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367">reportBlockStatus()</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558">getLocal()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_aaba409b0fefd5ec8c71c147a245ead14_cgraph.png" border="0" usemap="#classBlockManager_aaba409b0fefd5ec8c71c147a245ead14_cgraph" alt=""/></div>
+<map name="classBlockManager_aaba409b0fefd5ec8c71c147a245ead14_cgraph" id="classBlockManager_aaba409b0fefd5ec8c71c147a245ead14_cgraph">
+<area shape="rect" id="node2" href="classDiskStore.html#a62d2b78239f85f156ddf262f99c59789" title="DiskStore::putValue" alt="" coords="213,5,352,32"/><area shape="rect" id="node3" href="classMemoryChunkStore.html#a41ac7b17a47733f09b2077398d043344" title="MemoryChunkStore::putValue" alt="" coords="184,56,381,83"/><area shape="rect" id="node4" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367" title="BlockManager::reportBlock\lStatus" alt="" coords="193,107,372,149"/><area shape="rect" id="node5" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0" title="BlockManager::tryToReport\lBlockStatus" alt="" coords="442,78,625,119"/><area shape="rect" id="node7" href="classBlockManager.html#a03eeb279604d57078e7e4a81e24ff1fb" title="BlockManager::asyncReregister" alt="" coords="429,144,637,171"/><area shape="rect" id="node6" href="classBlockManager_1_1BlockManagerWorkerActor.html#a578a0fb75d8162c73bceabb75da92333" title="BlockManager::BlockManager\lWorkerActor::_reportBlockStatus" alt="" coords="686,78,901,119"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_aaba409b0fefd5ec8c71c147a245ead14_icgraph.png" border="0" usemap="#classBlockManager_aaba409b0fefd5ec8c71c147a245ead14_icgraph" alt=""/></div>
+<map name="classBlockManager_aaba409b0fefd5ec8c71c147a245ead14_icgraph" id="classBlockManager_aaba409b0fefd5ec8c71c147a245ead14_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558" title="BlockManager::getLocal" alt="" coords="184,5,347,32"/><area shape="rect" id="node3" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042" title="BlockManager::get" alt="" coords="395,5,525,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab3d1826a64cae0d5fbe679b47ba21def"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::registerToMaster </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlockManagerId.html">BlockManagerId</a> *&#160;</td>
+          <td class="paramname"><em>blockManagerId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a1b335bd0be064b12d86290c7cd12e8a1">BlockManager::BlockManagerWorkerActor::_reigisterToMaster()</a>, and <a class="el" href="classBlockManager.html#a972196fdf61348fd5f2d567d57ba845d">worker_</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2">initialize()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ab3d1826a64cae0d5fbe679b47ba21def_cgraph.png" border="0" usemap="#classBlockManager_ab3d1826a64cae0d5fbe679b47ba21def_cgraph" alt=""/></div>
+<map name="classBlockManager_ab3d1826a64cae0d5fbe679b47ba21def_cgraph" id="classBlockManager_ab3d1826a64cae0d5fbe679b47ba21def_cgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#a1b335bd0be064b12d86290c7cd12e8a1" title="BlockManager::BlockManager\lWorkerActor::_reigisterToMaster" alt="" coords="224,5,435,46"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ab3d1826a64cae0d5fbe679b47ba21def_icgraph.png" border="0" usemap="#classBlockManager_ab3d1826a64cae0d5fbe679b47ba21def_icgraph" alt=""/></div>
+<map name="classBlockManager_ab3d1826a64cae0d5fbe679b47ba21def_icgraph" id="classBlockManager_ab3d1826a64cae0d5fbe679b47ba21def_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="224,1268,384,1294"/><area shape="rect" id="node3" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="432,1242,627,1269"/><area shape="rect" id="node4" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="675,1242,851,1269"/><area shape="rect" id="node5" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="899,1268,1069,1294"/><area shape="rect" id="node6" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1160,116,1317,158"/><area shape="rect" id="node11" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="1153,284,1325,326"/><area shape="rect" id="node7" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1449,29,1540,56"/><area shape="rect" id="node12" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="1161,350,1316,377"/><area shape="rect" id="node13" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="1201,401,1276,428"/><area shape="rect" id="node14" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="1181,452,1297,478"/><area shape="rect" id="node8" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1420,109,1569,136"/><area shape="rect" id="node15" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1189,502,1289,529"/><area shape="rect" id="node16" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1142,553,1335,580"/><area shape="rect" id="node17" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1143,604,1334,646"/><area shape="rect" id="node18" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1121,670,1356,711"/><area shape="rect" id="node19" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="1157,735,1320,776"/><area shape="rect" id="node20" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1138,801,1339,857"/><area shape="rect" id="node21" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="1161,882,1317,923"/><area shape="rect" id="node22" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="1170,948,1307,974"/><area shape="rect" id="node9" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1416,172,1573,198"/><area shape="rect" id="node10" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1413,228,1577,254"/><area shape="rect" id="node23" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1166,998,1311,1025"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1173,1100,1305,1126"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1425,1024,1564,1050"/><area shape="rect" id="node26" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="1161,1151,1316,1192"/><area shape="rect" id="node27" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1179,1217,1298,1244"/><area shape="rect" id="node28" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1457,1242,1532,1269"/><area shape="rect" id="node29" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1409,1394,1581,1421"/><area shape="rect" id="node31" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1192,1420,1285,1446"/><area shape="rect" id="node32" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1197,1470,1280,1497"/><area shape="rect" id="node33" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="1159,1521,1318,1548"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1165,1572,1312,1598"/><area shape="rect" id="node35" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="1175,1724,1302,1750"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1165,1876,1312,1902"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1175,1926,1302,1953"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1414,1768,1575,1794"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1429,1648,1560,1674"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1179,1977,1299,2004"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1419,1825,1570,1852"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1435,1705,1555,1732"/><area shape="rect" id="node30" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1630,1344,1751,1370"/><area shape="rect" id="node43" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1153,2028,1324,2070"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="1117,2094,1360,2135"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="1125,2160,1352,2216"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1121,2240,1357,2282"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1139,2306,1338,2362"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1129,2387,1349,2428"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1ResultCollector.html#ad4e492a894477ccbf7dedded8733626c" title="claims::physical_operator\l::ResultCollector::Open" alt="" coords="1153,2452,1324,2494"/><area shape="rect" id="node50" href="classResourceManagerMaster.html#aa193416dd1d8871846488ebbab7c20cb" title="ResourceManagerMaster\l::ResourceManagerMaster" alt="" coords="1151,2518,1327,2559"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ada43823568a58d2dc10679489875e177"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::removePartition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;&#160;</td>
+          <td class="paramname"><em>partition_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>, <a class="el" href="structPartitionID.html#a0bfdb5800b5825b90f110ad3662e12d3">PartitionID::getName()</a>, <a class="el" href="classBlockManager.html#a10343a3dd8925edaad51d0bb21852184">logging_</a>, and <a class="el" href="classBlockManager.html#a6404e33c0f25357ce2485ecbfce614c5">partition_id_to_storage_</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ada43823568a58d2dc10679489875e177_cgraph.png" border="0" usemap="#classBlockManager_ada43823568a58d2dc10679489875e177_cgraph" alt=""/></div>
+<map name="classBlockManager_ada43823568a58d2dc10679489875e177_cgraph" id="classBlockManager_ada43823568a58d2dc10679489875e177_cgraph">
+<area shape="rect" id="node2" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="283,5,381,32"/><area shape="rect" id="node3" href="structPartitionID.html#a0bfdb5800b5825b90f110ad3662e12d3" title="PartitionID::getName" alt="" coords="259,56,405,83"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a34a4e70f042c1f8ad323da3d092c5a84"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::reportAllBlocks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ae6ee16362ccf4599ec6abb16d8d78331">reregister()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a34a4e70f042c1f8ad323da3d092c5a84_icgraph.png" border="0" usemap="#classBlockManager_a34a4e70f042c1f8ad323da3d092c5a84_icgraph" alt=""/></div>
+<map name="classBlockManager_a34a4e70f042c1f8ad323da3d092c5a84_icgraph" id="classBlockManager_a34a4e70f042c1f8ad323da3d092c5a84_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#ae6ee16362ccf4599ec6abb16d8d78331" title="BlockManager::reregister" alt="" coords="257,1215,423,1242"/><area shape="rect" id="node3" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1" title="BlockManager::heartBeat" alt="" coords="473,1215,642,1242"/><area shape="rect" id="node4" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="691,1215,851,1242"/><area shape="rect" id="node5" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="899,1190,1093,1217"/><area shape="rect" id="node6" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="1141,1190,1317,1217"/><area shape="rect" id="node7" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="1365,1215,1536,1242"/><area shape="rect" id="node8" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1627,115,1784,156"/><area shape="rect" id="node13" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="1619,283,1791,324"/><area shape="rect" id="node9" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1916,27,2007,54"/><area shape="rect" id="node14" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="1628,349,1783,375"/><area shape="rect" id="node15" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="1668,399,1743,426"/><area shape="rect" id="node16" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="1647,450,1763,477"/><area shape="rect" id="node10" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1887,107,2036,134"/><area shape="rect" id="node17" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1655,501,1755,527"/><area shape="rect" id="node18" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1609,551,1802,578"/><area shape="rect" id="node19" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1610,603,1801,644"/><area shape="rect" id="node20" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1588,668,1823,709"/><area shape="rect" id="node21" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="1624,733,1787,775"/><area shape="rect" id="node22" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1605,799,1806,855"/><area shape="rect" id="node23" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="1627,880,1783,921"/><area shape="rect" id="node24" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="1637,946,1774,973"/><area shape="rect" id="node11" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1883,170,2040,197"/><area shape="rect" id="node12" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1879,226,2043,253"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1633,997,1778,1023"/><area shape="rect" id="node27" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1639,1098,1771,1125"/><area shape="rect" id="node26" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1892,1022,2031,1049"/><area shape="rect" id="node28" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="1628,1149,1783,1191"/><area shape="rect" id="node29" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1646,1215,1765,1242"/><area shape="rect" id="node30" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1924,1241,1999,1267"/><area shape="rect" id="node31" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1875,1393,2047,1419"/><area shape="rect" id="node33" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1659,1418,1752,1445"/><area shape="rect" id="node34" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1664,1469,1747,1495"/><area shape="rect" id="node35" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="1626,1519,1785,1546"/><area shape="rect" id="node36" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1632,1570,1779,1597"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="1642,1722,1769,1749"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1632,1874,1779,1901"/><area shape="rect" id="node43" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1642,1925,1769,1951"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1881,1766,2042,1793"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1896,1646,2027,1673"/><area shape="rect" id="node44" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1645,1975,1765,2002"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1886,1823,2037,1850"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1901,1703,2021,1730"/><area shape="rect" id="node32" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="2097,1342,2218,1369"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1620,2027,1791,2068"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="1584,2092,1827,2133"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="1592,2158,1819,2214"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1587,2239,1823,2280"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1606,2305,1805,2361"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1595,2385,1815,2427"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a33f6d335c31b26eca7ad0a376e67f367"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::reportBlockStatus </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#a03eeb279604d57078e7e4a81e24ff1fb">asyncReregister()</a>, and <a class="el" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0">tryToReportBlockStatus()</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14">put()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a33f6d335c31b26eca7ad0a376e67f367_cgraph.png" border="0" usemap="#classBlockManager_a33f6d335c31b26eca7ad0a376e67f367_cgraph" alt=""/></div>
+<map name="classBlockManager_a33f6d335c31b26eca7ad0a376e67f367_cgraph" id="classBlockManager_a33f6d335c31b26eca7ad0a376e67f367_cgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#a03eeb279604d57078e7e4a81e24ff1fb" title="BlockManager::asyncReregister" alt="" coords="232,5,440,32"/><area shape="rect" id="node3" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0" title="BlockManager::tryToReport\lBlockStatus" alt="" coords="245,57,427,98"/><area shape="rect" id="node4" href="classBlockManager_1_1BlockManagerWorkerActor.html#a578a0fb75d8162c73bceabb75da92333" title="BlockManager::BlockManager\lWorkerActor::_reportBlockStatus" alt="" coords="489,57,703,98"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_a33f6d335c31b26eca7ad0a376e67f367_icgraph.png" border="0" usemap="#classBlockManager_a33f6d335c31b26eca7ad0a376e67f367_icgraph" alt=""/></div>
+<map name="classBlockManager_a33f6d335c31b26eca7ad0a376e67f367_icgraph" id="classBlockManager_a33f6d335c31b26eca7ad0a376e67f367_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14" title="BlockManager::put" alt="" coords="232,12,363,39"/><area shape="rect" id="node3" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558" title="BlockManager::getLocal" alt="" coords="411,12,573,39"/><area shape="rect" id="node4" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042" title="BlockManager::get" alt="" coords="621,12,752,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae6ee16362ccf4599ec6abb16d8d78331"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::reregister </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager.html#a34a4e70f042c1f8ad323da3d092c5a84">reportAllBlocks()</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1">heartBeat()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ae6ee16362ccf4599ec6abb16d8d78331_cgraph.png" border="0" usemap="#classBlockManager_ae6ee16362ccf4599ec6abb16d8d78331_cgraph" alt=""/></div>
+<map name="classBlockManager_ae6ee16362ccf4599ec6abb16d8d78331_cgraph" id="classBlockManager_ae6ee16362ccf4599ec6abb16d8d78331_cgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#a34a4e70f042c1f8ad323da3d092c5a84" title="BlockManager::reportAllBlocks" alt="" coords="222,5,423,32"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ae6ee16362ccf4599ec6abb16d8d78331_icgraph.png" border="0" usemap="#classBlockManager_ae6ee16362ccf4599ec6abb16d8d78331_icgraph" alt=""/></div>
+<map name="classBlockManager_ae6ee16362ccf4599ec6abb16d8d78331_icgraph" id="classBlockManager_ae6ee16362ccf4599ec6abb16d8d78331_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1" title="BlockManager::heartBeat" alt="" coords="222,1241,391,1268"/><area shape="rect" id="node3" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="440,1241,600,1268"/><area shape="rect" id="node4" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="648,1216,843,1243"/><area shape="rect" id="node5" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="891,1216,1067,1243"/><area shape="rect" id="node6" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="1115,1241,1285,1268"/><area shape="rect" id="node7" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1376,115,1533,157"/><area shape="rect" id="node12" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="1369,283,1541,325"/><area shape="rect" id="node8" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1665,28,1756,55"/><area shape="rect" id="node13" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="1377,349,1532,376"/><area shape="rect" id="node14" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="1417,400,1492,427"/><area shape="rect" id="node15" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="1397,451,1513,477"/><area shape="rect" id="node9" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1636,108,1785,135"/><area shape="rect" id="node16" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1405,501,1505,528"/><area shape="rect" id="node17" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1358,552,1551,579"/><area shape="rect" id="node18" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1359,603,1550,645"/><area shape="rect" id="node19" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1337,669,1572,710"/><area shape="rect" id="node20" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="1373,734,1536,775"/><area shape="rect" id="node21" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1354,800,1555,856"/><area shape="rect" id="node22" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="1377,881,1533,922"/><area shape="rect" id="node23" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="1386,947,1523,973"/><area shape="rect" id="node10" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1632,171,1789,197"/><area shape="rect" id="node11" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1629,227,1793,253"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1382,1048,1527,1075"/><area shape="rect" id="node26" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1389,1099,1521,1125"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1641,1023,1780,1049"/><area shape="rect" id="node27" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="1377,1150,1532,1191"/><area shape="rect" id="node28" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1395,1267,1514,1293"/><area shape="rect" id="node29" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1673,1241,1748,1268"/><area shape="rect" id="node30" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1625,1393,1797,1420"/><area shape="rect" id="node32" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1408,1419,1501,1445"/><area shape="rect" id="node33" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1413,1469,1496,1496"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="1375,1520,1534,1547"/><area shape="rect" id="node35" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1381,1571,1528,1597"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="1391,1723,1518,1749"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1381,1875,1528,1901"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1391,1925,1518,1952"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1630,1767,1791,1793"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1645,1647,1776,1673"/><area shape="rect" id="node43" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1395,1976,1515,2003"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1635,1824,1786,1851"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1651,1704,1771,1731"/><area shape="rect" id="node31" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1846,1343,1967,1369"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1369,2027,1540,2069"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="1333,2093,1576,2134"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="1341,2159,1568,2215"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1337,2239,1573,2281"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1355,2305,1554,2361"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1345,2386,1565,2427"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ResultCollector.html#ad4e492a894477ccbf7dedded8733626c" title="claims::physical_operator\l::ResultCollector::Open" alt="" coords="1369,2451,1540,2493"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ac63827b4a2315bbc7aceef51130603d0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::tryToReportBlockStatus </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a578a0fb75d8162c73bceabb75da92333">BlockManager::BlockManagerWorkerActor::_reportBlockStatus()</a>, and <a class="el" href="classBlockManager.html#a972196fdf61348fd5f2d567d57ba845d">worker_</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367">reportBlockStatus()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ac63827b4a2315bbc7aceef51130603d0_cgraph.png" border="0" usemap="#classBlockManager_ac63827b4a2315bbc7aceef51130603d0_cgraph" alt=""/></div>
+<map name="classBlockManager_ac63827b4a2315bbc7aceef51130603d0_cgraph" id="classBlockManager_ac63827b4a2315bbc7aceef51130603d0_cgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#a578a0fb75d8162c73bceabb75da92333" title="BlockManager::BlockManager\lWorkerActor::_reportBlockStatus" alt="" coords="238,5,453,46"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_ac63827b4a2315bbc7aceef51130603d0_icgraph.png" border="0" usemap="#classBlockManager_ac63827b4a2315bbc7aceef51130603d0_icgraph" alt=""/></div>
+<map name="classBlockManager_ac63827b4a2315bbc7aceef51130603d0_icgraph" id="classBlockManager_ac63827b4a2315bbc7aceef51130603d0_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367" title="BlockManager::reportBlock\lStatus" alt="" coords="237,5,416,46"/><area shape="rect" id="node3" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14" title="BlockManager::put" alt="" coords="464,12,595,39"/><area shape="rect" id="node4" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558" title="BlockManager::getLocal" alt="" coords="643,12,805,39"/><area shape="rect" id="node5" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042" title="BlockManager::get" alt="" coords="853,12,984,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="a6aaa44c442e5f67c335f5831dce4568a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html">BlockManagerWorkerActor</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693">BlockManager()</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a19f59618de62e5251c9212ca52e4141a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::Actor* BlockManager::actor_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693">BlockManager()</a>, and <a class="el" href="classBlockManager.html#a3c31dd479e07890a5885485fe8d1ccbe">~BlockManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad412c155f8b2933cfaa5a74268927bfe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt;string, <a class="el" href="structBlockManager_1_1BlockInfo.html">BlockInfo</a>*&gt; BlockManager::blockInfoPool_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558">getLocal()</a>, and <a class="el" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14">put()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2ee03876f74a71cab65fcfdd451bd456"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlockManager.html">BlockManager</a> * BlockManager::blockmanager_ =0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92">getInstance()</a>, and <a class="el" href="classBlockManager.html#a3c31dd479e07890a5885485fe8d1ccbe">~BlockManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abb38f940dd808ed994b97fb64440e0d4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlockManagerId.html">BlockManagerId</a>* BlockManager::blockManagerId_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ab54877265aa654fca48fbb9655ac3198">getId()</a>, and <a class="el" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2">initialize()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a20b2e66969497219288c72f788ffba17"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDiskStore.html">DiskStore</a>* BlockManager::diskstore_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2">initialize()</a>, and <a class="el" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14">put()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="abf757af6c4fc8690997ce6f4e02d4192"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">map&lt;string, string&gt; BlockManager::file_proj_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ae32ee78daa8c53787401fc4d438c58c4">askForMatch()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae9d59ee884f93c25ee26827a489bf088"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::Framework* BlockManager::framework_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693">BlockManager()</a>, and <a class="el" href="classBlockManager.html#a3c31dd479e07890a5885485fe8d1ccbe">~BlockManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8f2433e4dad0d3e55035e6cdaba64371"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLock.html">Lock</a> BlockManager::lock</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a5d512b812b7e35e1ac3d1ddaf70c9bcb">loadFromHdfs()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a10343a3dd8925edaad51d0bb21852184"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLogging.html">Logging</a>* BlockManager::logging_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ad1046961c4107766bb57b376c07aecdb">addPartition()</a>, <a class="el" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693">BlockManager()</a>, <a class="el" href="classBlockManager.html#a1c092c34f5065b8ff06632533eb2a3cb">loadFromDisk()</a>, <a class="el" href="classBlockManager.html#a5d512b812b7e35e1ac3d1ddaf70c9bcb">loadFromHdfs()</a>, <a class="el" href="classBlockManager.html#ada43823568a58d2dc10679489875e177">removePartition()</a>, and <a class="el" href="classBlockManager.html#a3c31dd479e07890a5885485fe8d1ccbe">~BlockManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a45f73d423513d2dfbd71415bc6b32e69"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMemoryChunkStore.html">MemoryChunkStore</a>* BlockManager::memstore_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#a93282216d97540def52c1fa4029eb693">BlockManager()</a>, <a class="el" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558">getLocal()</a>, <a class="el" href="classBlockManager.html#ae4f0a3a061c1a7a15898872e50bfff8f">getMemoryChunkStore()</a>, <a class="el" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2">initialize()</a>, <a class="el" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14">put()</a>, and <a class="el" href="classBlockManager.html#a3c31dd479e07890a5885485fe8d1ccbe">~BlockManager()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6404e33c0f25357ce2485ecbfce614c5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::unordered_map&lt;<a class="el" href="structPartitionID.html">PartitionID</a>,<a class="el" href="classPartitionStorage.html">PartitionStorage</a>*&gt; BlockManager::partition_id_to_storage_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ad1046961c4107766bb57b376c07aecdb">addPartition()</a>, <a class="el" href="classBlockManager.html#aef887f84cd2e5ba4d3027319233dd181">containsPartition()</a>, <a class="el" href="classBlockManager.html#a12f753739e865549cb2307ab42e81890">getPartitionHandle()</a>, and <a class="el" href="classBlockManager.html#ada43823568a58d2dc10679489875e177">removePartition()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a972196fdf61348fd5f2d567d57ba845d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html">BlockManagerWorkerActor</a>* BlockManager::worker_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ae32ee78daa8c53787401fc4d438c58c4">askForMatch()</a>, <a class="el" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1">heartBeat()</a>, <a class="el" href="classBlockManager.html#ab3d1826a64cae0d5fbe679b47ba21def">registerToMaster()</a>, and <a class="el" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0">tryToReportBlockStatus()</a>.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>storage/<a class="el" href="BlockManager_8h_source.html">BlockManager.h</a></li>
-<li>storage/BlockManager.cpp</li>
+<li>storage/<a class="el" href="BlockManager_8cpp.html">BlockManager.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

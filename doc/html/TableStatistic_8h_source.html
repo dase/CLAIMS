@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Catalog/stat/TableStatistic.h Source File</title>
+<title>Claims: Catalog/stat/TableStatistic.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('TableStatistic_8h_source.html','');});
 <div class="title">TableStatistic.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="TableStatistic_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * TableStatistic.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * This class describes the statistic within a table.</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Feb 2, 2014</span></div>
@@ -116,32 +116,41 @@ $(document).ready(function(){initNavTree('TableStatistic_8h_source.html','');});
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#ifndef TABLESTATISTIC_H_</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define TABLESTATISTIC_H_</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;boost/unordered_map.hpp&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;AttributeStatistics.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="AttributeStatistics_8h.html">AttributeStatistics.h</a>&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="classTableStatistic.html">   12</a></span>&#160;<span class="keyword">class </span><a class="code" href="classTableStatistic.html">TableStatistic</a> {</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <a class="code" href="classTableStatistic.html">TableStatistic</a>();</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <a class="code" href="classTableStatistic.html#a29a8f10ab30abd2512da7123b6102d1f">TableStatistic</a>();</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classTableStatistic.html">TableStatistic</a>();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> addAttributeStatistics(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a>&amp; attr_id,<a class="code" href="classAttributeStatistics.html">AttributeStatistics</a>* stat);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classAttributeStatistics.html">AttributeStatistics</a>* getAttributeStatistics(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a>&amp; attr_id)<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> getCardinality()<span class="keyword">const</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> number_of_tuples_;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">void</span> print()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classTableStatistic.html#a340e03eb8ff29a9f9fba80d2e4d55db7">~TableStatistic</a>();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTableStatistic.html#a0f6de9761883c12746c21eb01f4ba77a">addAttributeStatistics</a>(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a>&amp; attr_id,<a class="code" href="classAttributeStatistics.html">AttributeStatistics</a>* stat);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classAttributeStatistics.html">AttributeStatistics</a>* <a class="code" href="classTableStatistic.html#a84764fd56b72df3a725a917658e48dd3">getAttributeStatistics</a>(<span class="keyword">const</span> <a class="code" href="structAttributeID.html">AttributeID</a>&amp; attr_id)<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classTableStatistic.html#a5d87fffc1d2e4f9265b7de95d4fe1630">getCardinality</a>()<span class="keyword">const</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924">   20</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924">number_of_tuples_</a>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTableStatistic.html#adb2a7f0c9b1e964dc843a1243d28dc94">print</a>()<span class="keyword">const</span>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">//  unsigned long total_size_;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    boost::unordered_map&lt;AttributeID,AttributeStatistics*&gt; att_stat_list_;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classTableStatistic.html#ae82279955c1c5064fb66d941ea6b0ec2">   24</a></span>&#160;    boost::unordered_map&lt;AttributeID,AttributeStatistics*&gt; <a class="code" href="classTableStatistic.html#ae82279955c1c5064fb66d941ea6b0ec2">att_stat_list_</a>;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;};</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* TABLESTATISTIC_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classTableStatistic_html_ae82279955c1c5064fb66d941ea6b0ec2"><div class="ttname"><a href="classTableStatistic.html#ae82279955c1c5064fb66d941ea6b0ec2">TableStatistic::att_stat_list_</a></div><div class="ttdeci">boost::unordered_map&lt; AttributeID, AttributeStatistics * &gt; att_stat_list_</div><div class="ttdef"><b>Definition:</b> TableStatistic.h:24</div></div>
+<div class="ttc" id="classTableStatistic_html_a29a8f10ab30abd2512da7123b6102d1f"><div class="ttname"><a href="classTableStatistic.html#a29a8f10ab30abd2512da7123b6102d1f">TableStatistic::TableStatistic</a></div><div class="ttdeci">TableStatistic()</div><div class="ttdef"><b>Definition:</b> TableStatistic.cpp:10</div></div>
+<div class="ttc" id="classTableStatistic_html_a7a0cdef40a75097a469e35d8a5049924"><div class="ttname"><a href="classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924">TableStatistic::number_of_tuples_</a></div><div class="ttdeci">unsigned long number_of_tuples_</div><div class="ttdef"><b>Definition:</b> TableStatistic.h:20</div></div>
 <div class="ttc" id="classAttributeStatistics_html"><div class="ttname"><a href="classAttributeStatistics.html">AttributeStatistics</a></div><div class="ttdef"><b>Definition:</b> AttributeStatistics.h:12</div></div>
+<div class="ttc" id="classTableStatistic_html_adb2a7f0c9b1e964dc843a1243d28dc94"><div class="ttname"><a href="classTableStatistic.html#adb2a7f0c9b1e964dc843a1243d28dc94">TableStatistic::print</a></div><div class="ttdeci">void print() const </div><div class="ttdef"><b>Definition:</b> TableStatistic.cpp:18</div></div>
+<div class="ttc" id="classTableStatistic_html_a0f6de9761883c12746c21eb01f4ba77a"><div class="ttname"><a href="classTableStatistic.html#a0f6de9761883c12746c21eb01f4ba77a">TableStatistic::addAttributeStatistics</a></div><div class="ttdeci">void addAttributeStatistics(const AttributeID &amp;attr_id, AttributeStatistics *stat)</div><div class="ttdef"><b>Definition:</b> TableStatistic.cpp:21</div></div>
+<div class="ttc" id="AttributeStatistics_8h_html"><div class="ttname"><a href="AttributeStatistics_8h.html">AttributeStatistics.h</a></div></div>
+<div class="ttc" id="classTableStatistic_html_a340e03eb8ff29a9f9fba80d2e4d55db7"><div class="ttname"><a href="classTableStatistic.html#a340e03eb8ff29a9f9fba80d2e4d55db7">TableStatistic::~TableStatistic</a></div><div class="ttdeci">virtual ~TableStatistic()</div><div class="ttdef"><b>Definition:</b> TableStatistic.cpp:15</div></div>
+<div class="ttc" id="classTableStatistic_html_a84764fd56b72df3a725a917658e48dd3"><div class="ttname"><a href="classTableStatistic.html#a84764fd56b72df3a725a917658e48dd3">TableStatistic::getAttributeStatistics</a></div><div class="ttdeci">AttributeStatistics * getAttributeStatistics(const AttributeID &amp;attr_id) const </div><div class="ttdef"><b>Definition:</b> TableStatistic.cpp:27</div></div>
 <div class="ttc" id="classTableStatistic_html"><div class="ttname"><a href="classTableStatistic.html">TableStatistic</a></div><div class="ttdef"><b>Definition:</b> TableStatistic.h:12</div></div>
+<div class="ttc" id="classTableStatistic_html_a5d87fffc1d2e4f9265b7de95d4fe1630"><div class="ttname"><a href="classTableStatistic.html#a5d87fffc1d2e4f9265b7de95d4fe1630">TableStatistic::getCardinality</a></div><div class="ttdeci">unsigned long getCardinality() const </div><div class="ttdef"><b>Definition:</b> TableStatistic.cpp:33</div></div>
 <div class="ttc" id="structAttributeID_html"><div class="ttname"><a href="structAttributeID.html">AttributeID</a></div><div class="ttdef"><b>Definition:</b> ids.h:55</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_3bf4fa49c8aa808631e3bc6b141a2264.html">Catalog</a></li><li class="navelem"><a class="el" href="dir_731a434a51b251fdd0a2224321d8f4f8.html">stat</a></li><li class="navelem"><b>TableStatistic.h</b></li>
+    <li class="navelem"><a class="el" href="dir_3bf4fa49c8aa808631e3bc6b141a2264.html">Catalog</a></li><li class="navelem"><a class="el" href="dir_731a434a51b251fdd0a2224321d8f4f8.html">stat</a></li><li class="navelem"><a class="el" href="TableStatistic_8h.html">TableStatistic.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

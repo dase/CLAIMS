@@ -49,7 +49,7 @@ class AstSelectList : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
   bool is_all_;
@@ -67,10 +67,11 @@ class AstSelectExpr : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   string expr_alias_;
   AstNode* expr_;
   bool have_agg_func_;
+  bool have_alias_;
 };
 /**
  * @brief The AST of from list.
@@ -82,9 +83,6 @@ class AstFromList : public AstNode {
   ~AstFromList();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                     AstNode* joined_root);
-  void PreProcess();
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
@@ -107,8 +105,6 @@ class AstTable : public AstNode {
   ~AstTable();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                     AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
@@ -132,8 +128,6 @@ class AstSubquery : public AstNode {
   ~AstSubquery();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                     AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
@@ -167,8 +161,6 @@ class AstJoin : public AstNode {
   ~AstJoin();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  void GetJoinedRoot(map<string, AstNode*> table_joined_root,
-                     AstNode* joined_root);
   ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
 
@@ -203,7 +195,7 @@ class AstGroupByList : public AstNode {
   // different from each other
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
-  ErrorNo ExchangeSelectAliasWithGroupBy(const vector<AstNode*>& select_expr);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* expr_;
   AstNode* next_;
@@ -219,7 +211,7 @@ class AstGroupByClause : public AstNode {
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
-  ErrorNo ReplaceSelectAlias(const vector<AstNode*>& select_expr);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstGroupByList* groupby_list_;
   bool with_roolup_;
 };
@@ -235,7 +227,8 @@ class AstOrderByList : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstNode* expr_;
   string orderby_direction_;
   AstNode* next_;
@@ -251,8 +244,9 @@ class AstOrderByClause : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstOrderByList* orderby_list_;
 };
 /**
@@ -266,8 +260,9 @@ class AstHavingClause : public AstNode {
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstNode* expr_;
 };
 /**
@@ -280,9 +275,7 @@ class AstLimitClause : public AstNode {
   ~AstLimitClause();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-#ifdef NEWLIMIT
   ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
-#endif
   AstNode* offset_;
   AstNode* row_count_;
 };
@@ -306,14 +299,16 @@ class AstColumn : public AstNode {
             string expr_str);
   AstColumn(AstNodeType ast_node_type, string relation_name, string column_name,
             AstNode* next);
+  explicit AstColumn(AstColumn* node);
   ~AstColumn();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  AstNode* AstNodeCopy();
   string relation_name_;
   string column_name_;
   AstNode* next_;

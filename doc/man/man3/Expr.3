@@ -1,4 +1,4 @@
-.TH "Expr" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Expr" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,17 +6,29 @@ Expr \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBdata\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "char* Expr::data"
+
+.PP
+Referenced by CheckType(), expr_to_str(), get_orderby_column_from_selectlist(), InsertValueToStream(), LoadData(), newExpr(), output(), and transformqual()\&.
+.SS "\fBnodetype\fP Expr::type"
+
+.PP
+Referenced by CheckType(), and newExpr()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

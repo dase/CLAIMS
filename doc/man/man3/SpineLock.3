@@ -1,4 +1,4 @@
-.TH "SpineLock" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "SpineLock" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,6 +11,9 @@ SpineLock \-
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBSpineLock\fP ()"
+.br
 .ti -1c
 .RI "void \fBacquire\fP ()"
 .br
@@ -27,20 +30,64 @@ SpineLock \-
 .RI "void \fBrelease\fP ()"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBtas\fP (volatile char *lock)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "volatile char \fB_l\fP"
+.br
+.in -1c
 .SH "Detailed Description"
 .PP 
 Non-recursive spinlock\&. Using \fCxchg\fP and \fCldstub\fP as in PostgresSQL\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "SpineLock::SpineLock ()\fC [inline]\fP"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "void SpineLock::acquire ()\fC [inline]\fP"
 Call blocks and retunrs only when it has the lock\&. 
 .PP
-Referenced by InsertOptimizedHashTable::insertBlock()\&.
+References _l, and tas()\&.
+.PP
+Referenced by BasicHashTable::allocate(), claims::physical_operator::input_dataset::AtomicGet(), claims::physical_operator::input_dataset::AtomicPut(), IteratorExecutorSlave::createNewThreadAndRun(), PerformanceInfo::getBlockSumInAllSlices(), ThreadSafe::gethostbyname_ts(), InsertOptimizedHashTable::insertBlock(), InsertOptimizedHashTable::insertEntry(), PerformanceInfo::processed_one_block(), PerformanceInfo::report_instance_performance_in_millibytes(), IteratorExecutorSlave::run_iterator(), and tas()\&.
+.SS "int SpineLock::fakelock ()\fC [inline]\fP"
+
+.PP
+References _l\&.
+.SS "int SpineLock::getvalue ()\fC [inline]\fP"
+
 .SS "void SpineLock::release ()\fC [inline]\fP"
 Unlocks the lock object\&. 
 .PP
-Referenced by InsertOptimizedHashTable::insertBlock()\&.
+References _l\&.
+.PP
+Referenced by BasicHashTable::allocate(), claims::physical_operator::input_dataset::AtomicGet(), claims::physical_operator::input_dataset::AtomicPut(), IteratorExecutorSlave::createNewThreadAndRun(), PerformanceInfo::getBlockSumInAllSlices(), ThreadSafe::gethostbyname_ts(), InsertOptimizedHashTable::insertBlock(), InsertOptimizedHashTable::insertEntry(), PerformanceInfo::processed_one_block(), PerformanceInfo::report_instance_performance_in_millibytes(), and IteratorExecutorSlave::run_iterator()\&.
+.SS "int SpineLock::tas (volatile char *lock)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References acquire()\&.
+.PP
+Referenced by acquire(), and try_lock()\&.
+.SS "bool SpineLock::try_lock ()\fC [inline]\fP"
+
+.PP
+References _l, and tas()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "volatile char SpineLock::_l\fC [private]\fP"
+
+.PP
+Referenced by acquire(), fakelock(), release(), and try_lock()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

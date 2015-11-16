@@ -1,4 +1,4 @@
-.TH "ExchangeTrackerLogging" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ExchangeTrackerLogging" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ExchangeTrackerLogging \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Logging\&.h>\fP
 .PP
 Inherits \fBLogging\fP\&.
 .SS "Public Member Functions"
@@ -24,7 +26,15 @@ Inherits \fBLogging\fP\&.
 print the error information to stderr\&. 
 .PP
 Implements \fBLogging\fP\&.
+.PP
+References RawElog()\&.
+.SS "void ExchangeTrackerLogging::log (const char *format, \&.\&.\&.)\fC [virtual]\fP"
+
+.PP
+Implements \fBLogging\fP\&.
+.PP
+References RawLog()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "Connector" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Connector" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,15 +7,20 @@ Connector \-
 .br
 .PP
 .PP
+\fC#include <Connector\&.h>\fP
+.PP
 Inherited by \fBHdfsConnector\fP, and \fBLocalDiskConnector\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBConnector\fP (vector< vector< string > > writepath)"
+.RI "\fBConnector\fP (vector< vector< string > > \fBwritepath\fP)"
 .br
 .ti -1c
-.RI "virtual bool \fBopenFiles\fP (open_flag open_flag_)=0"
+.RI "virtual \fB~Connector\fP ()"
+.br
+.ti -1c
+.RI "virtual bool \fBopenFiles\fP (\fBopen_flag\fP open_flag_)=0"
 .br
 .ti -1c
 .RI "virtual bool \fBcloseFiles\fP ()=0"
@@ -31,7 +36,39 @@ Inherited by \fBHdfsConnector\fP, and \fBLocalDiskConnector\fP\&.
 .RI "vector< vector< string > > \fBwritepath\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Connector::Connector (vector< vector< string > >writepath)\fC [inline]\fP"
+
+.SS "virtual Connector::~Connector ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual bool Connector::closeFiles ()\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBHdfsConnector\fP, and \fBLocalDiskConnector\fP\&.
+.PP
+Referenced by HdfsLoader::append(), and HdfsLoader::load()\&.
+.SS "virtual int Connector::flush (unsignedprojection_offset, unsignedpartition_offset, void *source, unsignedlength)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBHdfsConnector\fP, and \fBLocalDiskConnector\fP\&.
+.PP
+Referenced by HdfsLoader::append(), HdfsLoader::insertRecords(), and HdfsLoader::load()\&.
+.SS "virtual bool Connector::openFiles (\fBopen_flag\fPopen_flag_)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBHdfsConnector\fP, and \fBLocalDiskConnector\fP\&.
+.PP
+Referenced by HdfsLoader::append(), and HdfsLoader::load()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "vector<vector<string> > Connector::writepath\fC [protected]\fP"
+
+.PP
+Referenced by HdfsConnector::assgin_open_file(), and LocalDiskConnector::openFiles()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

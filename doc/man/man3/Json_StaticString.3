@@ -1,4 +1,4 @@
-.TH "Json::StaticString" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::StaticString" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,6 +24,13 @@ Lightweight wrapper to tag static string\&.
 .RI "const char * \fBc_str\fP () const "
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "const char * \fBstr_\fP"
+.br
+.in -1c
 .SH "Detailed Description"
 .PP 
 Lightweight wrapper to tag static string\&. 
@@ -42,7 +49,23 @@ Example of usage:
 .fi
 .PP
  
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Json::StaticString::StaticString (const char *czstring)\fC [inline]\fP, \fC [explicit]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "const char* Json::StaticString::c_str () const\fC [inline]\fP"
+
+.PP
+Referenced by Json::Value::Value()\&.
+.SS "Json::StaticString::operator const char * () const\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "const char* Json::StaticString::str_\fC [private]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

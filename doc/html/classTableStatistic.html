@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: TableStatistic Class Reference</title>
+<title>Claims: TableStatistic Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -107,36 +107,246 @@ $(document).ready(function(){initNavTree('classTableStatistic.html','');});
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classTableStatistic-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">TableStatistic Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="TableStatistic_8h_source.html">TableStatistic.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0f6de9761883c12746c21eb01f4ba77a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f6de9761883c12746c21eb01f4ba77a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addAttributeStatistics</b> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr_id, <a class="el" href="classAttributeStatistics.html">AttributeStatistics</a> *stat)</td></tr>
+<tr class="memitem:a29a8f10ab30abd2512da7123b6102d1f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableStatistic.html#a29a8f10ab30abd2512da7123b6102d1f">TableStatistic</a> ()</td></tr>
+<tr class="separator:a29a8f10ab30abd2512da7123b6102d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a340e03eb8ff29a9f9fba80d2e4d55db7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableStatistic.html#a340e03eb8ff29a9f9fba80d2e4d55db7">~TableStatistic</a> ()</td></tr>
+<tr class="separator:a340e03eb8ff29a9f9fba80d2e4d55db7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f6de9761883c12746c21eb01f4ba77a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableStatistic.html#a0f6de9761883c12746c21eb01f4ba77a">addAttributeStatistics</a> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr_id, <a class="el" href="classAttributeStatistics.html">AttributeStatistics</a> *stat)</td></tr>
 <tr class="separator:a0f6de9761883c12746c21eb01f4ba77a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84764fd56b72df3a725a917658e48dd3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a84764fd56b72df3a725a917658e48dd3"></a>
-<a class="el" href="classAttributeStatistics.html">AttributeStatistics</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getAttributeStatistics</b> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr_id) const </td></tr>
+<tr class="memitem:a84764fd56b72df3a725a917658e48dd3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAttributeStatistics.html">AttributeStatistics</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableStatistic.html#a84764fd56b72df3a725a917658e48dd3">getAttributeStatistics</a> (const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;attr_id) const </td></tr>
 <tr class="separator:a84764fd56b72df3a725a917658e48dd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d87fffc1d2e4f9265b7de95d4fe1630"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5d87fffc1d2e4f9265b7de95d4fe1630"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>getCardinality</b> () const </td></tr>
+<tr class="memitem:a5d87fffc1d2e4f9265b7de95d4fe1630"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableStatistic.html#a5d87fffc1d2e4f9265b7de95d4fe1630">getCardinality</a> () const </td></tr>
 <tr class="separator:a5d87fffc1d2e4f9265b7de95d4fe1630"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb2a7f0c9b1e964dc843a1243d28dc94"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adb2a7f0c9b1e964dc843a1243d28dc94"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>print</b> () const </td></tr>
+<tr class="memitem:adb2a7f0c9b1e964dc843a1243d28dc94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableStatistic.html#adb2a7f0c9b1e964dc843a1243d28dc94">print</a> () const </td></tr>
 <tr class="separator:adb2a7f0c9b1e964dc843a1243d28dc94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a7a0cdef40a75097a469e35d8a5049924"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a0cdef40a75097a469e35d8a5049924"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>number_of_tuples_</b></td></tr>
+<tr class="memitem:a7a0cdef40a75097a469e35d8a5049924"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924">number_of_tuples_</a></td></tr>
 <tr class="separator:a7a0cdef40a75097a469e35d8a5049924"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ae82279955c1c5064fb66d941ea6b0ec2"><td class="memItemLeft" align="right" valign="top">boost::unordered_map<br class="typebreak"/>
+&lt; <a class="el" href="structAttributeID.html">AttributeID</a>, <br class="typebreak"/>
+<a class="el" href="classAttributeStatistics.html">AttributeStatistics</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTableStatistic.html#ae82279955c1c5064fb66d941ea6b0ec2">att_stat_list_</a></td></tr>
+<tr class="separator:ae82279955c1c5064fb66d941ea6b0ec2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a29a8f10ab30abd2512da7123b6102d1f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TableStatistic::TableStatistic </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a340e03eb8ff29a9f9fba80d2e4d55db7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TableStatistic::~TableStatistic </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a0f6de9761883c12746c21eb01f4ba77a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TableStatistic::addAttributeStatistics </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classAttributeStatistics.html">AttributeStatistics</a> *&#160;</td>
+          <td class="paramname"><em>stat</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableStatistic.html#ae82279955c1c5064fb66d941ea6b0ec2">att_stat_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5">Analyzer::compute_attribute_stat()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableStatistic_a0f6de9761883c12746c21eb01f4ba77a_icgraph.png" border="0" usemap="#classTableStatistic_a0f6de9761883c12746c21eb01f4ba77a_icgraph" alt=""/></div>
+<map name="classTableStatistic_a0f6de9761883c12746c21eb01f4ba77a_icgraph" id="classTableStatistic_a0f6de9761883c12746c21eb01f4ba77a_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5" title="Analyzer::compute_attribute_stat" alt="" coords="235,12,450,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a84764fd56b72df3a725a917658e48dd3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classAttributeStatistics.html">AttributeStatistics</a> * TableStatistic::getAttributeStatistics </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAttributeID.html">AttributeID</a> &amp;&#160;</td>
+          <td class="paramname"><em>attr_id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableStatistic.html#ae82279955c1c5064fb66d941ea6b0ec2">att_stat_list_</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5">Analyzer::compute_attribute_stat()</a>, and <a class="el" href="classStatManager.html#ad14daa728a4f2978cd1d615435c02552">StatManager::getAttributeStatistic()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableStatistic_a84764fd56b72df3a725a917658e48dd3_icgraph.png" border="0" usemap="#classTableStatistic_a84764fd56b72df3a725a917658e48dd3_icgraph" alt=""/></div>
+<map name="classTableStatistic_a84764fd56b72df3a725a917658e48dd3_icgraph" id="classTableStatistic_a84764fd56b72df3a725a917658e48dd3_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5" title="Analyzer::compute_attribute_stat" alt="" coords="233,45,447,72"/><area shape="rect" id="node3" href="classStatManager.html#ad14daa728a4f2978cd1d615435c02552" title="StatManager::getAttribute\lStatistic" alt="" coords="255,97,425,138"/><area shape="rect" id="node4" href="classEstimation.html#a1d5609d93dfee7806fa6c5d695c8c9e9" title="Estimation::estEqualJoin" alt="" coords="541,5,707,32"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1LogicalAggregation.html#ac66fad66cf26945213e8fd3920f3bc6d" title="claims::logical_operator\l::LogicalAggregation::Estimate\lGroupByCardinality" alt="" coords="524,56,724,112"/><area shape="rect" id="node8" href="classStatManager.html#a67a237c3b8c51bbc06f65d1e2d1d8ee8" title="StatManager::getHistogram" alt="" coords="533,136,715,163"/><area shape="rect" id="node11" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a6c12c84550f16965748e837b207a5480" title="claims::logical_operator\l::LogicalEqualJoin::PredictEqual\lJoinSelectivityOnSingleJoinAttributePair" alt="" coords="496,205,752,261"/><area shape="rect" id="node6" href="classclaims_1_1logical__operator_1_1LogicalAggregation.html#a75fc1e15a9a97ce607b7ae844752aa34" title="claims::logical_operator\l::LogicalAggregation::GetPlanContext" alt="" coords="801,5,1042,46"/><area shape="rect" id="node7" href="classclaims_1_1logical__operator_1_1LogicalAggregation.html#a0da9517a1f3811848f2423d4efd39c4e" title="claims::logical_operator\l::LogicalAggregation::GetPhysicalPlan" alt="" coords="1091,34,1336,75"/><area shape="rect" id="node9" href="classEstimation.html#a32aa7fb39861400279a8c71d01e869d6" title="Estimation::estEqualOper" alt="" coords="836,121,1007,148"/><area shape="rect" id="node10" href="classEstimation.html#a5220a43122b33a11a7b645ca32bb3704" title="Estimation::estRangeOper" alt="" coords="833,172,1009,199"/><area shape="rect" id="node12" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a2fd60074d7718515ef384f1a417dce13" title="claims::logical_operator\l::LogicalEqualJoin::PredictEqual\lJoinSelectivity" alt="" coords="816,223,1027,279"/><area shape="rect" id="node13" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a7eac8188ca75de34675928e300498824" title="claims::logical_operator\l::LogicalEqualJoin::DecideOutput\lDataflowProperty" alt="" coords="1105,223,1321,279"/><area shape="rect" id="node14" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a57c7bd3990fc27fdfce241995a1c69f1" title="Method description: Get the child information. " alt="" coords="1384,230,1613,271"/><area shape="rect" id="node15" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#aee1a5cd2e4fbcf1f1d1bf40579650ae0" title="claims::logical_operator\l::LogicalEqualJoin::GetPhysicalPlan" alt="" coords="1662,230,1895,271"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5d87fffc1d2e4f9265b7de95d4fe1630"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long TableStatistic::getCardinality </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924">number_of_tuples_</a>.</p>
+
+<p>Referenced by <a class="el" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a6c12c84550f16965748e837b207a5480">claims::logical_operator::LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableStatistic_a5d87fffc1d2e4f9265b7de95d4fe1630_icgraph.png" border="0" usemap="#classTableStatistic_a5d87fffc1d2e4f9265b7de95d4fe1630_icgraph" alt=""/></div>
+<map name="classTableStatistic_a5d87fffc1d2e4f9265b7de95d4fe1630_icgraph" id="classTableStatistic_a5d87fffc1d2e4f9265b7de95d4fe1630_icgraph">
+<area shape="rect" id="node2" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a6c12c84550f16965748e837b207a5480" title="claims::logical_operator\l::LogicalEqualJoin::PredictEqual\lJoinSelectivityOnSingleJoinAttributePair" alt="" coords="245,5,501,61"/><area shape="rect" id="node3" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a2fd60074d7718515ef384f1a417dce13" title="claims::logical_operator\l::LogicalEqualJoin::PredictEqual\lJoinSelectivity" alt="" coords="549,5,760,61"/><area shape="rect" id="node4" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a7eac8188ca75de34675928e300498824" title="claims::logical_operator\l::LogicalEqualJoin::DecideOutput\lDataflowProperty" alt="" coords="808,5,1024,61"/><area shape="rect" id="node5" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#a57c7bd3990fc27fdfce241995a1c69f1" title="Method description: Get the child information. " alt="" coords="1072,13,1301,54"/><area shape="rect" id="node6" href="classclaims_1_1logical__operator_1_1LogicalEqualJoin.html#aee1a5cd2e4fbcf1f1d1bf40579650ae0" title="claims::logical_operator\l::LogicalEqualJoin::GetPhysicalPlan" alt="" coords="1350,13,1583,54"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="adb2a7f0c9b1e964dc843a1243d28dc94"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TableStatistic::print </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classTableStatistic.html#a7a0cdef40a75097a469e35d8a5049924">number_of_tuples_</a>.</p>
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#afe5c5c0acaf8cc6fb38ba8f22473ae4b">Analyzer::compute_table_stat()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTableStatistic_adb2a7f0c9b1e964dc843a1243d28dc94_icgraph.png" border="0" usemap="#classTableStatistic_adb2a7f0c9b1e964dc843a1243d28dc94_icgraph" alt=""/></div>
+<map name="classTableStatistic_adb2a7f0c9b1e964dc843a1243d28dc94_icgraph" id="classTableStatistic_adb2a7f0c9b1e964dc843a1243d28dc94_icgraph">
+<area shape="rect" id="node2" href="classAnalyzer.html#afe5c5c0acaf8cc6fb38ba8f22473ae4b" title="Analyzer::compute_table_stat" alt="" coords="189,5,384,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ae82279955c1c5064fb66d941ea6b0ec2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::unordered_map&lt;<a class="el" href="structAttributeID.html">AttributeID</a>,<a class="el" href="classAttributeStatistics.html">AttributeStatistics</a>*&gt; TableStatistic::att_stat_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classTableStatistic.html#a0f6de9761883c12746c21eb01f4ba77a">addAttributeStatistics()</a>, and <a class="el" href="classTableStatistic.html#a84764fd56b72df3a725a917658e48dd3">getAttributeStatistics()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7a0cdef40a75097a469e35d8a5049924"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long TableStatistic::number_of_tuples_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classAnalyzer.html#ab26269adde82035786829cbb3cbd33d5">Analyzer::compute_attribute_stat()</a>, <a class="el" href="classAnalyzer.html#afe5c5c0acaf8cc6fb38ba8f22473ae4b">Analyzer::compute_table_stat()</a>, <a class="el" href="classTableStatistic.html#a5d87fffc1d2e4f9265b7de95d4fe1630">getCardinality()</a>, and <a class="el" href="classTableStatistic.html#adb2a7f0c9b1e964dc843a1243d28dc94">print()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Catalog/stat/<a class="el" href="TableStatistic_8h_source.html">TableStatistic.h</a></li>
-<li>Catalog/stat/TableStatistic.cpp</li>
+<li>Catalog/stat/<a class="el" href="TableStatistic_8cpp.html">TableStatistic.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

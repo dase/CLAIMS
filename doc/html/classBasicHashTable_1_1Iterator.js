@@ -7,5 +7,10 @@ var classBasicHashTable_1_1Iterator =
     [ "increase_cur_", "classBasicHashTable_1_1Iterator.html#a47b1d37a27c80a29df258b1cbf0d7536", null ],
     [ "readCurrent", "classBasicHashTable_1_1Iterator.html#a6433dc50bf6cc91f69907bcb49661ddd", null ],
     [ "readnext", "classBasicHashTable_1_1Iterator.html#a36067c7220bfc65fdfb11e441499cd76", null ],
-    [ "BasicHashTable", "classBasicHashTable_1_1Iterator.html#ad68b08375508f9a21167964959efaf01", null ]
+    [ "BasicHashTable", "classBasicHashTable_1_1Iterator.html#ad68b08375508f9a21167964959efaf01", null ],
+    [ "buck_actual_size", "classBasicHashTable_1_1Iterator.html#a2c7b25bb891c945cf512d4a176f051dd", null ],
+    [ "cur", "classBasicHashTable_1_1Iterator.html#af6b01aab98a67e08ade1185126647271", null ],
+    [ "free", "classBasicHashTable_1_1Iterator.html#aec3b903d30b1451e613fb3bb9d370170", null ],
+    [ "next", "classBasicHashTable_1_1Iterator.html#a3ac0fe136a54a1236b2b2867df2b794b", null ],
+    [ "tuplesize", "classBasicHashTable_1_1Iterator.html#a8308d3dd14618b3dc9ad00aa58a01e7d", null ]
 ];

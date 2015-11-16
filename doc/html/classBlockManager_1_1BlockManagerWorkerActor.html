@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: BlockManager::BlockManagerWorkerActor Class Reference</title>
+<title>Claims: BlockManager::BlockManagerWorkerActor Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,48 +106,520 @@ $(document).ready(function(){initNavTree('classBlockManager_1_1BlockManagerWorke
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classBlockManager_1_1BlockManagerWorkerActor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">BlockManager::BlockManagerWorkerActor Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="BlockManager_8h_source.html">BlockManager.h</a>&gt;</code></p>
+
+<p>Inherits Actor.</p>
 <div class="dynheader">
-Inheritance diagram for BlockManager::BlockManagerWorkerActor:</div>
+Collaboration diagram for BlockManager::BlockManagerWorkerActor:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="classBlockManager_1_1BlockManagerWorkerActor.png" usemap="#BlockManager::BlockManagerWorkerActor_map" alt=""/>
-  <map id="BlockManager::BlockManagerWorkerActor_map" name="BlockManager::BlockManagerWorkerActor_map">
-</map>
- </div></div>
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor__coll__graph.png" border="0" usemap="#BlockManager_1_1BlockManagerWorkerActor_coll__map" alt="Collaboration graph"/></div>
+<map name="BlockManager_1_1BlockManagerWorkerActor_coll__map" id="BlockManager_1_1BlockManagerWorkerActor_coll__map">
+<area shape="rect" id="node3" href="classBlockManager.html" title="BlockManager" alt="" coords="349,203,453,229"/><area shape="rect" id="node2" href="classTimeOutReceiver.html" title="TimeOutReceiver" alt="" coords="721,5,844,32"/><area shape="rect" id="node4" href="classLogging.html" title="Logging" alt="" coords="5,104,72,131"/><area shape="rect" id="node5" href="classBlockManagerId.html" title="BlockManagerId" alt="" coords="97,104,212,131"/><area shape="rect" id="node6" href="classLock.html" title="Lock" alt="" coords="296,5,347,32"/><area shape="rect" id="node7" href="classMemoryChunkStore.html" title="MemoryChunkStore" alt="" coords="332,104,471,131"/><area shape="rect" id="node8" href="classDiskStore.html" title="DiskStore" alt="" coords="580,104,660,131"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac943589d62c99802c95fac80ab76618f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac943589d62c99802c95fac80ab76618f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>BlockManagerWorkerActor</b> (Theron::Framework *framework, const char *name, <a class="el" href="classBlockManager.html">BlockManager</a> *bm)</td></tr>
+<tr class="memitem:ac943589d62c99802c95fac80ab76618f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f">BlockManagerWorkerActor</a> (Theron::Framework *framework, const char *name, <a class="el" href="classBlockManager.html">BlockManager</a> *bm)</td></tr>
 <tr class="separator:ac943589d62c99802c95fac80ab76618f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b335bd0be064b12d86290c7cd12e8a1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b335bd0be064b12d86290c7cd12e8a1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_reigisterToMaster</b> (<a class="el" href="classBlockManagerId.html">BlockManagerId</a> *bMId)</td></tr>
+<tr class="memitem:a90bbd86e91855c281c2ccccb152a31e9"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a90bbd86e91855c281c2ccccb152a31e9">~BlockManagerWorkerActor</a> ()</td></tr>
+<tr class="separator:a90bbd86e91855c281c2ccccb152a31e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b335bd0be064b12d86290c7cd12e8a1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a1b335bd0be064b12d86290c7cd12e8a1">_reigisterToMaster</a> (<a class="el" href="classBlockManagerId.html">BlockManagerId</a> *bMId)</td></tr>
 <tr class="separator:a1b335bd0be064b12d86290c7cd12e8a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af676be8980b3b90d608307d45c729f3b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af676be8980b3b90d608307d45c729f3b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_sendHeartBeat</b> ()</td></tr>
+<tr class="memitem:af676be8980b3b90d608307d45c729f3b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#af676be8980b3b90d608307d45c729f3b">_sendHeartBeat</a> ()</td></tr>
 <tr class="separator:af676be8980b3b90d608307d45c729f3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a578a0fb75d8162c73bceabb75da92333"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a578a0fb75d8162c73bceabb75da92333"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_reportBlockStatus</b> (string blockId)</td></tr>
+<tr class="memitem:a578a0fb75d8162c73bceabb75da92333"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a578a0fb75d8162c73bceabb75da92333">_reportBlockStatus</a> (string blockId)</td></tr>
 <tr class="separator:a578a0fb75d8162c73bceabb75da92333"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13eaed17f9ac43153394d1e048e4ec78"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13eaed17f9ac43153394d1e048e4ec78"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>_askformatch</b> (string filename, <a class="el" href="classBlockManagerId.html">BlockManagerId</a> bmi)</td></tr>
+<tr class="memitem:a13eaed17f9ac43153394d1e048e4ec78"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a13eaed17f9ac43153394d1e048e4ec78">_askformatch</a> (string filename, <a class="el" href="classBlockManagerId.html">BlockManagerId</a> bmi)</td></tr>
 <tr class="separator:a13eaed17f9ac43153394d1e048e4ec78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a34269a18c79cc9ae36e08ad304b0b38c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a34269a18c79cc9ae36e08ad304b0b38c">getBlock</a> (const <a class="el" href="structMessage256.html">Message256</a> &amp;message, const Theron::Address from)</td></tr>
+<tr class="separator:a34269a18c79cc9ae36e08ad304b0b38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8878337281e2385d8e71f9c6f962eb7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a8878337281e2385d8e71f9c6f962eb7f">putBlock</a> (const <a class="el" href="structMessage256.html">Message256</a> &amp;message, const Theron::Address from)</td></tr>
+<tr class="separator:a8878337281e2385d8e71f9c6f962eb7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2cf933428fc61e3cad46ad68ab26338"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#af2cf933428fc61e3cad46ad68ab26338">BindingPartition</a> (const <a class="el" href="structPartitionBindingMessage.html">PartitionBindingMessage</a> &amp;message, const Theron::Address from)</td></tr>
+<tr class="separator:af2cf933428fc61e3cad46ad68ab26338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6df8e5bd5b6c392ea25a9b2d997d1d20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a6df8e5bd5b6c392ea25a9b2d997d1d20">UnbindingPartition</a> (const <a class="el" href="structPartitionUnbindingMessage.html">PartitionUnbindingMessage</a> &amp;message, const Theron::Address from)</td></tr>
+<tr class="separator:a6df8e5bd5b6c392ea25a9b2d997d1d20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:adfd561f8d35148aa0b7b09a142f38822"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTimeOutReceiver.html">TimeOutReceiver</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#adfd561f8d35148aa0b7b09a142f38822">tor_</a></td></tr>
+<tr class="separator:adfd561f8d35148aa0b7b09a142f38822"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac58c458a75856229740b9ff0fe77dc78"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac58c458a75856229740b9ff0fe77dc78">receiverId_</a></td></tr>
+<tr class="separator:ac58c458a75856229740b9ff0fe77dc78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad98b34d2f4762f0cb79888c5c2dc93c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlockManager.html">BlockManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#ad98b34d2f4762f0cb79888c5c2dc93c7">bm_</a></td></tr>
+<tr class="separator:ad98b34d2f4762f0cb79888c5c2dc93c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ab8a75dbe69f911ad89371b5fa22da845"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab8a75dbe69f911ad89371b5fa22da845"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>BlockManager</b></td></tr>
+<tr class="memitem:ab8a75dbe69f911ad89371b5fa22da845"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#ab8a75dbe69f911ad89371b5fa22da845">BlockManager</a></td></tr>
 <tr class="separator:ab8a75dbe69f911ad89371b5fa22da845"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ac943589d62c99802c95fac80ab76618f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">BlockManager::BlockManagerWorkerActor::BlockManagerWorkerActor </td>
+          <td>(</td>
+          <td class="paramtype">Theron::Framework *&#160;</td>
+          <td class="paramname"><em>framework</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classBlockManager.html">BlockManager</a> *&#160;</td>
+          <td class="paramname"><em>bm</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#af2cf933428fc61e3cad46ad68ab26338">BindingPartition()</a>, <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a34269a18c79cc9ae36e08ad304b0b38c">getBlock()</a>, <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a8878337281e2385d8e71f9c6f962eb7f">putBlock()</a>, and <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#a6df8e5bd5b6c392ea25a9b2d997d1d20">UnbindingPartition()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_ac943589d62c99802c95fac80ab76618f_cgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_ac943589d62c99802c95fac80ab76618f_cgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_ac943589d62c99802c95fac80ab76618f_cgraph" id="classBlockManager_1_1BlockManagerWorkerActor_ac943589d62c99802c95fac80ab76618f_cgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#af2cf933428fc61e3cad46ad68ab26338" title="BlockManager::BlockManager\lWorkerActor::BindingPartition" alt="" coords="319,5,515,46"/><area shape="rect" id="node3" href="classBlockManager_1_1BlockManagerWorkerActor.html#a34269a18c79cc9ae36e08ad304b0b38c" title="BlockManager::BlockManager\lWorkerActor::getBlock" alt="" coords="319,70,515,111"/><area shape="rect" id="node4" href="classBlockManager_1_1BlockManagerWorkerActor.html#a8878337281e2385d8e71f9c6f962eb7f" title="BlockManager::BlockManager\lWorkerActor::putBlock" alt="" coords="319,135,515,177"/><area shape="rect" id="node5" href="classBlockManager_1_1BlockManagerWorkerActor.html#a6df8e5bd5b6c392ea25a9b2d997d1d20" title="BlockManager::BlockManager\lWorkerActor::UnbindingPartition" alt="" coords="313,201,522,242"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a90bbd86e91855c281c2ccccb152a31e9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">BlockManager::BlockManagerWorkerActor::~BlockManagerWorkerActor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a13eaed17f9ac43153394d1e048e4ec78"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string BlockManager::BlockManagerWorkerActor::_askformatch </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classBlockManagerId.html">BlockManagerId</a>&#160;</td>
+          <td class="paramname"><em>bmi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ae32ee78daa8c53787401fc4d438c58c4">BlockManager::askForMatch()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_a13eaed17f9ac43153394d1e048e4ec78_icgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_a13eaed17f9ac43153394d1e048e4ec78_icgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_a13eaed17f9ac43153394d1e048e4ec78_icgraph" id="classBlockManager_1_1BlockManagerWorkerActor_a13eaed17f9ac43153394d1e048e4ec78_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#ae32ee78daa8c53787401fc4d438c58c4" title="BlockManager::askForMatch" alt="" coords="251,12,440,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1b335bd0be064b12d86290c7cd12e8a1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::BlockManagerWorkerActor::_reigisterToMaster </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlockManagerId.html">BlockManagerId</a> *&#160;</td>
+          <td class="paramname"><em>bMId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ab3d1826a64cae0d5fbe679b47ba21def">BlockManager::registerToMaster()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_a1b335bd0be064b12d86290c7cd12e8a1_icgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_a1b335bd0be064b12d86290c7cd12e8a1_icgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_a1b335bd0be064b12d86290c7cd12e8a1_icgraph" id="classBlockManager_1_1BlockManagerWorkerActor_a1b335bd0be064b12d86290c7cd12e8a1_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#ab3d1826a64cae0d5fbe679b47ba21def" title="BlockManager::registerTo\lMaster" alt="" coords="264,1234,435,1275"/><area shape="rect" id="node3" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="483,1241,643,1268"/><area shape="rect" id="node4" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="691,1216,885,1243"/><area shape="rect" id="node5" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="933,1216,1109,1243"/><area shape="rect" id="node6" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="1157,1241,1328,1268"/><area shape="rect" id="node7" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1419,115,1576,157"/><area shape="rect" id="node12" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="1411,283,1583,325"/><area shape="rect" id="node8" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1708,28,1799,55"/><area shape="rect" id="node13" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="1420,349,1575,376"/><area shape="rect" id="node14" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="1460,400,1535,427"/><area shape="rect" id="node15" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="1439,451,1555,477"/><area shape="rect" id="node9" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1679,108,1828,135"/><area shape="rect" id="node16" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1447,501,1547,528"/><area shape="rect" id="node17" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1401,552,1594,579"/><area shape="rect" id="node18" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1402,603,1593,645"/><area shape="rect" id="node19" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1380,669,1615,710"/><area shape="rect" id="node20" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="1416,734,1579,775"/><area shape="rect" id="node21" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1397,800,1598,856"/><area shape="rect" id="node22" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="1419,881,1575,922"/><area shape="rect" id="node23" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="1429,947,1566,973"/><area shape="rect" id="node10" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1675,171,1832,197"/><area shape="rect" id="node11" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1671,227,1835,253"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1425,1048,1570,1075"/><area shape="rect" id="node26" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1431,1099,1563,1125"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1684,1023,1823,1049"/><area shape="rect" id="node27" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="1420,1150,1575,1191"/><area shape="rect" id="node28" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1438,1267,1557,1293"/><area shape="rect" id="node29" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1716,1241,1791,1268"/><area shape="rect" id="node30" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1667,1393,1839,1420"/><area shape="rect" id="node32" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1451,1419,1544,1445"/><area shape="rect" id="node33" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1456,1469,1539,1496"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="1418,1520,1577,1547"/><area shape="rect" id="node35" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1424,1571,1571,1597"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="1434,1723,1561,1749"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1424,1875,1571,1901"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1434,1925,1561,1952"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1673,1767,1834,1793"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1688,1647,1819,1673"/><area shape="rect" id="node43" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1437,1976,1557,2003"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1678,1824,1829,1851"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1693,1704,1813,1731"/><area shape="rect" id="node31" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1889,1343,2010,1369"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1412,2027,1583,2069"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="1376,2093,1619,2134"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="1384,2159,1611,2215"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1379,2239,1615,2281"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1398,2305,1597,2361"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1387,2386,1607,2427"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ResultCollector.html#ad4e492a894477ccbf7dedded8733626c" title="claims::physical_operator\l::ResultCollector::Open" alt="" coords="1412,2451,1583,2493"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a578a0fb75d8162c73bceabb75da92333"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::BlockManagerWorkerActor::_reportBlockStatus </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>blockId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0">BlockManager::tryToReportBlockStatus()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_a578a0fb75d8162c73bceabb75da92333_icgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_a578a0fb75d8162c73bceabb75da92333_icgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_a578a0fb75d8162c73bceabb75da92333_icgraph" id="classBlockManager_1_1BlockManagerWorkerActor_a578a0fb75d8162c73bceabb75da92333_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#ac63827b4a2315bbc7aceef51130603d0" title="BlockManager::tryToReport\lBlockStatus" alt="" coords="270,5,453,46"/><area shape="rect" id="node3" href="classBlockManager.html#a33f6d335c31b26eca7ad0a376e67f367" title="BlockManager::reportBlock\lStatus" alt="" coords="501,5,680,46"/><area shape="rect" id="node4" href="classBlockManager.html#aaba409b0fefd5ec8c71c147a245ead14" title="BlockManager::put" alt="" coords="728,12,859,39"/><area shape="rect" id="node5" href="classBlockManager.html#acaf5d3f8a9f1ff9211cf6b70688bf558" title="BlockManager::getLocal" alt="" coords="907,12,1069,39"/><area shape="rect" id="node6" href="classBlockManager.html#ae0ab2b2c356970380595461f650a7042" title="BlockManager::get" alt="" coords="1117,12,1248,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af676be8980b3b90d608307d45c729f3b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BlockManager::BlockManagerWorkerActor::_sendHeartBeat </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1">BlockManager::heartBeat()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_af676be8980b3b90d608307d45c729f3b_icgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_af676be8980b3b90d608307d45c729f3b_icgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_af676be8980b3b90d608307d45c729f3b_icgraph" id="classBlockManager_1_1BlockManagerWorkerActor_af676be8980b3b90d608307d45c729f3b_icgraph">
+<area shape="rect" id="node2" href="classBlockManager.html#af3af0d19fa5b73ba57dc3ccc3e2746f1" title="BlockManager::heartBeat" alt="" coords="251,1241,421,1268"/><area shape="rect" id="node3" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="469,1241,629,1268"/><area shape="rect" id="node4" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="677,1216,872,1243"/><area shape="rect" id="node5" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="920,1216,1096,1243"/><area shape="rect" id="node6" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="1144,1241,1315,1268"/><area shape="rect" id="node7" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="1405,115,1563,157"/><area shape="rect" id="node12" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="1398,283,1570,325"/><area shape="rect" id="node8" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="1695,28,1785,55"/><area shape="rect" id="node13" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="1407,349,1561,376"/><area shape="rect" id="node14" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="1447,400,1521,427"/><area shape="rect" id="node15" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="1426,451,1542,477"/><area shape="rect" id="node9" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="1665,108,1815,135"/><area shape="rect" id="node16" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="1434,501,1534,528"/><area shape="rect" id="node17" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="1387,552,1581,579"/><area shape="rect" id="node18" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="1389,603,1579,645"/><area shape="rect" id="node19" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="1367,669,1601,710"/><area shape="rect" id="node20" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="1403,734,1565,775"/><area shape="rect" id="node21" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="1383,800,1585,856"/><area shape="rect" id="node22" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="1406,881,1562,922"/><area shape="rect" id="node23" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="1415,947,1553,973"/><area shape="rect" id="node10" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="1661,171,1819,197"/><area shape="rect" id="node11" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="1658,227,1822,253"/><area shape="rect" id="node24" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="1411,1048,1557,1075"/><area shape="rect" id="node26" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="1418,1099,1550,1125"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="1671,1023,1809,1049"/><area shape="rect" id="node27" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="1407,1150,1561,1191"/><area shape="rect" id="node28" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="1425,1267,1543,1293"/><area shape="rect" id="node29" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="1703,1241,1777,1268"/><area shape="rect" id="node30" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="1654,1393,1826,1420"/><area shape="rect" id="node32" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="1437,1419,1531,1445"/><area shape="rect" id="node33" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="1443,1469,1525,1496"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="1405,1520,1563,1547"/><area shape="rect" id="node35" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="1411,1571,1557,1597"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="1421,1723,1547,1749"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="1411,1875,1557,1901"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="1421,1925,1547,1952"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="1659,1767,1821,1793"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="1675,1647,1805,1673"/><area shape="rect" id="node43" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="1424,1976,1544,2003"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="1665,1824,1815,1851"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="1680,1704,1800,1731"/><area shape="rect" id="node31" href="execute__sql__test_8cpp.html#aff72135e3849495b34a44356e44ae9ca" title="execute_sql_test" alt="" coords="1875,1343,1997,1369"/><area shape="rect" id="node44" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#a394f936e1f300327965123136395515a" title="claims::physical_operator\l::ExchangeMerger::Close" alt="" coords="1399,2027,1569,2069"/><area shape="rect" id="node45" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#afefcc1b29ffbe20c8333ffd0c3aa2c55" title="claims::physical_operator\l::ExchangeMerger::RegisterExchange" alt="" coords="1363,2093,1605,2134"/><area shape="rect" id="node46" href="classclaims_1_1physical__operator_1_1ExchangeMerger.html#aaa16c4ecce5e7705d9eb3077fe965407" title="claims::physical_operator\l::ExchangeMerger::IsOtherMergers\lRegistered" alt="" coords="1371,2159,1597,2215"/><area shape="rect" id="node47" href="classclaims_1_1physical__operator_1_1ExchangeSender.html#adcc7c8d588a179e6c8fc8a32ab44c6ee" title="claims::physical_operator\l::ExchangeSender::ConnectToUpper" alt="" coords="1366,2239,1602,2281"/><area shape="rect" id="node48" href="classclaims_1_1physical__operator_1_1ExchangeSenderMaterialized.html#a77edde93b0c5b2ea538a35084954b57b" title="claims::physical_operator\l::ExchangeSenderMaterialized\l::CreateWorkerThread" alt="" coords="1385,2305,1583,2361"/><area shape="rect" id="node49" href="classclaims_1_1physical__operator_1_1Expander.html#af260fcc34cd4ec5bcc884afccc2670bf" title="claims::physical_operator\l::Expander::CreateWorkingThread" alt="" coords="1374,2386,1594,2427"/><area shape="rect" id="node50" href="classclaims_1_1physical__operator_1_1ResultCollector.html#ad4e492a894477ccbf7dedded8733626c" title="claims::physical_operator\l::ResultCollector::Open" alt="" coords="1399,2451,1569,2493"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="af2cf933428fc61e3cad46ad68ab26338"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::BlockManagerWorkerActor::BindingPartition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionBindingMessage.html">PartitionBindingMessage</a> &amp;&#160;</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Theron::Address&#160;</td>
+          <td class="paramname"><em>from</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structPartitionBindingMessage.html#aa153de292ad9e7e0869601bf4e53b810">PartitionBindingMessage::number_of_chunks</a>, <a class="el" href="structPartitionBindingMessage.html#aa727466fef4c1de983708b812b016588">PartitionBindingMessage::partition_id</a>, and <a class="el" href="structPartitionBindingMessage.html#a688e62ecb5924052054fb27ee3a2f4a0">PartitionBindingMessage::storage_level</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f">BlockManagerWorkerActor()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_af2cf933428fc61e3cad46ad68ab26338_icgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_af2cf933428fc61e3cad46ad68ab26338_icgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_af2cf933428fc61e3cad46ad68ab26338_icgraph" id="classBlockManager_1_1BlockManagerWorkerActor_af2cf933428fc61e3cad46ad68ab26338_icgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f" title="BlockManager::BlockManager\lWorkerActor::BlockManagerWorkerActor" alt="" coords="251,5,509,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a34269a18c79cc9ae36e08ad304b0b38c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::BlockManagerWorkerActor::getBlock </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structMessage256.html">Message256</a> &amp;&#160;</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Theron::Address&#160;</td>
+          <td class="paramname"><em>from</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f">BlockManagerWorkerActor()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_a34269a18c79cc9ae36e08ad304b0b38c_icgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_a34269a18c79cc9ae36e08ad304b0b38c_icgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_a34269a18c79cc9ae36e08ad304b0b38c_icgraph" id="classBlockManager_1_1BlockManagerWorkerActor_a34269a18c79cc9ae36e08ad304b0b38c_icgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f" title="BlockManager::BlockManager\lWorkerActor::BlockManagerWorkerActor" alt="" coords="251,5,509,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8878337281e2385d8e71f9c6f962eb7f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::BlockManagerWorkerActor::putBlock </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structMessage256.html">Message256</a> &amp;&#160;</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Theron::Address&#160;</td>
+          <td class="paramname"><em>from</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f">BlockManagerWorkerActor()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_a8878337281e2385d8e71f9c6f962eb7f_icgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_a8878337281e2385d8e71f9c6f962eb7f_icgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_a8878337281e2385d8e71f9c6f962eb7f_icgraph" id="classBlockManager_1_1BlockManagerWorkerActor_a8878337281e2385d8e71f9c6f962eb7f_icgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f" title="BlockManager::BlockManager\lWorkerActor::BlockManagerWorkerActor" alt="" coords="251,5,509,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a6df8e5bd5b6c392ea25a9b2d997d1d20"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockManager::BlockManagerWorkerActor::UnbindingPartition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionUnbindingMessage.html">PartitionUnbindingMessage</a> &amp;&#160;</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Theron::Address&#160;</td>
+          <td class="paramname"><em>from</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="structPartitionUnbindingMessage.html#a0d4e7998dfdc83b4baae727e8159169f">PartitionUnbindingMessage::partition_id</a>.</p>
+
+<p>Referenced by <a class="el" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f">BlockManagerWorkerActor()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockManager_1_1BlockManagerWorkerActor_a6df8e5bd5b6c392ea25a9b2d997d1d20_icgraph.png" border="0" usemap="#classBlockManager_1_1BlockManagerWorkerActor_a6df8e5bd5b6c392ea25a9b2d997d1d20_icgraph" alt=""/></div>
+<map name="classBlockManager_1_1BlockManagerWorkerActor_a6df8e5bd5b6c392ea25a9b2d997d1d20_icgraph" id="classBlockManager_1_1BlockManagerWorkerActor_a6df8e5bd5b6c392ea25a9b2d997d1d20_icgraph">
+<area shape="rect" id="node2" href="classBlockManager_1_1BlockManagerWorkerActor.html#ac943589d62c99802c95fac80ab76618f" title="BlockManager::BlockManager\lWorkerActor::BlockManagerWorkerActor" alt="" coords="264,5,523,46"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="ab8a75dbe69f911ad89371b5fa22da845"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classBlockManager.html">BlockManager</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ad98b34d2f4762f0cb79888c5c2dc93c7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classBlockManager.html">BlockManager</a>* BlockManager::BlockManagerWorkerActor::bm_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac58c458a75856229740b9ff0fe77dc78"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string BlockManager::BlockManagerWorkerActor::receiverId_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adfd561f8d35148aa0b7b09a142f38822"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classTimeOutReceiver.html">TimeOutReceiver</a>* BlockManager::BlockManagerWorkerActor::tor_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>storage/<a class="el" href="BlockManager_8h_source.html">BlockManager.h</a></li>
-<li>storage/BlockManager.cpp</li>
+<li>storage/<a class="el" href="BlockManager_8cpp.html">BlockManager.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

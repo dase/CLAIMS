@@ -1,4 +1,4 @@
-.TH "BlockManagerMaster::BlockManagerMasterActor" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BlockManagerMaster::BlockManagerMasterActor" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,17 @@ BlockManagerMaster::BlockManagerMasterActor \-
 .br
 .PP
 .PP
+\fC#include <BlockManagerMaster\&.h>\fP
+.PP
 Inherits Actor\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBBlockManagerMasterActor\fP (Theron::Framework *framework, const char *name)"
+.br
+.ti -1c
+.RI "virtual \fB~BlockManagerMasterActor\fP ()"
 .br
 .ti -1c
 .RI "void \fBworkerRegister\fP (const \fBStorageBudgetMessage\fP &message, const Theron::Address from)"
@@ -34,7 +39,45 @@ Inherits Actor\&.
 .RI "class \fBBlockManagerMaster\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BlockManagerMaster::BlockManagerMasterActor::BlockManagerMasterActor (Theron::Framework *framework, const char *name)"
+
+.PP
+References blockStatusReceiver(), heartbeatReceiver(), matcherReceiver(), and workerRegister()\&.
+.SS "BlockManagerMaster::BlockManagerMasterActor::~BlockManagerMasterActor ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void BlockManagerMaster::BlockManagerMasterActor::blockStatusReceiver (const \fBBlockStatusMessage\fP &message, const Theron::Addressfrom)"
+
+.PP
+References AllBlockInfo::getInstance(), BlockStatusMessage::mText, and AllBlockInfo::put()\&.
+.PP
+Referenced by BlockManagerMasterActor()\&.
+.SS "void BlockManagerMaster::BlockManagerMasterActor::heartbeatReceiver (const \fBHeartBeatMessage\fP &message, const Theron::Addressfrom)"
+
+.PP
+References HeartBeatMessage::mText\&.
+.PP
+Referenced by BlockManagerMasterActor()\&.
+.SS "void BlockManagerMaster::BlockManagerMasterActor::matcherReceiver (const \fBMatcherMessage\fP &message, const Theron::Addressfrom)"
+
+.PP
+References MatcherMessage::bmiText, MatcherMessage::filenameText, BlanceMatcher::getInstance(), and BlanceMatcher::matcher()\&.
+.PP
+Referenced by BlockManagerMasterActor()\&.
+.SS "void BlockManagerMaster::BlockManagerMasterActor::workerRegister (const \fBStorageBudgetMessage\fP &message, const Theron::Addressfrom)"
+
+.PP
+References StorageBudgetMessage::nodeid\&.
+.PP
+Referenced by BlockManagerMasterActor()\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBBlockManagerMaster\fP\fC [friend]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

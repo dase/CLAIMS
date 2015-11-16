@@ -176,23 +176,26 @@ int LogicalSort::GetOrderByKey(const char *table_name) {
     }
   }
 }
-void LogicalSort::PrintOrderByAttr() const {
-  cout << "OrderByAttr:" << endl;
+void LogicalSort::PrintOrderByAttr(int level) const {
+  cout << setw(level * kTabSize) << " "
+       << "OrderByAttr:" << endl;
 #ifndef NEWCONDI
   for (int i = 0; i < order_by_attr_.size(); i++) {
     printf("%s  %s\n", (const char *)order_by_attr_[i]->table_name_,
            order_by_attr_[i]->direction_ == 0 ? "ASC" : "DESC");
   }
 #else
+  level++;
   for (int i = 0; i < order_by_attrs_.size(); ++i) {
-    cout << "    " << order_by_attrs_[i].first->alias_ << "    "
-         << ((order_by_attrs_[i].second == 0) ? "ASC" : "DESC") << endl;
+    cout << setw(level * kTabSize) << " " << order_by_attrs_[i].first->alias_
+         << "    " << ((order_by_attrs_[i].second == 0) ? "ASC" : "DESC")
+         << endl;
   }
 #endif
 }
 void LogicalSort::Print(int level) const {
-  PrintOrderByAttr();
-  child_->Print(level + 1);
+  PrintOrderByAttr(level);
+  child_->Print(level);
 }
 }  // namespace logical_operator
 }  // namespace claims

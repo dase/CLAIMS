@@ -1,4 +1,4 @@
-.TH "Alterdatabase_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Alterdatabase_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Alterdatabase_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "int \fBcreatetype\fP"
@@ -22,7 +24,25 @@ Alterdatabase_stmt \-
 .RI "\fBNode\fP * \fBopt\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "int Alterdatabase_stmt::createtype"
+
+.PP
+Referenced by newAlterDatabaseStmt()\&.
+.SS "char* Alterdatabase_stmt::name"
+
+.PP
+Referenced by newAlterDatabaseStmt()\&.
+.SS "\fBNode\fP* Alterdatabase_stmt::opt"
+
+.PP
+Referenced by newAlterDatabaseStmt()\&.
+.SS "\fBnodetype\fP Alterdatabase_stmt::type"
+
+.PP
+Referenced by newAlterDatabaseStmt()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

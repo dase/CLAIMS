@@ -1,4 +1,4 @@
-.TH "Json::Writer" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::Writer" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,13 +17,26 @@ Inherited by \fBJson::FastWriter\fP, and \fBJson::StyledWriter\fP\&.
 
 .in +1c
 .ti -1c
+.RI "virtual \fB~Writer\fP ()"
+.br
+.ti -1c
 .RI "virtual std::string \fBwrite\fP (const \fBValue\fP &root)=0"
 .br
 .in -1c
 .SH "Detailed Description"
 .PP 
 Abstract class for writers\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Json::Writer::~Writer ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual std::string Json::Writer::write (const \fBValue\fP &root)\fC [pure virtual]\fP"
+
+.PP
+Implemented in \fBJson::StyledWriter\fP, and \fBJson::FastWriter\fP\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

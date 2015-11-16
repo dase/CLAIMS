@@ -31,10 +31,10 @@ LDADD =  \
 	Executor/Test/libtest.a \
 	IndexManager/libindexmanager.a \
 	IndexManager/Test/libtest.a \
+    stmt_handler/libstmthandler.a \
     sql_parser/Test/libparser_test.a	\
     sql_parser/parser/libparser.a \
     sql_parser/ast_node/libast_node.a \
-    stmt_handler/libstmthandler.a \
 	Parsetree/libparsetree.a \
 	Parsetree/Test/libtest.a \
 	logical_operator/liblogicalqueryplan.a \

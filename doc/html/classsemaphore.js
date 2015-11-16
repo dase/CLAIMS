@@ -7,5 +7,6 @@ var classsemaphore =
     [ "set_value", "classsemaphore.html#aae7af08f4ea7ef166dee6dca6bca893a", null ],
     [ "timed_wait", "classsemaphore.html#abafe7b6a56a0c3664f53fa59a93ccecc", null ],
     [ "try_wait", "classsemaphore.html#a7d8acb08b6e30aeadd7af897371907bb", null ],
-    [ "wait", "classsemaphore.html#a4a9497728a40405ad5365f84ff455dba", null ]
+    [ "wait", "classsemaphore.html#a4a9497728a40405ad5365f84ff455dba", null ],
+    [ "sem", "classsemaphore.html#afd045c9591ac543a49877475327671c3", null ]
 ];

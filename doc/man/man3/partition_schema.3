@@ -1,4 +1,4 @@
-.TH "partition_schema" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "partition_schema" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ partition_schema \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <partition_functions\&.h>\fP
 .SS "Public Types"
 
 .in +1c
@@ -43,7 +45,7 @@ partition_schema \-
 
 .in +1c
 .ti -1c
-.RI "partition_mode \fBmode\fP"
+.RI "\fBpartition_mode\fP \fBmode\fP"
 .br
 .ti -1c
 .RI "unsigned \fBpartition_key_index\fP"
@@ -56,7 +58,66 @@ partition_schema \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBpartition_schema::partition_mode\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIhash \fP\fP
+.TP
+\fB\fIbroadcase \fP\fP
+.TP
+\fB\fIrange \fP\fP
+.SH "Member Function Documentation"
+.PP 
+.SS "bool partition_schema::isBoardcastPartition () const\fC [inline]\fP"
+
+.PP
+References broadcase, and mode\&.
+.PP
+Referenced by claims::physical_operator::ExchangeSenderMaterialized::Next(), and claims::physical_operator::ExchangeSenderPipeline::Next()\&.
+.SS "bool partition_schema::isHashPartition () const\fC [inline]\fP"
+
+.PP
+References hash, and mode\&.
+.PP
+Referenced by claims::physical_operator::ExchangeSenderMaterialized::Next(), and claims::physical_operator::ExchangeSenderPipeline::Next()\&.
+.SS "template<class Archive > void partition_schema::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP"
+
+.PP
+References mode, and partition_key_index\&.
+.SS "static \fBpartition_schema\fP partition_schema::set_broadcast_partition ()\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References broadcase, mode, and partition_key_index\&.
+.PP
+Referenced by claims::logical_operator::LogicalCrossJoin::GenerateChildPhysicalQueryPlan()\&.
+.SS "static \fBpartition_schema\fP partition_schema::set_hash_partition (int_partition_key_index = \fC0\fP)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+References hash, mode, and partition_key_index\&.
+.PP
+Referenced by claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalFilter::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalQueryPlanRoot::GetOptimalPhysicalPlan(), claims::logical_operator::LogicalQueryPlanRoot::GetPhysicalPlan(), claims::logical_operator::LogicalEqualJoin::GetPhysicalPlan(), claims::logical_operator::LogicalSort::GetPhysicalPlan(), and claims::logical_operator::LogicalAggregation::GetPhysicalPlan()\&.
+.SS "static \fBpartition_schema\fP partition_schema::set_range_partition (int_number_of_ranges)\fC [inline]\fP, \fC [static]\fP"
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBpartition_mode\fP partition_schema::mode"
+
+.PP
+Referenced by isBoardcastPartition(), isHashPartition(), claims::physical_operator::ExchangeMerger::Print(), serialize(), set_broadcast_partition(), and set_hash_partition()\&.
+.SS "unsigned partition_schema::partition_key_index"
+
+.PP
+Referenced by claims::physical_operator::ExchangeMerger::ExchangeMerger(), claims::physical_operator::ExchangeSenderPipeline::ExchangeSenderPipeline(), claims::physical_operator::ExchangeSenderMaterialized::Next(), claims::physical_operator::ExchangeSenderPipeline::Next(), claims::physical_operator::ExchangeMerger::Print(), serialize(), set_broadcast_partition(), and set_hash_partition()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

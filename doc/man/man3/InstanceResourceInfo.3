@@ -1,4 +1,4 @@
-.TH "InstanceResourceInfo" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "InstanceResourceInfo" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,18 @@ InstanceResourceInfo \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ResourceInfo\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBInstanceResourceInfo\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~InstanceResourceInfo\fP ()"
+.br
+.in -1c
 .SS "Protected Attributes"
 
 .in +1c
@@ -26,7 +38,25 @@ InstanceResourceInfo \-
 .RI "class \fBResourceManagerMaster\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "InstanceResourceInfo::InstanceResourceInfo ()"
+
+.SS "InstanceResourceInfo::~InstanceResourceInfo ()\fC [virtual]\fP"
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBResourceManagerMaster\fP\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBdisk_info\fP InstanceResourceInfo::disk\fC [protected]\fP"
+
+.SS "\fBmemory_info\fP InstanceResourceInfo::memory\fC [protected]\fP"
+
+.SS "std::string InstanceResourceInfo::slave_ip_\fC [protected]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

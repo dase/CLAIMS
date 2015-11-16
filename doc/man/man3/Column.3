@@ -1,4 +1,4 @@
-.TH "Column" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Column" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,15 +7,23 @@ Column \-
 .br
 .PP
 .PP
+\fC#include <Column\&.h>\fP
+.PP
 Inherits \fBAttribute\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
+.RI "\fBColumn\fP ()"
+.br
+.ti -1c
 .RI "\fBColumn\fP (\fBAttribute\fP &, \fBColumnID\fP)"
 .br
 .ti -1c
 .RI "\fBColumn\fP (const \fBColumn\fP &c)"
+.br
+.ti -1c
+.RI "virtual \fB~Column\fP ()"
 .br
 .ti -1c
 .RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
@@ -35,7 +43,35 @@ Inherits \fBAttribute\fP\&.
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Column::Column ()\fC [inline]\fP"
+
+.SS "Column::Column (\fBAttribute\fP &attr, \fBColumnID\fPcolumn_id)"
+
+.SS "Column::Column (const \fBColumn\fP &c)\fC [inline]\fP"
+
+.PP
+References column_id_\&.
+.SS "Column::~Column ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class Archive > void Column::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP"
+
+.PP
+References column_id_\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBColumnID\fP Column::column_id_"
+
+.PP
+Referenced by Column(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

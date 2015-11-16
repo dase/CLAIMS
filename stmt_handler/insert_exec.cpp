@@ -133,7 +133,7 @@ bool InsertExec::CheckType(const column_type *col_type, AstNode *expr) {
  * time.
  * @return a result code cooperate with the client.
  */
-int InsertExec::Execute() {
+RetCode InsertExec::Execute(executed_result *exec_result) {
   int ret = common::kStmtHandlerOk;
 
   if (isTableExist()) {

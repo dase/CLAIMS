@@ -1,4 +1,4 @@
-.TH "QNode" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "QNode" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,23 +7,35 @@ QNode \-
 .br
 .PP
 .PP
+\fC#include <qnode\&.h>\fP
+.PP
 Inherits \fBNode\fP\&.
 .PP
 Inherited by \fBQColcumns\fP, \fBQExpr\fP, \fBQExpr_binary\fP, \fBQExpr_case_when\fP, \fBQExpr_date_add_sub\fP, \fBQExpr_in\fP, \fBQExpr_ternary\fP, and \fBQExpr_unary\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQNode\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~QNode\fP ()"
+.br
+.in -1c
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "qnodetype \fBtype\fP"
+.RI "\fBqnodetype\fP \fBtype\fP"
 .br
 .ti -1c
-.RI "FuncCall \fBFuncId\fP"
+.RI "\fBFuncCall\fP \fBFuncId\fP"
 .br
 .ti -1c
-.RI "data_type \fBactual_type\fP"
+.RI "\fBdata_type\fP \fBactual_type\fP"
 .br
 .ti -1c
-.RI "data_type \fBreturn_type\fP"
+.RI "\fBdata_type\fP \fBreturn_type\fP"
 .br
 .ti -1c
 .RI "void * \fBvalue\fP"
@@ -35,10 +47,17 @@ Inherited by \fBQColcumns\fP, \fBQExpr\fP, \fBQExpr_binary\fP, \fBQExpr_case_whe
 .RI "bool \fBisnull\fP"
 .br
 .ti -1c
-.RI "TypeCastF \fBtype_cast_func\fP"
+.RI "\fBTypeCastF\fP \fBtype_cast_func\fP"
 .br
 .ti -1c
 .RI "string \fBalias\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
 .br
 .in -1c
 .SS "Friends"
@@ -48,7 +67,61 @@ Inherited by \fBQColcumns\fP, \fBQExpr\fP, \fBQExpr_binary\fP, \fBQExpr_case_whe
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QNode::QNode ()\fC [inline]\fP"
+
+.SS "virtual QNode::~QNode ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+References NULL\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "template<class Archive > void QNode::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBdata_type\fP QNode::actual_type"
+
+.PP
+Referenced by codegen(), codegen_binary_op(), codegen_column(), codegen_const(), AstExprCmpBinary::GetLogicalPlan(), InitExprAtLogicalPlan(), InitExprAtPhysicalPlan(), QColcumns::QColcumns(), QExpr::QExpr(), QExpr_binary::QExpr_binary(), QExpr_case_when::QExpr_case_when(), QExpr_date_add_sub::QExpr_date_add_sub(), QExpr_in::QExpr_in(), QExpr_ternary::QExpr_ternary(), QExpr_unary::QExpr_unary(), and transformqual()\&.
+.SS "string QNode::alias"
+
+.PP
+Referenced by get_all_selectlist_expression_item(), QColcumns::QColcumns(), QExpr::QExpr(), QExpr_binary::QExpr_binary(), QExpr_case_when::QExpr_case_when(), QExpr_date_add_sub::QExpr_date_add_sub(), QExpr_in::QExpr_in(), QExpr_ternary::QExpr_ternary(), QExpr_unary::QExpr_unary(), and select_where_from2logicalplan()\&.
+.SS "\fBFuncCall\fP QNode::FuncId"
+
+.PP
+Referenced by Exec_cal(), Exec_cmp(), Exec_date_add_sub(), Exec_in_item(), Exec_ternary(), Exec_unary(), ExecEvalQual(), and InitExprAtPhysicalPlan()\&.
+.SS "bool QNode::isnull"
+
+.PP
+Referenced by InitExprAtLogicalPlan(), QColcumns::QColcumns(), QExpr::QExpr(), QExpr_binary::QExpr_binary(), QExpr_case_when::QExpr_case_when(), QExpr_date_add_sub::QExpr_date_add_sub(), QExpr_in::QExpr_in(), QExpr_ternary::QExpr_ternary(), and QExpr_unary::QExpr_unary()\&.
+.SS "int QNode::length"
+
+.PP
+Referenced by InitExprAtLogicalPlan(), InitExprAtPhysicalPlan(), QColcumns::QColcumns(), QExpr::QExpr(), QExpr_binary::QExpr_binary(), QExpr_case_when::QExpr_case_when(), QExpr_date_add_sub::QExpr_date_add_sub(), QExpr_in::QExpr_in(), QExpr_ternary::QExpr_ternary(), and QExpr_unary::QExpr_unary()\&.
+.SS "\fBdata_type\fP QNode::return_type"
+
+.PP
+Referenced by codegen(), createEqualJoinExpression(), InitExprAtLogicalPlan(), InitExprAtPhysicalPlan(), QColcumns::QColcumns(), QExpr::QExpr(), QExpr_binary::QExpr_binary(), QExpr_case_when::QExpr_case_when(), QExpr_date_add_sub::QExpr_date_add_sub(), QExpr_in::QExpr_in(), QExpr_ternary::QExpr_ternary(), QExpr_unary::QExpr_unary(), and storeTheReturnValue()\&.
+.SS "\fBqnodetype\fP QNode::type"
+
+.PP
+Referenced by codegen(), Expr_copy(), InitExprAtLogicalPlan(), InitExprAtPhysicalPlan(), QColcumns::QColcumns(), QExpr::QExpr(), QExpr_binary::QExpr_binary(), QExpr_case_when::QExpr_case_when(), QExpr_date_add_sub::QExpr_date_add_sub(), QExpr_in::QExpr_in(), QExpr_ternary::QExpr_ternary(), and QExpr_unary::QExpr_unary()\&.
+.SS "\fBTypeCastF\fP QNode::type_cast_func"
+
+.PP
+Referenced by Exec_cal(), Exec_case_when(), Exec_cmp(), Exec_date_add_sub(), Exec_in(), Exec_ternary(), Exec_unary(), getcol(), and InitExprAtPhysicalPlan()\&.
+.SS "void* QNode::value"
+
+.PP
+Referenced by Exec_cal(), Exec_case_when(), Exec_cmp(), Exec_date_add_sub(), Exec_in(), Exec_in_item(), Exec_ternary(), Exec_unary(), getcol(), getConst(), InitExprAtPhysicalPlan(), QColcumns::QColcumns(), QExpr::QExpr(), QExpr_binary::QExpr_binary(), QExpr_case_when::QExpr_case_when(), QExpr_date_add_sub::QExpr_date_add_sub(), QExpr_in::QExpr_in(), QExpr_ternary::QExpr_ternary(), and QExpr_unary::QExpr_unary()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

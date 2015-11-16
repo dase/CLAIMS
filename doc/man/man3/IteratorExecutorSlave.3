@@ -1,4 +1,4 @@
-.TH "IteratorExecutorSlave" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "IteratorExecutorSlave" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ IteratorExecutorSlave \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <IteratorExecutorSlave\&.h>\fP
 .SS "Classes"
 
 .in +1c
@@ -16,6 +18,12 @@ IteratorExecutorSlave \-
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBIteratorExecutorSlave\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~IteratorExecutorSlave\fP ()"
+.br
 .ti -1c
 .RI "void \fBcreateNewThreadAndRun\fP (\fBPhysicalQueryPlan\fP *)"
 .br
@@ -34,6 +42,35 @@ IteratorExecutorSlave \-
 .RI "\fBLogging\fP * \fBlogging_\fP"
 .br
 .in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void * \fBrun_iterator\fP (void *)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBExecuteIteratorActor\fP * \fBexecute_iterator_actor\fP"
+.br
+.ti -1c
+.RI "Theron::Framework * \fBframework\fP"
+.br
+.ti -1c
+.RI "Theron::EndPoint * \fBendpoint\fP"
+.br
+.ti -1c
+.RI "std::string \fBslave_id\fP"
+.br
+.ti -1c
+.RI "\fBSpineLock\fP \fBlock_\fP"
+.br
+.ti -1c
+.RI "std::set< pthread_t > \fBbusy_thread_list_\fP"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -41,7 +78,71 @@ IteratorExecutorSlave \-
 .RI "class \fBExecuteIteratorActor\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "IteratorExecutorSlave::IteratorExecutorSlave ()"
+
+.PP
+References endpoint, execute_iterator_actor, ExecuteIteratorActor, framework, Environment::getEndPoint(), Environment::getInstance(), Environment::getNodeID(), Logging::log(), and logging_\&.
+.SS "IteratorExecutorSlave::~IteratorExecutorSlave ()\fC [virtual]\fP"
+
+.PP
+References execute_iterator_actor, framework, and logging_\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void IteratorExecutorSlave::createNewThreadAndRun (\fBPhysicalQueryPlan\fP *it)"
+
+.PP
+References SpineLock::acquire(), busy_thread_list_, lock_, Logging::log(), logging_, NULL, SpineLock::release(), and run_iterator()\&.
+.PP
+Referenced by IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite()\&.
+.SS "void IteratorExecutorSlave::executePhysicalQueryPlan (\fBPhysicalQueryPlan\fPplan)\fC [static]\fP"
+
+.PP
+References PhysicalQueryPlan::run()\&.
+.PP
+Referenced by query_1(), run_iterator(), test_complete_repartition_filtered_join(), test_complete_repartition_scan_join(), test_no_repartition_filtered_join(), test_no_repartition_scan_join(), test_scan_Aggregation_large_Groups(), test_scan_Aggregation_small_Groups(), test_scan_filter_Aggregation(), test_scan_filter_high_selectivity(), test_scan_filter_low_selectivity(), and test_scan_filter_Scalar_Aggregation()\&.
+.SS "void * IteratorExecutorSlave::run_iterator (void *arg)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References SpineLock::acquire(), busy_thread_list_, executePhysicalQueryPlan(), lock_, Logging::log(), logging_, and SpineLock::release()\&.
+.PP
+Referenced by createNewThreadAndRun()\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBExecuteIteratorActor\fP\fC [friend]\fP"
+
+.PP
+Referenced by IteratorExecutorSlave()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::set<pthread_t> IteratorExecutorSlave::busy_thread_list_\fC [private]\fP"
+
+.PP
+Referenced by createNewThreadAndRun(), and run_iterator()\&.
+.SS "Theron::EndPoint* IteratorExecutorSlave::endpoint\fC [private]\fP"
+
+.PP
+Referenced by IteratorExecutorSlave()\&.
+.SS "\fBExecuteIteratorActor\fP* IteratorExecutorSlave::execute_iterator_actor\fC [private]\fP"
+
+.PP
+Referenced by IteratorExecutorSlave(), and ~IteratorExecutorSlave()\&.
+.SS "Theron::Framework* IteratorExecutorSlave::framework\fC [private]\fP"
+
+.PP
+Referenced by IteratorExecutorSlave(), and ~IteratorExecutorSlave()\&.
+.SS "\fBSpineLock\fP IteratorExecutorSlave::lock_\fC [private]\fP"
+
+.PP
+Referenced by createNewThreadAndRun(), and run_iterator()\&.
+.SS "\fBLogging\fP* IteratorExecutorSlave::logging_\fC [protected]\fP"
+
+.PP
+Referenced by createNewThreadAndRun(), IteratorExecutorSlave(), run_iterator(), and ~IteratorExecutorSlave()\&.
+.SS "std::string IteratorExecutorSlave::slave_id\fC [private]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

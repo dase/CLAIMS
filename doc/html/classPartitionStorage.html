@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: PartitionStorage Class Reference</title>
+<title>Claims: PartitionStorage Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -114,6 +114,15 @@ $(document).ready(function(){initNavTree('classPartitionStorage.html','');});
 <div class="title">PartitionStorage Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="PartitionStorage_8h_source.html">PartitionStorage.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for PartitionStorage:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPartitionStorage__coll__graph.png" border="0" usemap="#PartitionStorage_coll__map" alt="Collaboration graph"/></div>
+<map name="PartitionStorage_coll__map" id="PartitionStorage_coll__map">
+<area shape="rect" id="node2" href="structPartitionID.html" title="PartitionID" alt="" coords="21,96,104,123"/><area shape="rect" id="node3" href="structProjectionID.html" title="ProjectionID" alt="" coords="15,5,109,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -124,49 +133,343 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae35f2ba33be801c87da8af6e1f7c53fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae35f2ba33be801c87da8af6e1f7c53fc"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>PartitionStorage</b> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;partition_id, const unsigned &amp;number_of_chunks, const StorageLevel &amp;)</td></tr>
+<tr class="memitem:ae35f2ba33be801c87da8af6e1f7c53fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#ae35f2ba33be801c87da8af6e1f7c53fc">PartitionStorage</a> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;partition_id, const unsigned &amp;number_of_chunks, const <a class="el" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a> &amp;)</td></tr>
 <tr class="separator:ae35f2ba33be801c87da8af6e1f7c53fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a781ed277905a4ce5539a366d5244c42b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a781ed277905a4ce5539a366d5244c42b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addNewChunk</b> ()</td></tr>
+<tr class="memitem:a9ab22ce10ed41600d8cc5e51206dc0cb"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#a9ab22ce10ed41600d8cc5e51206dc0cb">~PartitionStorage</a> ()</td></tr>
+<tr class="separator:a9ab22ce10ed41600d8cc5e51206dc0cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a781ed277905a4ce5539a366d5244c42b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#a781ed277905a4ce5539a366d5244c42b">addNewChunk</a> ()</td></tr>
 <tr class="separator:a781ed277905a4ce5539a366d5244c42b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae35e7a1e6a1f13c8036121b0a5e24b35"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae35e7a1e6a1f13c8036121b0a5e24b35"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>updateChunksWithInsertOrAppend</b> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;partition_id, const unsigned &amp;number_of_chunks, const StorageLevel &amp;storage_level)</td></tr>
+<tr class="memitem:ae35e7a1e6a1f13c8036121b0a5e24b35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#ae35e7a1e6a1f13c8036121b0a5e24b35">updateChunksWithInsertOrAppend</a> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;partition_id, const unsigned &amp;number_of_chunks, const <a class="el" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a> &amp;storage_level)</td></tr>
 <tr class="separator:ae35e7a1e6a1f13c8036121b0a5e24b35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd914a3e34fbd7ef17aa944516ca5c0e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd914a3e34fbd7ef17aa944516ca5c0e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>removeAllChunks</b> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;partition_id)</td></tr>
+<tr class="memitem:afd914a3e34fbd7ef17aa944516ca5c0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#afd914a3e34fbd7ef17aa944516ca5c0e">removeAllChunks</a> (const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;partition_id)</td></tr>
 <tr class="separator:afd914a3e34fbd7ef17aa944516ca5c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bd10f2a70eec7ab9fe0caa4d8fa6d72"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8bd10f2a70eec7ab9fe0caa4d8fa6d72"></a>
-<a class="el" href="classPartitionStorage_1_1PartitionReaderItetaor.html">PartitionReaderItetaor</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>createReaderIterator</b> ()</td></tr>
+<tr class="memitem:a8bd10f2a70eec7ab9fe0caa4d8fa6d72"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPartitionStorage_1_1PartitionReaderItetaor.html">PartitionReaderItetaor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#a8bd10f2a70eec7ab9fe0caa4d8fa6d72">createReaderIterator</a> ()</td></tr>
 <tr class="separator:a8bd10f2a70eec7ab9fe0caa4d8fa6d72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad687a6ee0885006daa9c65125372a880"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad687a6ee0885006daa9c65125372a880"></a>
-<a class="el" href="classPartitionStorage_1_1PartitionReaderItetaor.html">PartitionReaderItetaor</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>createAtomicReaderIterator</b> ()</td></tr>
+<tr class="memitem:ad687a6ee0885006daa9c65125372a880"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPartitionStorage_1_1PartitionReaderItetaor.html">PartitionReaderItetaor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#ad687a6ee0885006daa9c65125372a880">createAtomicReaderIterator</a> ()</td></tr>
 <tr class="separator:ad687a6ee0885006daa9c65125372a880"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a9337c5d56ae671ce38efbcca318d454b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9337c5d56ae671ce38efbcca318d454b"></a>
-<a class="el" href="structPartitionID.html">PartitionID</a>&#160;</td><td class="memItemRight" valign="bottom"><b>partition_id_</b></td></tr>
+<tr class="memitem:a9337c5d56ae671ce38efbcca318d454b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPartitionID.html">PartitionID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#a9337c5d56ae671ce38efbcca318d454b">partition_id_</a></td></tr>
 <tr class="separator:a9337c5d56ae671ce38efbcca318d454b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a50d6c6731b0dc90e731e21eed4681b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1a50d6c6731b0dc90e731e21eed4681b"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>number_of_chunks_</b></td></tr>
+<tr class="memitem:a1a50d6c6731b0dc90e731e21eed4681b"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#a1a50d6c6731b0dc90e731e21eed4681b">number_of_chunks_</a></td></tr>
 <tr class="separator:a1a50d6c6731b0dc90e731e21eed4681b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40db86005ca02f4363cc095abc438716"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a40db86005ca02f4363cc095abc438716"></a>
-std::vector&lt; <a class="el" href="classChunkStorage.html">ChunkStorage</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>chunk_list_</b></td></tr>
+<tr class="memitem:a40db86005ca02f4363cc095abc438716"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classChunkStorage.html">ChunkStorage</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#a40db86005ca02f4363cc095abc438716">chunk_list_</a></td></tr>
 <tr class="separator:a40db86005ca02f4363cc095abc438716"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab37103e1ca6e562ee48a550dfb39847b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab37103e1ca6e562ee48a550dfb39847b"></a>
-StorageLevel&#160;</td><td class="memItemRight" valign="bottom"><b>desirable_storage_level_</b></td></tr>
+<tr class="memitem:ab37103e1ca6e562ee48a550dfb39847b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#ab37103e1ca6e562ee48a550dfb39847b">desirable_storage_level_</a></td></tr>
 <tr class="separator:ab37103e1ca6e562ee48a550dfb39847b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ada1122a8c230de2019e3ee17fd685a30"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada1122a8c230de2019e3ee17fd685a30"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>PartitionReaderItetaor</b></td></tr>
+<tr class="memitem:ada1122a8c230de2019e3ee17fd685a30"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPartitionStorage.html#ada1122a8c230de2019e3ee17fd685a30">PartitionReaderItetaor</a></td></tr>
 <tr class="separator:ada1122a8c230de2019e3ee17fd685a30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ae35f2ba33be801c87da8af6e1f7c53fc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">PartitionStorage::PartitionStorage </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;&#160;</td>
+          <td class="paramname"><em>partition_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned &amp;&#160;</td>
+          <td class="paramname"><em>number_of_chunks</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a> &amp;&#160;</td>
+          <td class="paramname"><em>storage_level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a>, <a class="el" href="classPartitionStorage.html#a40db86005ca02f4363cc095abc438716">chunk_list_</a>, <a class="el" href="classPartitionStorage.html#ab37103e1ca6e562ee48a550dfb39847b">desirable_storage_level_</a>, <a class="el" href="classPartitionStorage.html#a1a50d6c6731b0dc90e731e21eed4681b">number_of_chunks_</a>, and <a class="el" href="classPartitionStorage.html#a9337c5d56ae671ce38efbcca318d454b">partition_id_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9ab22ce10ed41600d8cc5e51206dc0cb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">PartitionStorage::~PartitionStorage </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitionStorage.html#a40db86005ca02f4363cc095abc438716">chunk_list_</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a781ed277905a4ce5539a366d5244c42b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PartitionStorage::addNewChunk </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitionStorage.html#a1a50d6c6731b0dc90e731e21eed4681b">number_of_chunks_</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad687a6ee0885006daa9c65125372a880"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPartitionStorage_1_1PartitionReaderItetaor.html">PartitionStorage::PartitionReaderItetaor</a> * PartitionStorage::createAtomicReaderIterator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classbottomLayerCollecting.html#a2ed9464072a1790b5547a0dc1da3bdc6">bottomLayerCollecting::Open()</a>, <a class="el" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41">claims::physical_operator::PhysicalProjectionScan::Open()</a>, <a class="el" href="classIndexScanIterator.html#a75cc90e38f3f96de7982d13e625860e2">IndexScanIterator::Open()</a>, and <a class="el" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0">projection_scan()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPartitionStorage_ad687a6ee0885006daa9c65125372a880_icgraph.png" border="0" usemap="#classPartitionStorage_ad687a6ee0885006daa9c65125372a880_icgraph" alt=""/></div>
+<map name="classPartitionStorage_ad687a6ee0885006daa9c65125372a880_icgraph" id="classPartitionStorage_ad687a6ee0885006daa9c65125372a880_icgraph">
+<area shape="rect" id="node2" href="classbottomLayerCollecting.html#a2ed9464072a1790b5547a0dc1da3bdc6" title="bottomLayerCollecting\l::Open" alt="" coords="241,5,393,46"/><area shape="rect" id="node3" href="classclaims_1_1physical__operator_1_1PhysicalProjectionScan.html#a5ef6f20c626c3f18591ac61bbdf7fd41" title="Method description: Initialize the operator and get the initial position of chunk read iterator..." alt="" coords="214,70,421,111"/><area shape="rect" id="node4" href="classIndexScanIterator.html#a75cc90e38f3f96de7982d13e625860e2" title="IndexScanIterator::Open" alt="" coords="235,136,399,163"/><area shape="rect" id="node5" href="hash__table__test_8h.html#a3a475171bb713179be31ed7b43469ed0" title="projection_scan" alt="" coords="261,187,374,213"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8bd10f2a70eec7ab9fe0caa4d8fa6d72"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPartitionStorage_1_1PartitionReaderItetaor.html">PartitionStorage::PartitionReaderItetaor</a> * PartitionStorage::createReaderIterator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitionStorage.html#ada1122a8c230de2019e3ee17fd685a30">PartitionReaderItetaor</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afd914a3e34fbd7ef17aa944516ca5c0e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PartitionStorage::removeAllChunks </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;&#160;</td>
+          <td class="paramname"><em>partition_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPartitionStorage.html#a40db86005ca02f4363cc095abc438716">chunk_list_</a>, <a class="el" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f">MemoryChunkStore::getInstance()</a>, <a class="el" href="classPartitionStorage.html#a1a50d6c6731b0dc90e731e21eed4681b">number_of_chunks_</a>, and <a class="el" href="classMemoryChunkStore.html#a4edd0b6fb91c837b995f0c5f3db9dd91">MemoryChunkStore::returnChunk()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPartitionStorage_afd914a3e34fbd7ef17aa944516ca5c0e_cgraph.png" border="0" usemap="#classPartitionStorage_afd914a3e34fbd7ef17aa944516ca5c0e_cgraph" alt=""/></div>
+<map name="classPartitionStorage_afd914a3e34fbd7ef17aa944516ca5c0e_cgraph" id="classPartitionStorage_afd914a3e34fbd7ef17aa944516ca5c0e_cgraph">
+<area shape="rect" id="node2" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f" title="MemoryChunkStore::getInstance" alt="" coords="939,12,1154,39"/><area shape="rect" id="node4" href="classMemoryChunkStore.html#a4edd0b6fb91c837b995f0c5f3db9dd91" title="MemoryChunkStore::return\lChunk" alt="" coords="221,106,400,147"/><area shape="rect" id="node3" href="classMemoryChunkStore.html#a9c11c67ff2cbdce8ec543a9a76a5cdb8" title="MemoryChunkStore::Memory\lChunkStore" alt="" coords="1203,5,1397,46"/><area shape="rect" id="node5" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="741,227,841,253"/><area shape="rect" id="node6" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="454,63,637,89"/><area shape="rect" id="node9" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="741,143,841,169"/><area shape="rect" id="node10" href="classBufferManager.html#a0d3f9eae97d045027b6fb70717005e1b" title="BufferManager::returnStorage\lBudget" alt="" coords="449,165,642,206"/><area shape="rect" id="node7" href="classBufferManager.html#a0b8362fcbc407aea3e8324e69ce5c569" title="BufferManager::BufferManager" alt="" coords="691,63,891,89"/><area shape="rect" id="node8" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1001,63,1093,89"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae35e7a1e6a1f13c8036121b0a5e24b35"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PartitionStorage::updateChunksWithInsertOrAppend </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPartitionID.html">PartitionID</a> &amp;&#160;</td>
+          <td class="paramname"><em>partition_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned &amp;&#160;</td>
+          <td class="paramname"><em>number_of_chunks</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a> &amp;&#160;</td>
+          <td class="paramname"><em>storage_level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Debug_8h.html#ad51ded0bbd705f02f73fc60c0b721ced">BLOCK_SIZE</a>, <a class="el" href="classPartitionStorage.html#a40db86005ca02f4363cc095abc438716">chunk_list_</a>, <a class="el" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f">MemoryChunkStore::getInstance()</a>, <a class="el" href="StorageLevel_8h.html#a97119b1cdd4234ac33b9f3c2fddad5c8">HDFS</a>, <a class="el" href="classPartitionStorage.html#a1a50d6c6731b0dc90e731e21eed4681b">number_of_chunks_</a>, and <a class="el" href="classMemoryChunkStore.html#a4edd0b6fb91c837b995f0c5f3db9dd91">MemoryChunkStore::returnChunk()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classPartitionStorage_ae35e7a1e6a1f13c8036121b0a5e24b35_cgraph.png" border="0" usemap="#classPartitionStorage_ae35e7a1e6a1f13c8036121b0a5e24b35_cgraph" alt=""/></div>
+<map name="classPartitionStorage_ae35e7a1e6a1f13c8036121b0a5e24b35_cgraph" id="classPartitionStorage_ae35e7a1e6a1f13c8036121b0a5e24b35_cgraph">
+<area shape="rect" id="node2" href="classMemoryChunkStore.html#abd1beaf858df1ceda0d5bca88194036f" title="MemoryChunkStore::getInstance" alt="" coords="958,12,1173,39"/><area shape="rect" id="node4" href="classMemoryChunkStore.html#a4edd0b6fb91c837b995f0c5f3db9dd91" title="MemoryChunkStore::return\lChunk" alt="" coords="240,106,419,147"/><area shape="rect" id="node3" href="classMemoryChunkStore.html#a9c11c67ff2cbdce8ec543a9a76a5cdb8" title="MemoryChunkStore::Memory\lChunkStore" alt="" coords="1222,5,1415,46"/><area shape="rect" id="node5" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="759,227,859,253"/><area shape="rect" id="node6" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="473,63,655,89"/><area shape="rect" id="node9" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="759,143,859,169"/><area shape="rect" id="node10" href="classBufferManager.html#a0d3f9eae97d045027b6fb70717005e1b" title="BufferManager::returnStorage\lBudget" alt="" coords="467,165,661,206"/><area shape="rect" id="node7" href="classBufferManager.html#a0b8362fcbc407aea3e8324e69ce5c569" title="BufferManager::BufferManager" alt="" coords="709,63,909,89"/><area shape="rect" id="node8" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1019,63,1111,89"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="ada1122a8c230de2019e3ee17fd685a30"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classPartitionStorage_1_1PartitionReaderItetaor.html">PartitionReaderItetaor</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionStorage.html#a8bd10f2a70eec7ab9fe0caa4d8fa6d72">createReaderIterator()</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a40db86005ca02f4363cc095abc438716"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classChunkStorage.html">ChunkStorage</a>*&gt; PartitionStorage::chunk_list_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionStorage.html#ae35f2ba33be801c87da8af6e1f7c53fc">PartitionStorage()</a>, <a class="el" href="classPartitionStorage.html#afd914a3e34fbd7ef17aa944516ca5c0e">removeAllChunks()</a>, <a class="el" href="classPartitionStorage.html#ae35e7a1e6a1f13c8036121b0a5e24b35">updateChunksWithInsertOrAppend()</a>, and <a class="el" href="classPartitionStorage.html#a9ab22ce10ed41600d8cc5e51206dc0cb">~PartitionStorage()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab37103e1ca6e562ee48a550dfb39847b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="StorageLevel_8h.html#aecffb9b02dbc48bdeaaef165744d06e4">StorageLevel</a> PartitionStorage::desirable_storage_level_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionStorage.html#ae35f2ba33be801c87da8af6e1f7c53fc">PartitionStorage()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1a50d6c6731b0dc90e731e21eed4681b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned PartitionStorage::number_of_chunks_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionStorage.html#a781ed277905a4ce5539a366d5244c42b">addNewChunk()</a>, <a class="el" href="classPartitionStorage_1_1PartitionReaderItetaor.html#aa8afdaf2d053f1bdca9dbdde9ff06e9c">PartitionStorage::PartitionReaderItetaor::nextChunk()</a>, <a class="el" href="classPartitionStorage_1_1AtomicPartitionReaderIterator.html#a44b6c9bb2aefb7ec6c6b01b4ade71945">PartitionStorage::AtomicPartitionReaderIterator::nextChunk()</a>, <a class="el" href="classPartitionStorage.html#ae35f2ba33be801c87da8af6e1f7c53fc">PartitionStorage()</a>, <a class="el" href="classPartitionStorage.html#afd914a3e34fbd7ef17aa944516ca5c0e">removeAllChunks()</a>, and <a class="el" href="classPartitionStorage.html#ae35e7a1e6a1f13c8036121b0a5e24b35">updateChunksWithInsertOrAppend()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9337c5d56ae671ce38efbcca318d454b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPartitionID.html">PartitionID</a> PartitionStorage::partition_id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classPartitionStorage.html#ae35f2ba33be801c87da8af6e1f7c53fc">PartitionStorage()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>storage/<a class="el" href="PartitionStorage_8h_source.html">PartitionStorage.h</a></li>
-<li>storage/PartitionStorage.cpp</li>
+<li>storage/<a class="el" href="PartitionStorage_8cpp.html">PartitionStorage.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

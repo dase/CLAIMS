@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Coordinator Class Reference</title>
+<title>Claims: Coordinator Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -107,11 +107,23 @@ $(document).ready(function(){initNavTree('classCoordinator.html','');});
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classCoordinator-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Coordinator Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="Coordinator_8h_source.html">Coordinator.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for Coordinator:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator__coll__graph.png" border="0" usemap="#Coordinator_coll__map" alt="Collaboration graph"/></div>
+<map name="Coordinator_coll__map" id="Coordinator_coll__map">
+<area shape="rect" id="node2" href="classLogging.html" title="Logging" alt="" coords="16,5,83,32"/></map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -122,6 +134,44 @@ Classes</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acf1c453294ddbe32ae131620141df317"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317">Coordinator</a> ()</td></tr>
 <tr class="separator:acf1c453294ddbe32ae131620141df317"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb830a15beee6e34b7c6891b9c32aad9"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#acb830a15beee6e34b7c6891b9c32aad9">~Coordinator</a> ()</td></tr>
+<tr class="separator:acb830a15beee6e34b7c6891b9c32aad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:acdec78a1e615d076e6382f9f14e111e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#acdec78a1e615d076e6382f9f14e111e3">PrepareTheSocket</a> ()</td></tr>
+<tr class="separator:acdec78a1e615d076e6382f9f14e111e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c7338e9e523b18cec7c31be8a8fc338"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338">SetupTheTheron</a> ()</td></tr>
+<tr class="separator:a1c7338e9e523b18cec7c31be8a8fc338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1fa83e9c49a9bdf6af0ccfaf06407ad"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad">CreateListeningThread</a> ()</td></tr>
+<tr class="separator:af1fa83e9c49a9bdf6af0ccfaf06407ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8daf8852bb670bc494c6ab97fdc32d11"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a8daf8852bb670bc494c6ab97fdc32d11">SendReadyNotificationToNewNode</a> (int socket_new_node)</td></tr>
+<tr class="separator:a8daf8852bb670bc494c6ab97fdc32d11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05ff936892a60957241dc3ea49b353f6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a05ff936892a60957241dc3ea49b353f6">SendCoordinatorEndPointPort</a> (int socket_new_node)</td></tr>
+<tr class="separator:a05ff936892a60957241dc3ea49b353f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:ac01b6d000eaae28418318aae7e584202"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode</a> (void *arg)</td></tr>
+<tr class="separator:ac01b6d000eaae28418318aae7e584202"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a87671dda918afb4223c5949961d20ff5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a87671dda918afb4223c5949961d20ff5">socket_fd</a></td></tr>
+<tr class="separator:a87671dda918afb4223c5949961d20ff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66fd38071b14ac1d63c034ec491e1978"><td class="memItemLeft" align="right" valign="top">Theron::EndPoint *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a66fd38071b14ac1d63c034ec491e1978">endpoint</a></td></tr>
+<tr class="separator:a66fd38071b14ac1d63c034ec491e1978"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f0c9da02aa5313e11631863cfb0a247"><td class="memItemLeft" align="right" valign="top">Theron::Framework *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a4f0c9da02aa5313e11631863cfb0a247">framework</a></td></tr>
+<tr class="separator:a4f0c9da02aa5313e11631863cfb0a247"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40b0c7172439c96e7d1ee18c3a5e75c9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a40b0c7172439c96e7d1ee18c3a5e75c9">EndPointPort</a></td></tr>
+<tr class="separator:a40b0c7172439c96e7d1ee18c3a5e75c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07d6fe5a2177dc7a92615690f3457dac"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair<br class="typebreak"/>
+&lt; std::string, std::string &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a07d6fe5a2177dc7a92615690f3457dac">PeersIpPort</a></td></tr>
+<tr class="separator:a07d6fe5a2177dc7a92615690f3457dac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa052a3a6edcd6817fb13548534f1bc0f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogging.html">Logging</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#aa052a3a6edcd6817fb13548534f1bc0f">logging</a></td></tr>
+<tr class="separator:aa052a3a6edcd6817fb13548534f1bc0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12bd5b4b73dc8e650bae5026d8a0df22"><td class="memItemLeft" align="right" valign="top">pthread_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoordinator.html#a12bd5b4b73dc8e650bae5026d8a0df22">prochaseId</a></td></tr>
+<tr class="separator:a12bd5b4b73dc8e650bae5026d8a0df22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="acf1c453294ddbe32ae131620141df317"></a>
@@ -138,13 +188,497 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>swap the order of SetupTheTheron and PreparetheSocket to provide more time to Theron::EndPoint initialization before other EndPoints connect to it.</p>
 
-<p>References <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>.</p>
+<p>References <a class="el" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad">CreateListeningThread()</a>, <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>, <a class="el" href="classCoordinator.html#aa052a3a6edcd6817fb13548534f1bc0f">logging</a>, <a class="el" href="classCoordinator.html#acdec78a1e615d076e6382f9f14e111e3">PrepareTheSocket()</a>, and <a class="el" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338">SetupTheTheron()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_acf1c453294ddbe32ae131620141df317_cgraph.png" border="0" usemap="#classCoordinator_acf1c453294ddbe32ae131620141df317_cgraph" alt=""/></div>
+<map name="classCoordinator_acf1c453294ddbe32ae131620141df317_cgraph" id="classCoordinator_acf1c453294ddbe32ae131620141df317_cgraph">
+<area shape="rect" id="node2" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad" title="Coordinator::CreateListening\lThread" alt="" coords="462,347,650,389"/><area shape="rect" id="node7" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1297,675,1396,701"/><area shape="rect" id="node14" href="classCoordinator.html#acdec78a1e615d076e6382f9f14e111e3" title="Coordinator::PrepareTheSocket" alt="" coords="968,624,1173,651"/><area shape="rect" id="node15" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="219,1365,413,1392"/><area shape="rect" id="node3" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202" title="Coordinator::ListeningNewNode" alt="" coords="699,245,906,272"/><area shape="rect" id="node4" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1301,435,1393,461"/><area shape="rect" id="node5" href="rename_8h.html#a8051a16e1848df8482ae4371d465cf4b" title="FileClose" alt="" coords="1032,304,1109,331"/><area shape="rect" id="node6" href="classCoordinator.html#a05ff936892a60957241dc3ea49b353f6" title="Coordinator::SendCoordinator\lEndPointPort" alt="" coords="973,457,1168,498"/><area shape="rect" id="node8" href="classNodeConnectionMessage.html#a291bc63c613ea2279cd892be0bceed33" title="NodeConnectionMessage\l::serialize" alt="" coords="985,107,1157,149"/><area shape="rect" id="node9" href="classTimeOutReceiver.html#a6525cc1dde5efa7d36c524c608494ae8" title="TimeOutReceiver::TimeOutWait" alt="" coords="966,5,1175,32"/><area shape="rect" id="node12" href="classCoordinator.html#a8daf8852bb670bc494c6ab97fdc32d11" title="Coordinator::SendReadyNotification\lToNewNode" alt="" coords="955,173,1186,214"/><area shape="rect" id="node13" href="classTimeOutReceiver.html#afe32502f21b94a7291e6ada9d4b5d9f9" title="TimeOutReceiver::~TimeOut\lReceiver" alt="" coords="975,238,1166,279"/><area shape="rect" id="node10" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="1567,5,1628,32"/><area shape="rect" id="node11" href="rdtsc_8h.html#aad9fa653ac913a1e9e869ba253f1c844" title="getMilliSecond" alt="" coords="1293,31,1400,57"/><area shape="rect" id="node16" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="471,1284,641,1311"/><area shape="rect" id="node50" href="classEnvironment.html#a1e9d74a190b5cdbf5c2dfd06f6e17c2b" title="Environment::getIp" alt="" coords="490,1549,622,1576"/><area shape="rect" id="node30" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="985,1623,1157,1649"/><area shape="rect" id="node42" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="1267,1272,1426,1299"/><area shape="rect" id="node17" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="715,1141,891,1168"/><area shape="rect" id="node18" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="1003,1011,1139,1037"/><area shape="rect" id="node19" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="977,1499,1164,1525"/><area shape="rect" id="node21" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="977,1061,1164,1088"/><area shape="rect" id="node22" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="963,1557,1178,1598"/><area shape="rect" id="node35" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="962,1347,1179,1373"/><area shape="rect" id="node36" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="999,1229,1142,1256"/><area shape="rect" id="node38" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="991,1112,1151,1139"/><area shape="rect" id="node39" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="963,1397,1179,1424"/><area shape="rect" id="node41" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="984,1163,1157,1205"/><area shape="rect" id="node45" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="967,777,1174,818"/><area shape="rect" id="node46" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="973,843,1168,869"/><area shape="rect" id="node47" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="978,894,1163,935"/><area shape="rect" id="node48" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="972,960,1169,987"/><area shape="rect" id="node49" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="979,1281,1163,1322"/><area shape="rect" id="node20" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="1243,1389,1450,1416"/><area shape="rect" id="node23" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="1266,1622,1427,1663"/><area shape="rect" id="node24" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="1280,1687,1413,1729"/><area shape="rect" id="node25" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="1285,1753,1408,1794"/><area shape="rect" id="node26" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="1260,1818,1433,1859"/><area shape="rect" id="node27" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="1235,1440,1458,1467"/><area shape="rect" id="node28" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="1251,1491,1442,1533"/><area shape="rect" id="node29" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="1260,1557,1433,1598"/><area shape="rect" id="node31" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="1257,1884,1436,1911"/><area shape="rect" id="node32" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0" title="PortManager::getConfigure" alt="" coords="1508,1884,1687,1911"/><area shape="rect" id="node33" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b" title="PortManager::generateFree\lPorts" alt="" coords="1507,1935,1687,1977"/><area shape="rect" id="node34" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30" title="Logging_PortManager" alt="" coords="1523,1833,1671,1860"/><area shape="rect" id="node37" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1287,1221,1407,1248"/><area shape="rect" id="node40" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="1279,1323,1415,1365"/><area shape="rect" id="node43" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="1547,1247,1647,1273"/><area shape="rect" id="node44" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="1547,1297,1647,1324"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="acb830a15beee6e34b7c6891b9c32aad9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Coordinator::~Coordinator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCoordinator.html#a66fd38071b14ac1d63c034ec491e1978">endpoint</a>, <a class="el" href="rename_8h.html#a8051a16e1848df8482ae4371d465cf4b">FileClose()</a>, <a class="el" href="classCoordinator.html#a4f0c9da02aa5313e11631863cfb0a247">framework</a>, <a class="el" href="classCoordinator.html#a12bd5b4b73dc8e650bae5026d8a0df22">prochaseId</a>, and <a class="el" href="classCoordinator.html#a87671dda918afb4223c5949961d20ff5">socket_fd</a>.</p>
+
+<p>Referenced by <a class="el" href="test__adaptiveendpoint_8cpp.html#a91528529b7fe857ef859e0bd6e5ec935">main234112234()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_acb830a15beee6e34b7c6891b9c32aad9_cgraph.png" border="0" usemap="#classCoordinator_acb830a15beee6e34b7c6891b9c32aad9_cgraph" alt=""/></div>
+<map name="classCoordinator_acb830a15beee6e34b7c6891b9c32aad9_cgraph" id="classCoordinator_acb830a15beee6e34b7c6891b9c32aad9_cgraph">
+<area shape="rect" id="node2" href="rename_8h.html#a8051a16e1848df8482ae4371d465cf4b" title="FileClose" alt="" coords="227,5,304,32"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_acb830a15beee6e34b7c6891b9c32aad9_icgraph.png" border="0" usemap="#classCoordinator_acb830a15beee6e34b7c6891b9c32aad9_icgraph" alt=""/></div>
+<map name="classCoordinator_acb830a15beee6e34b7c6891b9c32aad9_icgraph" id="classCoordinator_acb830a15beee6e34b7c6891b9c32aad9_icgraph">
+<area shape="rect" id="node2" href="test__adaptiveendpoint_8cpp.html#a91528529b7fe857ef859e0bd6e5ec935" title="main234112234" alt="" coords="227,5,341,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="af1fa83e9c49a9bdf6af0ccfaf06407ad"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Coordinator::CreateListeningThread </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classCoordinator.html#aa052a3a6edcd6817fb13548534f1bc0f">logging</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, and <a class="el" href="classCoordinator.html#a12bd5b4b73dc8e650bae5026d8a0df22">prochaseId</a>.</p>
+
+<p>Referenced by <a class="el" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317">Coordinator()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_af1fa83e9c49a9bdf6af0ccfaf06407ad_cgraph.png" border="0" usemap="#classCoordinator_af1fa83e9c49a9bdf6af0ccfaf06407ad_cgraph" alt=""/></div>
+<map name="classCoordinator_af1fa83e9c49a9bdf6af0ccfaf06407ad_cgraph" id="classCoordinator_af1fa83e9c49a9bdf6af0ccfaf06407ad_cgraph">
+<area shape="rect" id="node2" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202" title="Coordinator::ListeningNewNode" alt="" coords="243,189,450,216"/><area shape="rect" id="node3" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="786,36,878,63"/><area shape="rect" id="node4" href="rename_8h.html#a8051a16e1848df8482ae4371d465cf4b" title="FileClose" alt="" coords="576,240,653,267"/><area shape="rect" id="node5" href="classCoordinator.html#a05ff936892a60957241dc3ea49b353f6" title="Coordinator::SendCoordinator\lEndPointPort" alt="" coords="517,123,712,165"/><area shape="rect" id="node6" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="783,160,881,187"/><area shape="rect" id="node7" href="classNodeConnectionMessage.html#a291bc63c613ea2279cd892be0bceed33" title="NodeConnectionMessage\l::serialize" alt="" coords="529,291,701,333"/><area shape="rect" id="node8" href="classTimeOutReceiver.html#a6525cc1dde5efa7d36c524c608494ae8" title="TimeOutReceiver::TimeOutWait" alt="" coords="510,357,719,384"/><area shape="rect" id="node11" href="classCoordinator.html#a8daf8852bb670bc494c6ab97fdc32d11" title="Coordinator::SendReadyNotification\lToNewNode" alt="" coords="499,58,730,99"/><area shape="rect" id="node12" href="classTimeOutReceiver.html#afe32502f21b94a7291e6ada9d4b5d9f9" title="TimeOutReceiver::~TimeOut\lReceiver" alt="" coords="519,409,710,450"/><area shape="rect" id="node9" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="933,357,995,384"/><area shape="rect" id="node10" href="rdtsc_8h.html#aad9fa653ac913a1e9e869ba253f1c844" title="getMilliSecond" alt="" coords="779,383,885,409"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_af1fa83e9c49a9bdf6af0ccfaf06407ad_icgraph.png" border="0" usemap="#classCoordinator_af1fa83e9c49a9bdf6af0ccfaf06407ad_icgraph" alt=""/></div>
+<map name="classCoordinator_af1fa83e9c49a9bdf6af0ccfaf06407ad_icgraph" id="classCoordinator_af1fa83e9c49a9bdf6af0ccfaf06407ad_icgraph">
+<area shape="rect" id="node2" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="243,12,407,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ac01b6d000eaae28418318aae7e584202"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * Coordinator::ListeningNewNode </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>TODO: In the current version, the <a class="el" href="classCoordinator.html">Coordinator</a> will repeatedly send message to each NodeConnectionActor until the feedback is received which means the target node has conducted new connection based on message received. However, if the target node is dead, the message will be sent repeatedly and infinitely. Additional code is needed to handle the dead node.</p>
+
+<p>References <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>, <a class="el" href="classCoordinator.html#a66fd38071b14ac1d63c034ec491e1978">endpoint</a>, <a class="el" href="rename_8h.html#a8051a16e1848df8482ae4371d465cf4b">FileClose()</a>, <a class="el" href="classCoordinator.html#a4f0c9da02aa5313e11631863cfb0a247">framework</a>, <a class="el" href="classNodeConnectionMessage.html#a950fcf884e811b077dc214f0a3494e0e">NodeConnectionMessage::ip</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classCoordinator.html#aa052a3a6edcd6817fb13548534f1bc0f">logging</a>, <a class="el" href="classCoordinator.html#a07d6fe5a2177dc7a92615690f3457dac">PeersIpPort</a>, <a class="el" href="classNodeConnectionMessage.html#a2846d14cb6fbd234c26572c72914b5f3">NodeConnectionMessage::port</a>, <a class="el" href="classCoordinator.html#a05ff936892a60957241dc3ea49b353f6">SendCoordinatorEndPointPort()</a>, <a class="el" href="classCoordinator.html#a8daf8852bb670bc494c6ab97fdc32d11">SendReadyNotificationToNewNode()</a>, <a class="el" href="classNodeConnectionMessage.html#a291bc63c613ea2279cd892be0bceed33">NodeConnectionMessage::serialize()</a>, <a class="el" href="classCoordinator.html#a87671dda918afb4223c5949961d20ff5">socket_fd</a>, <a class="el" href="classTimeOutReceiver.html#a6525cc1dde5efa7d36c524c608494ae8">TimeOutReceiver::TimeOutWait()</a>, and <a class="el" href="classTimeOutReceiver.html#afe32502f21b94a7291e6ada9d4b5d9f9">TimeOutReceiver::~TimeOutReceiver()</a>.</p>
+
+<p>Referenced by <a class="el" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad">CreateListeningThread()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_ac01b6d000eaae28418318aae7e584202_cgraph.png" border="0" usemap="#classCoordinator_ac01b6d000eaae28418318aae7e584202_cgraph" alt=""/></div>
+<map name="classCoordinator_ac01b6d000eaae28418318aae7e584202_cgraph" id="classCoordinator_ac01b6d000eaae28418318aae7e584202_cgraph">
+<area shape="rect" id="node2" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="545,43,644,69"/><area shape="rect" id="node3" href="rename_8h.html#a8051a16e1848df8482ae4371d465cf4b" title="FileClose" alt="" coords="339,39,416,65"/><area shape="rect" id="node4" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="549,156,641,183"/><area shape="rect" id="node5" href="classCoordinator.html#a05ff936892a60957241dc3ea49b353f6" title="Coordinator::SendCoordinator\lEndPointPort" alt="" coords="280,90,475,131"/><area shape="rect" id="node6" href="classCoordinator.html#a8daf8852bb670bc494c6ab97fdc32d11" title="Coordinator::SendReadyNotification\lToNewNode" alt="" coords="262,207,493,249"/><area shape="rect" id="node7" href="classNodeConnectionMessage.html#a291bc63c613ea2279cd892be0bceed33" title="NodeConnectionMessage\l::serialize" alt="" coords="291,273,463,314"/><area shape="rect" id="node8" href="classTimeOutReceiver.html#a6525cc1dde5efa7d36c524c608494ae8" title="TimeOutReceiver::TimeOutWait" alt="" coords="273,339,482,365"/><area shape="rect" id="node11" href="classTimeOutReceiver.html#afe32502f21b94a7291e6ada9d4b5d9f9" title="TimeOutReceiver::~TimeOut\lReceiver" alt="" coords="282,390,473,431"/><area shape="rect" id="node9" href="rdtsc_8h.html#ab66c2fc2f591c3582b8d145d776d65aa" title="curtick" alt="" coords="696,339,757,365"/><area shape="rect" id="node10" href="rdtsc_8h.html#aad9fa653ac913a1e9e869ba253f1c844" title="getMilliSecond" alt="" coords="541,364,648,391"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_ac01b6d000eaae28418318aae7e584202_icgraph.png" border="0" usemap="#classCoordinator_ac01b6d000eaae28418318aae7e584202_icgraph" alt=""/></div>
+<map name="classCoordinator_ac01b6d000eaae28418318aae7e584202_icgraph" id="classCoordinator_ac01b6d000eaae28418318aae7e584202_icgraph">
+<area shape="rect" id="node2" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad" title="Coordinator::CreateListening\lThread" alt="" coords="262,5,450,46"/><area shape="rect" id="node3" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="499,12,663,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="acdec78a1e615d076e6382f9f14e111e3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Coordinator::PrepareTheSocket </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classConfig.html#a66ee93fe10b62e415657c88fe4de5d7d">Config::config_file</a>, <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, <a class="el" href="classCoordinator.html#aa052a3a6edcd6817fb13548534f1bc0f">logging</a>, and <a class="el" href="classCoordinator.html#a87671dda918afb4223c5949961d20ff5">socket_fd</a>.</p>
+
+<p>Referenced by <a class="el" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317">Coordinator()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_acdec78a1e615d076e6382f9f14e111e3_cgraph.png" border="0" usemap="#classCoordinator_acdec78a1e615d076e6382f9f14e111e3_cgraph" alt=""/></div>
+<map name="classCoordinator_acdec78a1e615d076e6382f9f14e111e3_cgraph" id="classCoordinator_acdec78a1e615d076e6382f9f14e111e3_cgraph">
+<area shape="rect" id="node2" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="259,5,357,32"/><area shape="rect" id="node3" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="262,56,354,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_acdec78a1e615d076e6382f9f14e111e3_icgraph.png" border="0" usemap="#classCoordinator_acdec78a1e615d076e6382f9f14e111e3_icgraph" alt=""/></div>
+<map name="classCoordinator_acdec78a1e615d076e6382f9f14e111e3_icgraph" id="classCoordinator_acdec78a1e615d076e6382f9f14e111e3_icgraph">
+<area shape="rect" id="node2" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="259,5,423,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a05ff936892a60957241dc3ea49b353f6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Coordinator::SendCoordinatorEndPointPort </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>socket_new_node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLogging.html#a50f92b769255a5b581bf97657308bfab">Logging::elog()</a>, <a class="el" href="classCoordinator.html#a40b0c7172439c96e7d1ee18c3a5e75c9">EndPointPort</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, and <a class="el" href="classCoordinator.html#aa052a3a6edcd6817fb13548534f1bc0f">logging</a>.</p>
+
+<p>Referenced by <a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_a05ff936892a60957241dc3ea49b353f6_cgraph.png" border="0" usemap="#classCoordinator_a05ff936892a60957241dc3ea49b353f6_cgraph" alt=""/></div>
+<map name="classCoordinator_a05ff936892a60957241dc3ea49b353f6_cgraph" id="classCoordinator_a05ff936892a60957241dc3ea49b353f6_cgraph">
+<area shape="rect" id="node2" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="248,5,347,32"/><area shape="rect" id="node3" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="251,56,343,83"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_a05ff936892a60957241dc3ea49b353f6_icgraph.png" border="0" usemap="#classCoordinator_a05ff936892a60957241dc3ea49b353f6_icgraph" alt=""/></div>
+<map name="classCoordinator_a05ff936892a60957241dc3ea49b353f6_icgraph" id="classCoordinator_a05ff936892a60957241dc3ea49b353f6_icgraph">
+<area shape="rect" id="node2" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202" title="Coordinator::ListeningNewNode" alt="" coords="249,12,455,39"/><area shape="rect" id="node3" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad" title="Coordinator::CreateListening\lThread" alt="" coords="505,5,693,46"/><area shape="rect" id="node4" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="742,12,906,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a8daf8852bb670bc494c6ab97fdc32d11"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Coordinator::SendReadyNotificationToNewNode </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>socket_new_node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, and <a class="el" href="classCoordinator.html#aa052a3a6edcd6817fb13548534f1bc0f">logging</a>.</p>
+
+<p>Referenced by <a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_a8daf8852bb670bc494c6ab97fdc32d11_cgraph.png" border="0" usemap="#classCoordinator_a8daf8852bb670bc494c6ab97fdc32d11_cgraph" alt=""/></div>
+<map name="classCoordinator_a8daf8852bb670bc494c6ab97fdc32d11_cgraph" id="classCoordinator_a8daf8852bb670bc494c6ab97fdc32d11_cgraph">
+<area shape="rect" id="node2" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="286,12,378,39"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_a8daf8852bb670bc494c6ab97fdc32d11_icgraph.png" border="0" usemap="#classCoordinator_a8daf8852bb670bc494c6ab97fdc32d11_icgraph" alt=""/></div>
+<map name="classCoordinator_a8daf8852bb670bc494c6ab97fdc32d11_icgraph" id="classCoordinator_a8daf8852bb670bc494c6ab97fdc32d11_icgraph">
+<area shape="rect" id="node2" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202" title="Coordinator::ListeningNewNode" alt="" coords="286,12,493,39"/><area shape="rect" id="node3" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad" title="Coordinator::CreateListening\lThread" alt="" coords="542,5,730,46"/><area shape="rect" id="node4" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="779,12,943,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a1c7338e9e523b18cec7c31be8a8fc338"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Coordinator::SetupTheTheron </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5">PortManager::applyPort()</a>, <a class="el" href="classCoordinator.html#a66fd38071b14ac1d63c034ec491e1978">endpoint</a>, <a class="el" href="classCoordinator.html#a40b0c7172439c96e7d1ee18c3a5e75c9">EndPointPort</a>, <a class="el" href="classCoordinator.html#a4f0c9da02aa5313e11631863cfb0a247">framework</a>, <a class="el" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d">PortManager::getInstance()</a>, <a class="el" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61">Environment::getInstance()</a>, <a class="el" href="classEnvironment.html#a1e9d74a190b5cdbf5c2dfd06f6e17c2b">Environment::getIp()</a>, <a class="el" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3">Logging::log()</a>, and <a class="el" href="classCoordinator.html#aa052a3a6edcd6817fb13548534f1bc0f">logging</a>.</p>
+
+<p>Referenced by <a class="el" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317">Coordinator()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_a1c7338e9e523b18cec7c31be8a8fc338_cgraph.png" border="0" usemap="#classCoordinator_a1c7338e9e523b18cec7c31be8a8fc338_cgraph" alt=""/></div>
+<map name="classCoordinator_a1c7338e9e523b18cec7c31be8a8fc338_cgraph" id="classCoordinator_a1c7338e9e523b18cec7c31be8a8fc338_cgraph">
+<area shape="rect" id="node2" href="classPortManager.html#a5aa82953c31a8e919d60dd51154a53b5" title="PortManager::applyPort" alt="" coords="990,173,1149,200"/><area shape="rect" id="node5" href="classPortManager.html#a9be2293fcc132d40171dfa792ee4408d" title="PortManager::getInstance" alt="" coords="714,123,886,149"/><area shape="rect" id="node10" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="248,548,419,575"/><area shape="rect" id="node39" href="classEnvironment.html#a1e9d74a190b5cdbf5c2dfd06f6e17c2b" title="Environment::getIp" alt="" coords="1255,1276,1387,1303"/><area shape="rect" id="node28" href="classLogging.html#a9eeeedd6a634b37f714f71aed6585ab3" title="Logging::log" alt="" coords="1275,341,1367,368"/><area shape="rect" id="node3" href="classLock.html#ae987aaa09db9da0a36edce0ed62d4557" title="Lock::acquire" alt="" coords="1271,224,1371,251"/><area shape="rect" id="node4" href="classLock.html#a348af4e7fef29ed09dfba09ece7e4ef1" title="Lock::release" alt="" coords="1271,173,1371,200"/><area shape="rect" id="node6" href="classPortManager.html#a4c9290346835cec69acf90cbe0d412e3" title="PortManager::PortManager" alt="" coords="980,93,1159,120"/><area shape="rect" id="node7" href="classPortManager.html#a49e518d8c71eafd8d04ff64fc47253c0" title="PortManager::getConfigure" alt="" coords="1232,5,1411,32"/><area shape="rect" id="node8" href="classPortManager.html#a51bc2c5a010450ae943340579324b89b" title="PortManager::generateFree\lPorts" alt="" coords="1231,57,1411,98"/><area shape="rect" id="node9" href="Logging_8h.html#a158942395a8f85e6ecfda4b4d4a82d30" title="Logging_PortManager" alt="" coords="1247,123,1395,149"/><area shape="rect" id="node11" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="467,703,643,729"/><area shape="rect" id="node12" href="classConfig.html#af7d6f89fc34627f15523df0b62acd7e5" title="Config::getInstance" alt="" coords="732,1048,868,1075"/><area shape="rect" id="node13" href="classCodeGenerator.html#adcda87d7c14f433f0e89e3007a6c835e" title="CodeGenerator::getInstance" alt="" coords="707,896,893,923"/><area shape="rect" id="node15" href="classEnvironment.html#ad9ba883987fd07f31f0cf2a18d058893" title="Environment::readConfigFile" alt="" coords="707,509,893,536"/><area shape="rect" id="node16" href="classEnvironment.html#a4af8c2307bb99bfacfd7185c986e033a" title="Environment::initializeExpression\lSystem" alt="" coords="693,1326,907,1367"/><area shape="rect" id="node29" href="classEnvironment.html#aa708abce76c0060b469ccee0caa7512d" title="Environment::initializeCoordinator" alt="" coords="691,627,909,653"/><area shape="rect" id="node30" href="classCatalog.html#a5d336ccd8d90a10af83cc9379b69c340" title="Catalog::getInstance" alt="" coords="729,677,871,704"/><area shape="rect" id="node32" href="classCatalog.html#a85ee2b2135798d7653551508c805795d" title="Catalog::restoreCatalog" alt="" coords="720,997,880,1024"/><area shape="rect" id="node34" href="classEnvironment.html#a5880fdd124e9a14864f24e848004bbdf" title="Environment::initializeThreadPool" alt="" coords="692,728,908,755"/><area shape="rect" id="node33" href="classLogging.html#a50f92b769255a5b581bf97657308bfab" title="Logging::elog" alt="" coords="1272,1020,1371,1047"/><area shape="rect" id="node36" href="classEnvironment.html#aa8be1ca1a352be34b9a208ce8d9ae410" title="Environment::initializeEnd\lPoint" alt="" coords="713,443,887,485"/><area shape="rect" id="node37" href="classEnvironment.html#ac86dfd7d195632ab79c62fd19c97e976" title="Environment::initializeResource\lManager" alt="" coords="697,1099,903,1141"/><area shape="rect" id="node40" href="classEnvironment.html#a1e9f718d634dc5e56e6f7b3bb14415c5" title="Environment::initializeStorage" alt="" coords="703,779,897,805"/><area shape="rect" id="node46" href="classEnvironment.html#a9fcef3010ef34c98b77b0a8dcace3ba3" title="Environment::initializeBuffer\lManager" alt="" coords="707,561,893,602"/><area shape="rect" id="node47" href="classExpanderTracker.html#af367481c76ebecea3de71d97098a60fb" title="ExpanderTracker::getInstance" alt="" coords="701,287,899,313"/><area shape="rect" id="node49" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="708,830,892,871"/><area shape="rect" id="node14" href="classCodeGenerator.html#a8dd417760886f58da2fc83d60a2b1a11" title="CodeGenerator::CodeGenerator" alt="" coords="966,944,1173,971"/><area shape="rect" id="node17" href="TypePromotionMap_8h.html#a566579c64817e76efb561a5e5fb947ec" title="initialize_arithmetic\l_type_promotion_matrix" alt="" coords="989,1227,1150,1269"/><area shape="rect" id="node18" href="TypeCast_8h.html#ab8decdffae7eadbdd7f9d7046e30f7a8" title="initialize_type_cast\l_functions" alt="" coords="1003,1593,1136,1634"/><area shape="rect" id="node23" href="queryfunc_8h.html#ab33458802c3c6598de069bf1edc02675" title="initialize_operator\l_function" alt="" coords="1008,1293,1131,1334"/><area shape="rect" id="node24" href="namespaceclaims_1_1common.html#ab1a833db4fc376134da4919f43a1a964" title="claims::common::InitType\lConversionMatrix" alt="" coords="983,1358,1156,1399"/><area shape="rect" id="node25" href="namespaceclaims_1_1common.html#a9a9a29ecab9a8f7cdcb871f8d2927223" title="claims::common::InitOperatorFunc" alt="" coords="958,1424,1181,1451"/><area shape="rect" id="node26" href="namespaceclaims_1_1common.html#a8bc8ffc409968956b7970085a3dcbcaa" title="claims::common::InitAggAvg\lDivide" alt="" coords="974,1475,1165,1517"/><area shape="rect" id="node27" href="namespaceclaims_1_1common.html#a1b2818e4b6846a729ae741e02af20937" title="claims::common::InitType\lCastFunc" alt="" coords="983,1162,1156,1203"/><area shape="rect" id="node19" href="TypeCast_8h.html#a8f1ecd64ef3a9a77550061aee836e60d" title="boolean_to_boolean" alt="" coords="1253,1676,1390,1703"/><area shape="rect" id="node20" href="TypeCast_8h.html#a8d342d77ca15152b24a5a6188762f9f4" title="boolean_to_decimal" alt="" coords="1253,1524,1390,1551"/><area shape="rect" id="node21" href="TypeCast_8h.html#a842736534e9c99fb52092f59d77ca065" title="boolean_to_double" alt="" coords="1256,1575,1387,1601"/><area shape="rect" id="node22" href="TypeCast_8h.html#ae45d191bf454694efb88dd3be6bbaee2" title="boolean_to_float" alt="" coords="1263,1625,1380,1652"/><area shape="rect" id="node31" href="classCatalog.html#abe0c6f8f87460d4554a89ec7d46e2fd8" title="Catalog::Catalog" alt="" coords="1009,595,1129,621"/><area shape="rect" id="node35" href="classThreadPool.html#a346172196d8fe2b9e2ca428afddcaa05" title="ThreadPool::Thread\l_Pool_init" alt="" coords="1001,646,1137,687"/><area shape="rect" id="node38" href="classInstanceResourceManager.html#aa501a0d978c7fe57f3e3981e86f39d54" title="InstanceResourceManager\l::Register" alt="" coords="980,1097,1159,1138"/><area shape="rect" id="node41" href="classBlockManagerMaster.html#aee58c34e8b74724ae7a8da9752873c24" title="BlockManagerMaster\l::getInstance" alt="" coords="997,711,1142,753"/><area shape="rect" id="node42" href="classBlockManagerMaster.html#a41f5fb3487ce3bac55b6eec9c38d26e1" title="BlockManagerMaster\l::initialize" alt="" coords="997,777,1142,818"/><area shape="rect" id="node43" href="classBlockManager.html#ab585bf1e1b3995428d89dd9180a4fb92" title="BlockManager::getInstance" alt="" coords="979,843,1160,869"/><area shape="rect" id="node44" href="classBlockManager.html#a646625bacabedc95cbf3ea747eab86e2" title="BlockManager::initialize" alt="" coords="989,493,1149,520"/><area shape="rect" id="node45" href="classBufferManager.html#ac7cd8d42bb88019bf09b3f698e4aa9b0" title="BufferManager::getInstance" alt="" coords="1230,468,1413,495"/><area shape="rect" id="node48" href="classExpanderTracker.html#a177a000aa37fb5987783a77ad288adfd" title="ExpanderTracker::Expander\lTracker" alt="" coords="977,275,1161,317"/><area shape="rect" id="node50" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="988,893,1151,920"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classCoordinator_a1c7338e9e523b18cec7c31be8a8fc338_icgraph.png" border="0" usemap="#classCoordinator_a1c7338e9e523b18cec7c31be8a8fc338_icgraph" alt=""/></div>
+<map name="classCoordinator_a1c7338e9e523b18cec7c31be8a8fc338_icgraph" id="classCoordinator_a1c7338e9e523b18cec7c31be8a8fc338_icgraph">
+<area shape="rect" id="node2" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317" title="Coordinator::Coordinator" alt="" coords="249,5,413,32"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a66fd38071b14ac1d63c034ec491e1978"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::EndPoint* Coordinator::endpoint</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode()</a>, <a class="el" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338">SetupTheTheron()</a>, and <a class="el" href="classCoordinator.html#acb830a15beee6e34b7c6891b9c32aad9">~Coordinator()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a40b0c7172439c96e7d1ee18c3a5e75c9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Coordinator::EndPointPort</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCoordinator.html#a05ff936892a60957241dc3ea49b353f6">SendCoordinatorEndPointPort()</a>, and <a class="el" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338">SetupTheTheron()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4f0c9da02aa5313e11631863cfb0a247"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Theron::Framework* Coordinator::framework</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode()</a>, <a class="el" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338">SetupTheTheron()</a>, and <a class="el" href="classCoordinator.html#acb830a15beee6e34b7c6891b9c32aad9">~Coordinator()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa052a3a6edcd6817fb13548534f1bc0f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLogging.html">Logging</a>* Coordinator::logging</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCoordinator.html#acf1c453294ddbe32ae131620141df317">Coordinator()</a>, <a class="el" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad">CreateListeningThread()</a>, <a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode()</a>, <a class="el" href="classCoordinator.html#acdec78a1e615d076e6382f9f14e111e3">PrepareTheSocket()</a>, <a class="el" href="classCoordinator.html#a05ff936892a60957241dc3ea49b353f6">SendCoordinatorEndPointPort()</a>, <a class="el" href="classCoordinator.html#a8daf8852bb670bc494c6ab97fdc32d11">SendReadyNotificationToNewNode()</a>, and <a class="el" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338">SetupTheTheron()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a07d6fe5a2177dc7a92615690f3457dac"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string,std::string&gt; &gt; Coordinator::PeersIpPort</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a12bd5b4b73dc8e650bae5026d8a0df22"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">pthread_t Coordinator::prochaseId</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCoordinator.html#af1fa83e9c49a9bdf6af0ccfaf06407ad">CreateListeningThread()</a>, and <a class="el" href="classCoordinator.html#acb830a15beee6e34b7c6891b9c32aad9">~Coordinator()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a87671dda918afb4223c5949961d20ff5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Coordinator::socket_fd</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classCoordinator.html#ac01b6d000eaae28418318aae7e584202">ListeningNewNode()</a>, <a class="el" href="classCoordinator.html#acdec78a1e615d076e6382f9f14e111e3">PrepareTheSocket()</a>, and <a class="el" href="classCoordinator.html#acb830a15beee6e34b7c6891b9c32aad9">~Coordinator()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Executor/<a class="el" href="Coordinator_8h_source.html">Coordinator.h</a></li>
-<li>Executor/Coordinator.cpp</li>
+<li>Executor/<a class="el" href="Coordinator_8cpp.html">Coordinator.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,4 +1,4 @@
-.TH "Catalog" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Catalog" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ Catalog \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Catalog\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "virtual \fB~Catalog\fP ()"
+.br
 .ti -1c
 .RI "unsigned \fBallocate_unique_table_id\fP ()"
 .br
@@ -16,7 +21,7 @@ Catalog \-
 .RI "bool \fBadd_table\fP (\fBTableDescriptor\fP *const &table)"
 .br
 .ti -1c
-.RI "\fBTableDescriptor\fP * \fBgetTable\fP (const TableID &) const "
+.RI "\fBTableDescriptor\fP * \fBgetTable\fP (const \fBTableID\fP &) const "
 .br
 .ti -1c
 .RI "\fBTableDescriptor\fP * \fBgetTable\fP (const std::string &table_name) const "
@@ -53,6 +58,46 @@ Catalog \-
 .RI "static \fBCatalog\fP * \fBgetInstance\fP ()"
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCatalog\fP ()"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBTableIDAllocator\fP \fBtable_id_allocator\fP"
+.br
+.ti -1c
+.RI "boost::unordered_map
+.br
+< std::string, \fBTableDescriptor\fP * > \fBname_to_table\fP"
+.br
+.ti -1c
+.RI "boost::unordered_map< \fBTableID\fP, 
+.br
+\fBTableDescriptor\fP * > \fBtableid_to_table\fP"
+.br
+.ti -1c
+.RI "\fBLogging\fP * \fBlogging\fP"
+.br
+.ti -1c
+.RI "\fBProjectionBinding\fP * \fBbinding_\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBCatalog\fP * \fBinstance_\fP =0"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -60,7 +105,125 @@ Catalog \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Catalog::~Catalog ()\fC [virtual]\fP"
+
+.PP
+References binding_, instance_, logging, and name_to_table\&.
+.SS "Catalog::Catalog ()\fC [private]\fP"
+
+.PP
+References binding_, and logging\&.
+.PP
+Referenced by getInstance()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool Catalog::add_table (\fBTableDescriptor\fP *const &table)"
+
+.PP
+References TableIDAllocator::decrease_table_id(), Logging::elog(), TableDescriptor::get_table_id(), TableDescriptor::getTableName(), Logging::log(), logging, name_to_table, table_id_allocator, and tableid_to_table\&.
+.PP
+Referenced by BindingTest(), create_poc_data_four_partitions(), create_poc_data_one_partitions(), CreateTable(), execting_test(), claims::stmt_handler::CreateTableExec::Execute(), init_multi_node_tpc_h_envoriment_(), init_poc_environment(), init_single_node_tpc_h_envoriment_(), init_single_node_tpc_h_envoriment_ing(), init_single_node_tpc_h_envoriment_sort(), init_tt_environment(), loadData(), startup_catalog(), startup_mulitple_node_environment_of_poc(), startup_multiple_node_environment(), startup_multiple_node_environment_of_stock(), startup_multiple_node_environment_of_tpch(), startup_single_node_environment_of_tpch(), startup_single_node_one_partition_environment_of_tpch(), statistic_manager_test(), TableDescriptor_test(), test_CSBIndexBuilding(), test_index_scan_iterator(), test_logical_csb_index_building(), and variable_schema_test()\&.
+.SS "unsigned Catalog::allocate_unique_table_id ()"
+
+.PP
+References TableIDAllocator::allocate_unique_table_id(), and table_id_allocator\&.
+.PP
+Referenced by TableDescriptor_test()\&.
+.SS "\fBProjectionBinding\fP * Catalog::getBindingModele () const"
+
+.PP
+References binding_\&.
+.PP
+Referenced by LogicalCSBIndexBuilding::GetPlanContext(), LogicalIndexScan::GetPlanContext(), claims::logical_operator::LogicalScan::GetPlanContext(), and HdfsLoader::load()\&.
+.SS "\fBCatalog\fP * Catalog::getInstance ()\fC [static]\fP"
+
+.PP
+References Catalog(), and instance_\&.
+.PP
+Referenced by IndexManager::addIndexToList(), Analyzer::analyse(), Analyzer::analyse_on_project(), append_test(), bulk_test_logical_index_scan(), Analyzer::compute_attribute_stat(), Analyzer::compute_table_stat(), Analyzer::computeHistogram(), create_load_test(), Environment::Environment(), Estimation::estEqualJoin(), Estimation::estEqualOper(), Estimation::estRangeOper(), Analyzer::getDistinctCardinality(), LogicalIndexScan::GetPlanContext(), LogicalCSBIndexBuilding::GetPlanContext(), claims::logical_operator::LogicalScan::GetPlanContext(), inmemory_append_test(), IndexManager::insertIndexToList(), HdfsLoader::load(), LogicalCSBIndexBuilding::LogicalCSBIndexBuilding(), LogicalIndexScan::LogicalIndexScan(), claims::logical_operator::LogicalScan::LogicalScan(), LogicalCSBIndexBuilding::Print(), claims::logical_operator::LogicalScan::Print(), TableDescriptor_test(), test_complete_repartition_filtered_join(), test_complete_repartition_scan_join(), test_index_filter_performance(), test_logical_index_building(), test_logical_index_scan(), test_multiple_complete_repartition_filtered_join(), test_multiple_complete_repartition_scan_join(), test_multiple_no_repartition_filtered_join(), test_multiple_no_repartition_scan_join(), test_multiple_scan(), test_multiple_scan_filter_Aggregation(), test_multiple_scan_filter_high_selectivity(), test_multiple_scan_filter_low_selectivity(), test_multiple_scan_filter_Scalar_Aggregation(), test_no_repartition_filtered_join(), test_no_repartition_scan_join(), test_scan(), test_scan_Aggregation_large_Groups(), test_scan_Aggregation_small_Groups(), test_scan_filter_Aggregation(), test_scan_filter_high_selectivity(), test_scan_filter_low_selectivity(), test_scan_filter_performance(), and test_scan_filter_Scalar_Aggregation()\&.
+.SS "vector< \fBPartitionID\fP > Catalog::getPartitionIDList (const std::string &table_name, const std::string &attribute_name)"
+
+.PP
+References TableDescriptor::getNumberOfProjection(), ProjectionDescriptor::getPartitioner(), Partitioner::getPartitionIDList(), TableDescriptor::getProjectoin(), getTable(), ProjectionDescriptor::isExist(), and NULL\&.
+.SS "\fBProjectionDescriptor\fP * Catalog::getProjection (const \fBProjectionID\fP &pid) const"
+
+.PP
+References TableDescriptor::getProjectoin(), getTable(), ProjectionID::projection_off, and ProjectionID::table_id\&.
+.PP
+Referenced by IndexManager::addIndexToList(), Analyzer::analyse_on_project(), and IndexManager::insertIndexToList()\&.
+.SS "\fBTableDescriptor\fP * Catalog::getTable (const \fBTableID\fP &target) const"
+
+.PP
+References NULL, and tableid_to_table\&.
+.PP
+Referenced by add_all_table_column(), add_table_column(), Analyzer::analyse(), append_test(), BindingTest(), bulk_test_logical_index_scan(), Analyzer::compute_table_stat(), create_load_test(), create_poc_data_four_partitions(), create_poc_data_one_partitions(), CreateProjection(), CreateTable(), claims::stmt_handler::CreateTableExec::CreateTableExec(), Estimation::estEqualJoin(), Estimation::estEqualOper(), Estimation::estRangeOper(), execting_test(), get_aggregation_args(), AstSelectStmt::GetLogicalPlanOfProject(), getPartitionIDList(), claims::logical_operator::LogicalScan::GetPlanContext(), getProjection(), init_multi_node_tpc_h_envoriment_(), init_poc_environment(), init_single_node_tpc_h_envoriment_(), init_single_node_tpc_h_envoriment_ing(), init_single_node_tpc_h_envoriment_sort(), init_tt_environment(), inmemory_append_test(), insert_into_hash_table_from_projection(), InsertData(), claims::stmt_handler::InsertExec::InsertExec(), isAttributeExist(), lineitem_scan_aggregation(), lineitem_scan_filter(), lineitem_scan_self_join(), loadData(), LoadData(), claims::stmt_handler::LoadExec::LoadExec(), LogicalCSBIndexBuilding::LogicalCSBIndexBuilding(), LogicalIndexScan::LogicalIndexScan(), claims::logical_operator::LogicalScan::LogicalScan(), claims::logical_operator::LogicalScan::Print(), projection_scan(), query_1(), query_2(), query_3(), query_select_aggregation(), query_select_aggregation_ing(), query_select_fzh(), query_select_sort(), query_select_sort_string(), sb_scan_aggregation(), sb_scan_filter(), sb_scan_self_join(), AstTable::SemanticAnalisys(), ShowTable(), startup_catalog(), startup_mulitple_node_environment_of_poc(), startup_multiple_node_environment(), startup_multiple_node_environment_of_stock(), startup_multiple_node_environment_of_tpch(), startup_single_node_environment_of_tpch(), startup_single_node_one_partition_environment_of_tpch(), statistic_manager_test(), test_block_construct(), test_complete_repartition_filtered_join(), test_complete_repartition_scan_join(), test_CSBIndexBuilding(), test_index_filter_performance(), test_index_scan_iterator(), test_logical_csb_index_building(), test_logical_index_building(), test_logical_index_scan(), test_multiple_complete_repartition_filtered_join(), test_multiple_complete_repartition_scan_join(), test_multiple_no_repartition_filtered_join(), test_multiple_no_repartition_scan_join(), test_multiple_scan(), test_multiple_scan_filter_Aggregation(), test_multiple_scan_filter_high_selectivity(), test_multiple_scan_filter_low_selectivity(), test_multiple_scan_filter_Scalar_Aggregation(), test_no_repartition_filtered_join(), test_no_repartition_scan_join(), test_scan(), test_scan_Aggregation_large_Groups(), test_scan_Aggregation_small_Groups(), test_scan_filter_Aggregation(), test_scan_filter_high_selectivity(), test_scan_filter_low_selectivity(), test_scan_filter_performance(), test_scan_filter_Scalar_Aggregation(), and variable_schema_test()\&.
+.SS "\fBTableDescriptor\fP * Catalog::getTable (const std::string &table_name) const"
+
+.PP
+References name_to_table, and NULL\&.
+.SS "unsigned Catalog::getTableCount () const\fC [inline]\fP"
+
+.PP
+References table_id_allocator, and TableIDAllocator::table_id_curosr\&.
+.PP
+Referenced by ShowTable()\&.
+.SS "bool Catalog::isAttributeExist (const std::string &table_name, const std::string &attribute_name) const"
+
+.PP
+References getTable(), and TableDescriptor::isExist()\&.
+.PP
+Referenced by oncondition_check(), orderby_analysis(), selectlist_expr_analysis(), table_has_column(), and wherecondition_check()\&.
+.SS "void Catalog::outPut ()"
+
+.SS "void Catalog::restoreCatalog ()"
+
+.PP
+References Config::catalog_file, Logging::elog(), and logging\&.
+.PP
+Referenced by Environment::Environment(), and testServerClient()\&.
+.SS "void Catalog::saveCatalog ()"
+
+.PP
+References Config::catalog_file\&.
+.PP
+Referenced by CreateProjection(), CreateTable(), claims::stmt_handler::LoadExec::Execute(), claims::stmt_handler::InsertExec::Execute(), claims::stmt_handler::CreateTableExec::Execute(), InsertData(), LoadData(), startup_multiple_node_environment_of_stock(), startup_multiple_node_environment_of_tpch(), and startup_single_node_environment_of_tpch()\&.
+.SS "template<class Archive > void Catalog::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References name_to_table, table_id_allocator, and tableid_to_table\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBProjectionBinding\fP* Catalog::binding_\fC [private]\fP"
+
+.PP
+Referenced by Catalog(), getBindingModele(), and ~Catalog()\&.
+.SS "\fBCatalog\fP * Catalog::instance_ =0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by getInstance(), and ~Catalog()\&.
+.SS "\fBLogging\fP* Catalog::logging\fC [private]\fP"
+
+.PP
+Referenced by add_table(), Catalog(), restoreCatalog(), and ~Catalog()\&.
+.SS "boost::unordered_map<std::string,\fBTableDescriptor\fP*> Catalog::name_to_table\fC [private]\fP"
+
+.PP
+Referenced by add_table(), getTable(), serialize(), and ~Catalog()\&.
+.SS "\fBTableIDAllocator\fP Catalog::table_id_allocator\fC [private]\fP"
+
+.PP
+Referenced by add_table(), allocate_unique_table_id(), getTableCount(), and serialize()\&.
+.SS "boost::unordered_map<\fBTableID\fP,\fBTableDescriptor\fP*> Catalog::tableid_to_table\fC [private]\fP"
+
+.PP
+Referenced by add_table(), getTable(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

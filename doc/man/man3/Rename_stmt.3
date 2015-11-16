@@ -1,4 +1,4 @@
-.TH "Rename_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Rename_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Rename_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBoldname1\fP"
@@ -28,7 +30,21 @@ Rename_stmt \-
 .RI "\fBNode\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "char* Rename_stmt::newname1"
+
+.SS "char* Rename_stmt::newname2"
+
+.SS "\fBNode\fP* Rename_stmt::next"
+
+.SS "char* Rename_stmt::oldname1"
+
+.SS "char* Rename_stmt::oldname2"
+
+.SS "\fBnodetype\fP Rename_stmt::type"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

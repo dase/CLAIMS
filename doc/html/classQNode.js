@@ -2,6 +2,7 @@ var classQNode =
 [
     [ "QNode", "classQNode.html#a8d9288f94133dc0da5a6f4fcc02cc510", null ],
     [ "~QNode", "classQNode.html#a50a49a4f31b9f059f73ba50caa9b66e5", null ],
+    [ "serialize", "classQNode.html#afdc0c450a8e9ecdb25a90496b9dd7f26", null ],
     [ "boost::serialization::access", "classQNode.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
     [ "actual_type", "classQNode.html#a1fcb86d5c53a0b71b327b5bcd3373774", null ],
     [ "alias", "classQNode.html#a61c669b84a505ce92b5f8a4da7b96c5a", null ],

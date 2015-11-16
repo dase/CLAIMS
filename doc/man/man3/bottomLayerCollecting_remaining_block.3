@@ -1,4 +1,4 @@
-.TH "bottomLayerCollecting::remaining_block" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "bottomLayerCollecting::remaining_block" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ bottomLayerCollecting::remaining_block \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <CSBIndexBuilding\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBremaining_block\fP (\fBBlockStreamBase\fP *block, \fBBlockStreamBase::BlockStreamTraverseIterator\fP *iterator, unsigned short chunk_offset, unsigned short block_offset, unsigned short tuple_offset)"
+.RI "\fBremaining_block\fP ()"
+.br
+.ti -1c
+.RI "\fBremaining_block\fP (\fBBlockStreamBase\fP *\fBblock\fP, \fBBlockStreamBase::BlockStreamTraverseIterator\fP *\fBiterator\fP, unsigned short \fBchunk_offset\fP, unsigned short \fBblock_offset\fP, unsigned short \fBtuple_offset\fP)"
 .br
 .in -1c
 .SS "Public Attributes"
@@ -23,7 +28,7 @@ bottomLayerCollecting::remaining_block \-
 .RI "\fBBlockStreamBase\fP * \fBblock\fP"
 .br
 .ti -1c
-.RI "ChunkOffset \fBchunk_offset\fP"
+.RI "\fBChunkOffset\fP \fBchunk_offset\fP"
 .br
 .ti -1c
 .RI "unsigned short \fBblock_offset\fP"
@@ -32,7 +37,35 @@ bottomLayerCollecting::remaining_block \-
 .RI "unsigned short \fBtuple_offset\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "bottomLayerCollecting::remaining_block::remaining_block ()\fC [inline]\fP"
+
+.SS "bottomLayerCollecting::remaining_block::remaining_block (\fBBlockStreamBase\fP *block, \fBBlockStreamBase::BlockStreamTraverseIterator\fP *iterator, unsigned shortchunk_offset, unsigned shortblock_offset, unsigned shorttuple_offset)\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBBlockStreamBase\fP* bottomLayerCollecting::remaining_block::block"
+
+.PP
+Referenced by bottomLayerCollecting::Next()\&.
+.SS "unsigned short bottomLayerCollecting::remaining_block::block_offset"
+
+.PP
+Referenced by bottomLayerCollecting::askForNextBlock(), and bottomLayerCollecting::Next()\&.
+.SS "\fBChunkOffset\fP bottomLayerCollecting::remaining_block::chunk_offset"
+
+.PP
+Referenced by bottomLayerCollecting::askForNextBlock(), and bottomLayerCollecting::Next()\&.
+.SS "\fBBlockStreamBase::BlockStreamTraverseIterator\fP* bottomLayerCollecting::remaining_block::iterator"
+
+.PP
+Referenced by bottomLayerCollecting::Next()\&.
+.SS "unsigned short bottomLayerCollecting::remaining_block::tuple_offset"
+
+.PP
+Referenced by bottomLayerCollecting::askForNextBlock(), and bottomLayerCollecting::Next()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

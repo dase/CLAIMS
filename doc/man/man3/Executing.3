@@ -1,4 +1,4 @@
-.TH "Executing" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Executing" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,17 +6,47 @@ Executing \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Executing\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBExecuting\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~Executing\fP ()"
+.br
+.in -1c
 .SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "static \fBResultSet\fP * \fBrun_sql\fP (std::string sql, std::string &error)"
+.RI "static \fBResultSet\fP * \fBrun_sql\fP (std::string \fBsql\fP, std::string &error)"
 .br
 .ti -1c
 .RI "static void \fBrun_sql\fP (const std::string &cmd, \fBResultSet\fP *&result, bool &status, std::string &error_info, std::string &info, int fd)"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Executing::Executing ()"
+
+.SS "Executing::~Executing ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBResultSet\fP * Executing::run_sql (std::stringsql, std::string &error)\fC [static]\fP"
+
+.PP
+References claims::physical_operator::PhysicalOperatorBase::Close(), getparsetreeroot(), claims::logical_operator::LogicalOperator::GetPhysicalPlan(), claims::physical_operator::PhysicalOperatorBase::GetResultSet(), claims::physical_operator::PhysicalOperatorBase::Next(), claims::physical_operator::PhysicalOperatorBase::Open(), parsetree2logicalplan(), claims::physical_operator::PhysicalOperatorBase::Print(), claims::logical_operator::LogicalOperator::Print(), and claims::logical_operator::LogicalOperator::~LogicalOperator()\&.
+.PP
+Referenced by execting_test(), and Daemon::worker()\&.
+.SS "void Executing::run_sql (const std::string &cmd, \fBResultSet\fP *&result, bool &status, std::string &error_info, std::string &info, intfd)\fC [static]\fP"
+
+.PP
+References ExecuteLogicalQueryPlan(), and NULL\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

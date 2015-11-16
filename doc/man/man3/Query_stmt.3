@@ -1,4 +1,4 @@
-.TH "Query_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Query_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Query_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBquerystring\fP"
@@ -43,7 +45,53 @@ Query_stmt \-
 .RI "\fBNode\fP * \fBinto_list\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBNode\fP* Query_stmt::from_list"
+
+.PP
+Referenced by depart_join_condition(), departwc(), fromlist_analysis(), groupby_select_where_from2logicalplan(), newQueryStmt(), output(), Query(), and semantic_analysis()\&.
+.SS "\fBNode\fP* Query_stmt::groupby_list"
+
+.PP
+Referenced by expr_to_str_test(), groupby_select_where_from2logicalplan(), newQueryStmt(), output(), select_where_from2logicalplan(), and semantic_analysis()\&.
+.SS "\fBNode\fP* Query_stmt::having_list"
+
+.PP
+Referenced by expr_to_str_test(), having_select_groupby_where_from2logicalplan(), newQueryStmt(), output(), and semantic_analysis()\&.
+.SS "\fBNode\fP* Query_stmt::into_list"
+
+.PP
+Referenced by newQueryStmt(), and output()\&.
+.SS "\fBNode\fP* Query_stmt::limit_list"
+
+.PP
+Referenced by newQueryStmt(), output(), and Query()\&.
+.SS "\fBNode\fP* Query_stmt::orderby_list"
+
+.PP
+Referenced by expr_to_str_test(), newQueryStmt(), orderby_having_select_groupby_where_from2logicalplan(), output(), and semantic_analysis()\&.
+.SS "char* Query_stmt::querystring"
+
+.PP
+Referenced by newQueryStmt(), and output()\&.
+.SS "\fBNode\fP* Query_stmt::select_list"
+
+.PP
+Referenced by expr_to_str_test(), get_copy_selectlist_from_subquery(), groupby_analysis(), groupby_select_where_from2logicalplan(), having_analysis(), newQueryStmt(), orderby_analysis(), orderby_having_select_groupby_where_from2logicalplan(), output(), select_where_from2logicalplan(), selectlist_analysis(), semantic_analysis(), solve_insubquery(), subquery_has_column(), and wherecondition_check()\&.
+.SS "int Query_stmt::select_opts"
+
+.PP
+Referenced by newQueryStmt(), and output()\&.
+.SS "\fBnodetype\fP Query_stmt::type"
+
+.PP
+Referenced by newQueryStmt()\&.
+.SS "\fBNode\fP* Query_stmt::where_list"
+
+.PP
+Referenced by depart_join_condition(), departwc(), expr_to_str_test(), fromlist_analysis(), newQueryStmt(), output(), Query(), semantic_analysis(), and solve_const_value()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

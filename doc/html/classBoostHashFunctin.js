@@ -9,5 +9,7 @@ var classBoostHashFunctin =
     [ "get_partition_value", "classBoostHashFunctin.html#a0d04f823e48ab19072d7c2f231d26b43", null ],
     [ "getNumberOfPartitions", "classBoostHashFunctin.html#a5e6ec3be13eaac7651b6279465acafab", null ],
     [ "getPartitionFashion", "classBoostHashFunctin.html#a1cc328a745202310aa08be6a51d36b13", null ],
-    [ "boost::serialization::access", "classBoostHashFunctin.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "serialize", "classBoostHashFunctin.html#a7b623b33571b900b792b1d49cbefd865", null ],
+    [ "boost::serialization::access", "classBoostHashFunctin.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "range_", "classBoostHashFunctin.html#abaf8a4e43072fbc8b308251b7b7ecad9", null ]
 ];

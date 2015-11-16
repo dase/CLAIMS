@@ -1,4 +1,4 @@
-.TH "Client" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Client" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ Client \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Client\&.h>\fP
 .SS "Public Types"
 
 .in +1c
@@ -17,13 +19,16 @@ Client \-
 
 .in +1c
 .ti -1c
+.RI "\fBClient\fP ()"
+.br
+.ti -1c
 .RI "void \fBconnection\fP (std::string host, int port)"
 .br
 .ti -1c
 .RI "\fBClientResponse\fP * \fBsubmitQuery\fP (std::string args)"
 .br
 .ti -1c
-.RI "\fBquery_result\fP \fBsubmit\fP (std::string command, std::string &message, \fBResultSet\fP &rt)"
+.RI "\fBquery_result\fP \fBsubmit\fP (std::string command, std::string &\fBmessage\fP, \fBResultSet\fP &rt)"
 .br
 .ti -1c
 .RI "\fBClientResponse\fP * \fBreceive\fP ()"
@@ -34,8 +39,88 @@ Client \-
 .ti -1c
 .RI "bool \fBconnected\fP () const "
 .br
+.ti -1c
+.RI "virtual \fB~Client\fP ()"
+.br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBconnected_\fP"
+.br
+.ti -1c
+.RI "int \fBm_clientFd\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBClient::query_result\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIresult \fP\fP
+.TP
+\fB\fIerror \fP\fP
+.TP
+\fB\fImessage \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Client::Client ()"
+
+.PP
+References connected_, and m_clientFd\&.
+.SS "Client::~Client ()\fC [virtual]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool Client::connected () const"
+
+.PP
+References connected_\&.
+.SS "void Client::connection (std::stringhost, intport)"
+
+.PP
+References connected_, m_clientFd, and result\&.
+.PP
+Referenced by main(), ElasticIteratorModelTest::SetUp(), and testServerClient()\&.
+.SS "\fBClientResponse\fP * Client::receive ()"
+
+.PP
+References ClientResponse::deserialize(), ClientLogging::log(), m_clientFd, and NULL\&.
+.PP
+Referenced by submit(), and testServerClient()\&.
+.SS "void Client::shutdown ()"
+
+.PP
+References ClientLogging::log(), and m_clientFd\&.
+.PP
+Referenced by main(), ElasticIteratorModelTest::TearDown(), and testServerClient()\&.
+.SS "\fBClient::query_result\fP Client::submit (std::stringcommand, std::string &message, \fBResultSet\fP &rt)"
+
+.PP
+References DynamicBlockBuffer::appendNewBlock(), CHANGEDD, ResultSet::column_header_list_, ClientResponse::content, DATA, ClientResponse::deserialize(), ENDED, error, ERROR, ClientResponse::getAttributeName(), ClientResponse::getDataBlock(), ClientResponse::getMessage(), ClientResponse::getSchema(), HEADER, ColumnHeader::header_list, L, ClientLogging::log(), m_clientFd, message, OK, ResultSet::query_time_, receive(), result, ResultSet::schema_, SCHEMASS, and ClientResponse::status\&.
+.PP
+Referenced by submit_command(), and submit_command_repeated()\&.
+.SS "\fBClientResponse\fP * Client::submitQuery (std::stringargs)"
+
+.PP
+References ClientResponse::deserialize(), L, ClientLogging::log(), m_clientFd, and NULL\&.
+.PP
+Referenced by testServerClient()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "bool Client::connected_\fC [private]\fP"
+
+.PP
+Referenced by Client(), connected(), and connection()\&.
+.SS "int Client::m_clientFd\fC [private]\fP"
+
+.PP
+Referenced by Client(), connection(), receive(), shutdown(), submit(), and submitQuery()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

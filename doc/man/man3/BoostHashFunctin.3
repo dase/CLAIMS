@@ -1,4 +1,4 @@
-.TH "BoostHashFunctin" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BoostHashFunctin" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,20 @@ BoostHashFunctin \-
 .br
 .PP
 .PP
+\fC#include <hash\&.h>\fP
+.PP
 Inherits \fBPartitionFunction\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
+.RI "\fBBoostHashFunctin\fP ()"
+.br
+.ti -1c
 .RI "\fBBoostHashFunctin\fP (const int &range)"
+.br
+.ti -1c
+.RI "\fB~BoostHashFunctin\fP ()"
 .br
 .ti -1c
 .RI "unsigned int \fBget_partition_value\fP (const int &value) const "
@@ -27,10 +35,24 @@ Inherits \fBPartitionFunction\fP\&.
 .RI "unsigned int \fBget_partition_value\fP (const long &value) const "
 .br
 .ti -1c
-.RI "PartitionStyle \fBgetPartitionFashion\fP () const "
+.RI "\fBPartitionStyle\fP \fBgetPartitionFashion\fP () const "
 .br
 .ti -1c
 .RI "unsigned \fBgetNumberOfPartitions\fP () const "
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned long \fBrange_\fP"
 .br
 .in -1c
 .SS "Friends"
@@ -41,6 +63,14 @@ Inherits \fBPartitionFunction\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BoostHashFunctin::BoostHashFunctin ()\fC [inline]\fP"
+
+.SS "BoostHashFunctin::BoostHashFunctin (const int &range)\fC [inline]\fP"
+
+.SS "BoostHashFunctin::~BoostHashFunctin ()\fC [inline]\fP"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "unsigned int BoostHashFunctin::get_partition_value (const int &value) const\fC [inline]\fP, \fC [virtual]\fP"
@@ -59,7 +89,51 @@ Bucket number\&.
 
 .PP
 Implements \fBPartitionFunction\fP\&.
+.PP
+References hash_value(), and range_\&.
+.SS "unsigned int BoostHashFunctin::get_partition_value (const unsigned long &value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References hash_value(), and range_\&.
+.SS "unsigned int BoostHashFunctin::get_partition_value (const double &value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References hash_value(), and range_\&.
+.SS "unsigned int BoostHashFunctin::get_partition_value (const long &value) const\fC [inline]\fP"
+
+.PP
+References hash_value(), and range_\&.
+.SS "unsigned BoostHashFunctin::getNumberOfPartitions () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References range_\&.
+.SS "\fBPartitionStyle\fP BoostHashFunctin::getPartitionFashion () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBPartitionFunction\fP\&.
+.PP
+References PartitionFunction::hash_f\&.
+.SS "template<class Archive > void BoostHashFunctin::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References range_\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned long BoostHashFunctin::range_\fC [private]\fP"
+
+.PP
+Referenced by get_partition_value(), getNumberOfPartitions(), and serialize()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

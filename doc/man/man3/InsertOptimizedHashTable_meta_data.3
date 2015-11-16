@@ -1,4 +1,4 @@
-.TH "InsertOptimizedHashTable::meta_data" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "InsertOptimizedHashTable::meta_data" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,15 @@ InsertOptimizedHashTable::meta_data \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <InsertOptimizedHashTable\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBmeta_data\fP ()"
+.br
+.in -1c
 .SS "Public Attributes"
 
 .in +1c
@@ -19,7 +28,25 @@ InsertOptimizedHashTable::meta_data \-
 .RI "\fBbucket\fP * \fBnext\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "InsertOptimizedHashTable::meta_data::meta_data ()\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBSpineLock\fP InsertOptimizedHashTable::meta_data::lock"
+
+.PP
+Referenced by InsertOptimizedHashTable::insertEntry()\&.
+.SS "\fBbucket\fP* InsertOptimizedHashTable::meta_data::next"
+
+.PP
+Referenced by InsertOptimizedHashTable::insertEntry(), InsertOptimizedHashTable::BucketIterator::nextTuple(), and InsertOptimizedHashTable::~InsertOptimizedHashTable()\&.
+.SS "uint32_t InsertOptimizedHashTable::meta_data::tuple_count"
+
+.PP
+Referenced by InsertOptimizedHashTable::bucket::allocate_new_entry(), InsertOptimizedHashTable::bucket::has_space_for_new_entry(), and InsertOptimizedHashTable::insertEntry()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

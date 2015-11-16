@@ -1,4 +1,4 @@
-.TH "column_type" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "column_type" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,17 +6,25 @@ column_type \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <data_type\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBcolumn_type\fP (data_type type, unsigned _size=0, bool _nullable=true)"
+.RI "\fBcolumn_type\fP (\fBdata_type\fP \fBtype\fP, unsigned _size=0, bool _nullable=true)"
 .br
 .ti -1c
 .RI "\fBcolumn_type\fP (const \fBcolumn_type\fP &r)"
 .br
 .ti -1c
 .RI "\fBcolumn_type\fP & \fBoperator=\fP (const \fBcolumn_type\fP &r)"
+.br
+.ti -1c
+.RI "\fBcolumn_type\fP ()"
+.br
+.ti -1c
+.RI "\fB~column_type\fP ()"
 .br
 .ti -1c
 .RI "unsigned \fBget_length\fP () const "
@@ -35,13 +43,23 @@ column_type \-
 .RI "\fBOperate\fP * \fBoperate\fP"
 .br
 .ti -1c
-.RI "data_type \fBtype\fP"
+.RI "\fBdata_type\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "bool \fBnullable\fP"
 .br
 .ti -1c
 .RI "unsigned \fBsize\fP"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.ti -1c
+.RI "void \fBinitialize\fP ()"
 .br
 .in -1c
 .SS "Friends"
@@ -51,7 +69,71 @@ column_type \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "column_type::column_type (\fBdata_type\fPtype, unsigned_size = \fC0\fP, bool_nullable = \fCtrue\fP)\fC [inline]\fP"
+
+.PP
+References t_boolean, t_date, t_datetime, t_decimal, t_double, t_float, t_int, t_smallInt, t_string, t_time, t_u_long, and t_u_smallInt\&.
+.SS "column_type::column_type (const \fBcolumn_type\fP &r)\fC [inline]\fP"
+
+.PP
+References Operate::duplicateOperator(), nullable, operate, size, and type\&.
+.SS "column_type::column_type ()\fC [inline]\fP"
+
+.SS "column_type::~column_type ()\fC [inline]\fP"
+
+.PP
+Referenced by null_value_test(), set_null_test(), test_decimal_add(), test_decimal_to_string(), and Attribute::~Attribute()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned column_type::get_length () const\fC [inline]\fP"
+
+.PP
+References byte_align, t_boolean, t_date, t_datetime, t_decimal, t_double, t_float, t_int, t_smallInt, t_string, t_time, t_u_long, and t_u_smallInt\&.
+.PP
+Referenced by AttributeComparator::AttributeComparator(), claims::stmt_handler::InsertExec::CheckType(), CheckType(), Analyzer::equiDepthAnalyse(), getFrequency(), InitExprAtLogicalPlan(), claims::common::ExprColumn::InitExprAtLogicalPlan(), Analyzer::mcvAnalyse(), bottomLayerSorting::Open(), claims::physical_operator::PhysicalProject::ProcessInLogic(), ratio(), AttributeComparator::serialize(), and IndexScanIterator::query_range::serialize()\&.
+.SS "void column_type::initialize ()\fC [inline]\fP, \fC [private]\fP"
+called after deserialization to construct the right operator\&. 
+.PP
+References t_boolean, t_date, t_datetime, t_decimal, t_double, t_float, t_int, t_smallInt, t_string, t_time, t_u_long, and t_u_smallInt\&.
+.SS "bool column_type::operator< (const class \fBcolumn_type\fP &c) const\fC [inline]\fP"
+
+.PP
+References type\&.
+.SS "\fBcolumn_type\fP& column_type::operator= (const \fBcolumn_type\fP &r)\fC [inline]\fP"
+
+.PP
+References Operate::duplicateOperator(), nullable, operate, size, and type\&.
+.SS "bool column_type::operator== (const class \fBcolumn_type\fP &c) const\fC [inline]\fP"
+
+.PP
+References type\&.
+.SS "template<class Archive > void column_type::serialize (Archive &ar, const unsigned intversion)\fC [inline]\fP, \fC [private]\fP"
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "bool column_type::nullable"
+
+.PP
+Referenced by column_type(), and operator=()\&.
+.SS "\fBOperate\fP* column_type::operate"
+
+.PP
+Referenced by Analyzer::analyse(), AttributeComparator::AttributeComparator(), bulk_test_logical_index_scan(), column_type(), Analyzer::computeHistogram(), Analyzer::equiDepthAnalyse(), Estimation::estEqualOper(), Estimation::estRangeOper(), claims::physical_operator::ExchangeSender::GetHashPartitionId(), SubTuple::getSubTuple(), claims::physical_operator::PhysicalHashJoin::IsMatch(), Analyzer::mcvAnalyse(), bottomLayerCollecting::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::PhysicalHashJoin::Next(), null_value_test(), claims::physical_operator::InOperator::Open(), claims::physical_operator::PhysicalAggregation::Open(), claims::physical_operator::PhysicalHashJoin::Open(), bottomLayerSorting::Open(), operator=(), ResultSet::print(), Histogram::Print(), ratio(), IndexScanIterator::query_range::serialize(), set_null_test(), TupleConvertor::sub_tuple(), test_decimal_add(), test_decimal_add1(), test_decimal_add2(), test_decimal_minus(), test_decimal_to_string(), test_decimal_to_value1(), test_decimal_to_value2(), test_decimal_to_value3(), test_decimal_to_value4(), test_decimal_to_value5(), test_index_filter_performance(), test_logical_csb_index_building(), and test_logical_index_scan()\&.
+.SS "unsigned column_type::size"
+
+.PP
+Referenced by column_type(), claims::common::ExprNode::ExprNodeToAttr(), claims::logical_operator::LogicalProject::GetPlanContext(), InitExprAtLogicalPlan(), and operator=()\&.
+.SS "\fBdata_type\fP column_type::type"
+
+.PP
+Referenced by bulk_test_logical_index_scan(), claims::stmt_handler::InsertExec::CheckType(), CheckType(), column_type(), createEqualJoinExpression(), IndexManager::deserialize(), Estimation::estEqualJoin(), claims::common::ExprNode::ExprNodeToAttr(), AstColumn::GetLogicalPlan(), claims::logical_operator::LogicalProject::GetPlanContext(), Comparator::iniatilize(), claims::common::ExprNode::IsEqualAttr(), bottomLayerSorting::Next(), Comparator::Pair::operator<(), operator<(), operator=(), operator==(), ratio(), IndexManager::serialize(), test_index_filter_performance(), test_logical_csb_index_building(), test_logical_index_scan(), and transformqual()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

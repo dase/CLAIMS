@@ -1,4 +1,4 @@
-.TH "ClientListener" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ClientListener" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,16 @@ ClientListener \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <ClaimsServer\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBClientListener\fP (int port)"
+.br
+.ti -1c
+.RI "virtual \fB~ClientListener\fP ()"
 .br
 .ti -1c
 .RI "void \fBconfigure\fP ()"
@@ -26,13 +31,226 @@ ClientListener \-
 .RI "static void \fBcheckFdValid\fP (int fd)"
 .br
 .in -1c
+.SS "Private Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBclient_type\fP { \fBjava\fP, \fBc\fP }"
+.br
+.in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBwrite\fP (const int fd, const \fBClientResponse\fP &res) const "
+.br
+.ti -1c
+.RI "int \fBaddClient\fP (const int fd)"
+.br
+.ti -1c
+.RI "int \fBremoveClient\fP (const int fd)"
+.br
+.ti -1c
+.RI "int \fBreceiveRequest\fP (const int fd, const char *cmd)"
+.br
+.ti -1c
+.RI "bool \fBisFull\fP () const "
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBrestoreStd\fP ()"
+.br
+.ti -1c
+.RI "static void * \fBreceiveHandler\fP (void *)"
+.br
+.ti -1c
+.RI "static void * \fBsendHandler\fP (void *)"
+.br
+.ti -1c
+.RI "static void \fBsendJsonPacket\fP (\fBClientResponse\fP &cr, \fBexecuted_result\fP &res)"
+.br
+.ti -1c
+.RI "static void \fBgenerateSqlStmt\fP (int type, char *&buf)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBm_port\fP"
+.br
+.ti -1c
+.RI "int \fBm_fd\fP"
+.br
+.ti -1c
+.RI "int * \fBm_clientFds\fP"
+.br
+.ti -1c
+.RI "int \fBm_num\fP"
+.br
+.ti -1c
+.RI "\fBclient_type\fP \fBclient_type_\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static const int \fBMAXCONN\fP = 100"
+.br
+.ti -1c
+.RI "static int \fBstandard_input\fP = dup(STDIN_FILENO)"
+.br
+.ti -1c
+.RI "static int \fBstandard_output\fP = dup(STDOUT_FILENO)"
+.br
+.ti -1c
+.RI "static int \fBstandard_err\fP = dup(STDERR_FILENO)"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBClientListener::client_type\fP\fC [private]\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIjava \fP\fP
+.TP
+\fB\fIc \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ClientListener::ClientListener (intport)"
+
+.PP
+References m_clientFds, m_fd, m_num, m_port, and MAXCONN\&.
+.SS "ClientListener::~ClientListener ()\fC [virtual]\fP"
+
+.PP
+References m_clientFds\&.
 .SH "Member Function Documentation"
 .PP 
+.SS "int ClientListener::addClient (const intfd)\fC [private]\fP"
+
+.PP
+References m_clientFds, m_num, and MAXCONN\&.
+.PP
+Referenced by receiveHandler()\&.
+.SS "void ClientListener::checkFdValid (intfd)\fC [static]\fP"
+
+.PP
+References ClientLogging::elog(), and ClientLogging::log()\&.
+.PP
+Referenced by receiveHandler(), sendHandler(), Daemon::worker(), and write()\&.
 .SS "void ClientListener::configure ()"
 configure the socket parameter, bind to the specific ip/port startup the send/receive threads 
+.PP
+References ClientListenerLogging::log(), m_fd, m_port, MAXCONN, NULL, receiveHandler(), and sendHandler()\&.
+.PP
+Referenced by Environment::initializeClientListener()\&.
+.SS "void ClientListener::generateSqlStmt (inttype, char *&buf)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References ClientLogging::elog(), ClientLogging::log(), NULL, and sql\&.
+.PP
+Referenced by receiveHandler()\&.
+.SS "bool ClientListener::isFull () const\fC [inline]\fP, \fC [private]\fP"
+
+.PP
+References m_num, and MAXCONN\&.
+.PP
+Referenced by receiveHandler()\&.
+.SS "void * ClientListener::receiveHandler (void *para)\fC [static]\fP, \fC [private]\fP"
+redirect input/output to console 
+.PP
+References addClient(), checkFdValid(), client_type_, ClientLogging::elog(), FileClose(), generateSqlStmt(), isFull(), ClientListenerLogging::log(), ClientLogging::log(), m_clientFds, m_fd, MAXCONN, NULL, receiveRequest(), removeClient(), and restoreStd()\&.
+.PP
+Referenced by configure()\&.
+.SS "int ClientListener::receiveRequest (const intfd, const char *cmd)\fC [private]\fP"
+
+.PP
+References Daemon::addRemoteCommand(), remote_command::cmd, Daemon::getInstance(), and remote_command::socket_fd\&.
+.PP
+Referenced by receiveHandler()\&.
+.SS "int ClientListener::removeClient (const intfd)\fC [private]\fP"
+
+.PP
+References m_clientFds, m_num, and MAXCONN\&.
+.PP
+Referenced by receiveHandler()\&.
+.SS "void ClientListener::restoreStd ()\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References standard_err, standard_input, and standard_output\&.
+.PP
+Referenced by receiveHandler()\&.
+.SS "void * ClientListener::sendHandler (void *para)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References ColumnHeader::add_header(), DynamicBlockBuffer::Iterator::atomicNextBlock(), checkFdValid(), client_type_, ResultSet::column_header_list_, ClientResponse::content, DynamicBlockBuffer::createIterator(), executed_result::error_info, executed_result::fd, Daemon::getExecutedResult(), Daemon::getInstance(), executed_result::info, ClientResponse::length, ClientListenerLogging::log(), NULL, ResultSet::query_time_, executed_result::result, ResultSet::schema_, sendJsonPacket(), BlockStreamBase::serialize(), ClientResponse::setAttributeName(), ClientResponse::setChange(), ClientResponse::setDataBlock(), ClientResponse::setEnd(), ClientResponse::setError(), ClientResponse::setOk(), ClientResponse::setSchema(), executed_result::status, ClientResponse::status, and write()\&.
+.PP
+Referenced by configure()\&.
+.SS "void ClientListener::sendJsonPacket (\fBClientResponse\fP &cr, \fBexecuted_result\fP &res)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+References Json::Value::append(), ResultSet::column_header_list_, DynamicBlockBuffer::createIterator(), BlockStreamBase::createIterator(), Schema::getColumnValue(), Schema::getncolumns(), DynamicBlockBuffer::Iterator::nextBlock(), BlockStreamBase::BlockStreamTraverseIterator::nextTuple(), NULL, executed_result::result, ResultSet::schema_, ClientResponse::setData(), executed_result::status, and Json::FastWriter::write()\&.
+.PP
+Referenced by sendHandler()\&.
 .SS "void ClientListener::shutdown ()"
 Thread shut down the server when it receives 'shut down' command from a client\&. shut down the server 
+.PP
+References FileClose(), ClientLogging::log(), m_clientFds, m_fd, MAXCONN, standard_err, standard_input, and standard_output\&.
+.PP
+Referenced by Environment::destoryClientListener()\&.
+.SS "int ClientListener::write (const intfd, const \fBClientResponse\fP &res) const\fC [private]\fP"
+
+.PP
+References checkFdValid(), ClientResponse::content, ClientResponse::length, ClientListenerLogging::log(), ClientResponse::serialize(), and ClientResponse::status\&.
+.PP
+Referenced by sendHandler()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBclient_type\fP ClientListener::client_type_\fC [private]\fP"
+
+.PP
+Referenced by receiveHandler(), and sendHandler()\&.
+.SS "int* ClientListener::m_clientFds\fC [private]\fP"
+
+.PP
+Referenced by addClient(), ClientListener(), receiveHandler(), removeClient(), shutdown(), and ~ClientListener()\&.
+.SS "int ClientListener::m_fd\fC [private]\fP"
+
+.PP
+Referenced by ClientListener(), configure(), receiveHandler(), and shutdown()\&.
+.SS "int ClientListener::m_num\fC [private]\fP"
+
+.PP
+Referenced by addClient(), ClientListener(), isFull(), and removeClient()\&.
+.SS "int ClientListener::m_port\fC [private]\fP"
+
+.PP
+Referenced by ClientListener(), and configure()\&.
+.SS "const int ClientListener::MAXCONN = 100\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by addClient(), ClientListener(), configure(), isFull(), receiveHandler(), removeClient(), and shutdown()\&.
+.SS "int ClientListener::standard_err = dup(STDERR_FILENO)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by restoreStd(), and shutdown()\&.
+.SS "int ClientListener::standard_input = dup(STDIN_FILENO)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by restoreStd(), and shutdown()\&.
+.SS "int ClientListener::standard_output = dup(STDOUT_FILENO)\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by restoreStd(), and shutdown()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "BasicHashTable" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "BasicHashTable" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ BasicHashTable \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <hashtable\&.h>\fP
 .SS "Classes"
 
 .in +1c
@@ -20,16 +22,19 @@ BasicHashTable \-
 .RI "\fBBasicHashTable\fP (unsigned nbuckets, unsigned bucksize, unsigned tuplesize, unsigned expected_number_of_visiting_thread=1)"
 .br
 .ti -1c
+.RI "\fB~BasicHashTable\fP ()"
+.br
+.ti -1c
 .RI "void * \fBallocate\fP (const unsigned &offset, unsigned thread_id=0)"
 .br
 .ti -1c
 .RI "void * \fBatomicAllocate\fP (const unsigned &offset, unsigned thread_id=0)"
 .br
 .ti -1c
-.RI "void \fBUpdateTuple\fP (unsigned int offset, void *loc, void *newvalue, fun func)"
+.RI "void \fBUpdateTuple\fP (unsigned int offset, void *loc, void *newvalue, \fBfun\fP func)"
 .br
 .ti -1c
-.RI "void \fBatomicUpdateTuple\fP (unsigned int offset, void *loc, void *newvalue, fun func)"
+.RI "void \fBatomicUpdateTuple\fP (unsigned int offset, void *loc, void *newvalue, \fBfun\fP func)"
 .br
 .ti -1c
 .RI "void \fBlockBlock\fP (unsigned &bn)"
@@ -57,11 +62,189 @@ BasicHashTable \-
 .RI "static unsigned \fBgetNumberOfInstances\fP ()"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBnbuckets_\fP"
+.br
+.ti -1c
+.RI "int \fBbucksize_\fP"
+.br
+.ti -1c
+.RI "int \fBbuck_actual_size_\fP"
+.br
+.ti -1c
+.RI "int \fBtuplesize_\fP"
+.br
+.ti -1c
+.RI "void ** \fBbucket_\fP"
+.br
+.ti -1c
+.RI "int \fBpagesize_\fP"
+.br
+.ti -1c
+.RI "char * \fBt_start_\fP"
+.br
+.ti -1c
+.RI "int \fBcur_MP_\fP"
+.br
+.ti -1c
+.RI "std::vector< char * > \fBmother_page_list_\fP"
+.br
+.ti -1c
+.RI "\fBSpineLock\fP * \fBlock_list_\fP"
+.br
+.ti -1c
+.RI "unsigned * \fBoverflow_count_\fP"
+.br
+.ti -1c
+.RI "unsigned long \fBallocate_count\fP"
+.br
+.ti -1c
+.RI "std::set< void * > \fBallocated_buckets\fP"
+.br
+.ti -1c
+.RI "\fBSpineLock\fP \fBmother_page_lock_\fP"
+.br
+.ti -1c
+.RI "pool * \fBgrandmother\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static unsigned \fBnumber_of_instances_\fP =0"
+.br
+.in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "BasicHashTable::BasicHashTable (unsignednbuckets, unsignedbucksize, unsignedtuplesize, unsignedexpected_number_of_visiting_thread = \fC1\fP)"
 create spinlocks, each of which corresponds to a single bucket 
+.PP
+References allocate_count, buck_actual_size_, bucket_, bucksize_, cur_MP_, get_aligned_space(), grandmother, lock_list_, MAX, mother_page_list_, number_of_instances_, overflow_count_, PAGE_SIZE, pagesize_, and t_start_\&.
+.SS "BasicHashTable::~BasicHashTable ()"
+
+.PP
+References bucket_, grandmother, lock_list_, mother_page_list_, number_of_instances_, and overflow_count_\&.
+.PP
+Referenced by claims::physical_operator::InOperator::Close(), init_alloc_destory(), and init_and_destory()\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void * BasicHashTable::allocate (const unsigned &offset, unsignedthread_id = \fC0\fP)"
+
+.PP
+References SpineLock::acquire(), buck_actual_size_, bucket_, bucksize_, cur_MP_, grandmother, mother_page_list_, mother_page_lock_, overflow_count_, PAGE_SIZE, pagesize_, SpineLock::release(), and tuplesize_\&.
+.PP
+Referenced by init_insert_and_destroy(), and claims::physical_operator::PhysicalAggregation::Open()\&.
+.SS "void* BasicHashTable::atomicAllocate (const unsigned &offset, unsignedthread_id = \fC0\fP)\fC [inline]\fP"
+
+.PP
+References allocate\&.
+.PP
+Referenced by claims::physical_operator::InOperator::Open(), claims::physical_operator::PhysicalHashJoin::Open(), and performance_test()\&.
+.SS "void BasicHashTable::atomicUpdateTuple (unsigned intoffset, void *loc, void *newvalue, \fBfun\fPfunc)\fC [inline]\fP"
+
+.SS "\fBBasicHashTable::Iterator\fP BasicHashTable::CreateIterator () const"
+
+.PP
+References buck_actual_size_, and tuplesize_\&.
+.PP
+Referenced by claims::physical_operator::InOperator::Next(), claims::physical_operator::PhysicalHashJoin::Next(), claims::physical_operator::PhysicalAggregation::Open(), claims::physical_operator::PhysicalHashJoin::Open(), and report_status()\&.
+.SS "unsigned BasicHashTable::getHashTableTupleSize ()\fC [inline]\fP"
+
+.PP
+References tuplesize_\&.
+.SS "unsigned BasicHashTable::getNumberOfInstances ()\fC [static]\fP"
+
+.PP
+References number_of_instances_\&.
+.SS "void BasicHashTable::lockBlock (unsigned &bn)\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::PhysicalAggregation::Open()\&.
+.SS "bool BasicHashTable::placeIterator (\fBIterator\fP &it, const unsigned &offset)\fC [inline]\fP"
+
+.PP
+References buck_actual_size_, bucket_, BasicHashTable::Iterator::cur, BasicHashTable::Iterator::free, nbuckets_, and BasicHashTable::Iterator::next\&.
+.PP
+Referenced by claims::physical_operator::PhysicalAggregation::Next(), claims::physical_operator::InOperator::Next(), claims::physical_operator::PhysicalHashJoin::Next(), claims::physical_operator::PhysicalAggregation::Open(), and report_status()\&.
+.SS "void BasicHashTable::report_status ()"
+
+.PP
+References bucksize_, CreateIterator(), nbuckets_, overflow_count_, placeIterator(), BasicHashTable::Iterator::readnext(), and tuplesize_\&.
+.SS "void BasicHashTable::unlockBlock (unsigned &bn)\fC [inline]\fP"
+
+.PP
+Referenced by claims::physical_operator::PhysicalAggregation::Open()\&.
+.SS "void BasicHashTable::UpdateTuple (unsigned intoffset, void *loc, void *newvalue, \fBfun\fPfunc)\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned long BasicHashTable::allocate_count\fC [private]\fP"
+
+.PP
+Referenced by BasicHashTable()\&.
+.SS "std::set<void*> BasicHashTable::allocated_buckets\fC [private]\fP"
+
+.SS "int BasicHashTable::buck_actual_size_\fC [private]\fP"
+
+.PP
+Referenced by allocate(), BasicHashTable(), CreateIterator(), and placeIterator()\&.
+.SS "void** BasicHashTable::bucket_\fC [private]\fP"
+
+.PP
+Referenced by allocate(), BasicHashTable(), placeIterator(), and ~BasicHashTable()\&.
+.SS "int BasicHashTable::bucksize_\fC [private]\fP"
+
+.PP
+Referenced by allocate(), BasicHashTable(), and report_status()\&.
+.SS "int BasicHashTable::cur_MP_\fC [private]\fP"
+
+.PP
+Referenced by allocate(), and BasicHashTable()\&.
+.SS "pool* BasicHashTable::grandmother\fC [private]\fP"
+
+.PP
+Referenced by allocate(), BasicHashTable(), and ~BasicHashTable()\&.
+.SS "\fBSpineLock\fP* BasicHashTable::lock_list_\fC [private]\fP"
+
+.PP
+Referenced by BasicHashTable(), and ~BasicHashTable()\&.
+.SS "std::vector<char*> BasicHashTable::mother_page_list_\fC [private]\fP"
+
+.PP
+Referenced by allocate(), BasicHashTable(), and ~BasicHashTable()\&.
+.SS "\fBSpineLock\fP BasicHashTable::mother_page_lock_\fC [private]\fP"
+
+.PP
+Referenced by allocate()\&.
+.SS "int BasicHashTable::nbuckets_\fC [private]\fP"
+
+.PP
+Referenced by placeIterator(), and report_status()\&.
+.SS "unsigned BasicHashTable::number_of_instances_ =0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by BasicHashTable(), getNumberOfInstances(), and ~BasicHashTable()\&.
+.SS "unsigned* BasicHashTable::overflow_count_\fC [private]\fP"
+
+.PP
+Referenced by allocate(), BasicHashTable(), report_status(), and ~BasicHashTable()\&.
+.SS "int BasicHashTable::pagesize_\fC [private]\fP"
+
+.PP
+Referenced by allocate(), and BasicHashTable()\&.
+.SS "char* BasicHashTable::t_start_\fC [private]\fP"
+
+.PP
+Referenced by BasicHashTable()\&.
+.SS "int BasicHashTable::tuplesize_\fC [private]\fP"
+
+.PP
+Referenced by allocate(), CreateIterator(), getHashTableTupleSize(), and report_status()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

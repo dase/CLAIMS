@@ -1,4 +1,4 @@
-.TH "PartitionUnbindingMessage" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PartitionUnbindingMessage" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ PartitionUnbindingMessage \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Message\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
@@ -20,7 +22,17 @@ PartitionUnbindingMessage \-
 .RI "\fBPartitionID\fP \fBpartition_id\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PartitionUnbindingMessage::PartitionUnbindingMessage (const \fBPartitionID\fP &pid)\fC [inline]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPartitionID\fP PartitionUnbindingMessage::partition_id"
+
+.PP
+Referenced by BlockManager::BlockManagerWorkerActor::UnbindingPartition()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -1,4 +1,4 @@
-.TH "MemoryChunkStore" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "MemoryChunkStore" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,17 @@ MemoryChunkStore \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <MemoryStore\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBMemoryChunkStore\fP ()"
+.br
+.ti -1c
+.RI "virtual \fB~MemoryChunkStore\fP ()"
+.br
 .ti -1c
 .RI "bool \fBputValue\fP (string chunkId, void *value)"
 .br
@@ -56,7 +64,133 @@ MemoryChunkStore \-
 .RI "static \fBMemoryChunkStore\fP * \fBgetInstance\fP ()"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "map< string, \fBHdfsBlock\fP > \fBbufferpool_\fP"
+.br
+.ti -1c
+.RI "boost::unordered_map< \fBChunkID\fP, 
+.br
+\fBHdfsInMemoryChunk\fP > \fBchunk_list_\fP"
+.br
+.ti -1c
+.RI "long \fBmaxMemory_\fP"
+.br
+.ti -1c
+.RI "long \fBcurrentMemory_\fP"
+.br
+.ti -1c
+.RI "\fBLock\fP \fBlock_\fP"
+.br
+.ti -1c
+.RI "pool \fBchunk_pool_\fP"
+.br
+.ti -1c
+.RI "pool \fBblock_pool_\fP"
+.br
+.in -1c
+.SS "Static Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "static \fBMemoryChunkStore\fP * \fBinstance_\fP =0"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "MemoryChunkStore::MemoryChunkStore ()"
+
+.PP
+Referenced by getInstance()\&.
+.SS "MemoryChunkStore::~MemoryChunkStore ()\fC [virtual]\fP"
+
+.PP
+References block_pool_, and chunk_pool_\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "bool MemoryChunkStore::applyChunk (\fBChunkID\fPchunk_id, void *&start_address)"
+
+.PP
+References Lock::acquire(), chunk_list_, ChunkID::chunk_off, chunk_pool_, CHUNK_SIZE, BufferManager::getInstance(), lock_, and Lock::release()\&.
+.SS "bool MemoryChunkStore::contains (stringblockId)\fC [inline]\fP"
+
+.SS "bool MemoryChunkStore::ensureFreeSpace ()\fC [inline]\fP"
+
+.SS "void* MemoryChunkStore::getChunk (stringblockId)\fC [inline]\fP"
+
+.PP
+Referenced by BlockManager::getLocal()\&.
+.SS "bool MemoryChunkStore::getChunk (const \fBChunkID\fP &chunk_id, \fBHdfsInMemoryChunk\fP &chunk_info)"
+
+.PP
+References Lock::acquire(), chunk_list_, lock_, and Lock::release()\&.
+.SS "vector<string> MemoryChunkStore::getFileLocation (stringpartition_file_name)\fC [inline]\fP"
+
+.SS "\fBMemoryChunkStore\fP * MemoryChunkStore::getInstance ()\fC [static]\fP"
+
+.PP
+References instance_, and MemoryChunkStore()\&.
+.PP
+Referenced by BlockManager::BlockManager(), BufferManager::BufferManager(), BlockManager::initialize(), PartitionStorage::removeAllChunks(), and PartitionStorage::updateChunksWithInsertOrAppend()\&.
+.SS "unsigned MemoryChunkStore::getSize (stringblockId)\fC [inline]\fP"
+
+.SS "bool MemoryChunkStore::putChunk (const \fBChunkID\fP &chunk_id, \fBHdfsInMemoryChunk\fP &chunk_info)"
+
+.PP
+References Lock::acquire(), chunk_list_, lock_, and Lock::release()\&.
+.SS "bool MemoryChunkStore::putValue (stringchunkId, void *value)\fC [inline]\fP"
+
+.PP
+Referenced by BlockManager::put()\&.
+.SS "bool MemoryChunkStore::remove (stringblockId)\fC [inline]\fP"
+
+.SS "void MemoryChunkStore::returnChunk (const \fBChunkID\fP &chunk_id)"
+
+.PP
+References Lock::acquire(), chunk_list_, chunk_pool_, BufferManager::getInstance(), HdfsBlock::hook, HdfsBlock::length, lock_, Lock::release(), and BufferManager::returnStorageBudget()\&.
+.PP
+Referenced by ChunkStorage::createChunkReaderIterator(), PartitionStorage::removeAllChunks(), and PartitionStorage::updateChunksWithInsertOrAppend()\&.
+.SS "bool MemoryChunkStore::tryToPut (stringchunkId, void *value)\fC [inline]\fP"
+
+.PP
+References CHUNK_SIZE, HdfsBlock::hook, and HdfsBlock::length\&.
+.SS "bool MemoryChunkStore::updateChunkInfo (const \fBChunkID\fP &chunk_id, const \fBHdfsInMemoryChunk\fP &chunk_info)"
+
+.PP
+References Lock::acquire(), chunk_list_, lock_, and Lock::release()\&.
+.PP
+Referenced by ChunkStorage::createChunkReaderIterator()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "pool MemoryChunkStore::block_pool_\fC [private]\fP"
+
+.PP
+Referenced by ~MemoryChunkStore()\&.
+.SS "map<string, \fBHdfsBlock\fP> MemoryChunkStore::bufferpool_\fC [private]\fP"
+
+.SS "boost::unordered_map<\fBChunkID\fP,\fBHdfsInMemoryChunk\fP> MemoryChunkStore::chunk_list_\fC [private]\fP"
+
+.PP
+Referenced by applyChunk(), getChunk(), putChunk(), returnChunk(), and updateChunkInfo()\&.
+.SS "pool MemoryChunkStore::chunk_pool_\fC [private]\fP"
+
+.PP
+Referenced by applyChunk(), returnChunk(), and ~MemoryChunkStore()\&.
+.SS "long MemoryChunkStore::currentMemory_\fC [private]\fP"
+
+.SS "\fBMemoryChunkStore\fP * MemoryChunkStore::instance_ =0\fC [static]\fP, \fC [private]\fP"
+
+.PP
+Referenced by getInstance()\&.
+.SS "\fBLock\fP MemoryChunkStore::lock_\fC [private]\fP"
+
+.PP
+Referenced by applyChunk(), getChunk(), putChunk(), returnChunk(), and updateChunkInfo()\&.
+.SS "long MemoryChunkStore::maxMemory_\fC [private]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

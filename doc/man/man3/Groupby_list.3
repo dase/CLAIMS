@@ -1,4 +1,4 @@
-.TH "Groupby_list" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Groupby_list" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Groupby_list \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBgroupbystring\fP"
@@ -22,7 +24,25 @@ Groupby_list \-
 .RI "int \fBwith_rollup\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "char* Groupby_list::groupbystring"
+
+.PP
+Referenced by newGroupbyList(), and output()\&.
+.SS "\fBNode\fP* Groupby_list::next"
+
+.PP
+Referenced by expr_to_str_for_groupby(), get_group_by_attributes(), and newGroupbyList()\&.
+.SS "\fBnodetype\fP Groupby_list::type"
+
+.PP
+Referenced by newGroupbyList()\&.
+.SS "int Groupby_list::with_rollup"
+
+.PP
+Referenced by newGroupbyList(), and output()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

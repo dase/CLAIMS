@@ -1,4 +1,4 @@
-.TH "ThreadPoolLogging" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "ThreadPoolLogging" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ ThreadPoolLogging \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Logging\&.h>\fP
 .SS "Static Public Member Functions"
 
 .in +1c
@@ -16,7 +18,21 @@ ThreadPoolLogging \-
 .RI "static void \fBelog\fP (const char *format,\&.\&.\&.)"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void ThreadPoolLogging::elog (const char *format, \&.\&.\&.)\fC [static]\fP"
+
+.PP
+References RawElog()\&.
+.PP
+Referenced by ThreadPool::bind_cpu()\&.
+.SS "void ThreadPoolLogging::log (const char *format, \&.\&.\&.)\fC [static]\fP"
+
+.PP
+References RawLog()\&.
+.PP
+Referenced by ThreadPool::bind_cpu(), and ThreadPool::thread_exec()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

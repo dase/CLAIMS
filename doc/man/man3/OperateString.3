@@ -1,4 +1,4 @@
-.TH "OperateString" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "OperateString" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,12 +7,17 @@ OperateString \-
 .br
 .PP
 .PP
+\fC#include <data_type\&.h>\fP
+.PP
 Inherits \fBOperate\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
 .RI "\fBOperateString\fP (bool _nullable=true)"
+.br
+.ti -1c
+.RI "\fB~OperateString\fP ()"
 .br
 .ti -1c
 .RI "void \fBassignment\fP (const void *const &src, void *const &desc) const "
@@ -42,19 +47,19 @@ Inherits \fBOperate\fP\&.
 .RI "void \fBmultiple\fP (void *target, void *increment)"
 .br
 .ti -1c
-.RI "fun \fBGetADDFunction\fP ()"
+.RI "\fBfun\fP \fBGetADDFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetMINFunction\fP ()"
+.RI "\fBfun\fP \fBGetMINFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetMAXFunction\fP ()"
+.RI "\fBfun\fP \fBGetMAXFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetIncreateByOneFunction\fP ()"
+.RI "\fBfun\fP \fBGetIncreateByOneFunction\fP ()"
 .br
 .ti -1c
-.RI "fun \fBGetAVGFunction\fP ()"
+.RI "\fBfun\fP \fBGetAVGFunction\fP ()"
 .br
 .ti -1c
 .RI "unsigned \fBgetPartitionValue\fP (const void *key, const \fBPartitionFunction\fP *partition_function) const "
@@ -76,13 +81,117 @@ Inherits \fBOperate\fP\&.
 .br
 .in -1c
 .SS "Additional Inherited Members"
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "OperateString::OperateString (bool_nullable = \fCtrue\fP)\fC [inline]\fP"
+
+.SS "OperateString::~OperateString ()\fC [inline]\fP"
+
 .SH "Member Function Documentation"
 .PP 
+.SS "void OperateString::add (void *target, void *increment)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "void OperateString::assignment (const void *const &src, void *const &desc) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "int OperateString::compare (const void *a, const void *b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBOperate\fP* OperateString::duplicateOperator () const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateString::equal (const void *const &a, const void *const &b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "\fBfun\fP OperateString::GetADDFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References ADD_FUNC< char * >()\&.
+.SS "\fBfun\fP OperateString::GetAVGFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References ADD_IncreaseByOne< char * >()\&.
+.SS "\fBfun\fP OperateString::GetIncreateByOneFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References IncreaseByOne< char * >()\&.
+.SS "\fBfun\fP OperateString::GetMAXFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References MAX< char * >()\&.
+.SS "\fBfun\fP OperateString::GetMINFunction ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References MIN< char * >()\&.
+.SS "unsigned OperateString::getPartitionValue (const void *key, const \fBPartitionFunction\fP *partition_function) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "unsigned OperateString::getPartitionValue (const void *key) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References hash_value()\&.
+.SS "unsigned OperateString::getPartitionValue (const void *key, const unsigned long &mod) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References hash_value()\&.
+.SS "bool OperateString::greate (const void *&a, const void *&b) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateString::isNull (void *value) const\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_STRING\&.
 .SS "bool OperateString::less (const void *&a, const void *&b) const\fC [inline]\fP, \fC [virtual]\fP"
 The following function may return a wrong value 
 .PP
 Implements \fBOperate\fP\&.
+.SS "void OperateString::multiple (void *target, void *increment)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.SS "bool OperateString::setNull (void *value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_STRING\&.
+.SS "std::string OperateString::toString (void *value)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_STRING, and trimSpecialCharactor()\&.
+.SS "void OperateString::toValue (void *target, const char *string)\fC [inline]\fP, \fC [virtual]\fP"
+
+.PP
+Implements \fBOperate\fP\&.
+.PP
+References NULL_STRING\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

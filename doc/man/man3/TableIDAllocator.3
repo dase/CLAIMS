@@ -1,4 +1,4 @@
-.TH "TableIDAllocator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "TableIDAllocator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,9 +6,14 @@ TableIDAllocator \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Catalog\&.h>\fP
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBTableIDAllocator\fP ()"
+.br
 .ti -1c
 .RI "unsigned \fBallocate_unique_table_id\fP ()"
 .br
@@ -36,7 +41,45 @@ TableIDAllocator \-
 .RI "class \fBboost::serialization::access\fP"
 .br
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "TableIDAllocator::TableIDAllocator ()\fC [inline]\fP"
+
+.PP
+References table_id_curosr\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned TableIDAllocator::allocate_unique_table_id ()\fC [inline]\fP"
+
+.PP
+References Lock::acquire(), lock_, Lock::release(), and table_id_curosr\&.
+.PP
+Referenced by Catalog::allocate_unique_table_id()\&.
+.SS "void TableIDAllocator::decrease_table_id ()\fC [inline]\fP"
+
+.PP
+References Lock::acquire(), lock_, Lock::release(), and table_id_curosr\&.
+.PP
+Referenced by Catalog::add_table()\&.
+.SS "template<class Archive > void TableIDAllocator::serialize (Archive &ar, const unsigned intfile_version)\fC [inline]\fP"
+
+.PP
+References table_id_curosr\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class boost::serialization::access\fC [friend]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBLock\fP TableIDAllocator::lock_"
+
+.PP
+Referenced by allocate_unique_table_id(), and decrease_table_id()\&.
+.SS "unsigned TableIDAllocator::table_id_curosr"
+
+.PP
+Referenced by allocate_unique_table_id(), decrease_table_id(), Catalog::getTableCount(), serialize(), and TableIDAllocator()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

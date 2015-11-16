@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Json::StyledStreamWriter Class Reference</title>
+<title>Claims: Json::StyledStreamWriter Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -106,6 +106,10 @@ $(document).ready(function(){initNavTree('classJson_1_1StyledStreamWriter.html',
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classJson_1_1StyledStreamWriter-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Json::StyledStreamWriter Class Reference</div>  </div>
@@ -119,12 +123,63 @@ $(document).ready(function(){initNavTree('classJson_1_1StyledStreamWriter.html',
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae87567a08de865b6dc84d7218a3001df"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae87567a08de865b6dc84d7218a3001df"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>StyledStreamWriter</b> (std::string indentation=&quot;\t&quot;)</td></tr>
+<tr class="memitem:ae87567a08de865b6dc84d7218a3001df"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#ae87567a08de865b6dc84d7218a3001df">StyledStreamWriter</a> (std::string indentation=&quot;\t&quot;)</td></tr>
 <tr class="separator:ae87567a08de865b6dc84d7218a3001df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17444a59f617970279714e97b0ddfa46"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a17444a59f617970279714e97b0ddfa46">~StyledStreamWriter</a> ()</td></tr>
+<tr class="separator:a17444a59f617970279714e97b0ddfa46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07807741c6c43ecd35885a87234d0805"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805">write</a> (std::ostream &amp;out, const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;root)</td></tr>
 <tr class="memdesc:a07807741c6c43ecd35885a87234d0805"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize a <a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a> in <a href="http://www.json.org">JSON</a> format.  <a href="#a07807741c6c43ecd35885a87234d0805">More...</a><br/></td></tr>
 <tr class="separator:a07807741c6c43ecd35885a87234d0805"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:ad0e42dda934aaee87fa9434c30186a9b"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#ad0e42dda934aaee87fa9434c30186a9b">ChildValues</a></td></tr>
+<tr class="separator:ad0e42dda934aaee87fa9434c30186a9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a4359250e09273fa0144021684be001ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue</a> (const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;value)</td></tr>
+<tr class="separator:a4359250e09273fa0144021684be001ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a606f2ddd58093c9b019d452c1b6f09fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue</a> (const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;value)</td></tr>
+<tr class="separator:a606f2ddd58093c9b019d452c1b6f09fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88f4d342cf25c73aabf77c1b8ba01e44"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44">isMultineArray</a> (const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;value)</td></tr>
+<tr class="separator:a88f4d342cf25c73aabf77c1b8ba01e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae626a0ab8a529e0e524924f1ab3b1a0d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d">pushValue</a> (const std::string &amp;value)</td></tr>
+<tr class="separator:ae626a0ab8a529e0e524924f1ab3b1a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a52fa5b406f1580a61dde3b5638e76d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d">writeIndent</a> ()</td></tr>
+<tr class="separator:a5a52fa5b406f1580a61dde3b5638e76d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a602fd51aa92cac1f18351806f1d9c8cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc">writeWithIndent</a> (const std::string &amp;value)</td></tr>
+<tr class="separator:a602fd51aa92cac1f18351806f1d9c8cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab49409578422aa73b060e3492dd6c72a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a">indent</a> ()</td></tr>
+<tr class="separator:ab49409578422aa73b060e3492dd6c72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74d8fb9beecd29759d7b79f430386358"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358">unindent</a> ()</td></tr>
+<tr class="separator:a74d8fb9beecd29759d7b79f430386358"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79c3c2b320475035c47b2db484a3e434"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434">writeCommentBeforeValue</a> (const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;root)</td></tr>
+<tr class="separator:a79c3c2b320475035c47b2db484a3e434"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2ca860e317ca91d6b2932535b4ce9c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7">writeCommentAfterValueOnSameLine</a> (const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;root)</td></tr>
+<tr class="separator:ad2ca860e317ca91d6b2932535b4ce9c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2892f57171919fa4f8a5ae5574755cf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#ad2892f57171919fa4f8a5ae5574755cf">hasCommentForValue</a> (const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;value)</td></tr>
+<tr class="separator:ad2892f57171919fa4f8a5ae5574755cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a5a5498796a3e12abca5ac0ca0be09535"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535">normalizeEOL</a> (const std::string &amp;text)</td></tr>
+<tr class="separator:a5a5498796a3e12abca5ac0ca0be09535"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aafd62e00a401df73fcacb2e410114b3d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classJson_1_1StyledStreamWriter.html#ad0e42dda934aaee87fa9434c30186a9b">ChildValues</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#aafd62e00a401df73fcacb2e410114b3d">childValues_</a></td></tr>
+<tr class="separator:aafd62e00a401df73fcacb2e410114b3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6a4be02f654d9105af8fa560b676967"><td class="memItemLeft" align="right" valign="top">std::ostream *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a></td></tr>
+<tr class="separator:aa6a4be02f654d9105af8fa560b676967"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9ebd4487e7f69bd1074e6ce29c7cf02"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#af9ebd4487e7f69bd1074e6ce29c7cf02">indentString_</a></td></tr>
+<tr class="separator:af9ebd4487e7f69bd1074e6ce29c7cf02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67fdaa6758885f082b6a7ede52b0ab91"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a67fdaa6758885f082b6a7ede52b0ab91">rightMargin_</a></td></tr>
+<tr class="separator:a67fdaa6758885f082b6a7ede52b0ab91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58dc0eaf85c58b83d19d6bba8eead27d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a58dc0eaf85c58b83d19d6bba8eead27d">indentation_</a></td></tr>
+<tr class="separator:a58dc0eaf85c58b83d19d6bba8eead27d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e4bb7fc223b2652b72b523b1ce414fa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJson_1_1StyledStreamWriter.html#a4e4bb7fc223b2652b72b523b1ce414fa">addChildValues_</a></td></tr>
+<tr class="separator:a4e4bb7fc223b2652b72b523b1ce414fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Writes a <a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a> in <a href="http://www.json.org">JSON</a> format in a human friendly way, to a stream rather than to a string. </p>
@@ -150,7 +205,293 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classJson_1_1Reader.html" title="Unserialize a JSON document into a Value. ">Reader</a>, <a class="el" href="classJson_1_1Value.html" title="Represents a JSON value. ">Value</a>, <a class="el" href="classJson_1_1Value.html#a29f3a30f7e5d3af6f38d57999bf5b480" title="Comments must be //... or /* ... */. ">Value::setComment()</a> </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="ad0e42dda934aaee87fa9434c30186a9b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;std::string&gt; <a class="el" href="classJson_1_1StyledStreamWriter.html#ad0e42dda934aaee87fa9434c30186a9b">Json::StyledStreamWriter::ChildValues</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ae87567a08de865b6dc84d7218a3001df"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::StyledStreamWriter::StyledStreamWriter </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>indentation</em> = <code>&quot;\t&quot;</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a17444a59f617970279714e97b0ddfa46"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::StyledStreamWriter::~StyledStreamWriter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad2892f57171919fa4f8a5ae5574755cf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Json::StyledStreamWriter::hasCommentForValue </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="namespaceJson.html#a4fc417c23905b2ae9e2c47d197a45351ac5784ca53b12250888ddb642b06aebef">Json::commentAfter</a>, <a class="el" href="namespaceJson.html#a4fc417c23905b2ae9e2c47d197a45351a008a230a0586de54f30b76afe70fdcfa">Json::commentAfterOnSameLine</a>, <a class="el" href="namespaceJson.html#a4fc417c23905b2ae9e2c47d197a45351a52f1733775460517b2ea6bedf4906d52">Json::commentBefore</a>, and <a class="el" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a">Json::Value::hasComment()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_ad2892f57171919fa4f8a5ae5574755cf_cgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_ad2892f57171919fa4f8a5ae5574755cf_cgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_ad2892f57171919fa4f8a5ae5574755cf_cgraph" id="classJson_1_1StyledStreamWriter_ad2892f57171919fa4f8a5ae5574755cf_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a" title="Json::Value::hasComment" alt="" coords="227,12,405,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ab49409578422aa73b060e3492dd6c72a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::indent </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1StyledStreamWriter.html#a58dc0eaf85c58b83d19d6bba8eead27d">indentation_</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#af9ebd4487e7f69bd1074e6ce29c7cf02">indentString_</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_ab49409578422aa73b060e3492dd6c72a_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_ab49409578422aa73b060e3492dd6c72a_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_ab49409578422aa73b060e3492dd6c72a_icgraph" id="classJson_1_1StyledStreamWriter_ab49409578422aa73b060e3492dd6c72a_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="227,41,399,82"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="449,11,621,53"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="670,5,842,46"/><area shape="rect" id="node6" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="670,70,842,111"/><area shape="rect" id="node5" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="891,12,1013,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a88f4d342cf25c73aabf77c1b8ba01e44"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Json::StyledStreamWriter::isMultineArray </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1StyledStreamWriter.html#a4e4bb7fc223b2652b72b523b1ce414fa">addChildValues_</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#aafd62e00a401df73fcacb2e410114b3d">childValues_</a>, <a class="el" href="classJson_1_1Value.html#ac8c898f93543e55b67418f94bced20af">Json::Value::isArray()</a>, <a class="el" href="classJson_1_1Value.html#a80cffaa0402b80317c0437216bbb6d92">Json::Value::isObject()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a67fdaa6758885f082b6a7ede52b0ab91">rightMargin_</a>, <a class="el" href="classJson_1_1Value.html#a4ca8ee6c48a34ca6c2f131956bab5e05">Json::Value::size()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a88f4d342cf25c73aabf77c1b8ba01e44_cgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a88f4d342cf25c73aabf77c1b8ba01e44_cgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a88f4d342cf25c73aabf77c1b8ba01e44_cgraph" id="classJson_1_1StyledStreamWriter_a88f4d342cf25c73aabf77c1b8ba01e44_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1Value.html#ac8c898f93543e55b67418f94bced20af" title="Json::Value::isArray" alt="" coords="243,5,383,32"/><area shape="rect" id="node3" href="classJson_1_1Value.html#a80cffaa0402b80317c0437216bbb6d92" title="Json::Value::isObject" alt="" coords="240,56,387,83"/><area shape="rect" id="node4" href="classJson_1_1Value.html#a4ca8ee6c48a34ca6c2f131956bab5e05" title="Number of values in array or object. " alt="" coords="768,99,891,125"/><area shape="rect" id="node5" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="227,495,399,537"/><area shape="rect" id="node6" href="classJson_1_1Value.html#a695ef31fad36b4712918b3ff80158479" title="Json::Value::type" alt="" coords="490,376,614,403"/><area shape="rect" id="node7" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d" title="Json::StyledStreamWriter\l::pushValue" alt="" coords="743,215,915,257"/><area shape="rect" id="node8" href="namespaceJson.html#a5d3eba6789f9a9c1ab563ff8b4a5090f" title="Json::valueToString" alt="" coords="483,427,621,453"/><area shape="rect" id="node9" href="classJson_1_1Value.html#a3786bb100c5cf9a98eb6d13784968956" title="Json::Value::asLargestInt" alt="" coords="467,883,637,909"/><area shape="rect" id="node16" href="classJson_1_1Value.html#a692b88345a745b2f89ca5d94b52e94d4" title="Json::Value::asLargestUInt" alt="" coords="461,832,643,859"/><area shape="rect" id="node21" href="classJson_1_1Value.html#a33434ed1c0217a34d04c95fa5342fd37" title="Json::Value::asDouble" alt="" coords="475,579,629,605"/><area shape="rect" id="node22" href="namespaceJson.html#aa0c8235a4a5c6599da5d3332743db8ac" title="Json::valueToQuotedString" alt="" coords="462,984,642,1011"/><area shape="rect" id="node25" href="classJson_1_1Value.html#a5b7da48b163bcec63b1424f1608b7da6" title="Json::Value::asCString" alt="" coords="473,680,631,707"/><area shape="rect" id="node26" href="classJson_1_1Value.html#a7402c797285c020566c3db5f8ae4e940" title="Json::Value::asBool" alt="" coords="483,731,621,757"/><area shape="rect" id="node27" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="466,259,638,301"/><area shape="rect" id="node37" href="classJson_1_1Value.html#a30fa08af88f2d0a038b22ba9f4e88b2a" title="Return a list of the member names. " alt="" coords="449,781,655,808"/><area shape="rect" id="node28" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc" title="Json::StyledStreamWriter\l::writeWithIndent" alt="" coords="743,150,915,191"/><area shape="rect" id="node30" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a" title="Json::StyledStreamWriter\l::indent" alt="" coords="743,589,915,630"/><area shape="rect" id="node31" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434" title="Json::StyledStreamWriter\l::writeCommentBeforeValue" alt="" coords="736,426,923,467"/><area shape="rect" id="node35" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7" title="Json::StyledStreamWriter\l::writeCommentAfterValueOnSameLine" alt="" coords="704,491,955,533"/><area shape="rect" id="node36" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358" title="Json::StyledStreamWriter\l::unindent" alt="" coords="743,333,915,374"/><area shape="rect" id="node10" href="classJson_1_1Value.html#ac786e35b860b1d700cb3d3e56dd6a235" title="Json::Value::asInt" alt="" coords="765,933,893,960"/><area shape="rect" id="node14" href="classJson_1_1Value.html#a7f739b55aef060f4ab6360bfe1912b77" title="Json::Value::asInt64" alt="" coords="758,883,901,909"/><area shape="rect" id="node11" href="namespaceJson.html#aff0180507262a244de61b961178d7443" title="Json::InRange" alt="" coords="1037,845,1144,872"/><area shape="rect" id="node12" href="classJson_1_1Value.html#ab0df4746d6787d2ce1db1a156c118f14" title="Json::Value::isInt" alt="" coords="1029,947,1153,973"/><area shape="rect" id="node13" href="namespaceJson.html#a1a04cc9d31e64b5912dade003c9b99b5" title="Json::IsIntegral" alt="" coords="1260,845,1372,872"/><area shape="rect" id="node15" href="classJson_1_1Value.html#aba89690e5fd72d0f7121a30013470423" title="Json::Value::isInt64" alt="" coords="1021,896,1160,923"/><area shape="rect" id="node17" href="classJson_1_1Value.html#a2019d1bd296b89356c1b0da5970c918c" title="Json::Value::asUInt" alt="" coords="760,832,899,859"/><area shape="rect" id="node19" href="classJson_1_1Value.html#a65acdab039f60ff0da15e622f2e17739" title="Json::Value::asUInt64" alt="" coords="753,781,905,808"/><area shape="rect" id="node18" href="classJson_1_1Value.html#ae814ca1796fe2d43ac09898b70213989" title="Json::Value::isUInt" alt="" coords="1023,795,1158,821"/><area shape="rect" id="node20" href="classJson_1_1Value.html#aa35efece2a6cba4d988d7d5b54db2fb8" title="Json::Value::isUInt64" alt="" coords="1017,744,1165,771"/><area shape="rect" id="node23" href="namespaceJson.html#aa11b210ff98a4f4dd4e2df19260f8c3a" title="Json::containsControlCharacter" alt="" coords="726,1035,933,1061"/><area shape="rect" id="node24" href="namespaceJson.html#a0381e631737f51331065a388f4f59197" title="Returns true if ch is a control character (in range [0,32[). " alt="" coords="1007,1023,1174,1049"/><area shape="rect" id="node29" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d" title="Json::StyledStreamWriter\l::writeIndent" alt="" coords="1005,213,1177,254"/><area shape="rect" id="node32" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a" title="Json::Value::hasComment" alt="" coords="1227,437,1405,464"/><area shape="rect" id="node33" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535" title="Json::StyledStreamWriter\l::normalizeEOL" alt="" coords="1005,489,1177,530"/><area shape="rect" id="node34" href="classJson_1_1Value.html#aa1e105b5d7f55d6e42f4fb2f3674116f" title="Include delimiters and embedded newlines. " alt="" coords="1003,437,1178,464"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a88f4d342cf25c73aabf77c1b8ba01e44_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a88f4d342cf25c73aabf77c1b8ba01e44_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a88f4d342cf25c73aabf77c1b8ba01e44_icgraph" id="classJson_1_1StyledStreamWriter_a88f4d342cf25c73aabf77c1b8ba01e44_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="227,5,399,46"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="449,5,621,46"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="670,5,842,46"/><area shape="rect" id="node5" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="891,12,1013,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5a5498796a3e12abca5ac0ca0be09535"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Json::StyledStreamWriter::normalizeEOL </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7">writeCommentAfterValueOnSameLine()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434">writeCommentBeforeValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a5a5498796a3e12abca5ac0ca0be09535_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a5a5498796a3e12abca5ac0ca0be09535_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a5a5498796a3e12abca5ac0ca0be09535_icgraph" id="classJson_1_1StyledStreamWriter_a5a5498796a3e12abca5ac0ca0be09535_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7" title="Json::StyledStreamWriter\l::writeCommentAfterValueOnSameLine" alt="" coords="227,51,477,92"/><area shape="rect" id="node8" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434" title="Json::StyledStreamWriter\l::writeCommentBeforeValue" alt="" coords="259,138,445,179"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="747,144,919,186"/><area shape="rect" id="node5" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="526,39,698,80"/><area shape="rect" id="node6" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="969,8,1141,50"/><area shape="rect" id="node4" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="994,152,1115,178"/><area shape="rect" id="node7" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="747,79,919,120"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ae626a0ab8a529e0e524924f1ab3b1a0d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::pushValue </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1StyledStreamWriter.html#a4e4bb7fc223b2652b72b523b1ce414fa">addChildValues_</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#aafd62e00a401df73fcacb2e410114b3d">childValues_</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_ae626a0ab8a529e0e524924f1ab3b1a0d_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_ae626a0ab8a529e0e524924f1ab3b1a0d_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_ae626a0ab8a529e0e524924f1ab3b1a0d_icgraph" id="classJson_1_1StyledStreamWriter_ae626a0ab8a529e0e524924f1ab3b1a0d_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="227,41,399,82"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="449,11,621,53"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="670,5,842,46"/><area shape="rect" id="node6" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="670,70,842,111"/><area shape="rect" id="node5" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="891,12,1013,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a74d8fb9beecd29759d7b79f430386358"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::unindent </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1StyledStreamWriter.html#a58dc0eaf85c58b83d19d6bba8eead27d">indentation_</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#af9ebd4487e7f69bd1074e6ce29c7cf02">indentString_</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a74d8fb9beecd29759d7b79f430386358_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a74d8fb9beecd29759d7b79f430386358_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a74d8fb9beecd29759d7b79f430386358_icgraph" id="classJson_1_1StyledStreamWriter_a74d8fb9beecd29759d7b79f430386358_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="227,41,399,82"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="449,11,621,53"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="670,5,842,46"/><area shape="rect" id="node6" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="670,70,842,111"/><area shape="rect" id="node5" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="891,12,1013,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="a07807741c6c43ecd35885a87234d0805"></a>
 <div class="memitem">
 <div class="memproto">
@@ -185,13 +526,432 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>There is no point in deriving from <a class="el" href="classJson_1_1Writer.html" title="Abstract class for writers. ">Writer</a>, since <a class="el" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. ">write()</a> should not return a value. </dd></dl>
 
+<p>References <a class="el" href="classJson_1_1StyledStreamWriter.html#a4e4bb7fc223b2652b72b523b1ce414fa">addChildValues_</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#af9ebd4487e7f69bd1074e6ce29c7cf02">indentString_</a>, <a class="el" href="CSBPlusTree_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4">NULL</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7">writeCommentAfterValueOnSameLine()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434">writeCommentBeforeValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
 <p>Referenced by <a class="el" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f">Json::operator&lt;&lt;()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a07807741c6c43ecd35885a87234d0805_cgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a07807741c6c43ecd35885a87234d0805_cgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a07807741c6c43ecd35885a87234d0805_cgraph" id="classJson_1_1StyledStreamWriter_a07807741c6c43ecd35885a87234d0805_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7" title="Json::StyledStreamWriter\l::writeCommentAfterValueOnSameLine" alt="" coords="704,150,955,192"/><area shape="rect" id="node6" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434" title="Json::StyledStreamWriter\l::writeCommentBeforeValue" alt="" coords="736,78,923,120"/><area shape="rect" id="node7" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="227,444,399,485"/><area shape="rect" id="node3" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a" title="Json::Value::hasComment" alt="" coords="1227,151,1405,178"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535" title="Json::StyledStreamWriter\l::normalizeEOL" alt="" coords="1005,85,1177,126"/><area shape="rect" id="node5" href="classJson_1_1Value.html#aa1e105b5d7f55d6e42f4fb2f3674116f" title="Include delimiters and embedded newlines. " alt="" coords="1003,151,1178,178"/><area shape="rect" id="node8" href="classJson_1_1Value.html#a695ef31fad36b4712918b3ff80158479" title="Json::Value::type" alt="" coords="490,334,614,360"/><area shape="rect" id="node9" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d" title="Json::StyledStreamWriter\l::pushValue" alt="" coords="743,396,915,437"/><area shape="rect" id="node10" href="namespaceJson.html#a5d3eba6789f9a9c1ab563ff8b4a5090f" title="Json::valueToString" alt="" coords="483,654,621,680"/><area shape="rect" id="node11" href="classJson_1_1Value.html#a3786bb100c5cf9a98eb6d13784968956" title="Json::Value::asLargestInt" alt="" coords="467,756,637,783"/><area shape="rect" id="node18" href="classJson_1_1Value.html#a692b88345a745b2f89ca5d94b52e94d4" title="Json::Value::asLargestUInt" alt="" coords="461,704,643,731"/><area shape="rect" id="node23" href="classJson_1_1Value.html#a33434ed1c0217a34d04c95fa5342fd37" title="Json::Value::asDouble" alt="" coords="475,807,629,834"/><area shape="rect" id="node24" href="namespaceJson.html#aa0c8235a4a5c6599da5d3332743db8ac" title="Json::valueToQuotedString" alt="" coords="462,859,642,886"/><area shape="rect" id="node27" href="classJson_1_1Value.html#a5b7da48b163bcec63b1424f1608b7da6" title="Json::Value::asCString" alt="" coords="473,910,631,936"/><area shape="rect" id="node28" href="classJson_1_1Value.html#a7402c797285c020566c3db5f8ae4e940" title="Json::Value::asBool" alt="" coords="483,131,621,158"/><area shape="rect" id="node29" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="466,385,638,426"/><area shape="rect" id="node38" href="classJson_1_1Value.html#a30fa08af88f2d0a038b22ba9f4e88b2a" title="Return a list of the member names. " alt="" coords="449,232,655,259"/><area shape="rect" id="node34" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc" title="Json::StyledStreamWriter\l::writeWithIndent" alt="" coords="743,228,915,269"/><area shape="rect" id="node36" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a" title="Json::StyledStreamWriter\l::indent" alt="" coords="743,526,915,568"/><area shape="rect" id="node37" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358" title="Json::StyledStreamWriter\l::unindent" alt="" coords="743,592,915,633"/><area shape="rect" id="node12" href="classJson_1_1Value.html#ac786e35b860b1d700cb3d3e56dd6a235" title="Json::Value::asInt" alt="" coords="765,810,893,836"/><area shape="rect" id="node16" href="classJson_1_1Value.html#a7f739b55aef060f4ab6360bfe1912b77" title="Json::Value::asInt64" alt="" coords="758,759,901,786"/><area shape="rect" id="node13" href="namespaceJson.html#aff0180507262a244de61b961178d7443" title="Json::InRange" alt="" coords="1037,734,1144,760"/><area shape="rect" id="node14" href="classJson_1_1Value.html#ab0df4746d6787d2ce1db1a156c118f14" title="Json::Value::isInt" alt="" coords="1029,835,1153,862"/><area shape="rect" id="node15" href="namespaceJson.html#a1a04cc9d31e64b5912dade003c9b99b5" title="Json::IsIntegral" alt="" coords="1260,734,1372,760"/><area shape="rect" id="node17" href="classJson_1_1Value.html#aba89690e5fd72d0f7121a30013470423" title="Json::Value::isInt64" alt="" coords="1021,784,1160,811"/><area shape="rect" id="node19" href="classJson_1_1Value.html#a2019d1bd296b89356c1b0da5970c918c" title="Json::Value::asUInt" alt="" coords="760,708,899,735"/><area shape="rect" id="node21" href="classJson_1_1Value.html#a65acdab039f60ff0da15e622f2e17739" title="Json::Value::asUInt64" alt="" coords="753,658,905,684"/><area shape="rect" id="node20" href="classJson_1_1Value.html#ae814ca1796fe2d43ac09898b70213989" title="Json::Value::isUInt" alt="" coords="1023,683,1158,710"/><area shape="rect" id="node22" href="classJson_1_1Value.html#aa35efece2a6cba4d988d7d5b54db2fb8" title="Json::Value::isUInt64" alt="" coords="1017,632,1165,659"/><area shape="rect" id="node25" href="namespaceJson.html#aa11b210ff98a4f4dd4e2df19260f8c3a" title="Json::containsControlCharacter" alt="" coords="726,911,933,938"/><area shape="rect" id="node26" href="namespaceJson.html#a0381e631737f51331065a388f4f59197" title="Returns true if ch is a control character (in range [0,32[). " alt="" coords="1007,899,1174,926"/><area shape="rect" id="node30" href="classJson_1_1Value.html#a4ca8ee6c48a34ca6c2f131956bab5e05" title="Number of values in array or object. " alt="" coords="1029,368,1152,395"/><area shape="rect" id="node31" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="743,461,915,502"/><area shape="rect" id="node35" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d" title="Json::StyledStreamWriter\l::writeIndent" alt="" coords="1005,270,1177,312"/><area shape="rect" id="node32" href="classJson_1_1Value.html#ac8c898f93543e55b67418f94bced20af" title="Json::Value::isArray" alt="" coords="1021,495,1161,522"/><area shape="rect" id="node33" href="classJson_1_1Value.html#a80cffaa0402b80317c0437216bbb6d92" title="Json::Value::isObject" alt="" coords="1017,444,1164,471"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a07807741c6c43ecd35885a87234d0805_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a07807741c6c43ecd35885a87234d0805_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a07807741c6c43ecd35885a87234d0805_icgraph" id="classJson_1_1StyledStreamWriter_a07807741c6c43ecd35885a87234d0805_icgraph">
+<area shape="rect" id="node2" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="227,12,349,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a606f2ddd58093c9b019d452c1b6f09fe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::writeArrayValue </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1StyledStreamWriter.html#aafd62e00a401df73fcacb2e410114b3d">childValues_</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a">indent()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44">isMultineArray()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d">pushValue()</a>, <a class="el" href="classJson_1_1Value.html#a4ca8ee6c48a34ca6c2f131956bab5e05">Json::Value::size()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358">unindent()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7">writeCommentAfterValueOnSameLine()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434">writeCommentBeforeValue()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d">writeIndent()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc">writeWithIndent()</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a606f2ddd58093c9b019d452c1b6f09fe_cgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a606f2ddd58093c9b019d452c1b6f09fe_cgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a606f2ddd58093c9b019d452c1b6f09fe_cgraph" id="classJson_1_1StyledStreamWriter_a606f2ddd58093c9b019d452c1b6f09fe_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a" title="Json::StyledStreamWriter\l::indent" alt="" coords="709,5,881,46"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="227,487,399,529"/><area shape="rect" id="node9" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d" title="Json::StyledStreamWriter\l::pushValue" alt="" coords="709,70,881,111"/><area shape="rect" id="node6" href="classJson_1_1Value.html#a4ca8ee6c48a34ca6c2f131956bab5e05" title="Number of values in array or object. " alt="" coords="473,553,596,580"/><area shape="rect" id="node37" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358" title="Json::StyledStreamWriter\l::unindent" alt="" coords="709,789,881,830"/><area shape="rect" id="node36" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7" title="Json::StyledStreamWriter\l::writeCommentAfterValueOnSameLine" alt="" coords="669,658,920,699"/><area shape="rect" id="node32" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434" title="Json::StyledStreamWriter\l::writeCommentBeforeValue" alt="" coords="701,593,888,634"/><area shape="rect" id="node31" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d" title="Json::StyledStreamWriter\l::writeIndent" alt="" coords="986,829,1158,870"/><area shape="rect" id="node7" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="449,386,621,427"/><area shape="rect" id="node30" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc" title="Json::StyledStreamWriter\l::writeWithIndent" alt="" coords="709,723,881,765"/><area shape="rect" id="node4" href="classJson_1_1Value.html#ac8c898f93543e55b67418f94bced20af" title="Json::Value::isArray" alt="" coords="465,503,605,529"/><area shape="rect" id="node5" href="classJson_1_1Value.html#a80cffaa0402b80317c0437216bbb6d92" title="Json::Value::isObject" alt="" coords="461,452,608,479"/><area shape="rect" id="node8" href="classJson_1_1Value.html#a695ef31fad36b4712918b3ff80158479" title="Json::Value::type" alt="" coords="733,288,857,315"/><area shape="rect" id="node10" href="namespaceJson.html#a5d3eba6789f9a9c1ab563ff8b4a5090f" title="Json::valueToString" alt="" coords="725,339,864,365"/><area shape="rect" id="node11" href="classJson_1_1Value.html#a3786bb100c5cf9a98eb6d13784968956" title="Json::Value::asLargestInt" alt="" coords="709,389,880,416"/><area shape="rect" id="node18" href="classJson_1_1Value.html#a692b88345a745b2f89ca5d94b52e94d4" title="Json::Value::asLargestUInt" alt="" coords="704,440,885,467"/><area shape="rect" id="node23" href="classJson_1_1Value.html#a33434ed1c0217a34d04c95fa5342fd37" title="Json::Value::asDouble" alt="" coords="717,491,872,517"/><area shape="rect" id="node24" href="namespaceJson.html#aa0c8235a4a5c6599da5d3332743db8ac" title="Json::valueToQuotedString" alt="" coords="705,541,885,568"/><area shape="rect" id="node27" href="classJson_1_1Value.html#a5b7da48b163bcec63b1424f1608b7da6" title="Json::Value::asCString" alt="" coords="716,136,873,163"/><area shape="rect" id="node28" href="classJson_1_1Value.html#a7402c797285c020566c3db5f8ae4e940" title="Json::Value::asBool" alt="" coords="725,187,864,213"/><area shape="rect" id="node29" href="classJson_1_1Value.html#a30fa08af88f2d0a038b22ba9f4e88b2a" title="Return a list of the member names. " alt="" coords="691,237,898,264"/><area shape="rect" id="node12" href="classJson_1_1Value.html#ac786e35b860b1d700cb3d3e56dd6a235" title="Json::Value::asInt" alt="" coords="1008,292,1136,319"/><area shape="rect" id="node16" href="classJson_1_1Value.html#a7f739b55aef060f4ab6360bfe1912b77" title="Json::Value::asInt64" alt="" coords="1001,343,1143,369"/><area shape="rect" id="node13" href="namespaceJson.html#aff0180507262a244de61b961178d7443" title="Json::InRange" alt="" coords="1260,368,1367,395"/><area shape="rect" id="node14" href="classJson_1_1Value.html#ab0df4746d6787d2ce1db1a156c118f14" title="Json::Value::isInt" alt="" coords="1251,267,1375,293"/><area shape="rect" id="node15" href="namespaceJson.html#a1a04cc9d31e64b5912dade003c9b99b5" title="Json::IsIntegral" alt="" coords="1451,368,1563,395"/><area shape="rect" id="node17" href="classJson_1_1Value.html#aba89690e5fd72d0f7121a30013470423" title="Json::Value::isInt64" alt="" coords="1244,317,1383,344"/><area shape="rect" id="node19" href="classJson_1_1Value.html#a2019d1bd296b89356c1b0da5970c918c" title="Json::Value::asUInt" alt="" coords="1003,444,1141,471"/><area shape="rect" id="node21" href="classJson_1_1Value.html#a65acdab039f60ff0da15e622f2e17739" title="Json::Value::asUInt64" alt="" coords="996,393,1148,420"/><area shape="rect" id="node20" href="classJson_1_1Value.html#ae814ca1796fe2d43ac09898b70213989" title="Json::Value::isUInt" alt="" coords="1246,469,1381,496"/><area shape="rect" id="node22" href="classJson_1_1Value.html#aa35efece2a6cba4d988d7d5b54db2fb8" title="Json::Value::isUInt64" alt="" coords="1239,419,1387,445"/><area shape="rect" id="node25" href="namespaceJson.html#aa11b210ff98a4f4dd4e2df19260f8c3a" title="Json::containsControlCharacter" alt="" coords="969,545,1175,572"/><area shape="rect" id="node26" href="namespaceJson.html#a0381e631737f51331065a388f4f59197" title="Returns true if ch is a control character (in range [0,32[). " alt="" coords="1230,533,1397,560"/><area shape="rect" id="node33" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a" title="Json::Value::hasComment" alt="" coords="1225,647,1402,673"/><area shape="rect" id="node34" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535" title="Json::StyledStreamWriter\l::normalizeEOL" alt="" coords="986,698,1158,739"/><area shape="rect" id="node35" href="classJson_1_1Value.html#aa1e105b5d7f55d6e42f4fb2f3674116f" title="Include delimiters and embedded newlines. " alt="" coords="985,647,1159,673"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a606f2ddd58093c9b019d452c1b6f09fe_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a606f2ddd58093c9b019d452c1b6f09fe_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a606f2ddd58093c9b019d452c1b6f09fe_icgraph" id="classJson_1_1StyledStreamWriter_a606f2ddd58093c9b019d452c1b6f09fe_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="227,11,399,53"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="449,5,621,46"/><area shape="rect" id="node5" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="449,70,621,111"/><area shape="rect" id="node4" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="670,12,791,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="ad2ca860e317ca91d6b2932535b4ce9c7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::writeCommentAfterValueOnSameLine </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td>
+          <td class="paramname"><em>root</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="namespaceJson.html#a4fc417c23905b2ae9e2c47d197a45351ac5784ca53b12250888ddb642b06aebef">Json::commentAfter</a>, <a class="el" href="namespaceJson.html#a4fc417c23905b2ae9e2c47d197a45351a008a230a0586de54f30b76afe70fdcfa">Json::commentAfterOnSameLine</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a>, <a class="el" href="classJson_1_1Value.html#aa1e105b5d7f55d6e42f4fb2f3674116f">Json::Value::getComment()</a>, <a class="el" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a">Json::Value::hasComment()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535">normalizeEOL()</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805">write()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_ad2ca860e317ca91d6b2932535b4ce9c7_cgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_ad2ca860e317ca91d6b2932535b4ce9c7_cgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_ad2ca860e317ca91d6b2932535b4ce9c7_cgraph" id="classJson_1_1StyledStreamWriter_ad2ca860e317ca91d6b2932535b4ce9c7_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1Value.html#aa1e105b5d7f55d6e42f4fb2f3674116f" title="Include delimiters and embedded newlines. " alt="" coords="305,5,479,32"/><area shape="rect" id="node3" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a" title="Json::Value::hasComment" alt="" coords="529,31,706,57"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535" title="Json::StyledStreamWriter\l::normalizeEOL" alt="" coords="306,107,478,149"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_ad2ca860e317ca91d6b2932535b4ce9c7_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_ad2ca860e317ca91d6b2932535b4ce9c7_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_ad2ca860e317ca91d6b2932535b4ce9c7_icgraph" id="classJson_1_1StyledStreamWriter_ad2ca860e317ca91d6b2932535b4ce9c7_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="747,5,919,46"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="305,101,477,142"/><area shape="rect" id="node5" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="526,50,698,91"/><area shape="rect" id="node3" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="969,12,1090,39"/><area shape="rect" id="node6" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="747,83,919,125"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a79c3c2b320475035c47b2db484a3e434"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::writeCommentBeforeValue </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td>
+          <td class="paramname"><em>root</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="namespaceJson.html#a4fc417c23905b2ae9e2c47d197a45351a52f1733775460517b2ea6bedf4906d52">Json::commentBefore</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a>, <a class="el" href="classJson_1_1Value.html#aa1e105b5d7f55d6e42f4fb2f3674116f">Json::Value::getComment()</a>, <a class="el" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a">Json::Value::hasComment()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535">normalizeEOL()</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805">write()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a79c3c2b320475035c47b2db484a3e434_cgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a79c3c2b320475035c47b2db484a3e434_cgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a79c3c2b320475035c47b2db484a3e434_cgraph" id="classJson_1_1StyledStreamWriter_a79c3c2b320475035c47b2db484a3e434_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1Value.html#aa1e105b5d7f55d6e42f4fb2f3674116f" title="Include delimiters and embedded newlines. " alt="" coords="241,5,415,32"/><area shape="rect" id="node3" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a" title="Json::Value::hasComment" alt="" coords="465,31,642,57"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535" title="Json::StyledStreamWriter\l::normalizeEOL" alt="" coords="242,107,414,149"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a79c3c2b320475035c47b2db484a3e434_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a79c3c2b320475035c47b2db484a3e434_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a79c3c2b320475035c47b2db484a3e434_icgraph" id="classJson_1_1StyledStreamWriter_a79c3c2b320475035c47b2db484a3e434_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="683,5,855,46"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="241,101,413,142"/><area shape="rect" id="node5" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="462,50,634,91"/><area shape="rect" id="node3" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="905,12,1026,39"/><area shape="rect" id="node6" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="683,83,855,125"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a5a52fa5b406f1580a61dde3b5638e76d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::writeIndent </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#af9ebd4487e7f69bd1074e6ce29c7cf02">indentString_</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc">writeWithIndent()</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a5a52fa5b406f1580a61dde3b5638e76d_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a5a52fa5b406f1580a61dde3b5638e76d_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a5a52fa5b406f1580a61dde3b5638e76d_icgraph" id="classJson_1_1StyledStreamWriter_a5a52fa5b406f1580a61dde3b5638e76d_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="449,34,621,75"/><area shape="rect" id="node7" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc" title="Json::StyledStreamWriter\l::writeWithIndent" alt="" coords="227,93,399,134"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="670,63,842,105"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="891,70,1063,111"/><area shape="rect" id="node6" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="891,5,1063,46"/><area shape="rect" id="node5" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="1113,77,1234,104"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a4359250e09273fa0144021684be001ae"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::writeValue </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classJson_1_1Value.html">Value</a> &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="namespaceJson.html#a7d654b75c16a57007925868e38212b4eadc8f264f36b55b063c78126b335415f4">Json::arrayValue</a>, <a class="el" href="classJson_1_1Value.html#a7402c797285c020566c3db5f8ae4e940">Json::Value::asBool()</a>, <a class="el" href="classJson_1_1Value.html#a5b7da48b163bcec63b1424f1608b7da6">Json::Value::asCString()</a>, <a class="el" href="classJson_1_1Value.html#a33434ed1c0217a34d04c95fa5342fd37">Json::Value::asDouble()</a>, <a class="el" href="classJson_1_1Value.html#a3786bb100c5cf9a98eb6d13784968956">Json::Value::asLargestInt()</a>, <a class="el" href="classJson_1_1Value.html#a692b88345a745b2f89ca5d94b52e94d4">Json::Value::asLargestUInt()</a>, <a class="el" href="namespaceJson.html#a7d654b75c16a57007925868e38212b4ea14c30dbf4da86f7b809be299f671f7fd">Json::booleanValue</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a>, <a class="el" href="classJson_1_1Value.html#a30fa08af88f2d0a038b22ba9f4e88b2a">Json::Value::getMemberNames()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a">indent()</a>, <a class="el" href="namespaceJson.html#a7d654b75c16a57007925868e38212b4eae5a9d708d5c9e23ae9bf98898522512d">Json::intValue</a>, <a class="el" href="namespaceJson.html#a7d654b75c16a57007925868e38212b4ea7d9899633b4409bd3fc107e6737f8391">Json::nullValue</a>, <a class="el" href="namespaceJson.html#a7d654b75c16a57007925868e38212b4eae8386dcfc36d1ae897745f7b4f77a1f6">Json::objectValue</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d">pushValue()</a>, <a class="el" href="namespaceJson.html#a7d654b75c16a57007925868e38212b4eab837c7b869c14d8be712deb45c9e490e">Json::realValue</a>, <a class="el" href="namespaceJson.html#a7d654b75c16a57007925868e38212b4ea804ef857affea2d415843c73f261c258">Json::stringValue</a>, <a class="el" href="classJson_1_1Value.html#a695ef31fad36b4712918b3ff80158479">Json::Value::type()</a>, <a class="el" href="namespaceJson.html#a7d654b75c16a57007925868e38212b4eaea788d9a3bb00adc6d68d97d43e1ccd3">Json::uintValue</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358">unindent()</a>, <a class="el" href="namespaceJson.html#aa0c8235a4a5c6599da5d3332743db8ac">Json::valueToQuotedString()</a>, <a class="el" href="namespaceJson.html#a5d3eba6789f9a9c1ab563ff8b4a5090f">Json::valueToString()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7">writeCommentAfterValueOnSameLine()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434">writeCommentBeforeValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc">writeWithIndent()</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44">isMultineArray()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805">write()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a4359250e09273fa0144021684be001ae_cgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a4359250e09273fa0144021684be001ae_cgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a4359250e09273fa0144021684be001ae_cgraph" id="classJson_1_1StyledStreamWriter_a4359250e09273fa0144021684be001ae_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1Value.html#a7402c797285c020566c3db5f8ae4e940" title="Json::Value::asBool" alt="" coords="261,5,400,32"/><area shape="rect" id="node3" href="classJson_1_1Value.html#a5b7da48b163bcec63b1424f1608b7da6" title="Json::Value::asCString" alt="" coords="252,56,409,83"/><area shape="rect" id="node4" href="classJson_1_1Value.html#a33434ed1c0217a34d04c95fa5342fd37" title="Json::Value::asDouble" alt="" coords="253,107,408,133"/><area shape="rect" id="node5" href="classJson_1_1Value.html#a3786bb100c5cf9a98eb6d13784968956" title="Json::Value::asLargestInt" alt="" coords="245,208,416,235"/><area shape="rect" id="node12" href="classJson_1_1Value.html#a692b88345a745b2f89ca5d94b52e94d4" title="Json::Value::asLargestUInt" alt="" coords="240,157,421,184"/><area shape="rect" id="node17" href="classJson_1_1Value.html#a30fa08af88f2d0a038b22ba9f4e88b2a" title="Return a list of the member names. " alt="" coords="227,259,434,285"/><area shape="rect" id="node18" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a" title="Json::StyledStreamWriter\l::indent" alt="" coords="522,241,694,282"/><area shape="rect" id="node19" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d" title="Json::StyledStreamWriter\l::pushValue" alt="" coords="522,371,694,413"/><area shape="rect" id="node20" href="classJson_1_1Value.html#a695ef31fad36b4712918b3ff80158479" title="Json::Value::type" alt="" coords="269,731,393,757"/><area shape="rect" id="node21" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358" title="Json::StyledStreamWriter\l::unindent" alt="" coords="522,605,694,646"/><area shape="rect" id="node22" href="namespaceJson.html#aa0c8235a4a5c6599da5d3332743db8ac" title="Json::valueToQuotedString" alt="" coords="241,781,421,808"/><area shape="rect" id="node25" href="namespaceJson.html#a5d3eba6789f9a9c1ab563ff8b4a5090f" title="Json::valueToString" alt="" coords="261,832,400,859"/><area shape="rect" id="node26" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="245,462,417,503"/><area shape="rect" id="node31" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7" title="Json::StyledStreamWriter\l::writeCommentAfterValueOnSameLine" alt="" coords="483,735,733,777"/><area shape="rect" id="node35" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434" title="Json::StyledStreamWriter\l::writeCommentBeforeValue" alt="" coords="515,670,701,711"/><area shape="rect" id="node37" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc" title="Json::StyledStreamWriter\l::writeWithIndent" alt="" coords="522,539,694,581"/><area shape="rect" id="node6" href="classJson_1_1Value.html#ac786e35b860b1d700cb3d3e56dd6a235" title="Json::Value::asInt" alt="" coords="544,189,672,216"/><area shape="rect" id="node10" href="classJson_1_1Value.html#a7f739b55aef060f4ab6360bfe1912b77" title="Json::Value::asInt64" alt="" coords="537,139,679,165"/><area shape="rect" id="node7" href="namespaceJson.html#aff0180507262a244de61b961178d7443" title="Json::InRange" alt="" coords="816,113,923,140"/><area shape="rect" id="node8" href="classJson_1_1Value.html#ab0df4746d6787d2ce1db1a156c118f14" title="Json::Value::isInt" alt="" coords="807,215,931,241"/><area shape="rect" id="node9" href="namespaceJson.html#a1a04cc9d31e64b5912dade003c9b99b5" title="Json::IsIntegral" alt="" coords="1039,113,1151,140"/><area shape="rect" id="node11" href="classJson_1_1Value.html#aba89690e5fd72d0f7121a30013470423" title="Json::Value::isInt64" alt="" coords="800,164,939,191"/><area shape="rect" id="node13" href="classJson_1_1Value.html#a2019d1bd296b89356c1b0da5970c918c" title="Json::Value::asUInt" alt="" coords="539,88,677,115"/><area shape="rect" id="node15" href="classJson_1_1Value.html#a65acdab039f60ff0da15e622f2e17739" title="Json::Value::asUInt64" alt="" coords="532,37,684,64"/><area shape="rect" id="node14" href="classJson_1_1Value.html#ae814ca1796fe2d43ac09898b70213989" title="Json::Value::isUInt" alt="" coords="802,63,937,89"/><area shape="rect" id="node16" href="classJson_1_1Value.html#aa35efece2a6cba4d988d7d5b54db2fb8" title="Json::Value::isUInt64" alt="" coords="795,12,943,39"/><area shape="rect" id="node23" href="namespaceJson.html#aa11b210ff98a4f4dd4e2df19260f8c3a" title="Json::containsControlCharacter" alt="" coords="505,852,711,879"/><area shape="rect" id="node24" href="namespaceJson.html#a0381e631737f51331065a388f4f59197" title="Returns true if ch is a control character (in range [0,32[). " alt="" coords="786,847,953,873"/><area shape="rect" id="node27" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="522,306,694,347"/><area shape="rect" id="node30" href="classJson_1_1Value.html#a4ca8ee6c48a34ca6c2f131956bab5e05" title="Number of values in array or object. " alt="" coords="808,421,931,448"/><area shape="rect" id="node36" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d" title="Json::StyledStreamWriter\l::writeIndent" alt="" coords="783,498,955,539"/><area shape="rect" id="node28" href="classJson_1_1Value.html#ac8c898f93543e55b67418f94bced20af" title="Json::Value::isArray" alt="" coords="799,289,939,316"/><area shape="rect" id="node29" href="classJson_1_1Value.html#a80cffaa0402b80317c0437216bbb6d92" title="Json::Value::isObject" alt="" coords="796,340,943,367"/><area shape="rect" id="node32" href="classJson_1_1Value.html#aa1e105b5d7f55d6e42f4fb2f3674116f" title="Include delimiters and embedded newlines. " alt="" coords="782,739,957,765"/><area shape="rect" id="node33" href="classJson_1_1Value.html#a06567a00363cab9601be7e31336db03a" title="Json::Value::hasComment" alt="" coords="1006,739,1183,765"/><area shape="rect" id="node34" href="classJson_1_1StyledStreamWriter.html#a5a5498796a3e12abca5ac0ca0be09535" title="Json::StyledStreamWriter\l::normalizeEOL" alt="" coords="783,673,955,714"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a4359250e09273fa0144021684be001ae_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a4359250e09273fa0144021684be001ae_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a4359250e09273fa0144021684be001ae_icgraph" id="classJson_1_1StyledStreamWriter_a4359250e09273fa0144021684be001ae_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="227,5,399,46"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="227,146,399,187"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="449,75,621,117"/><area shape="rect" id="node5" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="474,153,595,180"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a602fd51aa92cac1f18351806f1d9c8cc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Json::StyledStreamWriter::writeWithIndent </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="classJson_1_1StyledStreamWriter.html#aa6a4be02f654d9105af8fa560b676967">document_</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d">writeIndent()</a>.</p>
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a602fd51aa92cac1f18351806f1d9c8cc_cgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a602fd51aa92cac1f18351806f1d9c8cc_cgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a602fd51aa92cac1f18351806f1d9c8cc_cgraph" id="classJson_1_1StyledStreamWriter_a602fd51aa92cac1f18351806f1d9c8cc_cgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d" title="Json::StyledStreamWriter\l::writeIndent" alt="" coords="227,5,399,46"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJson_1_1StyledStreamWriter_a602fd51aa92cac1f18351806f1d9c8cc_icgraph.png" border="0" usemap="#classJson_1_1StyledStreamWriter_a602fd51aa92cac1f18351806f1d9c8cc_icgraph" alt=""/></div>
+<map name="classJson_1_1StyledStreamWriter_a602fd51aa92cac1f18351806f1d9c8cc_icgraph" id="classJson_1_1StyledStreamWriter_a602fd51aa92cac1f18351806f1d9c8cc_icgraph">
+<area shape="rect" id="node2" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe" title="Json::StyledStreamWriter\l::writeArrayValue" alt="" coords="227,41,399,82"/><area shape="rect" id="node3" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae" title="Json::StyledStreamWriter\l::writeValue" alt="" coords="449,11,621,53"/><area shape="rect" id="node4" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44" title="Json::StyledStreamWriter\l::isMultineArray" alt="" coords="670,70,842,111"/><area shape="rect" id="node5" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805" title="Serialize a Value in JSON format. " alt="" coords="670,5,842,46"/><area shape="rect" id="node6" href="namespaceJson.html#a87bc83d7e90fc666d28aa16727deda2f" title="Output using the StyledStreamWriter. " alt="" coords="891,12,1013,39"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a4e4bb7fc223b2652b72b523b1ce414fa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Json::StyledStreamWriter::addChildValues_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44">isMultineArray()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d">pushValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805">write()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aafd62e00a401df73fcacb2e410114b3d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classJson_1_1StyledStreamWriter.html#ad0e42dda934aaee87fa9434c30186a9b">ChildValues</a> Json::StyledStreamWriter::childValues_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44">isMultineArray()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d">pushValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa6a4be02f654d9105af8fa560b676967"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream* Json::StyledStreamWriter::document_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#ae626a0ab8a529e0e524924f1ab3b1a0d">pushValue()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805">write()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a606f2ddd58093c9b019d452c1b6f09fe">writeArrayValue()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#ad2ca860e317ca91d6b2932535b4ce9c7">writeCommentAfterValueOnSameLine()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a79c3c2b320475035c47b2db484a3e434">writeCommentBeforeValue()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d">writeIndent()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a4359250e09273fa0144021684be001ae">writeValue()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a602fd51aa92cac1f18351806f1d9c8cc">writeWithIndent()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a58dc0eaf85c58b83d19d6bba8eead27d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Json::StyledStreamWriter::indentation_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a">indent()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358">unindent()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af9ebd4487e7f69bd1074e6ce29c7cf02"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string Json::StyledStreamWriter::indentString_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#ab49409578422aa73b060e3492dd6c72a">indent()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a74d8fb9beecd29759d7b79f430386358">unindent()</a>, <a class="el" href="classJson_1_1StyledStreamWriter.html#a07807741c6c43ecd35885a87234d0805">write()</a>, and <a class="el" href="classJson_1_1StyledStreamWriter.html#a5a52fa5b406f1580a61dde3b5638e76d">writeIndent()</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a67fdaa6758885f082b6a7ede52b0ab91"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Json::StyledStreamWriter::rightMargin_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Referenced by <a class="el" href="classJson_1_1StyledStreamWriter.html#a88f4d342cf25c73aabf77c1b8ba01e44">isMultineArray()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Client/json/<a class="el" href="json_8h_source.html">json.h</a></li>
-<li>Client/jsoncpp.cpp</li>
+<li>Client/<a class="el" href="jsoncpp_8cpp.html">jsoncpp.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,4 +1,4 @@
-.TH "common/types/ttmath/ttmathtypes.h" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "common/types/ttmath/ttmathtypes.h" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -92,10 +92,10 @@ constants used in the library
 .RI "#define \fBTTMATH_GAMMA_BOUNDARY\fP   2000"
 .br
 .ti -1c
-.RI "#define \fBTTMATH_REFERENCE_ASSERT\fP(expression)   if( &(expression) == this ) throw ReferenceError();"
+.RI "#define \fBTTMATH_REFERENCE_ASSERT\fP(expression)   \fBif\fP( &(expression) == this ) throw ReferenceError();"
 .br
 .ti -1c
-.RI "#define \fBTTMATH_ASSERT\fP(expression)   if( !(expression) ) throw RuntimeError();"
+.RI "#define \fBTTMATH_ASSERT\fP(expression)   \fBif\fP( !(expression) ) throw RuntimeError();"
 .br
 .ti -1c
 .RI "#define \fBTTMATH_LOG\fP(msg)"
@@ -127,10 +127,10 @@ constants used in the library
 
 .in +1c
 .ti -1c
-.RI "enum \fBttmath::LibTypeCode\fP { \fBasm_vc_32\fP = 0, \fBasm_gcc_32\fP, \fBasm_vc_64\fP, \fBasm_gcc_64\fP, \fBno_asm_32\fP, \fBno_asm_64\fP }"
+.RI "enum \fBttmath::LibTypeCode\fP { \fBttmath::asm_vc_32\fP = 0, \fBttmath::asm_gcc_32\fP, \fBttmath::asm_vc_64\fP, \fBttmath::asm_gcc_64\fP, \fBttmath::no_asm_32\fP, \fBttmath::no_asm_64\fP }"
 .br
 .ti -1c
-.RI "enum \fBttmath::ErrorCode\fP { \fBerr_ok\fP = 0, \fBerr_nothing_has_read\fP, \fBerr_unknown_character\fP, \fBerr_unexpected_final_bracket\fP, \fBerr_stack_not_clear\fP, \fBerr_unknown_variable\fP, \fBerr_division_by_zero\fP, \fBerr_interrupt\fP, \fBerr_overflow\fP, \fBerr_unknown_function\fP, \fBerr_unknown_operator\fP, \fBerr_unexpected_semicolon_operator\fP, \fBerr_improper_amount_of_arguments\fP, \fBerr_improper_argument\fP, \fBerr_unexpected_end\fP, \fBerr_internal_error\fP, \fBerr_incorrect_name\fP, \fBerr_incorrect_value\fP, \fBerr_variable_exists\fP, \fBerr_variable_loop\fP, \fBerr_functions_loop\fP, \fBerr_must_be_only_one_value\fP, \fBerr_object_exists\fP, \fBerr_unknown_object\fP, \fBerr_still_calculating\fP, \fBerr_in_short_form_used_function\fP, \fBerr_percent_from\fP }"
+.RI "enum \fBttmath::ErrorCode\fP { \fBttmath::err_ok\fP = 0, \fBttmath::err_nothing_has_read\fP, \fBttmath::err_unknown_character\fP, \fBttmath::err_unexpected_final_bracket\fP, \fBttmath::err_stack_not_clear\fP, \fBttmath::err_unknown_variable\fP, \fBttmath::err_division_by_zero\fP, \fBttmath::err_interrupt\fP, \fBttmath::err_overflow\fP, \fBttmath::err_unknown_function\fP, \fBttmath::err_unknown_operator\fP, \fBttmath::err_unexpected_semicolon_operator\fP, \fBttmath::err_improper_amount_of_arguments\fP, \fBttmath::err_improper_argument\fP, \fBttmath::err_unexpected_end\fP, \fBttmath::err_internal_error\fP, \fBttmath::err_incorrect_name\fP, \fBttmath::err_incorrect_value\fP, \fBttmath::err_variable_exists\fP, \fBttmath::err_variable_loop\fP, \fBttmath::err_functions_loop\fP, \fBttmath::err_must_be_only_one_value\fP, \fBttmath::err_object_exists\fP, \fBttmath::err_unknown_object\fP, \fBttmath::err_still_calculating\fP, \fBttmath::err_in_short_form_used_function\fP, \fBttmath::err_percent_from\fP }"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -148,12 +148,16 @@ this variable defines how many iterations are performed during some kind of calc
 it's used in ExpSurrounding0(\&.\&.\&.), LnSurrounding1(\&.\&.\&.), Sin0pi05(\&.\&.\&.), etc\&.
 .PP
 note! there'll not be so many iterations, iterations are stopped when there is no sense to continue calculating (for example when the result still remains unchanged after adding next series and we know that the next series are smaller than previous ones) 
+.SS "#define TTMATH_ASSERT(expression)   \fBif\fP( !(expression) ) throw RuntimeError();"
+
+.PP
+Referenced by ttmath::UInt< 0 >::AddTwoInts(), ttmath::UInt< value_size >::Div3_Calculate(), ttmath::UInt< value_size >::Div3_Division(), ttmath::UInt< value_size >::GetBit(), ttmath::UInt< 0 >::Mul2Big(), ttmath::UInt< value_size >::Mul3Big3(), ttmath::UInt< value_size >::MulInt(), ttmath::UInt< value_size >::SetBit(), and ttmath::UInt< 0 >::SetZero()\&.
 .SS "#define TTMATH_BITS(min_bits)   ((min_bits-1)/32 + 1)"
 this macro returns the number of machine words capable to hold min_bits bits e\&.g\&. \fBTTMATH_BITS(128)\fP returns 4 
 .SS "#define TTMATH_BITS_PER_UINT   32u"
 how many bits there are in the uint type 
 .PP
-Referenced by ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::UInt< value_size >::CompensationToLeft(), ttmath::UInt< value_size >::GetBit(), ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::Rcr(), and ttmath::UInt< value_size >::SetBit()\&.
+Referenced by ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::UInt< value_size >::CompensationToLeft(), ttmath::UInt< value_size >::Div1_Calculate(), ttmath::UInt< value_size >::Div2_FindLeadingBitsAndCheck(), ttmath::UInt< value_size >::Div3_Normalize(), ttmath::UInt< value_size >::GetBit(), ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::RclMoveAllWords(), ttmath::UInt< value_size >::Rcr(), ttmath::UInt< value_size >::RcrMoveAllWords(), and ttmath::UInt< value_size >::SetBit()\&.
 .SS "#define TTMATH_BUILTIN_VARIABLES_SIZE   256u"
 the number of words (32bit words on 32bit platform) which are kept in built-in variables for a Big<> type (these variables are defined in ttmathbig\&.h) 
 .SS "#define TTMATH_DEBUG"
@@ -168,30 +172,50 @@ if TTMATH_RELEASE is not set then TTMATH_DEBUG is set automatically
 this is a special value used when calculating the Gamma(x) function if x is greater than this value then the Gamma(x) will be calculated using some kind of series
 .PP
 don't use smaller values than about 100 
+.SS "#define TTMATH_LOG(msg)"
+
+.PP
+Referenced by ttmath::UInt< value_size >::BitAnd(), ttmath::UInt< value_size >::BitNot(), ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::BitOr(), ttmath::UInt< value_size >::BitXor(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::UInt< value_size >::CompensationToLeft(), ttmath::UInt< value_size >::Div1_Calculate(), ttmath::UInt< value_size >::Div2(), ttmath::UInt< value_size >::Div2_Calculate(), ttmath::UInt< value_size >::Div2_DivisorGreaterOrEqual(), ttmath::UInt< value_size >::Div2_FindLeadingBitsAndCheck(), ttmath::UInt< value_size >::Div3(), ttmath::UInt< value_size >::Div3_Calculate(), ttmath::UInt< value_size >::Div3_CopyNewU(), ttmath::UInt< value_size >::Div3_Division(), ttmath::UInt< value_size >::Div3_MakeBiggerV(), ttmath::UInt< value_size >::Div3_MakeNewU(), ttmath::UInt< value_size >::Div3_MultiplySubtract(), ttmath::UInt< value_size >::Div3_Normalize(), ttmath::UInt< value_size >::Div3_Unnormalize(), ttmath::UInt< value_size >::Div_StandardTest(), ttmath::UInt< value_size >::DivInt(), ttmath::UInt< value_size >::FromUInt(), ttmath::UInt< value_size >::Mul1Big(), ttmath::UInt< value_size >::Mul2Big(), ttmath::UInt< value_size >::Mul3Big(), ttmath::UInt< value_size >::MulFastestBig(), ttmath::UInt< value_size >::operator=(), ttmath::UInt< value_size >::Rcl(), ttmath::UInt< value_size >::RclMoveAllWords(), ttmath::UInt< value_size >::Rcr(), ttmath::UInt< value_size >::RcrMoveAllWords(), ttmath::UInt< value_size >::SetBit(), ttmath::UInt< value_size >::SetFromTable(), ttmath::UInt< value_size >::SetMax(), ttmath::UInt< value_size >::SetMin(), ttmath::UInt< value_size >::SetOne(), ttmath::UInt< value_size >::SetZero(), ttmath::UInt< value_size >::Sqrt(), and ttmath::UInt< value_size >::UInt()\&.
+.SS "#define TTMATH_LOGC(msg, carry)"
+
+.PP
+Referenced by ttmath::UInt< value_size >::FromStringBase(), ttmath::UInt< value_size >::FromUInt(), ttmath::UInt< value_size >::Mul1(), ttmath::UInt< value_size >::Mul2(), ttmath::UInt< value_size >::Mul3(), ttmath::UInt< value_size >::MulFastest(), ttmath::UInt< value_size >::MulInt(), ttmath::UInt< value_size >::Pow(), ttmath::UInt< value_size >::Rcl(), and ttmath::UInt< value_size >::Rcr()\&.
 .SS "#define TTMATH_MAJOR_VER   0"
 the version of the library
 .PP
 TTMATH_PRERELEASE_VER is either zero or one if zero that means this is the release version of the library 
+.SS "#define TTMATH_MINOR_VER   9"
+
 .SS "#define TTMATH_NOASM"
 another compilers than MS VC or GCC by default use no asm version (TTMATH_NOASM) 
 .SS "#define TTMATH_PLATFORM32"
 we're using a 32bit platform 
-.SS "#define TTMATH_REFERENCE_ASSERT(expression)   if( &(expression) == this ) throw ReferenceError();"
+.SS "#define TTMATH_PRERELEASE_VER   0"
+
+.SS "#define TTMATH_REFERENCE_ASSERT(expression)   \fBif\fP( &(expression) == this ) throw ReferenceError();"
 look at the description of macros TTMATH_RELEASE and TTMATH_DEBUG 
 .PP
-Referenced by ttmath::UInt< value_size >::Div2(), ttmath::UInt< value_size >::Div3(), and ttmath::UInt< value_size >::Mul1()\&.
+Referenced by ttmath::UInt< value_size >::Div1_Calculate(), ttmath::UInt< value_size >::Div2(), ttmath::UInt< value_size >::Div3(), and ttmath::UInt< value_size >::Mul1()\&.
+.SS "#define TTMATH_REVISION_VER   0"
+
 .SS "#define TTMATH_UINT_HIGHEST_BIT   2147483648u"
 the mask for the highest bit in the unsigned 32bit word (2^31) 
 .PP
-Referenced by ttmath::Int< value_size >::FromUInt(), ttmath::UInt< value_size >::SetFromTable(), ttmath::Int< value_size >::SetMax(), and ttmath::Int< value_size >::SetMin()\&.
+Referenced by ttmath::Int< value_size >::FromUInt(), ttmath::Int< value_size >::FromUIntOrInt(), ttmath::UInt< value_size >::RcrMoveAllWords(), ttmath::UInt< value_size >::SetFromTable(), ttmath::Int< value_size >::SetMax(), and ttmath::Int< value_size >::SetMin()\&.
 .SS "#define TTMATH_UINT_MAX_VALUE   4294967295u"
 the max value of the unsigned 32bit word (2^32 - 1) (all bits equal one) 
 .PP
-Referenced by ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::Int< value_size >::FromInt(), ttmath::UInt< value_size >::SetFromTable(), and ttmath::UInt< value_size >::SetMax()\&.
+Referenced by ttmath::UInt< value_size >::BitNot2(), ttmath::UInt< value_size >::ClearFirstBits(), ttmath::Int< value_size >::FromInt(), ttmath::Int< value_size >::FromUIntOrInt(), ttmath::UInt< value_size >::RclMoveAllWords(), ttmath::UInt< value_size >::RcrMoveAllWords(), ttmath::UInt< value_size >::SetFromTable(), and ttmath::UInt< value_size >::SetMax()\&.
 .SS "#define TTMATH_USE_KARATSUBA_MULTIPLICATION_FROM_SIZE   5"
 this is a limit when calculating Karatsuba multiplication if the size of a vector is smaller than TTMATH_USE_KARATSUBA_MULTIPLICATION_FROM_SIZE the Karatsuba algorithm will use standard schoolbook multiplication 
 .PP
-Referenced by ttmath::UInt< value_size >::MulFastestBig()\&.
+Referenced by ttmath::UInt< value_size >::Mul3Big2(), and ttmath::UInt< value_size >::MulFastestBig()\&.
+.SS "#define TTMATH_VECTOR_LOG(msg, vector, len)"
+
+.PP
+Referenced by ttmath::UInt< value_size >::MulInt()\&.
+.SS "#define TTMATH_VECTOR_LOGC(msg, carry, vector, len)"
+
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

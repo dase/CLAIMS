@@ -1,4 +1,4 @@
-.TH "local_stage" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "local_stage" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ local_stage \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <expander_tracker\&.h>\fP
 .SS "Public Types"
 
 .in +1c
@@ -17,13 +19,16 @@ local_stage \-
 
 .in +1c
 .ti -1c
+.RI "\fBlocal_stage\fP ()"
+.br
+.ti -1c
 .RI "\fBlocal_stage\fP (const \fBlocal_stage\fP &r)"
 .br
 .ti -1c
 .RI "\fBlocal_stage\fP (\fBLocalStageEndPoint\fP start, \fBLocalStageEndPoint\fP end)"
 .br
 .ti -1c
-.RI "std::string \fBget_type_name\fP (type tp) const "
+.RI "std::string \fBget_type_name\fP (\fBtype\fP tp) const "
 .br
 .ti -1c
 .RI "void \fBprint\fP ()"
@@ -39,10 +44,65 @@ local_stage \-
 .RI "\fBLocalStageEndPoint\fP \fBdataflow_desc_\fP"
 .br
 .ti -1c
-.RI "type \fBtype_\fP"
+.RI "\fBtype\fP \fBtype_\fP"
 .br
 .in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBlocal_stage::type\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIfrom_buffer \fP\fP
+.TP
+\fB\fIbuffer_to_buffer \fP\fP
+.TP
+\fB\fIto_buffer \fP\fP
+.TP
+\fB\fIno_buffer \fP\fP
+.TP
+\fB\fIincomplete \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "local_stage::local_stage ()\fC [inline]\fP"
+
+.SS "local_stage::local_stage (const \fBlocal_stage\fP &r)\fC [inline]\fP"
+
+.PP
+References dataflow_desc_, dataflow_src_, and type_\&.
+.SS "local_stage::local_stage (\fBLocalStageEndPoint\fPstart, \fBLocalStageEndPoint\fPend)\fC [inline]\fP"
+
+.PP
+References buffer_to_buffer, dataflow_desc_, dataflow_src_, from_buffer, LocalStageEndPoint::monitorable_buffer, no_buffer, to_buffer, and type_\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "std::string local_stage::get_type_name (\fBtype\fPtp) const\fC [inline]\fP"
+
+.PP
+References buffer_to_buffer, from_buffer, no_buffer, and to_buffer\&.
+.PP
+Referenced by print()\&.
+.SS "void local_stage::print ()\fC [inline]\fP"
+
+.PP
+References dataflow_desc_, dataflow_src_, LocalStageEndPoint::end_point_name, get_type_name(), incomplete, and type_\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBLocalStageEndPoint\fP local_stage::dataflow_desc_"
+
+.PP
+Referenced by ExpanderTracker::decideExpandingOrShrinking(), ExpanderTracker::getSegmentStatus(), local_stage(), and print()\&.
+.SS "\fBLocalStageEndPoint\fP local_stage::dataflow_src_"
+
+.PP
+Referenced by ExpanderTracker::decideExpandingOrShrinking(), ExpanderTracker::getSegmentStatus(), local_stage(), and print()\&.
+.SS "\fBtype\fP local_stage::type_"
+
+.PP
+Referenced by ExpanderTracker::decideExpandingOrShrinking(), ExpanderTracker::getSegmentStatus(), local_stage(), and print()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

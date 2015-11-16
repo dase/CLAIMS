@@ -1,4 +1,4 @@
-.TH "Message4K" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Message4K" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ Message4K \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Message\&.h>\fP
 .SS "Static Public Member Functions"
 
 .in +1c
@@ -23,7 +25,23 @@ Message4K \-
 .RI "char \fBmessage\fP [4096 *50-sizeof(unsigned)]"
 .br
 .in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "static unsigned Message4K::Capacity ()\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Referenced by Serialize4K()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned Message4K::length"
+
+.PP
+Referenced by Deserialize(), and Serialize4K()\&.
+.SS "char Message4K::message[4096 *50-sizeof(unsigned)]"
+
+.PP
+Referenced by Deserialize(), and Serialize4K()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

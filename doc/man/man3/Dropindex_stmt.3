@@ -1,4 +1,4 @@
-.TH "Dropindex_stmt" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Dropindex_stmt" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,13 @@ Dropindex_stmt \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <sql_node_struct\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
 .ti -1c
-.RI "nodetype \fBtype\fP"
+.RI "\fBnodetype\fP \fBtype\fP"
 .br
 .ti -1c
 .RI "char * \fBindex_name\fP"
@@ -19,7 +21,21 @@ Dropindex_stmt \-
 .RI "char * \fBtable_name\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "char* Dropindex_stmt::index_name"
+
+.PP
+Referenced by newDropIndex()\&.
+.SS "char* Dropindex_stmt::table_name"
+
+.PP
+Referenced by newDropIndex()\&.
+.SS "\fBnodetype\fP Dropindex_stmt::type"
+
+.PP
+Referenced by newDropIndex()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

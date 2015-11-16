@@ -1,4 +1,4 @@
-.TH "remote_command" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "remote_command" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,6 +6,8 @@ remote_command \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <Daemon\&.h>\fP
 .SS "Public Attributes"
 
 .in +1c
@@ -16,7 +18,17 @@ remote_command \-
 .RI "int \fBsocket_fd\fP"
 .br
 .in -1c
+.SH "Member Data Documentation"
+.PP 
+.SS "std::string remote_command::cmd"
+
+.PP
+Referenced by ClientListener::receiveRequest(), and Daemon::worker()\&.
+.SS "int remote_command::socket_fd"
+
+.PP
+Referenced by ClientListener::receiveRequest(), and Daemon::worker()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: Daemon/Executing.h Source File</title>
+<title>Claims: Daemon/Executing.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('Executing_8h_source.html','');});
 <div class="title">Executing.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="Executing_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Executing.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: Feb 20, 2014</span></div>
@@ -126,30 +126,27 @@ $(document).ready(function(){initNavTree('Executing_8h_source.html','');});
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;../Parsetree/ExecuteLogicalQueryPlan.h&quot;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;../logical_operator/logical_query_plan_root.h&quot;</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classExecuting.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classExecuting.html">Executing</a> {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="classExecuting.html">Executing</a>();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classExecuting.html">Executing</a>();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">static</span> <a class="code" href="classResultSet.html">ResultSet</a>* run_sql(std::string sql,std::string&amp; error);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> run_sql(</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <span class="keyword">const</span> std::string &amp;cmd,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <a class="code" href="classResultSet.html">ResultSet</a> *&amp;result,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keywordtype">bool</span> &amp;status,</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            std::string &amp;error_info,</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            std::string &amp;info,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <span class="keywordtype">int</span> fd</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        );</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;};</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* EXECUTING_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <a class="code" href="classExecuting.html#a6963bdb3bb636a40206e57e1a901c743">Executing</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classExecuting.html#a82762d0b24dea1919e1db437205db3fb">~Executing</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keyword">static</span> <a class="code" href="classResultSet.html">ResultSet</a> *<a class="code" href="classExecuting.html#a49410dbb0f46a55f4ed5a0d943439446">run_sql</a>(std::string <a class="code" href="sql__parser__test_8h.html#ae960889c221e97e5edf7a6d9f07a3807">sql</a>, std::string &amp;error);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classExecuting.html#a49410dbb0f46a55f4ed5a0d943439446">run_sql</a>(<span class="keyword">const</span> std::string &amp;cmd, <a class="code" href="classResultSet.html">ResultSet</a> *&amp;result, <span class="keywordtype">bool</span> &amp;status,</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                      std::string &amp;error_info, std::string &amp;info, <span class="keywordtype">int</span> fd);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;};</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* EXECUTING_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="classExecuting_html_a82762d0b24dea1919e1db437205db3fb"><div class="ttname"><a href="classExecuting.html#a82762d0b24dea1919e1db437205db3fb">Executing::~Executing</a></div><div class="ttdeci">virtual ~Executing()</div><div class="ttdef"><b>Definition:</b> Executing.cpp:18</div></div>
+<div class="ttc" id="classExecuting_html_a6963bdb3bb636a40206e57e1a901c743"><div class="ttname"><a href="classExecuting.html#a6963bdb3bb636a40206e57e1a901c743">Executing::Executing</a></div><div class="ttdeci">Executing()</div><div class="ttdef"><b>Definition:</b> Executing.cpp:14</div></div>
 <div class="ttc" id="classResultSet_html"><div class="ttname"><a href="classResultSet.html">ResultSet</a></div><div class="ttdef"><b>Definition:</b> ResultSet.h:15</div></div>
+<div class="ttc" id="sql__parser__test_8h_html_ae960889c221e97e5edf7a6d9f07a3807"><div class="ttname"><a href="sql__parser__test_8h.html#ae960889c221e97e5edf7a6d9f07a3807">sql</a></div><div class="ttdeci">char sql[1000]</div><div class="ttdef"><b>Definition:</b> sql_parser_test.h:20</div></div>
 <div class="ttc" id="classExecuting_html"><div class="ttname"><a href="classExecuting.html">Executing</a></div><div class="ttdef"><b>Definition:</b> Executing.h:20</div></div>
+<div class="ttc" id="classExecuting_html_a49410dbb0f46a55f4ed5a0d943439446"><div class="ttname"><a href="classExecuting.html#a49410dbb0f46a55f4ed5a0d943439446">Executing::run_sql</a></div><div class="ttdeci">static ResultSet * run_sql(std::string sql, std::string &amp;error)</div><div class="ttdef"><b>Definition:</b> Executing.cpp:22</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_7641fbb9a88ecfca8605603f00d186f7.html">Daemon</a></li><li class="navelem"><b>Executing.h</b></li>
+    <li class="navelem"><a class="el" href="dir_7641fbb9a88ecfca8605603f00d186f7.html">Daemon</a></li><li class="navelem"><a class="el" href="Executing_8h.html">Executing.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

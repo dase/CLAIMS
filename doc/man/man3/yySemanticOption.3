@@ -1,4 +1,4 @@
-.TH "yySemanticOption" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "yySemanticOption" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,10 +10,10 @@ yySemanticOption \-
 
 .in +1c
 .ti -1c
-.RI "yybool \fByyisState\fP"
+.RI "\fByybool\fP \fByyisState\fP"
 .br
 .ti -1c
-.RI "yyRuleNum \fByyrule\fP"
+.RI "\fByyRuleNum\fP \fByyrule\fP"
 .br
 .ti -1c
 .RI "\fByyGLRState\fP * \fByystate\fP"
@@ -30,17 +30,29 @@ yySemanticOption \-
 .in -1c
 .SH "Member Data Documentation"
 .PP 
-.SS "yybool yySemanticOption::yyisState"
+.SS "\fByybool\fP yySemanticOption::yyisState"
 Type tag: always false\&. 
-.SS "\fByySemanticOption\fP* yySemanticOption::yynext"
+.SS "\fByySemanticOption\fP * yySemanticOption::yynext"
 Next sibling in chain of options\&. To facilitate merging, options are chained in decreasing order by address\&. 
+.PP
+Referenced by yyaddDeferredAction(), yyexpandGLRStack(), yymergeOptionSets(), and yyresolveValue()\&.
 .SS "int yySemanticOption::yyrawchar"
 The lookahead for this reduction\&. 
-.SS "yyRuleNum yySemanticOption::yyrule"
+.PP
+Referenced by yyaddDeferredAction(), and yyresolveAction()\&.
+.SS "\fByyRuleNum\fP yySemanticOption::yyrule"
 Rule number for this reduction 
-.SS "\fByyGLRState\fP* yySemanticOption::yystate"
+.PP
+Referenced by yyaddDeferredAction(), yydestroyGLRState(), yyidenticalOptions(), yymergeOptionSets(), yypreference(), yyresolveAction(), and yyresolveValue()\&.
+.SS "\fByyGLRState\fP * yySemanticOption::yystate"
 The last RHS state in the list of states to be reduced\&. 
+.PP
+Referenced by yyaddDeferredAction(), yydestroyGLRState(), yyexpandGLRStack(), yyidenticalOptions(), yymergeOptionSets(), and yyresolveAction()\&.
+.SS "\fBYYSTYPE\fP yySemanticOption::yyval"
+
+.PP
+Referenced by yyaddDeferredAction(), and yyresolveAction()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: IndexManager/IndexManager.h Source File</title>
+<title>Claims: IndexManager/IndexManager.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('IndexManager_8h_source.html','');});
 <div class="title">IndexManager.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="IndexManager_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * IndexManager.h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *  Created on: 2013年12月5日</span></div>
@@ -117,74 +117,100 @@ $(document).ready(function(){initNavTree('IndexManager_8h_source.html','');});
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define INDEXMANAGER_H_</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;map&gt;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;CSBPlusTree.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="CSBPlusTree_8h.html">CSBPlusTree.h</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;../Catalog/Attribute.h&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../common/ids.h&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;../common/data_type.h&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
 <div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="structattr__index__list.html">   17</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structattr__index__list.html">attr_index_list</a></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="structattr__index__list.html">attr_index_list</a>() {};</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="structattr__index__list.html">attr_index_list</a>(<a class="code" href="structAttribute.html">Attribute</a> attr) :attribute(attr), attr_index_name(<span class="stringliteral">&quot;\0&quot;</span>) { csb_tree_list.clear(); }</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="structattr__index__list.html">attr_index_list</a>(<a class="code" href="structAttribute.html">Attribute</a> attr, std::string index_name) :attribute(attr), attr_index_name(index_name) { csb_tree_list.clear(); }</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="structAttribute.html">Attribute</a> attribute;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    std::string attr_index_name;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    std::map&lt;ChunkID, void* &gt; csb_tree_list;</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="structattr__index__list.html#a15745c72626e70976abe5d4cf34e5968">   19</a></span>&#160;    <a class="code" href="structattr__index__list.html#a15745c72626e70976abe5d4cf34e5968">attr_index_list</a>() {};</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="structattr__index__list.html#a9eb7da051ff3bbdb2939fe78f04a2a38">   20</a></span>&#160;    <a class="code" href="structattr__index__list.html#a9eb7da051ff3bbdb2939fe78f04a2a38">attr_index_list</a>(<a class="code" href="structAttribute.html">Attribute</a> attr) :<a class="code" href="structattr__index__list.html#ad8d8ceb63e56f42efbb236f0cc23ddbd">attribute</a>(attr), <a class="code" href="structattr__index__list.html#a7d156aee7790216afc5722ed6f5e61e4">attr_index_name</a>(<span class="stringliteral">&quot;\0&quot;</span>) { <a class="code" href="structattr__index__list.html#a672dd8b2d6436c1486724c99af1cefe3">csb_tree_list</a>.clear(); }</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structattr__index__list.html#a9ce65b019b5cbc1403860b1f29d8b252">   21</a></span>&#160;    <a class="code" href="structattr__index__list.html#a9ce65b019b5cbc1403860b1f29d8b252">attr_index_list</a>(<a class="code" href="structAttribute.html">Attribute</a> attr, std::string index_name) :<a class="code" href="structattr__index__list.html#ad8d8ceb63e56f42efbb236f0cc23ddbd">attribute</a>(attr), <a class="code" href="structattr__index__list.html#a7d156aee7790216afc5722ed6f5e61e4">attr_index_name</a>(index_name) { <a class="code" href="structattr__index__list.html#a672dd8b2d6436c1486724c99af1cefe3">csb_tree_list</a>.clear(); }</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structattr__index__list.html#ad8d8ceb63e56f42efbb236f0cc23ddbd">   22</a></span>&#160;    <a class="code" href="structAttribute.html">Attribute</a> <a class="code" href="structattr__index__list.html#ad8d8ceb63e56f42efbb236f0cc23ddbd">attribute</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structattr__index__list.html#a7d156aee7790216afc5722ed6f5e61e4">   23</a></span>&#160;    std::string <a class="code" href="structattr__index__list.html#a7d156aee7790216afc5722ed6f5e61e4">attr_index_name</a>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structattr__index__list.html#a672dd8b2d6436c1486724c99af1cefe3">   24</a></span>&#160;    std::map&lt;ChunkID, void* &gt; <a class="code" href="structattr__index__list.html#a672dd8b2d6436c1486724c99af1cefe3">csb_tree_list</a>;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;};</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classIndexManager.html">   27</a></span>&#160;<span class="keyword">class </span><a class="code" href="classIndexManager.html">IndexManager</a> {</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">static</span> <a class="code" href="classIndexManager.html">IndexManager</a>* getInstance();</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classIndexManager.html">IndexManager</a>();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">static</span> <a class="code" href="classIndexManager.html">IndexManager</a>* <a class="code" href="classIndexManager.html#a6d23ea6c99007f45b5c81913f193ac53">getInstance</a>();</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classIndexManager.html#a1826f9a29518d094f547dd3980b8df4e">~IndexManager</a>();</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">bool</span> addIndexToList(<span class="keywordtype">unsigned</span> key_indexing, map&lt;ChunkID, void* &gt; attr_index);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">bool</span> insertIndexToList(std::string index_name, <span class="keywordtype">unsigned</span> key_indexing, map&lt;ChunkID, void* &gt; attr_index);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classIndexManager.html#a0efed360c654c60c74ce9552fca7277f">addIndexToList</a>(<span class="keywordtype">unsigned</span> key_indexing, map&lt;ChunkID, void* &gt; attr_index);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classIndexManager.html#a3c7fab8d9b333e0a892da5cd1dd2b564">insertIndexToList</a>(std::string index_name, <span class="keywordtype">unsigned</span> key_indexing, map&lt;ChunkID, void* &gt; attr_index);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::map&lt;ChunkID, CSBPlusTree&lt;T&gt;* &gt; getIndexList(<a class="code" href="structAttribute.html">Attribute</a> attribute);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::map&lt;ChunkID, CSBPlusTree&lt;T&gt;* &gt; <a class="code" href="classIndexManager.html#a293bb9b870c03dc099dab522a3b0dc4f">getIndexList</a>(<a class="code" href="structAttribute.html">Attribute</a> attribute);</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    std::map&lt;ChunkID, CSBPlusTree&lt;T&gt;* &gt; getIndexList(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> attr_index_id);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    std::map&lt;ChunkID, CSBPlusTree&lt;T&gt;* &gt; <a class="code" href="classIndexManager.html#a293bb9b870c03dc099dab522a3b0dc4f">getIndexList</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> attr_index_id);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::map&lt;ChunkID, void* &gt; getAttrIndex(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> attr_index_id);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::map&lt;ChunkID, void* &gt; <a class="code" href="classIndexManager.html#ae072c6a2884cdcf64ecd7abaccf31748">getAttrIndex</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> attr_index_id);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">bool</span> deleteIndexFromList(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> index_id);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classIndexManager.html#a3d5da617d8ae4763730d0433433d2da5">deleteIndexFromList</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> index_id);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    data_type getIndexType(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> index_id);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14">data_type</a> <a class="code" href="classIndexManager.html#a6dd67480c89f1abb4b132b38cf2b0d20">getIndexType</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> index_id);</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">bool</span> isIndexExist(<a class="code" href="structAttribute.html">Attribute</a> attr);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">bool</span> isIndexExist(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> index_id);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classIndexManager.html#a20d32c0454516aa3adf9eb28268376b4">isIndexExist</a>(<a class="code" href="structAttribute.html">Attribute</a> attr);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classIndexManager.html#a20d32c0454516aa3adf9eb28268376b4">isIndexExist</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> index_id);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> getIndexID(<a class="code" href="structAttribute.html">Attribute</a> attr);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classIndexManager.html#a643ae55b67ea1ab3165e0001fd689613">getIndexID</a>(<a class="code" href="structAttribute.html">Attribute</a> attr);</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">bool</span> serialize(std::string file_name);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">bool</span> deserialize(std::string file_name);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classIndexManager.html#aeaee23fc4e3e9a2a715bd09ba2c716d8">serialize</a>(std::string file_name);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc">deserialize</a>(std::string file_name);</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="classIndexManager.html">IndexManager</a>();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="classIndexManager.html#aa4db93255d65dd491f2590f37e353310">IndexManager</a>();</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">//  vector&lt;attr_index_list&gt; csb_index_;</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    map&lt;unsigned long, attr_index_list*&gt; csb_index_;</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classIndexManager.html#a43efc8ac37c404adbd56f04c1158f05c">   60</a></span>&#160;    map&lt;unsigned long, attr_index_list*&gt; <a class="code" href="classIndexManager.html#a43efc8ac37c404adbd56f04c1158f05c">csb_index_</a>;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> attr_index_id_;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    map&lt;Attribute, unsigned long &gt; column_attribute_to_id;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    map&lt;unsigned long, Attribute&gt; id_to_column_attribute;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classIndexManager.html#a568b979fa32576fd4428502fb2f1a3b9">   62</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="classIndexManager.html#a568b979fa32576fd4428502fb2f1a3b9">attr_index_id_</a>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classIndexManager.html#a449a17bc8ce287656d46eab726365866">   63</a></span>&#160;    map&lt;Attribute, unsigned long &gt; <a class="code" href="classIndexManager.html#a449a17bc8ce287656d46eab726365866">column_attribute_to_id</a>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classIndexManager.html#a85721b0d57a8e54c766c7af0ceb9d1b8">   64</a></span>&#160;    map&lt;unsigned long, Attribute&gt; <a class="code" href="classIndexManager.html#a85721b0d57a8e54c766c7af0ceb9d1b8">id_to_column_attribute</a>;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">static</span> <a class="code" href="classIndexManager.html">IndexManager</a>* instance_;</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classIndexManager.html#abec8af9120f03101c5586e2c1e68d2dc">   67</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classIndexManager.html">IndexManager</a>* <a class="code" href="classIndexManager.html#abec8af9120f03101c5586e2c1e68d2dc">instance_</a>;</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;};</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* INDEXMANAGER_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="CSBPlusTree_8h_html"><div class="ttname"><a href="CSBPlusTree_8h.html">CSBPlusTree.h</a></div></div>
+<div class="ttc" id="structattr__index__list_html_a9ce65b019b5cbc1403860b1f29d8b252"><div class="ttname"><a href="structattr__index__list.html#a9ce65b019b5cbc1403860b1f29d8b252">attr_index_list::attr_index_list</a></div><div class="ttdeci">attr_index_list(Attribute attr, std::string index_name)</div><div class="ttdef"><b>Definition:</b> IndexManager.h:21</div></div>
+<div class="ttc" id="classIndexManager_html_a85721b0d57a8e54c766c7af0ceb9d1b8"><div class="ttname"><a href="classIndexManager.html#a85721b0d57a8e54c766c7af0ceb9d1b8">IndexManager::id_to_column_attribute</a></div><div class="ttdeci">map&lt; unsigned long, Attribute &gt; id_to_column_attribute</div><div class="ttdef"><b>Definition:</b> IndexManager.h:64</div></div>
+<div class="ttc" id="classIndexManager_html_a1826f9a29518d094f547dd3980b8df4e"><div class="ttname"><a href="classIndexManager.html#a1826f9a29518d094f547dd3980b8df4e">IndexManager::~IndexManager</a></div><div class="ttdeci">virtual ~IndexManager()</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:29</div></div>
+<div class="ttc" id="structattr__index__list_html_ad8d8ceb63e56f42efbb236f0cc23ddbd"><div class="ttname"><a href="structattr__index__list.html#ad8d8ceb63e56f42efbb236f0cc23ddbd">attr_index_list::attribute</a></div><div class="ttdeci">Attribute attribute</div><div class="ttdef"><b>Definition:</b> IndexManager.h:22</div></div>
+<div class="ttc" id="classIndexManager_html_a2ec70fe4d08b8072121dfc84397ee1bc"><div class="ttname"><a href="classIndexManager.html#a2ec70fe4d08b8072121dfc84397ee1bc">IndexManager::deserialize</a></div><div class="ttdeci">bool deserialize(std::string file_name)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:280</div></div>
+<div class="ttc" id="classIndexManager_html_abec8af9120f03101c5586e2c1e68d2dc"><div class="ttname"><a href="classIndexManager.html#abec8af9120f03101c5586e2c1e68d2dc">IndexManager::instance_</a></div><div class="ttdeci">static IndexManager * instance_</div><div class="ttdef"><b>Definition:</b> IndexManager.h:67</div></div>
+<div class="ttc" id="classIndexManager_html_a6d23ea6c99007f45b5c81913f193ac53"><div class="ttname"><a href="classIndexManager.html#a6d23ea6c99007f45b5c81913f193ac53">IndexManager::getInstance</a></div><div class="ttdeci">static IndexManager * getInstance()</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:33</div></div>
+<div class="ttc" id="classIndexManager_html_ae072c6a2884cdcf64ecd7abaccf31748"><div class="ttname"><a href="classIndexManager.html#ae072c6a2884cdcf64ecd7abaccf31748">IndexManager::getAttrIndex</a></div><div class="ttdeci">std::map&lt; ChunkID, void * &gt; getAttrIndex(unsigned long attr_index_id)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:145</div></div>
 <div class="ttc" id="structAttribute_html"><div class="ttname"><a href="structAttribute.html">Attribute</a></div><div class="ttdef"><b>Definition:</b> Attribute.h:19</div></div>
+<div class="ttc" id="classIndexManager_html_aa4db93255d65dd491f2590f37e353310"><div class="ttname"><a href="classIndexManager.html#aa4db93255d65dd491f2590f37e353310">IndexManager::IndexManager</a></div><div class="ttdeci">IndexManager()</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:21</div></div>
+<div class="ttc" id="structattr__index__list_html_a672dd8b2d6436c1486724c99af1cefe3"><div class="ttname"><a href="structattr__index__list.html#a672dd8b2d6436c1486724c99af1cefe3">attr_index_list::csb_tree_list</a></div><div class="ttdeci">std::map&lt; ChunkID, void * &gt; csb_tree_list</div><div class="ttdef"><b>Definition:</b> IndexManager.h:24</div></div>
+<div class="ttc" id="classIndexManager_html_a449a17bc8ce287656d46eab726365866"><div class="ttname"><a href="classIndexManager.html#a449a17bc8ce287656d46eab726365866">IndexManager::column_attribute_to_id</a></div><div class="ttdeci">map&lt; Attribute, unsigned long &gt; column_attribute_to_id</div><div class="ttdef"><b>Definition:</b> IndexManager.h:63</div></div>
+<div class="ttc" id="classIndexManager_html_a6dd67480c89f1abb4b132b38cf2b0d20"><div class="ttname"><a href="classIndexManager.html#a6dd67480c89f1abb4b132b38cf2b0d20">IndexManager::getIndexType</a></div><div class="ttdeci">data_type getIndexType(unsigned long index_id)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:176</div></div>
+<div class="ttc" id="structattr__index__list_html_a7d156aee7790216afc5722ed6f5e61e4"><div class="ttname"><a href="structattr__index__list.html#a7d156aee7790216afc5722ed6f5e61e4">attr_index_list::attr_index_name</a></div><div class="ttdeci">std::string attr_index_name</div><div class="ttdef"><b>Definition:</b> IndexManager.h:23</div></div>
+<div class="ttc" id="classIndexManager_html_a43efc8ac37c404adbd56f04c1158f05c"><div class="ttname"><a href="classIndexManager.html#a43efc8ac37c404adbd56f04c1158f05c">IndexManager::csb_index_</a></div><div class="ttdeci">map&lt; unsigned long, attr_index_list * &gt; csb_index_</div><div class="ttdef"><b>Definition:</b> IndexManager.h:60</div></div>
 <div class="ttc" id="classIndexManager_html"><div class="ttname"><a href="classIndexManager.html">IndexManager</a></div><div class="ttdef"><b>Definition:</b> IndexManager.h:27</div></div>
+<div class="ttc" id="structattr__index__list_html_a9eb7da051ff3bbdb2939fe78f04a2a38"><div class="ttname"><a href="structattr__index__list.html#a9eb7da051ff3bbdb2939fe78f04a2a38">attr_index_list::attr_index_list</a></div><div class="ttdeci">attr_index_list(Attribute attr)</div><div class="ttdef"><b>Definition:</b> IndexManager.h:20</div></div>
+<div class="ttc" id="classIndexManager_html_a3d5da617d8ae4763730d0433433d2da5"><div class="ttname"><a href="classIndexManager.html#a3d5da617d8ae4763730d0433433d2da5">IndexManager::deleteIndexFromList</a></div><div class="ttdeci">bool deleteIndexFromList(unsigned long index_id)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:161</div></div>
+<div class="ttc" id="classIndexManager_html_a0efed360c654c60c74ce9552fca7277f"><div class="ttname"><a href="classIndexManager.html#a0efed360c654c60c74ce9552fca7277f">IndexManager::addIndexToList</a></div><div class="ttdeci">bool addIndexToList(unsigned key_indexing, map&lt; ChunkID, void * &gt; attr_index)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:40</div></div>
+<div class="ttc" id="classIndexManager_html_aeaee23fc4e3e9a2a715bd09ba2c716d8"><div class="ttname"><a href="classIndexManager.html#aeaee23fc4e3e9a2a715bd09ba2c716d8">IndexManager::serialize</a></div><div class="ttdeci">bool serialize(std::string file_name)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:208</div></div>
+<div class="ttc" id="classIndexManager_html_a293bb9b870c03dc099dab522a3b0dc4f"><div class="ttname"><a href="classIndexManager.html#a293bb9b870c03dc099dab522a3b0dc4f">IndexManager::getIndexList</a></div><div class="ttdeci">std::map&lt; ChunkID, CSBPlusTree&lt; T &gt; * &gt; getIndexList(Attribute attribute)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:111</div></div>
+<div class="ttc" id="classIndexManager_html_a3c7fab8d9b333e0a892da5cd1dd2b564"><div class="ttname"><a href="classIndexManager.html#a3c7fab8d9b333e0a892da5cd1dd2b564">IndexManager::insertIndexToList</a></div><div class="ttdeci">bool insertIndexToList(std::string index_name, unsigned key_indexing, map&lt; ChunkID, void * &gt; attr_index)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:81</div></div>
 <div class="ttc" id="structattr__index__list_html"><div class="ttname"><a href="structattr__index__list.html">attr_index_list</a></div><div class="ttdef"><b>Definition:</b> IndexManager.h:17</div></div>
+<div class="ttc" id="classIndexManager_html_a568b979fa32576fd4428502fb2f1a3b9"><div class="ttname"><a href="classIndexManager.html#a568b979fa32576fd4428502fb2f1a3b9">IndexManager::attr_index_id_</a></div><div class="ttdeci">unsigned long attr_index_id_</div><div class="ttdef"><b>Definition:</b> IndexManager.h:62</div></div>
+<div class="ttc" id="structattr__index__list_html_a15745c72626e70976abe5d4cf34e5968"><div class="ttname"><a href="structattr__index__list.html#a15745c72626e70976abe5d4cf34e5968">attr_index_list::attr_index_list</a></div><div class="ttdeci">attr_index_list()</div><div class="ttdef"><b>Definition:</b> IndexManager.h:19</div></div>
+<div class="ttc" id="classIndexManager_html_a643ae55b67ea1ab3165e0001fd689613"><div class="ttname"><a href="classIndexManager.html#a643ae55b67ea1ab3165e0001fd689613">IndexManager::getIndexID</a></div><div class="ttdeci">unsigned long getIndexID(Attribute attr)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:200</div></div>
+<div class="ttc" id="data__type_8h_html_ac2ad7f431e3446fddcd9b6b9f93c4c14"><div class="ttname"><a href="data__type_8h.html#ac2ad7f431e3446fddcd9b6b9f93c4c14">data_type</a></div><div class="ttdeci">data_type</div><div class="ttdef"><b>Definition:</b> data_type.h:33</div></div>
+<div class="ttc" id="classIndexManager_html_a20d32c0454516aa3adf9eb28268376b4"><div class="ttname"><a href="classIndexManager.html#a20d32c0454516aa3adf9eb28268376b4">IndexManager::isIndexExist</a></div><div class="ttdeci">bool isIndexExist(Attribute attr)</div><div class="ttdef"><b>Definition:</b> IndexManager.cpp:186</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_5880d1419d7af3e8f0bf3cf43a504c7a.html">IndexManager</a></li><li class="navelem"><b>IndexManager.h</b></li>
+    <li class="navelem"><a class="el" href="dir_5880d1419d7af3e8f0bf3cf43a504c7a.html">IndexManager</a></li><li class="navelem"><a class="el" href="IndexManager_8h.html">IndexManager.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>

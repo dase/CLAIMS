@@ -12,5 +12,8 @@ var classSchemaVar =
     [ "getSubSchema", "classSchemaVar.html#a063d43b62bd72e2c84173530ecb53401", null ],
     [ "getTupleActualSize", "classSchemaVar.html#ad6d68784a5e679ff4496275deb3d291c", null ],
     [ "getTupleMaxSize", "classSchemaVar.html#a0b6436d8e7b0302730d2f8afcdbd2770", null ],
-    [ "boost::serialization::access", "classSchemaVar.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ]
+    [ "serialize", "classSchemaVar.html#a87d4c1234291468f7b25bb990d068cfb", null ],
+    [ "boost::serialization::access", "classSchemaVar.html#ac98d07dd8f7b70e16ccb9a01abf56b9c", null ],
+    [ "attributes_", "classSchemaVar.html#ae80dc91f753f62aaaafb6c4c2aa90468", null ],
+    [ "var_attributes_", "classSchemaVar.html#a7e061f11aa0d660d319c374637de7388", null ]
 ];

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.5"/>
-<title>My Project: ClientLogging Class Reference</title>
+<title>Claims: ClientLogging Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,7 +29,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">My Project
+   <div id="projectname">Claims
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="inherits.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -111,19 +111,132 @@ $(document).ready(function(){initNavTree('classClientLogging.html','');});
 <div class="title">ClientLogging Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="Logging_8h_source.html">Logging.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a72952654169982b4e8f399bf274b09ea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a72952654169982b4e8f399bf274b09ea"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>log</b> (const char *format,...)</td></tr>
+<tr class="memitem:a72952654169982b4e8f399bf274b09ea"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClientLogging.html#a72952654169982b4e8f399bf274b09ea">log</a> (const char *format,...)</td></tr>
 <tr class="separator:a72952654169982b4e8f399bf274b09ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa29b66e82c16a8981f70462dba31a44e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa29b66e82c16a8981f70462dba31a44e"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>elog</b> (const char *format,...)</td></tr>
+<tr class="memitem:aa29b66e82c16a8981f70462dba31a44e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClientLogging.html#aa29b66e82c16a8981f70462dba31a44e">elog</a> (const char *format,...)</td></tr>
 <tr class="separator:aa29b66e82c16a8981f70462dba31a44e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aa29b66e82c16a8981f70462dba31a44e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ClientLogging::elog </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Logging_8cpp.html#a8ed22dc2e8a26a8cc101729ae0458cfe">RawElog()</a>.</p>
+
+<p>Referenced by <a class="el" href="classClientListener.html#a140556a1322686496cc2b13c15f64230">ClientListener::checkFdValid()</a>, <a class="el" href="classClientListener.html#a76982b5ca4f111abc397b6fcfbd93204">ClientListener::generateSqlStmt()</a>, and <a class="el" href="classClientListener.html#a11455a9819572dda29fd01eb60171eb8">ClientListener::receiveHandler()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classClientLogging_aa29b66e82c16a8981f70462dba31a44e_cgraph.png" border="0" usemap="#classClientLogging_aa29b66e82c16a8981f70462dba31a44e_cgraph" alt=""/></div>
+<map name="classClientLogging_aa29b66e82c16a8981f70462dba31a44e_cgraph" id="classClientLogging_aa29b66e82c16a8981f70462dba31a44e_cgraph">
+<area shape="rect" id="node2" href="Logging_8cpp.html#a8ed22dc2e8a26a8cc101729ae0458cfe" title="RawElog" alt="" coords="187,5,261,32"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classClientLogging_aa29b66e82c16a8981f70462dba31a44e_icgraph.png" border="0" usemap="#classClientLogging_aa29b66e82c16a8981f70462dba31a44e_icgraph" alt=""/></div>
+<map name="classClientLogging_aa29b66e82c16a8981f70462dba31a44e_icgraph" id="classClientLogging_aa29b66e82c16a8981f70462dba31a44e_icgraph">
+<area shape="rect" id="node2" href="classClientListener.html#a140556a1322686496cc2b13c15f64230" title="ClientListener::checkFdValid" alt="" coords="187,998,376,1024"/><area shape="rect" id="node50" href="classClientListener.html#a76982b5ca4f111abc397b6fcfbd93204" title="ClientListener::generate\lSqlStmt" alt="" coords="424,1162,584,1204"/><area shape="rect" id="node3" href="classClientListener.html#a11455a9819572dda29fd01eb60171eb8" title="ClientListener::receiveHandler" alt="" coords="1264,1060,1461,1087"/><area shape="rect" id="node44" href="classClientListener.html#ad13c4304fac33c02aeef2101f0cb5651" title="ClientListener::sendHandler" alt="" coords="1023,950,1206,976"/><area shape="rect" id="node45" href="classDaemon.html#aea8bf0567f4c3853dd07b84eee38b4ea" title="Daemon::worker" alt="" coords="445,998,563,1024"/><area shape="rect" id="node49" href="classClientListener.html#a8e0ea5367baddeed91e81b8ea2cebee4" title="ClientListener::write" alt="" coords="632,908,771,935"/><area shape="rect" id="node4" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="1509,1020,1672,1047"/><area shape="rect" id="node5" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="1720,1013,1904,1054"/><area shape="rect" id="node6" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="1952,1020,2128,1047"/><area shape="rect" id="node7" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="2176,1020,2347,1047"/><area shape="rect" id="node8" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="2433,113,2591,154"/><area shape="rect" id="node13" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="2426,281,2598,322"/><area shape="rect" id="node9" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="2719,26,2809,52"/><area shape="rect" id="node14" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="2435,347,2589,374"/><area shape="rect" id="node15" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="2475,398,2549,424"/><area shape="rect" id="node16" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="2454,448,2570,475"/><area shape="rect" id="node10" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="2689,106,2839,132"/><area shape="rect" id="node17" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="2462,499,2562,526"/><area shape="rect" id="node18" href="classCoordinator.html#a1c7338e9e523b18cec7c31be8a8fc338" title="Coordinator::SetupTheTheron" alt="" coords="2415,550,2609,576"/><area shape="rect" id="node19" href="classExchangeTracker.html#ac9b29bdf51108c5ae4077199d5271e6a" title="ExchangeTracker::Exchange\lTracker" alt="" coords="2417,601,2607,642"/><area shape="rect" id="node20" href="classExchangeTracker_1_1ExchangeTrackerActor.html#a4c5db6ebec5bcbb469dcb8e753953ddd" title="ExchangeTracker::Exchange\lTrackerActor::AskForConnectionInfo" alt="" coords="2395,666,2629,708"/><area shape="rect" id="node21" href="classIteratorExecutorMaster.html#a2c1320de06b69838a5e07f0531d1ebdb" title="IteratorExecutorMaster\l::IteratorExecutorMaster" alt="" coords="2431,732,2593,773"/><area shape="rect" id="node22" href="classIteratorExecutorMaster.html#aa4274d14dcec6648c56da32efac7ad4e" title="IteratorExecutorMaster\l::ExecuteBlockStreamIterators\lOnSite" alt="" coords="2411,798,2613,854"/><area shape="rect" id="node23" href="classIteratorExecutorSlave.html#a9a52a393b4cea4a8463481c1c5f7788f" title="IteratorExecutorSlave\l::IteratorExecutorSlave" alt="" coords="2434,878,2590,920"/><area shape="rect" id="node24" href="Executor_8cpp.html#aaaec88767050179be1e54c699a7e6165" title="testIteratorExecutor" alt="" coords="2443,944,2581,971"/><area shape="rect" id="node11" href="test__CSB__index__building_8cpp.html#abfabef661768d6d9ddfb2accfd483cf9" title="test_CSBIndexBuilding" alt="" coords="2685,168,2843,195"/><area shape="rect" id="node12" href="test__index__scan__iterator_8cpp.html#a229a61401f2486f132b2a11980d9bc83" title="test_index_scan_iterator" alt="" coords="2682,224,2846,251"/><area shape="rect" id="node25" href="test__IndexManager__serialize_8cpp.html#ad9edb4dedfc31d5278608f91a6a84c89" title="init_poc_environment" alt="" coords="2439,1046,2585,1072"/><area shape="rect" id="node27" href="test__IndexManager__serialize_8cpp.html#a4cd10beb21c93f9c9ca6442680a3e0e1" title="init_tt_environment" alt="" coords="2446,1096,2578,1123"/><area shape="rect" id="node26" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="2695,1020,2833,1047"/><area shape="rect" id="node28" href="test__logical__csb__index__building_8cpp.html#a261394af0ffa1a0cd36a02ff28cd391c" title="test_logical_csb_index\l_building" alt="" coords="2435,1148,2589,1189"/><area shape="rect" id="node29" href="test__load_8cpp.html#a538eccee7bd7bfe255ceec704bf0184e" title="create_load_test" alt="" coords="2453,1264,2571,1291"/><area shape="rect" id="node30" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="2727,1239,2801,1266"/><area shape="rect" id="node31" href="ExecuteLogicalQueryPlan_8h.html#a759801bc51d7897a8e2bf4f5c793a969" title="ExecuteLogicalQueryPlan" alt="" coords="2678,1366,2850,1392"/><area shape="rect" id="node32" href="ExecuteLogicalQueryPlan_8h.html#ae7d1c7e5d50edd04bfaea56cc19b35eb" title="CreateTable" alt="" coords="2465,1366,2559,1392"/><area shape="rect" id="node33" href="ExecuteLogicalQueryPlan_8h.html#a00251af4e6a7740c73e6aeb0e86bd909" title="InsertData" alt="" coords="2471,1416,2553,1443"/><area shape="rect" id="node34" href="parsetree2logicalplan_8cpp.html#ae474c2e8e4cbf5e652190dbb8939893e" title="where_from2logicalplan" alt="" coords="2433,1467,2591,1494"/><area shape="rect" id="node35" href="parsetree2logicalplan_8cpp.html#a09387fdcd277ebbb2ed5fff49cea7062" title="get_aggregation_args" alt="" coords="2439,1518,2585,1544"/><area shape="rect" id="node36" href="semantic__analysis_8cpp.html#aaad974f17c855705c03e8a930d694ada" title="table_has_column" alt="" coords="2449,1670,2575,1696"/><area shape="rect" id="node41" href="semantic__analysis_8cpp.html#a8f29230cca674e2d30ea3e107b7aa704" title="add_all_table_column" alt="" coords="2439,1822,2585,1848"/><area shape="rect" id="node42" href="semantic__analysis_8cpp.html#a3982968c9fa8593241e93da7dc317a62" title="add_table_column" alt="" coords="2449,1872,2575,1899"/><area shape="rect" id="node39" href="semantic__analysis_8cpp.html#afcb58da4f408fe443c830ce235288869" title="selectlist_expr_analysis" alt="" coords="2683,1710,2845,1736"/><area shape="rect" id="node37" href="semantic__analysis_8cpp.html#a71f256ea10572b41ee47a24be6e1a5fb" title="oncondition_check" alt="" coords="2699,1571,2829,1598"/><area shape="rect" id="node43" href="semantic__analysis_8cpp.html#ae4fd9bc3116c122670731716d8c0f977" title="fromlist_analysis" alt="" coords="2452,1923,2572,1950"/><area shape="rect" id="node40" href="semantic__analysis_8cpp.html#a56d7fc53fb42cf29d29b19764265bcf9" title="wherecondition_check" alt="" coords="2689,1767,2839,1794"/><area shape="rect" id="node38" href="semantic__analysis_8cpp.html#a5f6911a7fc2bbfddd2fc469d4b63f00f" title="orderby_analysis" alt="" coords="2704,1647,2824,1674"/><area shape="rect" id="node46" href="classDaemon.html#a219c10e2d61c35f446d096726842fc82" title="Daemon::Daemon" alt="" coords="637,959,765,986"/><area shape="rect" id="node47" href="classDaemon.html#acd28b5ef418a8369293a144ca644d5d1" title="Daemon::getInstance" alt="" coords="819,975,965,1002"/><area shape="rect" id="node48" href="classClientListener.html#a2e89866ad016078a55f42de886339d2b" title="ClientListener::receiveRequest" alt="" coords="1014,1007,1215,1034"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a72952654169982b4e8f399bf274b09ea"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ClientLogging::log </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>References <a class="el" href="Logging_8cpp.html#a0ef63009da8369e4aafa46e0ea1aacf9">RawLog()</a>.</p>
+
+<p>Referenced by <a class="el" href="classClientListener.html#a140556a1322686496cc2b13c15f64230">ClientListener::checkFdValid()</a>, <a class="el" href="classClientListener.html#a76982b5ca4f111abc397b6fcfbd93204">ClientListener::generateSqlStmt()</a>, <a class="el" href="classClient.html#aceb6dc63dbe5debfd1602d3c96d8a9a9">Client::receive()</a>, <a class="el" href="classClientListener.html#a11455a9819572dda29fd01eb60171eb8">ClientListener::receiveHandler()</a>, <a class="el" href="structClientResponse.html#ab6454d19b95a696d3ecbc6dfad72874c">ClientResponse::serialize()</a>, <a class="el" href="classClient.html#a3c1f75dd30ecd5a2817f3b47c2afc458">Client::shutdown()</a>, <a class="el" href="classClientListener.html#ad6b058d7a3fbb1222f4f38f893267cfd">ClientListener::shutdown()</a>, <a class="el" href="classClient.html#a77fa0d2ff840924df6f09eecf55fe4f6">Client::submit()</a>, <a class="el" href="classClient.html#ac129048b0c86f3d5d5e8f30656b52ca2">Client::submitQuery()</a>, and <a class="el" href="classDaemon.html#aea8bf0567f4c3853dd07b84eee38b4ea">Daemon::worker()</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classClientLogging_a72952654169982b4e8f399bf274b09ea_cgraph.png" border="0" usemap="#classClientLogging_a72952654169982b4e8f399bf274b09ea_cgraph" alt=""/></div>
+<map name="classClientLogging_a72952654169982b4e8f399bf274b09ea_cgraph" id="classClientLogging_a72952654169982b4e8f399bf274b09ea_cgraph">
+<area shape="rect" id="node2" href="Logging_8cpp.html#a0ef63009da8369e4aafa46e0ea1aacf9" title="RawLog" alt="" coords="182,5,253,32"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classClientLogging_a72952654169982b4e8f399bf274b09ea_icgraph.png" border="0" usemap="#classClientLogging_a72952654169982b4e8f399bf274b09ea_icgraph" alt=""/></div>
+<map name="classClientLogging_a72952654169982b4e8f399bf274b09ea_icgraph" id="classClientLogging_a72952654169982b4e8f399bf274b09ea_icgraph">
+<area shape="rect" id="node2" href="classClientListener.html#a140556a1322686496cc2b13c15f64230" title="ClientListener::checkFdValid" alt="" coords="181,425,371,452"/><area shape="rect" id="node38" href="classClientListener.html#a76982b5ca4f111abc397b6fcfbd93204" title="ClientListener::generate\lSqlStmt" alt="" coords="1072,605,1232,646"/><area shape="rect" id="node39" href="classClient.html#aceb6dc63dbe5debfd1602d3c96d8a9a9" title="Client::receive" alt="" coords="223,223,329,249"/><area shape="rect" id="node3" href="classClientListener.html#a11455a9819572dda29fd01eb60171eb8" title="ClientListener::receiveHandler" alt="" coords="1301,604,1499,631"/><area shape="rect" id="node44" href="structClientResponse.html#ab6454d19b95a696d3ecbc6dfad72874c" title="ClientResponse::serialize" alt="" coords="191,375,361,401"/><area shape="rect" id="node45" href="classClient.html#a3c1f75dd30ecd5a2817f3b47c2afc458" title="Client::shutdown" alt="" coords="637,83,757,109"/><area shape="rect" id="node47" href="classClientListener.html#ad6b058d7a3fbb1222f4f38f893267cfd" title="ClientListener::shutdown" alt="" coords="1547,867,1714,893"/><area shape="rect" id="node40" href="classClient.html#a77fa0d2ff840924df6f09eecf55fe4f6" title="Client::submit" alt="" coords="437,248,539,275"/><area shape="rect" id="node50" href="classClient.html#ac129048b0c86f3d5d5e8f30656b52ca2" title="Client::submitQuery" alt="" coords="1331,299,1469,325"/><area shape="rect" id="node33" href="classDaemon.html#aea8bf0567f4c3853dd07b84eee38b4ea" title="Daemon::worker" alt="" coords="429,527,547,553"/><area shape="rect" id="node32" href="classClientListener.html#ad13c4304fac33c02aeef2101f0cb5651" title="ClientListener::sendHandler" alt="" coords="1061,425,1243,452"/><area shape="rect" id="node37" href="classClientListener.html#a8e0ea5367baddeed91e81b8ea2cebee4" title="ClientListener::write" alt="" coords="419,375,557,401"/><area shape="rect" id="node4" href="classClientListener.html#a7e72e3815bd91d01216a1c19d2b26872" title="ClientListener::configure" alt="" coords="1549,604,1712,631"/><area shape="rect" id="node5" href="classEnvironment.html#aa78f4e64711b1fb612b343c372eaf0fa" title="Environment::initializeClient\lListener" alt="" coords="1763,599,1947,641"/><area shape="rect" id="node6" href="classEnvironment.html#af2f4eff1599d1215b723621eddd511f2" title="Environment::Environment" alt="" coords="1997,608,2173,635"/><area shape="rect" id="node7" href="classEnvironment.html#a0ddefb9216d956aedff6f378942dde61" title="Environment::getInstance" alt="" coords="2231,609,2401,636"/><area shape="rect" id="node8" href="classProjectionBinding.html#a256e9a7a0c157f31df1cb7fccb71ffbf" title="ProjectionBinding::\lBindingEntireProjection" alt="" coords="2464,173,2621,214"/><area shape="rect" id="node11" href="classProjectionBinding.html#a04e1bf2e4b3c179ed411ec5bbac14720" title="ProjectionBinding::\lUnbindingEntireProjection" alt="" coords="2457,290,2629,331"/><area shape="rect" id="node9" href="Partitioner__test_8cpp.html#af41268115b3347667612333d82c771ca" title="BindingTest" alt="" coords="2709,220,2800,247"/><area shape="rect" id="node12" href="statistic__manager__test_8cpp.html#a4d88b70b8b47aeb15df4e07ba45dca57" title="statistic_manager_test" alt="" coords="2465,407,2620,433"/><area shape="rect" id="node13" href="TestSeverClient_8cpp.html#abc154e782abca187cf7e9954c636ac0f" title="loadData" alt="" coords="2505,457,2580,484"/><area shape="rect" id="node14" href="TestSeverClient_8cpp.html#a41a1eec4a828be6f09a0d8054e023ab7" title="testServerClient" alt="" coords="2485,71,2601,97"/><area shape="rect" id="node10" href="VariableSchema__test_8cpp.html#a4d10e3068e1b2740433c6209d68233d9" title="variable_schema_test" alt="" coords="2680,151,2829,177"/><area shape="rect" id="node15" href="Executing__test_8cpp.html#ab36ef7932ccba3385be5ba526ec2a122" title="execting_test" alt="" coords="2493,508,2593,535"/><area shape="rect" id="node16" href="test__IndexManager__serialize_8cpp.html#ae3579b817d55cb9130b1984ea57cf17d" title="test_index_manager" alt="" coords="2473,660,2612,687"/><area shape="rect" id="node17" href="test__load_8cpp.html#a2fdd90666535f996014af6ba0e79becb" title="test_load" alt="" coords="2505,609,2580,636"/><area shape="rect" id="node18" href="Server_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="2517,1183,2568,1209"/><area shape="rect" id="node19" href="issue27_8cpp.html#a643bf6859b385b2780e746e3e684b202" title="issue27_single_node" alt="" coords="2471,711,2614,737"/><area shape="rect" id="node20" href="issue27_8cpp.html#af0593fe7ac217dcf01f1654b0705a671" title="issue27_multi_node" alt="" coords="2474,761,2611,788"/><area shape="rect" id="node21" href="issue27__sort_8cpp.html#a121b09796840f7ede993f238fd7b1ed0" title="issue27_sort_single_node" alt="" coords="2457,863,2629,889"/><area shape="rect" id="node22" href="issue27ing_8cpp.html#a3932f5603435f6e7f70ae4dd5018a67a" title="issue27ing_single_node" alt="" coords="2463,812,2623,839"/><area shape="rect" id="node23" href="hash__table__test_8h.html#a0cea0945e75d1d827b21beeb8b8eb762" title="scalability_test" alt="" coords="2488,1132,2597,1159"/><area shape="rect" id="node27" href="in__segment__scalability__test_8cpp.html#a7e0f7383668c41b1a68720f032ac772e" title="in_segment_scalability\l_test_on_tpch" alt="" coords="2677,1026,2832,1067"/><area shape="rect" id="node25" href="in__segment__scalability__test_8cpp.html#aa5c26306225a4422b0da67472edfa369" title="in_segment_scalability\l_test_on_poc" alt="" coords="2677,1157,2832,1198"/><area shape="rect" id="node29" href="classDMLTestPOC1Partition.html#a3655a7c783b1b36f92b2b187869b5c08" title="DMLTestPOC1Partition\l::TearDownTestCase" alt="" coords="2463,965,2623,1006"/><area shape="rect" id="node30" href="tpc__h__test_8cpp.html#acc1faaa3c0f1f6d04e0648b37f3b1118" title="tcp_h_test_single_node" alt="" coords="2463,1031,2622,1057"/><area shape="rect" id="node31" href="tpc__h__test_8cpp.html#a60223246cdbc445207deaa0d4c2480ed" title="tcp_h_test_multi_nodes" alt="" coords="2463,913,2623,940"/><area shape="rect" id="node24" href="hash__table__test_8h.html#a5b213e2a7f0601eece39cc0e8afcabe5" title="basic_hash_table_test" alt="" coords="2679,1223,2831,1249"/><area shape="rect" id="node28" href="hash__table__test_8h.html#aa9f1c43aea3f0cf1c905bb18309e8aa1" title="insert_optimized_hash\l_table_test" alt="" coords="2679,1091,2831,1133"/><area shape="rect" id="node26" href="in__segment__scalability__test_8cpp.html#a549e3bf15223d77bc720ef7ffc975a14" title="in_segment_scalability_test" alt="" coords="2881,1164,3063,1191"/><area shape="rect" id="node34" href="classDaemon.html#a219c10e2d61c35f446d096726842fc82" title="Daemon::Daemon" alt="" coords="633,527,761,553"/><area shape="rect" id="node35" href="classDaemon.html#acd28b5ef418a8369293a144ca644d5d1" title="Daemon::getInstance" alt="" coords="847,539,993,565"/><area shape="rect" id="node36" href="classClientListener.html#a2e89866ad016078a55f42de886339d2b" title="ClientListener::receiveRequest" alt="" coords="1051,544,1253,571"/><area shape="rect" id="node41" href="Client_8cpp.html#abf196a9a002efc9337a8de7d33cf57cf" title="submit_command" alt="" coords="635,223,760,249"/><area shape="rect" id="node43" href="Client_8cpp.html#a0948d78954631d7d0c0690e86eddd601" title="submit_command_repeated" alt="" coords="606,273,789,300"/><area shape="rect" id="node42" href="Client_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="895,121,945,148"/><area shape="rect" id="node46" href="classElasticIteratorModelTest.html#ad9b256f47e26bdd4dabddc9670c785d3" title="ElasticIteratorModelTest\l::TearDown" alt="" coords="838,5,1002,46"/><area shape="rect" id="node48" href="classEnvironment.html#a8ecdca8a494447fabced4bb09f18ae60" title="Environment::destoryClient\lListener" alt="" coords="1995,889,2175,930"/><area shape="rect" id="node49" href="classEnvironment.html#a8e294735187880dd3d59be10c425b29d" title="Environment::~Environment" alt="" coords="2224,908,2408,935"/></map>
+</div>
+</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>common/<a class="el" href="Logging_8h_source.html">Logging.h</a></li>
-<li>common/Logging.cpp</li>
+<li>common/<a class="el" href="Logging_8cpp.html">Logging.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

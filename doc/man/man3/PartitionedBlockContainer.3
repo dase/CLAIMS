@@ -1,4 +1,4 @@
-.TH "PartitionedBlockContainer" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "PartitionedBlockContainer" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,11 +6,23 @@ PartitionedBlockContainer \-
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <PartitionedBlockContainer\&.h>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBstatus\fP"
+.br
+.in -1c
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBPartitionedBlockContainer\fP (unsigned partitions, unsigned block_size)"
+.RI "\fBPartitionedBlockContainer\fP (unsigned partitions, unsigned \fBblock_size\fP)"
+.br
+.ti -1c
+.RI "virtual \fB~PartitionedBlockContainer\fP ()"
 .br
 .ti -1c
 .RI "int \fBgetBlockForSending\fP (\fBBlockContainer\fP *&block)"
@@ -22,11 +34,71 @@ PartitionedBlockContainer \-
 .RI "void \fBInitialized\fP ()"
 .br
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBpartition_count_\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size_\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBBlockContainer\fP * > \fBblock_list_\fP"
+.br
+.ti -1c
+.RI "std::vector< \fBstatus\fP > \fBstatus_list_\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "PartitionedBlockContainer::PartitionedBlockContainer (unsignedpartitions, unsignedblock_size)"
+
+.PP
+References block_list_, block_size_, partition_count_, and status_list_\&.
+.SS "PartitionedBlockContainer::~PartitionedBlockContainer ()\fC [virtual]\fP"
+
+.PP
+References block_list_, and status_list_\&.
 .SH "Member Function Documentation"
 .PP 
+.SS "int PartitionedBlockContainer::getBlockForSending (\fBBlockContainer\fP *&block)"
+
+.PP
+References block_list_, and partition_count_\&.
+.PP
+Referenced by claims::physical_operator::ExchangeSenderPipeline::Sender()\&.
+.SS "void PartitionedBlockContainer::Initialized ()"
+
+.PP
+References block_list_\&.
+.PP
+Referenced by claims::physical_operator::ExchangeSenderPipeline::Sender()\&.
 .SS "void PartitionedBlockContainer::insert (unsignedpartition_id, \fBBlockContainer\fP *&block)"
 swap the block container 
+.PP
+References block_list_\&.
+.PP
+Referenced by claims::physical_operator::ExchangeSenderPipeline::Sender()\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<\fBBlockContainer\fP*> PartitionedBlockContainer::block_list_\fC [private]\fP"
+
+.PP
+Referenced by getBlockForSending(), Initialized(), insert(), PartitionedBlockContainer(), and ~PartitionedBlockContainer()\&.
+.SS "unsigned PartitionedBlockContainer::block_size_\fC [private]\fP"
+
+.PP
+Referenced by PartitionedBlockContainer()\&.
+.SS "unsigned PartitionedBlockContainer::partition_count_\fC [private]\fP"
+
+.PP
+Referenced by getBlockForSending(), and PartitionedBlockContainer()\&.
+.SS "std::vector<\fBstatus\fP> PartitionedBlockContainer::status_list_\fC [private]\fP"
+
+.PP
+Referenced by PartitionedBlockContainer(), and ~PartitionedBlockContainer()\&.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

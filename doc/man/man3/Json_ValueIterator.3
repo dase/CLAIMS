@@ -1,4 +1,4 @@
-.TH "Json::ValueIterator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.TH "Json::ValueIterator" 3 "Thu Nov 12 2015" "Claims" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -39,6 +39,9 @@ Inherits \fBJson::ValueIteratorBase\fP\&.
 
 .in +1c
 .ti -1c
+.RI "\fBValueIterator\fP ()"
+.br
+.ti -1c
 .RI "\fBValueIterator\fP (const \fBValueConstIterator\fP &other)"
 .br
 .ti -1c
@@ -66,6 +69,13 @@ Inherits \fBJson::ValueIteratorBase\fP\&.
 .RI "\fBpointer\fP \fBoperator->\fP () const "
 .br
 .in -1c
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBValueIterator\fP (const Value::ObjectValues::iterator &current)"
+.br
+.in -1c
 .SS "Friends"
 
 .in +1c
@@ -77,7 +87,53 @@ Inherits \fBJson::ValueIteratorBase\fP\&.
 .SH "Detailed Description"
 .PP 
 Iterator for object and array value\&. 
+.SH "Member Typedef Documentation"
+.PP 
+.SS "typedef int \fBJson::ValueIterator::difference_type\fP"
+
+.SS "typedef \fBValue\fP* \fBJson::ValueIterator::pointer\fP"
+
+.SS "typedef \fBValue\fP& \fBJson::ValueIterator::reference\fP"
+
+.SS "typedef \fBValueIterator\fP \fBJson::ValueIterator::SelfType\fP"
+
+.SS "typedef unsigned int \fBJson::ValueIterator::size_t\fP"
+
+.SS "typedef \fBValue\fP \fBJson::ValueIterator::value_type\fP"
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Json::ValueIterator::ValueIterator ()"
+
+.SS "Json::ValueIterator::ValueIterator (const \fBValueConstIterator\fP &other)"
+
+.SS "Json::ValueIterator::ValueIterator (const \fBValueIterator\fP &other)"
+
+.SS "Json::ValueIterator::ValueIterator (const Value::ObjectValues::iterator &current)\fC [explicit]\fP, \fC [private]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBreference\fP Json::ValueIterator::operator* () const\fC [inline]\fP"
+
+.SS "\fBSelfType\fP Json::ValueIterator::operator++ (int)\fC [inline]\fP"
+
+.SS "\fBSelfType\fP& Json::ValueIterator::operator++ ()\fC [inline]\fP"
+
+.SS "\fBSelfType\fP Json::ValueIterator::operator-- (int)\fC [inline]\fP"
+
+.SS "\fBSelfType\fP& Json::ValueIterator::operator-- ()\fC [inline]\fP"
+
+.SS "\fBpointer\fP Json::ValueIterator::operator-> () const\fC [inline]\fP"
+
+.SS "\fBValueIterator\fP & Json::ValueIterator::operator= (const \fBSelfType\fP &other)"
+
+.PP
+References Json::ValueIteratorBase::copy()\&.
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class \fBValue\fP\fC [friend]\fP"
+
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for My Project from the source code\&.
+Generated automatically by Doxygen for Claims from the source code\&.

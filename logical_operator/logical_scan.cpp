@@ -302,12 +302,14 @@ bool LogicalScan::GetOptimalPhysicalPlan(
     return false;
 }
 void LogicalScan::Print(int level) const {
-  printf("%*.sScan: %s  alias: %s\n", level * 8, " ",
-         Catalog::getInstance()
-             ->getTable(target_projection_->getProjectionID().table_id)
-             ->getTableName()
-             .c_str(),
-         table_alias_.c_str());
+  cout << setw(level * kTabSize) << " "
+       << "Scan:" << endl;
+  level++;
+  cout << setw(level * kTabSize) << " "
+       << "table name: "
+       << Catalog::getInstance()
+              ->getTable(target_projection_->getProjectionID().table_id)
+              ->getTableName() << endl << "alias: " << table_alias_ << endl;
 }
 
 }  // namespace logical_operator
