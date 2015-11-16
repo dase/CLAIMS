@@ -18,6 +18,7 @@
  *
  * /sql_parser/ast_node/ast_select_stmt.h
  *  Created on: May 22, 2015 11:32:03 AM
+ *  Modified on: Nov 16, 2015
  *      Author: fzh
  *       Email: fzhedu@gmail.com
  */
@@ -279,7 +280,9 @@ class AstLimitClause : public AstNode {
   ~AstLimitClause();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-
+#ifdef NEWLIMIT
+  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+#endif
   AstNode* offset_;
   AstNode* row_count_;
 };

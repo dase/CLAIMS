@@ -18,7 +18,8 @@
  *
  * /sql_parser/ast_node/ast_select_stmt.cpp
  *  Created on: May 22, 2015 11:32:03 AM
- *      Author: fzh
+ *  Modified on: Nov 16, 2015
+ *      Author: fzh, tonglanxuan
  *       Email: fzhedu@gmail.com
  */
 
@@ -43,6 +44,9 @@
 #include "../../logical_operator/logical_equal_join.h"
 #include "../../logical_operator/logical_cross_join.h"
 #include "../../logical_operator/logical_filter.h"
+#ifdef NEWLIMIT
+#include "../../logical_operator/logical_limit.h"
+#endif
 #include "../../logical_operator/logical_project.h"
 #include "../../logical_operator/logical_scan.h"
 #include "../../logical_operator/logical_sort.h"
@@ -59,7 +63,7 @@ using claims::logical_operator::LogicalFilter;
 using claims::logical_operator::LogicalProject;
 using claims::logical_operator::LogicalScan;
 using claims::logical_operator::LogicalSort;
-
+using claims::logical_operator::LogicalLimit;
 using std::bitset;
 using std::endl;
 using std::cout;
@@ -1109,7 +1113,27 @@ ErrorNo AstLimitClause::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   return eOK;
 }
-
+#ifdef NEWLIMIT
+ErrorNo AstLimitClause::GetLogicalPlan(LogicalOperator*& logical_plan) {
+  if (NULL == row_count_) {
+    if (NULL == offset_) {
+      return eOK;
+    }
+    return eLimitNotStandardized;
+  }
+  int64_t row_count =
+      atol((dynamic_cast<AstExprConst*>(row_count_))->data_.c_str());
+  if (0 == row_count) {
+    return eLimitZero;
+  }
+  int64_t offset =
+      (NULL != offset_)
+          ? atol((dynamic_cast<AstExprConst*>(offset_))->data_.c_str())
+          : 0;
+  logical_plan = new LogicalLimit(logical_plan, row_count, offset);
+  return eOK;
+}
+#endif
 AstColumn::AstColumn(AstNodeType ast_node_type, std::string relation_name,
                      std::string column_name)
     : AstNode(ast_node_type),
@@ -1536,7 +1560,14 @@ ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
       return ret;
     }
   }
-#ifdef SUPPORT
+#ifdef NEWLIMIT
+  if (NULL != limit_clause_) {
+    ret = limit_clause_->GetLogicalPlan(logic_plan);
+    if (eOK != ret) {
+      return ret;
+    }
+  }
+#else
   if (NULL != limit_clause_) {
     cout << "not support limit now !" << endl;
     return eOK;

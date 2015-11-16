@@ -18,7 +18,8 @@
  *
  * ./sql_parser/ast_node/ast_node.h
  *  Created on: May 21, 2015 4:10:35 PM
- *      Author: fzh
+ *  Modified on: Nov 16, 2015
+ *      Author: fzh, tonglanxuan
  *       Email: fzhedu@gmail.com
  *
  */
@@ -43,6 +44,9 @@ using std::map;
 using std::multimap;
 using std::set;
 using std::string;
+
+#define NEWLIMIT
+
 // namespace claims {
 // namespace sql_parser {
 
@@ -151,6 +155,10 @@ enum ErrorNoType {
   eNoDataTypeInConst,
   eEqualJoinCondiInATable,
   eEqualJoinCondiNotMatch,
+#ifdef NEWLIMIT
+  eLimitNotStandardized,  // a limit clause with offset_ but without row_count_
+  eLimitZero,  // this means the query should return an empty table...
+#endif
 };
 // the order should be keep
 enum SubExprType {
