@@ -114,8 +114,6 @@ class LogicalAggregation : public LogicalOperator {
   bool CanOmitHashRepartition(const PlanContext& child_plan_context) const;
   float EstimateSelectivity() const;
   void Print(int level = 0) const;
-  // map column name to column id
-  void set_column_id(const PlanContext& plan_context);
   // for global agg, reconstruct the group by attributes and aggregation
   // attributes
   void SetGroupbyAndAggAttrsForGlobalAgg(vector<ExprNode*>& group_by_attrs,
@@ -134,7 +132,6 @@ class LogicalAggregation : public LogicalOperator {
   LogicalOperator* child_;
   vector<ExprNode*> group_by_attrs_;
   vector<ExprUnary*> aggregation_attrs_;
-  map<string, int> column_id_;
   vector<unsigned> avg_id_in_agg_;
   int count_column_id_;
   PlanContext* plan_context_;

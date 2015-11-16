@@ -56,15 +56,17 @@ using std::vector;
 class AstExprConst : public AstNode {
  public:
   AstExprConst(AstNodeType ast_node_type, string expr_type, string data);
+  explicit AstExprConst(AstExprConst* node);
   ~AstExprConst();
+  AstNode* AstNodeCopy();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
+                          bool need_collect);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
+
   string expr_type_;
   string data_;
 };
@@ -76,15 +78,19 @@ class AstExprConst : public AstNode {
 class AstExprUnary : public AstNode {
  public:
   AstExprUnary(AstNodeType ast_node_type, string expr_type, AstNode* arg0);
+  explicit AstExprUnary(AstExprUnary* node);
   ~AstExprUnary();
+  AstNode* AstNodeCopy();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   void GetRefTable(set<string>& ref_table);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+
   AstNode* arg0_;
   string expr_type_;
 };
@@ -95,15 +101,18 @@ class AstExprFunc : public AstNode {
  public:
   AstExprFunc(AstNodeType ast_node_type, string expr_type, AstNode* arg0,
               AstNode* arg1, AstNode* arg2);
+  explicit AstExprFunc(AstExprFunc* node);
   ~AstExprFunc();
+  AstNode* AstNodeCopy();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   void GetRefTable(set<string>& ref_table);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -117,17 +126,20 @@ class AstExprCalBinary : public AstNode {
  public:
   AstExprCalBinary(AstNodeType ast_node_type, string expr_type, AstNode* arg0,
                    AstNode* arg1);
+  explicit AstExprCalBinary(AstExprCalBinary* node);
   ~AstExprCalBinary();
+  AstNode* AstNodeCopy();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
@@ -141,21 +153,22 @@ class AstExprCmpBinary : public AstNode {
                    AstNode* arg1);
   AstExprCmpBinary(AstNodeType ast_node_type, string cmp_para, int cmp_type,
                    AstNode* arg0, AstNode* arg1);
-
+  explicit AstExprCmpBinary(AstExprCmpBinary* node);
   ~AstExprCmpBinary();
+  AstNode* AstNodeCopy();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
   ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+
   AstNode* arg0_;
   AstNode* arg1_;
   string expr_type_;
-
   string cmp_para_;  //  "ALL","ANY","SOME","NULL","SUBQUERY"
 };
 /**
@@ -164,14 +177,16 @@ class AstExprCmpBinary : public AstNode {
 class AstExprList : public AstNode {
  public:
   AstExprList(AstNodeType ast_node_type, AstNode* expr, AstNode* next);
+  explicit AstExprList(AstExprList* node);
   ~AstExprList();
+  AstNode* AstNodeCopy();
   void Print(int level = 0) const;
   ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
-                          bool is_select);
+                          bool need_collect);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(QNode*& logic_expr, LogicalOperator* child_logic_plan);
+  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* expr_;
   AstNode* next_;

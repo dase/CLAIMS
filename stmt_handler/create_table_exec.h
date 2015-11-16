@@ -21,15 +21,15 @@
  *  Created on: Sep 23, 2015
  *      Author: cswang
  *	 		 Email: cs_wang@infosys.com
- * 
+ *
  * Description:
  *      this file is mainly about the data definition language of "create",
  *      like "create table", "create projection" etc.
  *
  */
 
-#ifndef STMT_HANDLER_CREATE_EXEC_H_
-#define STMT_HANDLER_CREATE_EXEC_H_
+#ifndef STMT_HANDLER_CREATE_TABLE_EXEC_H_
+#define STMT_HANDLER_CREATE_TABLE_EXEC_H_
 
 #include "../stmt_handler/stmt_exec.h"
 
@@ -37,7 +37,8 @@ namespace claims {
 namespace stmt_handler {
 /**
  * @brief create table and give the information during create a table.
- * @details this class will get a AstCreateTable tree and then execute the implement function
+ * @details this class will get a AstCreateTable tree and then execute the
+ * implement function
  * "Execute()" to create a new table and give the process result.
  */
 class CreateTableExec : public StmtExec {
@@ -55,17 +56,18 @@ class CreateTableExec : public StmtExec {
   /**
    * @brief the concrete operation of creating a table.
    */
-  int Execute();
+  RetCode Execute(executed_result* exec_result);
 
  private:
   /**
    * this pointer describes the abstract syntax tree about create a table.
-   * It is converted from the member stmt_ of base class when we construct a new object.
+   * It is converted from the member stmt_ of base class when we construct a new
+   * object.
    */
-  AstCreateTable * createtable_ast_;
+  AstCreateTable* createtable_ast_;
 };
 
 }  // namespace stmt_handler
-}  // namespace claims 
+}  // namespace claims
 
-#endif // STMT_HANDLER_CREATE_EXEC_H_ 
+#endif  // STMT_HANDLER_CREATE_TABLE_EXEC_H_

@@ -32,7 +32,6 @@
 using claims::physical_operator::PhysicalLimit;
 namespace claims {
 namespace logical_operator {
-#ifdef NEWLIMIT
 LogicalLimit::LogicalLimit(LogicalOperator* child, int64_t returned_tuples,
                            int64_t position)
     : LogicalOperator(kLogicalLimit),
@@ -110,20 +109,6 @@ const unsigned LogicalLimit::PredictCardinality(
    */
   return plan_context.plan_partitioner_.GetPartition(i)->get_cardinality();
 }
-#else
 
-LimitConstraint::LimitConstraint(unsigned long return_tuples)
-    : returned_tuples_(return_tuples), start_position_(0) {}
-
-LimitConstraint::LimitConstraint(unsigned long return_tuples,
-                                 unsigned long position)
-    : returned_tuples_(return_tuples), start_position_(position) {}
-
-LimitConstraint::LimitConstraint() : returned_tuples_(-1), start_position_(0) {}
-
-bool LimitConstraint::CanBeOmitted() const {
-  return returned_tuples_ == -1 & start_position_ == 0;
-};
-#endif
 }  // namespace logical_operator
 }  // namespace claims

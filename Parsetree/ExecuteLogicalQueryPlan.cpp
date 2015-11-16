@@ -1086,23 +1086,8 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
   LogicalOperator *plan = parsetree2logicalplan(node);
 
   LogicalOperator *root = NULL;
-  if (querynode->limit_list != NULL) {
-    Limit_expr *lexpr = (Limit_expr *)querynode->limit_list;
-    if (lexpr->offset == NULL) {
-      root = new LogicalQueryPlanRoot(
-          0, plan, LogicalQueryPlanRoot::kResultCollector,
-          LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
-    } else {
-      root = new LogicalQueryPlanRoot(
-          0, plan, LogicalQueryPlanRoot::kResultCollector,
-          LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),
-                          atoi(((Expr *)lexpr->offset)->data)));
-    }
-  } else {
-    root = new LogicalQueryPlanRoot(0, plan,
-                                    LogicalQueryPlanRoot::kResultCollector);
-  }
-
+  root =
+      new LogicalQueryPlanRoot(0, plan, LogicalQueryPlanRoot::kResultCollector);
 #ifdef SQL_Parser
   root->Print(0);
 #endif
@@ -1119,7 +1104,8 @@ void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
   while (physical_iterator_tree->Next(0))
     ;
   physical_iterator_tree->Close();
-  //					printf("++++++++++++++++Q1: execution time:
+  //					printf("++++++++++++++++Q1: execution
+  // time:
   //%4.4f
   // second.++++++++++++++\n",getSecond(start));
   result_set = physical_iterator_tree->GetResultSet();

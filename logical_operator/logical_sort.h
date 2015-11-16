@@ -105,7 +105,7 @@ class LogicalSort : public LogicalOperator {
   // TODO(yuyang): change const char* to string
   int GetOrderByKey(const char *);
   void SetColumnId(const PlanContext &plan_context);
-  void PrintOrderByAttr() const;
+  void PrintOrderByAttr(int level = 0) const;
   void Print(int level = 0) const;
   virtual bool GetOptimalPhysicalPlan(
       Requirement requirement, PhysicalPlanDescriptor &physical_plan_descriptor,

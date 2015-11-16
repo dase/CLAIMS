@@ -41,6 +41,7 @@ liblogicalqueryplan_a_SOURCES = \
 	logical_scan.cpp 					logical_scan.h \
 	logical_limit.cpp                   logical_limit.h \
 	logical_cross_join.cpp				logical_cross_join.h \
+	logical_subquery.cpp				logical_subquery.h	\
 	logical_sort.cpp 					logical_sort.h 
 
 SUBDIRS = 

@@ -32,7 +32,6 @@
 #include <limits>
 #include "../utility/warmup.h"
 #include "../utility/rdtsc.h"
-#include "../common/ExpressionCalculator.h"
 #include "../common/Expression/execfunc.h"
 #include "../common/Expression/qnode.h"
 #include "../common/Expression/initquery.h"
@@ -67,13 +66,8 @@ PhysicalFilter::PhysicalFilter()
 
 PhysicalFilter::~PhysicalFilter() {}
 PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
-                             vector<QNode*> qual, map<string, int> column_id,
-                             unsigned block_size)
-    : schema_(schema),
-      child_(child),
-      qual_(qual),
-      column_id_(column_id),
-      block_size_(block_size) {}
+                             vector<QNode*> qual, unsigned block_size)
+    : schema_(schema), child_(child), qual_(qual), block_size_(block_size) {}
 PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
                              std::vector<AttributeComparator> comparator_list,
                              unsigned block_size)
@@ -101,7 +95,15 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
 
   if (TryEntryIntoSerializedSection()) {
 #ifdef NEWCONDI
-    if (Config::enable_codegen) {
+
+    /*
+     * In current version, LLVM is used based on
+     * that all expression is merged into one expression.
+     * so make sure there is one expression
+     * TODO(yukai, fangzhuhe): expand LLVM to support multiple expressions
+     *  or merge multiple expressions into one
+     */
+    if (Config::enable_codegen && 1 == state_.qual_.size()) {
       ticks start = curtick();
       generated_filter_processing_fucntoin_ =
           getFilterProcessFunc(state_.qual_[0], state_.schema_);

@@ -35,8 +35,6 @@
 #include <list>
 
 #include "../common/expression/expr_node.h"
-#include "../common/ExpressionCalculator.h"
-#include "../common/ExpressionItem.h"
 #include "../common/Mapping.h"
 #include "../configure.h"
 #include "../common/Expression/qnode.h"
@@ -124,7 +122,8 @@ class PhysicalProject : public PhysicalOperator {
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int version) {
-      ar &schema_input_ &schema_output_ &child_ &block_size_ &expr_tree_;
+      ar &schema_input_ &schema_output_ &child_ &block_size_ &expr_tree_ &
+          expr_list_;
     }
   };
   PhysicalProject(State state);

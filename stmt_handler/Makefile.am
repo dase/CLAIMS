@@ -15,11 +15,9 @@ endif
 
 LDADD = ../Catalog/libcatalog.a \
 		../Catalog/stat/libstat.a \
-		../LogicalQueryPlan/liblogicalqueryplan.a \
 		../Loader/libloader.a \
-		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../common/libcommon.a \
-		../common/Expression/libexpression.a \
+		../common/expression/libexpression.a \
 		../utility/libutility.a \
 		../sql_parser/ast_node/libast_node.a \
 		../sql_parser/parser/libparser.a \
@@ -36,7 +34,7 @@ libstmthandler_a_SOURCES = \
 	select_exec.cpp	select_exec.h \
 	insert_exec.cpp insert_exec.h \
 	load_exec.cpp	load_exec.h \
-	create_exec.cpp create_exec.h
+	create_table_exec.cpp create_table_exec.h
 	
 
 	

@@ -29,9 +29,6 @@ libcommon_a_SOURCES = \
 	AttributeComparator.cpp 		AttributeComparator.h \
 	Comparator.cpp 				Comparator.h \
 	ExpandedThreadTracker.cpp 		ExpandedThreadTracker.h \
-	ExpressionCalculator.cpp \
-	ExpressionCalculator.h 			ExpressionItem.cpp \
-	ExpressionItem.h 				Expression_item.cpp \
 	InsertOptimizedHashTable.cpp 		InsertOptimizedHashTable.h \
 	Logging.cpp 		Logging.h \
 	Mapping.cpp 		Mapping.h \
@@ -39,7 +36,7 @@ libcommon_a_SOURCES = \
 	TimeOutReceiver.cpp 		TimeOutReceiver.h \
 	TypeCast.cpp 		TypeCast.h \
 	TypePromotionMap.cpp 		TypePromotionMap.h \
-	data_type.h 		functions.h \
+	data_type.h 		 \
 	hash.cpp 			hash.h \
 	hashtable.cpp 		hashtable.h \
 	ids.cpp 			ids.h \

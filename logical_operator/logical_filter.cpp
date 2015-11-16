@@ -27,6 +27,8 @@
  */
 
 #include "../logical_operator/logical_filter.h"
+#include <string>
+#include <map>
 #include <vector>
 #include "../IDsGenerator.h"
 #include "../Catalog/stat/StatManager.h"
@@ -92,16 +94,17 @@ PlanContext LogicalFilter::GetPlanContext() {
       }
     }
   }
-  set_column_id(plan_context);
-  Schema* input_ = GetSchema(plan_context.attribute_list_);
+  std::map<std::string, int> column_to_id;
+  GetColumnToId(plan_context.attribute_list_, column_to_id);
+  Schema* input_schema = GetSchema(plan_context.attribute_list_);
 #ifdef NEWCONDI
   for (int i = 0; i < condi_.size(); ++i) {
     // Initialize expression of logical execution plan.
-    InitExprAtLogicalPlan(condi_[i], t_boolean, column_id_, input_);
+    InitExprAtLogicalPlan(condi_[i], t_boolean, column_to_id, input_schema);
   }
 #else
   for (int i = 0; i < condition_.size(); ++i) {
-    condition_[i]->InitExprAtLogicalPlan(t_boolean, column_id_, input_);
+    condition_[i]->InitExprAtLogicalPlan(t_boolean, column_to_id, input_schema);
   }
 #endif
   plan_context_ = new PlanContext();
@@ -119,7 +122,6 @@ PhysicalOperatorBase* LogicalFilter::GetPhysicalPlan(
   state.child_ = child_iterator;
   state.qual_ = condi_;
   state.condition_ = condition_;
-  state.column_id_ = column_id_;
   state.schema_ = GetSchema(plan_context.attribute_list_);
   PhysicalOperatorBase* filter = new PhysicalFilter(state);
   return filter;
@@ -141,7 +143,6 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
       state.child_ = physical_plan.plan;
       state.qual_ = condi_;
       state.condition_ = condition_;
-      state.column_id_ = column_id_;
       PlanContext plan_context = GetPlanContext();
       state.schema_ = GetSchema(plan_context.attribute_list_);
       PhysicalOperatorBase* filter = new PhysicalFilter(state);
@@ -158,7 +159,6 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
       state_f.child_ = physical_plan.plan;
       state_f.qual_ = condi_;
       state_f.condition_ = condition_;
-      state_f.column_id_ = column_id_;
       PlanContext plan_context = GetPlanContext();
       state_f.schema_ = GetSchema(plan_context.attribute_list_);
       PhysicalOperatorBase* filter = new PhysicalFilter(state_f);
@@ -210,7 +210,6 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
     PhysicalFilter::State state;
     state.block_size_ = block_size;
     state.child_ = physical_plan.plan;
-    state.column_id_ = column_id_;
     PlanContext plan_context = GetPlanContext();
     state.schema_ = GetSchema(plan_context.attribute_list_);
     PhysicalOperatorBase* filter = new PhysicalFilter(state);
@@ -225,16 +224,6 @@ bool LogicalFilter::GetOptimalPhysicalPlan(
     return true;
   else
     return false;
-}
-
-void LogicalFilter::set_column_id(const PlanContext& plan_context) {
-  for (int i = 0; i < plan_context.attribute_list_.size(); ++i) {
-    /**
-     * Traverse the attribute_list_，store the attribute name and index into
-     * column_id.
-     */
-    column_id_[plan_context.attribute_list_[i].attrName] = i;
-  }
 }
 
 /**
@@ -362,20 +351,22 @@ float LogicalFilter::PredictSelectivity() const {
   return ret;
 }
 void LogicalFilter::Print(int level) const {
-  // condition_.print(level);
-  printf("filter:\n");
+  cout << setw(level * kTabSize) << " "
+       << "Filter:" << endl;
 #ifdef NEWCONDI
 
   for (int i = 0; i < condi_.size(); ++i) {
     printf("  %s\n", condi_[i]->alias.c_str());
   }
 #else
+  ++level;
   for (int i = 0; i < condition_.size(); ++i) {
-    cout << "    " << condition_[i]->alias_ << endl;
+    cout << setw(level * kTabSize) << " " << condition_[i]->alias_ << endl;
   }
+  --level;
 #endif
 
-  child_->Print(level + 1);
+  child_->Print(level);
 }
 
 }  // namespace logical_operator

@@ -21,6 +21,7 @@ LDADD =	../../Executor/libexecutor.a \
 		../../common/Block/libblock.a \
 		../../common/types/libtypes.a \
 		../../common/log/liblog.a	\
+	    ../../logical_operator/liblogicalqueryplan.a \
 		../../common/expression/libexpression.a	\
 		../../utility/libutility.a \
 		/usr/local/lib/libglog.a	\

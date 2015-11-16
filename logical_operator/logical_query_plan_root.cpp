@@ -53,7 +53,6 @@ using claims::physical_operator::ResultPrinter;
 
 namespace claims {
 namespace logical_operator {
-#ifdef NEWLIMIT
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
                                            LogicalOperator* child,
                                            const OutputStyle& style)
@@ -62,18 +61,6 @@ LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
       child_(child),
       style_(style),
       plan_context_(NULL) {}
-#else
-LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
-                                           LogicalOperator* child,
-                                           const OutputStyle& style,
-                                           LimitConstraint limit_constraint)
-    : LogicalOperator(kLogicalQueryPlanRoot),
-      collecter_node(collecter),
-      child_(child),
-      style_(style),
-      limit_constraint_(limit_constraint),
-      plan_context_(NULL) {}
-#endif
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
   if (NULL != child_) {
     delete child_;
@@ -144,17 +131,6 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
   expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
   PhysicalOperatorBase* expander = new Expander(expander_state);
 
-#ifndef NEWLIMIT
-  if (!limit_constraint_.CanBeOmitted()) {
-    // we should add a limit operator
-    PhysicalLimit::State limit_state(
-        expander_state.schema_->duplicateSchema(), expander,
-        limit_constraint_.returned_tuples_, block_size,
-        limit_constraint_.start_position_);
-    PhysicalOperatorBase* limit = new PhysicalLimit(limit_state);
-    expander = limit;
-  }
-#endif
   PhysicalOperatorBase* ret;
   switch (style_) {
     case kPrint: {
@@ -360,15 +336,9 @@ std::vector<std::string> LogicalQueryPlanRoot::GetAttributeName(
   return attribute_name_list;
 }
 void LogicalQueryPlanRoot::Print(int level) const {
-  printf("Root\n");
-#ifndef NEWLIMIT
-  if (!limit_constraint_.CanBeOmitted()) {
-    printf("With limit constaint: %ld, %ld\n",
-           limit_constraint_.start_position_,
-           limit_constraint_.returned_tuples_);
-  }
-#endif
-  child_->Print(level + 1);
+  cout << setw(level * kTabSize) << " "
+       << "Root" << endl;
+  child_->Print(level);
 }
 
 }  // namespace logical_operator
