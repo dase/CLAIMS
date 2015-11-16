@@ -28,9 +28,8 @@
  */
 
 #include <assert.h>
-#include "../stmt_handler/create_exec.h"
-
 #include "../Environment.h"
+#include "create_table_exec.h"
 namespace claims {
 namespace stmt_handler {
 /**
@@ -73,7 +72,7 @@ CreateTableExec::~CreateTableExec() {
  *  save it to catalog by the end.
  * @return a result code cooperate with the client.
  */
-int CreateTableExec::Execute() {
+RetCode CreateTableExec::Execute(executed_result* exec_result) {
   int ret = common::kStmtHandlerOk;
 
   if (isTableExist()) {

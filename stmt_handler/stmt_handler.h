@@ -20,7 +20,7 @@
  *
  *      Author: fzh
  *       Email: fzhedu@gmail.com
- * 
+ *
  * Description:
  *
  */
@@ -28,24 +28,33 @@
 #ifndef STMT_HANDLER_STMT_HANDLER_H_
 #define STMT_HANDLER_STMT_HANDLER_H_
 
+#include <string>
 #include "../stmt_handler/stmt_exec.h"
 #include "../stmt_handler/select_exec.h"
 #include "../stmt_handler/load_exec.h"
 #include "../stmt_handler/insert_exec.h"
-#include "../stmt_handler/create_exec.h"
-
+#include "./create_table_exec.h"
+#include "../Daemon/Daemon.h"
+#include "../sql_parser/parser/parser.h"
 namespace claims {
 namespace stmt_handler {
 
 class StmtHandler {
  public:
-  StmtHandler(AstNode* stmt_ast);
+  explicit StmtHandler(string sql_stmt);
+  StmtHandler(string sql_stmt, executed_result* exec_result);
   virtual ~StmtHandler();
-  int Execute();
+  RetCode Execute(executed_result* exec_result);
+
  private:
-  StmtExec* stmt_executor_;
+  RetCode GenerateStmtExec(AstNode* stmt_ast);
+
+ private:
+  Parser* sql_parser_;
+  string sql_stmt_;
+  StmtExec* stmt_exec_;
 };
 
-}   // namespace stmt_handler
-} // namespace claims
-#endif //  STMT_HANDLER_STMT_HANDLER_H_ 
+}  // namespace stmt_handler
+}  // namespace claims
+#endif  //  STMT_HANDLER_STMT_HANDLER_H_

@@ -12,6 +12,9 @@
 
 #include "./Executing.h"
 #include "../Parsetree/runparsetree.h"
+#include "../stmt_handler/stmt_handler.h"
+
+using claims::stmt_handler::StmtHandler;
 #define WORK_THREAD_COUNT 3
 
 Daemon* Daemon::instance_ = 0;
@@ -61,7 +64,8 @@ Daemon::~Daemon() {
  executed_result result;
  std::string error_info;
  Node* node;
- ResultSet* result_set = Executing::run_sql(std::string(rc.cmd),error_info);
+ ResultSet* result_set = Executing::ru    delete
+ stmt_handler;n_sql(std::string(rc.cmd),error_info);
 
  if(result_set==0){
  printf("-Worker: add error result!\n");
@@ -117,15 +121,24 @@ void* Daemon::worker(void* para) {
     // function.
 
     ClientListener::checkFdValid(result.fd);
-
+#ifndef NEWSQLINTERFACE
     Executing::run_sql(rc.cmd, result.result, result.status, result.error_info,
                        result.info, result.fd);
     ClientLogging::log(
         "after running sql, the result is : status-%d, err-%s, info-%s",
         result.status, result.error_info.c_str(), result.info.c_str());
+#else
+    StmtHandler* stmt_handler = new StmtHandler(rc.cmd);
+    stmt_handler->Execute(&result);
+    LOG(INFO) << "the result of after running sql: status: " << result.status
+              << "error info: " << result.error_info << " info: " << result.info
+              << endl;
+
+#endif
     ClientListener::checkFdValid(result.fd);
     printf("-Worker add result into the queue!\n");
     Daemon::getInstance()->addExecutedResult(result);
+    delete stmt_handler;
   }
   return NULL;
 }

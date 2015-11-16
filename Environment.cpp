@@ -25,7 +25,7 @@ using claims::common::InitAggAvgDivide;
 using claims::common::InitOperatorFunc;
 using claims::common::InitTypeCastFunc;
 using claims::common::InitTypeConversionMatrix;
-#define DEBUG_MODE
+//#define DEBUG_MODE
 Environment* Environment::_instance = 0;
 Environment::Environment(bool ismaster) : ismaster_(ismaster) {
   _instance = this;

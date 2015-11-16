@@ -52,7 +52,7 @@ LoadExec::~LoadExec() {
  *  then add path names from path node to a vector path_names,
  *  create new HdfsLoader, load data.
  */
-int LoadExec::Execute() {
+RetCode LoadExec::Execute(executed_result *exec_result) {
   int ret = common::kStmtHandlerOk;
 
   if (!isTableExist()) {

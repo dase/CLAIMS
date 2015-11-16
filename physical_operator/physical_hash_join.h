@@ -46,7 +46,6 @@
 #include "../common/expression/expr_node.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
-using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
 

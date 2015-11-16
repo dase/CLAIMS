@@ -28,7 +28,9 @@
 
 #ifndef STMT_HANDLER_STMT_EXEC_H_
 #define STMT_HANDLER_STMT_EXEC_H_
+#include "../Daemon/Daemon.h"
 
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
 #include "../common/Block/ResultSet.h"
 #include "../Catalog/table.h"
@@ -45,15 +47,15 @@
 
 namespace claims {
 namespace stmt_handler {
-/**
- * @brief
- * @details
- */
+typedef int RetCode;
+const int rSuccess = 0;
+const int rParserError = -11000;
+const int rUnknowStmtType = -11001;
 class StmtExec {
  public:
   StmtExec(AstNode* stmt);
   virtual ~StmtExec();
-  virtual int Execute();
+  virtual int Execute(executed_result* exec_result);
 
  public:
   const ResultSet* getResultSet() const;

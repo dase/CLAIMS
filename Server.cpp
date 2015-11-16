@@ -1,14 +1,14 @@
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <startup.h>
 #include <getopt.h>
 #include <string>
 #include "Parsetree/ExecuteLogicalQueryPlan.h"
 // #include "Test/set_up_environment.h"
 #include "./Test/TestMain.cpp"
-#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "common/log/logging.h"
-//#define AUTU_MASTER
+#define AUTU_MASTER
 // #define FORK
-#define DEBUG_MODE
+//#define DEBUG_MODE
 
 struct option long_options[] = {{"config-file", required_argument, 0, 'c'},
                                 {"help", no_argument, 0, 'h'},
