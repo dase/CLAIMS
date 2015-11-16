@@ -95,7 +95,6 @@ class SingleFileConnector : public FileConnector {
 
  private:
   string file_name_;
-  FileHandleImp* imp_;
 };
 
 } /* namespace loader */

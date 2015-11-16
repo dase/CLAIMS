@@ -52,6 +52,7 @@ class FileConnector {
 
  protected:
   common::FilePlatform platform_;
+  common::FileHandleImp* imp_;
 };
 
 }  // namespace loader

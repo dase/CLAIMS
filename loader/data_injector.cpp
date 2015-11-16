@@ -290,7 +290,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       vector<unsigned> warning_indexs;
       memset(tuple_buffer, 0, table_schema_->getTupleMaxSize());
       if (!CheckAndToValue(tuple_record, tuple_buffer, RawDataSource::kFile,
-                              warning_indexs)) {
+                           warning_indexs)) {
         ostringstream oss;
         oss << "The data in " << file_name << ":" << row_id_in_file
             << " line is invalid " << std::endl;
@@ -405,7 +405,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
     void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
     if (tuple_buffer == NULL) return ENoMemory;
     if (!CheckAndToValue(tuple_record, tuple_buffer, RawDataSource::kSQL,
-                            warning_indexs)) {
+                         warning_indexs)) {
       // eliminate the side effect of AddRowIdColumn() in row_id_
       row_id_ -= correct_tuple_buffer.size();
       for (auto it : correct_tuple_buffer) DELETE_PTR(it);
@@ -603,16 +603,16 @@ RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
  * is invalid data value
  */
 inline bool DataInjector::CheckAndToValue(string tuple_string,
-                                             void* tuple_buffer,
-                                             RawDataSource raw_data_source,
-                                             vector<unsigned>& warning_indexs) {
+                                          void* tuple_buffer,
+                                          RawDataSource raw_data_source,
+                                          vector<unsigned>& warning_indexs) {
   if (tuple_string.length() == 0) {
     LOG(ERROR) << "The tuple record is null!\n";
     return false;
   }
   bool success =
       table_schema_->CheckAndToValue(tuple_string, tuple_buffer, col_separator_,
-                             raw_data_source, warning_indexs);
+                                     raw_data_source, warning_indexs);
 
   //  DLOG(INFO) << "text : " << tuple_string << endl;
   //  DLOG(INFO) << "tuple: ";
@@ -633,7 +633,7 @@ istream& DataInjector::GetTupleTerminatedBy(ifstream& ifs, string& res,
       int coincide_length = 1;
       while (EOF != (c = ifs.get())) {
         res += c;
-        if (terminator[coincide_length - 1] == c) {
+        if (terminator[coincide_length] == c) {
           if (++coincide_length == terminator.length())
             return ifs;
           else

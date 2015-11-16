@@ -23,6 +23,7 @@
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
 #include "../catalog/stat/Analyzer.h"
+#include "../common/file_handle/file_handle_imp.h"
 #include "../common/memory_handle.h"
 #include "../logical_query_plan/logical_scan.h"
 #include "../logical_query_plan/logical_equal_join.h"
@@ -33,13 +34,14 @@
 
 #include "../utility/rdtsc.h"
 
-#include "../loader/Hdfsloader.h"
 #include "../loader/data_injector.h"
 
 #include "../Client/ClaimsServer.h"
 
 using namespace std;
 using claims::catalog::Catalog;
+using claims::common::kSuccess;
+using claims::common::FileOpenFlag;
 using claims::loader::DataInjector;
 
 #define NEW_LOADER
@@ -50,13 +52,7 @@ const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
 timeval start_time;  // 2014-5-4---add---by Yu
 
-void ExecuteLogicalQueryPlan(
-    const string &sql, ExecutedResult *result
-    //                             ResultSet *&result_set,
-    //                             bool &result_flag, string &error_msg, string
-    //                             &info,
-    //                             int fd
-    ) {
+void ExecuteLogicalQueryPlan(const string &sql, ExecutedResult *result) {
   Environment::getInstance(true);
   ResourceManagerMaster *rmms =
       Environment::getInstance()->getResourceManagerMaster();

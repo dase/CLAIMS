@@ -71,7 +71,6 @@ class TableFileConnector : public FileConnector {
  private:
   std::vector<std::vector<common::FileHandleImp*>> file_handles_;
   std::vector<std::vector<std::string>> write_path_name_;
-  common::FileHandleImp* imp_;
 };
 
 } /* namespace loader */
