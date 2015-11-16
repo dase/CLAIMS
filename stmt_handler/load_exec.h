@@ -21,7 +21,7 @@
  *  Created on: Sep 23, 2015
  *      Author: cswang
  *	     Email: cs_wang@infosys.com
- * 
+ *
  * Description:
  *      this file contains one class about load data.
  *
@@ -45,17 +45,19 @@ class LoadExec : public StmtExec {
   /**
    * @brief the concrete operation of load data.
    */
-  int Execute();
+  RetCode Execute(executed_result* exec_result);
 
  private:
   /**
-   * this pointer describes the abstract syntax tree about load data into tables.
-   * It is converted from the member stmt_ of base class when we construct a new object.
+   * this pointer describes the abstract syntax tree about load data into
+   * tables.
+   * It is converted from the member stmt_ of base class when we construct a new
+   * object.
    */
   AstLoadTable* load_ast_;
 };
 
-} // namespace stmt_handler
-} // namespace claims
+}  // namespace stmt_handler
+}  // namespace claims
 
-#endif // STMT_HANDLER_LOAD_EXEC_H_
+#endif  // STMT_HANDLER_LOAD_EXEC_H_

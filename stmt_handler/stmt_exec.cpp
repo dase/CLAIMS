@@ -49,9 +49,9 @@ StmtExec::~StmtExec() {
   }
 }
 
-int StmtExec::Execute() {
+RetCode StmtExec::Execute(executed_result* exec_result) {
   std::cout << "this is stmt_exec!" << std::endl;
-  return 0;
+  return rSuccess;
 }
 
 bool StmtExec::isTableExist() {

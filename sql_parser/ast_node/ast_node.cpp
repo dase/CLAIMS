@@ -66,8 +66,14 @@ AstStmtList::AstStmtList(AstNodeType ast_node_type, AstNode* stmt,
     : AstNode(ast_node_type), stmt_(stmt), next_(next) {}
 
 AstStmtList::~AstStmtList() {
-  delete stmt_;
-  delete next_;
+  if (NULL != stmt_) {
+    delete stmt_;
+    stmt_ = NULL;
+  }
+  if (NULL != next_) {
+    delete next_;
+    next_ = NULL;
+  }
 }
 void AstNode::RecoverExprName(string& name) { name = "AstNode"; }
 void AstNode::ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,

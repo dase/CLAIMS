@@ -26,39 +26,73 @@
  *
  */
 
-#include <iostream>
 #include <glog/logging.h>
+#include <iostream>
+#include <string>
 #include "../stmt_handler/stmt_handler.h"
-
 namespace claims {
 namespace stmt_handler {
 
-StmtHandler::StmtHandler(AstNode* stmt_ast) {
-  // TODO Auto-generated constructor stub
+StmtHandler::StmtHandler(string sql_stmt)
+    : sql_stmt_(sql_stmt), stmt_exec_(NULL), sql_parser_(NULL) {}
+StmtHandler::StmtHandler(string sql_stmt, executed_result* exec_result)
+    : sql_stmt_(sql_stmt), stmt_exec_(NULL), sql_parser_(NULL) {}
+StmtHandler::~StmtHandler() {
+  if (NULL != stmt_exec_) {
+    delete stmt_exec_;
+    stmt_exec_ = NULL;
+  }
+  if (NULL != sql_parser_) {
+    delete sql_parser_;
+    sql_parser_ = NULL;
+  }
+}
+RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
   switch (stmt_ast->ast_node_type_) {
     case AST_SELECT_STMT: {
-      stmt_executor_ = new SelectExec(stmt_ast);
+      stmt_exec_ = new SelectExec(stmt_ast);
       break;
     }
     case AST_INSERT_STMT: {
-      stmt_executor_ = new InsertExec(stmt_ast);
+      stmt_exec_ = new InsertExec(stmt_ast);
       break;
     }
-    default : {
-      LOG(WARNING) << "can't find corresponding executor!" << std::endl;
-      stmt_executor_ = new StmtExec(stmt_ast);
+    case AST_LOAD_TABLE: {
+      stmt_exec_ = new LoadExec(stmt_ast);
+      break;
+    }
+    case AST_STMT_LIST: {
+      AstStmtList* stmt_list = reinterpret_cast<AstStmtList*>(stmt_ast);
+      GenerateStmtExec(stmt_list->stmt_);
+      if (NULL != stmt_list) {
+        LOG(WARNING) << "only support one sql statement!";
+      }
+      break;
+    }
+    default: {
+      LOG(ERROR) << "unknow statement type!" << std::endl;
+      return rUnknowStmtType;
     }
   }
+  return rSuccess;
+}
+RetCode StmtHandler::Execute(executed_result* exec_result) {
+  RetCode ret = rSuccess;
+  sql_parser_ = new Parser(sql_stmt_);
+  AstNode* raw_ast = sql_parser_->GetRawAST();
+  if (NULL == raw_ast) {
+    return rParserError;
+  }
+  ret = GenerateStmtExec(raw_ast);
+  if (rSuccess != ret) {
+    return ret;
+  }
+  ret = stmt_exec_->Execute(exec_result);
+  if (rSuccess != ret) {
+    return ret;
+  }
+  return rSuccess;
 }
 
-StmtHandler::~StmtHandler() {
-  // TODO Auto-generated destructor stub
-
-}
-
-int StmtHandler::Execute() {
-  return stmt_executor_->Execute();
-}
-
-}   // namespace stmt_handler
-} // namespace claims
+}  // namespace stmt_handler
+}  // namespace claims

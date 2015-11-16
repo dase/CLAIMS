@@ -27,7 +27,7 @@ class Parser {
   // AstNode* CreateAst(string SQL_statement);
   void SemanticAnalysis();
   void RecoveryExpr();
-  string SQL_statement_;
-  AstNode* AST_root_;
+  string sql_stmt_;
+  AstNode* ast_root_;
 };
 #endif  // SQL_PARSER_PARSER_PARSER_H_
