@@ -35,8 +35,8 @@ AC_CONFIG_FILES([
   loader/Makefile
   loader/test/Makefile
   common/serialization/Makefile 
-  physical_query_plan/Makefile
-  logical_query_plan/Makefile 
+  physical_operator/Makefile
+  logical_operator/Makefile 
   Parsetree/Makefile 
   Parsetree/Test/Makefile 
   Resource/Makefile 

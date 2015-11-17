@@ -12,9 +12,12 @@
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../catalog/catalog.h"
 #include "../../catalog/table.h"
-#include "../../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
+#include "../../physical_operator/physical_projection_scan.h"
 #include "../CSBIndexBuilding.h"
 #include "test_index_manager.cpp"
+
+using claims::catalog::Catalog;
+using claims::catalog::TableDescriptor;
 
 using namespace std;
 
@@ -89,19 +92,21 @@ static int test_CSBIndexBuilding() {
     /*for testing the original data*/
     //			Schema* ps_schema = new SchemaFix(blc_column_list);
     //			ExpandableBlockStreamProjectionScan::State
-    //ps_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),
-    //ps_schema, 64*1024);
+    // ps_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),
+    // ps_schema, 64*1024);
     //			ExpandableBlockStreamIteratorBase* ps = new
-    //ExpandableBlockStreamProjectionScan(ps_state);
+    // ExpandableBlockStreamProjectionScan(ps_state);
     //			ps->open();
     //			BlockStreamBase* block =
-    //BlockStreamBase::createBlockWithDesirableSerilaizedSize(ps_schema,
-    //64*1024);
+    // BlockStreamBase::createBlockWithDesirableSerilaizedSize(ps_schema,
+    // 64*1024);
     //			void* tuple;
     //			while (ps->next(block))
     //			{
-    //				BlockStreamBase::BlockStreamTraverseIterator* iterator =
-    //block->createIterator();
+    //				BlockStreamBase::BlockStreamTraverseIterator*
+    // iterator
+    //=
+    // block->createIterator();
     //				while((tuple = iterator->nextTuple()) != 0)
     //				{
     //					ps_schema->displayTuple(tuple, " | ");
@@ -117,11 +122,11 @@ static int test_CSBIndexBuilding() {
     bottomLayerCollecting::State blc_state(
         catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema,
         3, block_size);
-    BlockStreamIteratorBase* blc = new bottomLayerCollecting(blc_state);
+    PhysicalOperatorBase* blc = new bottomLayerCollecting(blc_state);
 
     vector<column_type> bls_column_list;
-    bls_column_list.push_back(t_int);  // chunk offset
-    bls_column_list.push_back(t_int);  // sec_code
+    bls_column_list.push_back(t_int);         // chunk offset
+    bls_column_list.push_back(t_int);         // sec_code
     bls_column_list.push_back(t_u_smallInt);  // chunk offset
     bls_column_list.push_back(t_u_smallInt);  // chunk offset
 
@@ -130,7 +135,7 @@ static int test_CSBIndexBuilding() {
         bls_schema, blc, block_size,
         catalog->getTable(0)->getProjectoin(0)->getProjectionID(), 3,
         "sec_code_index");
-    BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
+    PhysicalOperatorBase* bls = new bottomLayerSorting(bls_state);
 
     bls->Open();
     BlockStreamBase* block;

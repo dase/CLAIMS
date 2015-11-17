@@ -53,9 +53,9 @@ DiskFileHandleImp::~DiskFileHandleImp() {
 
 RetCode DiskFileHandleImp::Open(string file_name, FileOpenFlag open_flag) {
   file_name_ = file_name;
-  int ret = kSuccess;
+  int ret = rSuccess;
   if (false == CanAccess(file_name_)) {
-    ret = EAccessDiskFileFail;
+    ret = rAccessDiskFileFail;
     ELOG(ret, "File name:" << file_name_);
     return ret;
   }
@@ -69,19 +69,19 @@ RetCode DiskFileHandleImp::Open(string file_name, FileOpenFlag open_flag) {
     fd_ = FileOpen(file_name_.c_str(), O_RDONLY, S_IWUSR | S_IRUSR);
   } else {
     LOG(ERROR) << "parameter flag:" << open_flag << " is invalid" << endl;
-    return EParamInvalid;
+    return rParamInvalid;
   }
 
   if (-1 == fd_) {
     PLOG(ERROR) << "failed to open file :" << file_name_ << ".";
-    return EOpenDiskFileFail;
+    return rOpenDiskFileFail;
   } else {
     LOG(INFO) << "opened disk file:" << file_name_ << "with "
               << (kCreateFile == open_flag
                       ? "kCreateFile"
                       : kAppendFile == open_flag ? "kAppendFile" : "kReadFile")
               << endl;
-    return kSuccess;
+    return rSuccess;
   }
 }
 
@@ -95,7 +95,7 @@ RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
     if (-1 == write_num) {
       PLOG(ERROR) << "failed to write buffer(" << buffer << ") to file(" << fd_
                   << "): " << file_name_ << endl;
-      return EWriteDiskFileFail;
+      return rWriteDiskFileFail;
     }
     total_write_num += write_num;
   }
@@ -108,37 +108,37 @@ RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
   //               << " from " << buffer << " into  disk file:" << file_name_
   //               << endl;
   //  }
-  return kSuccess;
+  return rSuccess;
 }
 
 RetCode DiskFileHandleImp::Close() {
   if (-1 == fd_) {
-    return kSuccess;
+    return rSuccess;
   } else if (0 == FileClose(fd_)) {
     LOG(INFO) << "closed file: " << file_name_ << " whose fd is " << fd_
               << endl;
     fd_ = -1;
-    return kSuccess;
+    return rSuccess;
   } else {
-    return ECloseDiskFileFail;
+    return rCloseDiskFileFail;
   }
 }
 
 RetCode DiskFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
   assert(fd_ >= 3);
-  int ret = kSuccess;
+  int ret = rSuccess;
   ssize_t file_length = lseek(fd_, 0, SEEK_END);
   if (-1 == file_length) {
     PLOG(ERROR) << "lseek called on fd to set pos to the end of file " << fd_
                 << " failed : ";
-    return ELSeekDiskFileFail;
+    return rLSeekDiskFileFail;
   }
   LOG(INFO) << "The length of file " << file_name_ << "is " << file_length
             << endl;
   buffer = Malloc(file_length + 1);
 
   // reset pos to 0
-  if (kSuccess != (ret = SetPosition(0))) {
+  if (rSuccess != (ret = SetPosition(0))) {
     return ret;
   }
 
@@ -149,10 +149,10 @@ RetCode DiskFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
     LOG(ERROR) << "read file [" << file_name_
                << "] from disk failed, expected read " << file_length
                << " , actually read " << read_num << endl;
-    return EReadDiskFileFail;
+    return rReadDiskFileFail;
   }
   *length = read_num;
-  return kSuccess;
+  return rSuccess;
 }
 
 RetCode DiskFileHandleImp::Read(void* buffer, size_t length) {
@@ -166,16 +166,16 @@ RetCode DiskFileHandleImp::Read(void* buffer, size_t length) {
       LOG(ERROR) << "read file [" << file_name_
                  << "] from disk failed, expected read " << length
                  << " , actually read " << total_read_num << endl;
-      return EReadDiskFileFail;
+      return rReadDiskFileFail;
     } else if (0 == read_num) {
       LOG(INFO) << "the position has reached the end of file" << endl;
-      return EFileEOF;
+      return rFileEOF;
     }
     total_read_num += read_num;
   }
   LOG(INFO) << "read total " << total_read_num << " from disk file "
             << file_name_ << endl;
-  return kSuccess;
+  return rSuccess;
 }
 
 RetCode DiskFileHandleImp::SetPosition(size_t pos) {
@@ -183,9 +183,9 @@ RetCode DiskFileHandleImp::SetPosition(size_t pos) {
   if (-1 == lseek(fd_, pos, SEEK_SET)) {
     PLOG(ERROR) << "failed to lseek at " << pos << " in file(fd:" << fd_ << ", "
                 << file_name_ << ")";
-    return ELSeekDiskFileFail;
+    return rLSeekDiskFileFail;
   }
-  return kSuccess;
+  return rSuccess;
 }
 }  // namespace common
 } /* namespace claims */

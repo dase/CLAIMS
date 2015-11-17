@@ -35,7 +35,9 @@
 //#include "../loader/test/table_file_connector_test.h"
 //#include "../loader/test/table_file_connector_test.cpp"
 #include "./common/errno_test.h"
-#include "./iterator/elastic_iterator_model_test.h"
+#include "../common/test/operate_test.h"
+#include "iterator/elastic_iterator_model_test.h"
+
 static int consumed_args = 0;
 
 struct option long_options[] = {{"help", no_argument, 0, 'h'},

@@ -1,0 +1,114 @@
+.TH "BlockManager" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockManager \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBBlockInfo\fP"
+.br
+.ti -1c
+.RI "class \fBBlockManagerWorkerActor\fP"
+.br
+.in -1c
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBstorageLevel\fP { \fBmemory\fP, \fBdisk\fP, \fBoffline\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMemoryChunkStore\fP * \fBgetMemoryChunkStore\fP () const "
+.br
+.ti -1c
+.RI "void \fBinitialize\fP ()"
+.br
+.ti -1c
+.RI "void \fBregisterToMaster\fP (\fBBlockManagerId\fP *blockManagerId)"
+.br
+.ti -1c
+.RI "void \fBheartBeat\fP ()"
+.br
+.ti -1c
+.RI "void \fBasyncReregister\fP ()"
+.br
+.ti -1c
+.RI "void \fBreregister\fP ()"
+.br
+.ti -1c
+.RI "void \fBreportAllBlocks\fP ()"
+.br
+.ti -1c
+.RI "bool \fBreportBlockStatus\fP (string blockId)"
+.br
+.ti -1c
+.RI "bool \fBtryToReportBlockStatus\fP (string blockId)"
+.br
+.ti -1c
+.RI "void \fBget\fP (string blockId)"
+.br
+.ti -1c
+.RI "void * \fBgetLocal\fP (string blockId)"
+.br
+.ti -1c
+.RI "\fBChunkInfo\fP \fBloadFromHdfs\fP (string file_name)"
+.br
+.ti -1c
+.RI "int \fBloadFromHdfs\fP (const \fBChunkID\fP &, void *const &desc, const unsigned &)"
+.br
+.ti -1c
+.RI "int \fBloadFromDisk\fP (const \fBChunkID\fP &, void *const &desc, const unsigned &) const "
+.br
+.ti -1c
+.RI "bool \fBput\fP (string blockId, storageLevel level, void *value)"
+.br
+.ti -1c
+.RI "\fBBlockManagerId\fP * \fBgetId\fP ()"
+.br
+.ti -1c
+.RI "string \fBaskForMatch\fP (string filename, \fBBlockManagerId\fP bmi)"
+.br
+.ti -1c
+.RI "bool \fBcontainsPartition\fP (const \fBPartitionID\fP &part) const "
+.br
+.ti -1c
+.RI "bool \fBaddPartition\fP (const \fBPartitionID\fP &, const unsigned &number_of_chunks, const StorageLevel &desirable_storage_level)"
+.br
+.ti -1c
+.RI "bool \fBremovePartition\fP (const \fBPartitionID\fP &)"
+.br
+.ti -1c
+.RI "\fBPartitionStorage\fP * \fBgetPartitionHandle\fP (const \fBPartitionID\fP &partition_id) const "
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBBlockManager\fP * \fBgetInstance\fP ()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockManagerWorkerActor\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "void BlockManager::initialize ()"
+the version written by zhanglei///////////////////////////////// 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

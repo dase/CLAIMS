@@ -1,0 +1,67 @@
+.TH "BasicHashTable" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BasicHashTable \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBIterator\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBasicHashTable\fP (unsigned nbuckets, unsigned bucksize, unsigned tuplesize, unsigned expected_number_of_visiting_thread=1)"
+.br
+.ti -1c
+.RI "void * \fBallocate\fP (const unsigned &offset, unsigned thread_id=0)"
+.br
+.ti -1c
+.RI "void * \fBatomicAllocate\fP (const unsigned &offset, unsigned thread_id=0)"
+.br
+.ti -1c
+.RI "void \fBUpdateTuple\fP (unsigned int offset, void *loc, void *newvalue, fun func)"
+.br
+.ti -1c
+.RI "void \fBatomicUpdateTuple\fP (unsigned int offset, void *loc, void *newvalue, fun func)"
+.br
+.ti -1c
+.RI "void \fBlockBlock\fP (unsigned &bn)"
+.br
+.ti -1c
+.RI "void \fBunlockBlock\fP (unsigned &bn)"
+.br
+.ti -1c
+.RI "void \fBreport_status\fP ()"
+.br
+.ti -1c
+.RI "\fBBasicHashTable::Iterator\fP \fBCreateIterator\fP () const "
+.br
+.ti -1c
+.RI "bool \fBplaceIterator\fP (\fBIterator\fP &it, const unsigned &offset)"
+.br
+.ti -1c
+.RI "unsigned \fBgetHashTableTupleSize\fP ()"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static unsigned \fBgetNumberOfInstances\fP ()"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "BasicHashTable::BasicHashTable (unsignednbuckets, unsignedbucksize, unsignedtuplesize, unsignedexpected_number_of_visiting_thread = \fC1\fP)"
+create spinlocks, each of which corresponds to a single bucket 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

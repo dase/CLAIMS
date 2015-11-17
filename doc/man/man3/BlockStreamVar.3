@@ -1,0 +1,88 @@
+.TH "BlockStreamVar" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamVar \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBBlockStreamBase\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamVar\fP (unsigned block_size, const \fBSchema\fP *const &schema)"
+.br
+.ti -1c
+.RI "void * \fBgetTuple\fP (unsigned offset) const "
+.br
+.ti -1c
+.RI "void * \fBallocateTuple\fP (unsigned bytes)"
+.br
+.ti -1c
+.RI "bool \fBinsert\fP (void *dest, void *src, unsigned bytes)"
+.br
+.ti -1c
+.RI "bool \fBserialize\fP (\fBBlock\fP &block) const "
+.br
+.ti -1c
+.RI "void \fBconstructFromBlock\fP (const \fBBlock\fP &block)"
+.br
+.ti -1c
+.RI "bool \fBinsert\fP (void *dest, void *src)"
+.br
+.ti -1c
+.RI "void \fBsetEmpty\fP ()"
+.br
+.ti -1c
+.RI "bool \fBdeserialize\fP (\fBBlock\fP *block)"
+.br
+.ti -1c
+.RI "void \fBtoDisk\fP (\fBBlockStreamBase\fP *bsb, string path)"
+.br
+.ti -1c
+.RI "void \fBprintSchema\fP ()"
+.br
+.ti -1c
+.RI "bool \fBEmpty\fP () const "
+.br
+.ti -1c
+.RI "bool \fBFull\fP () const "
+.br
+.ti -1c
+.RI "void * \fBgetBlockDataAddress\fP ()"
+.br
+.ti -1c
+.RI "bool \fBswitchBlock\fP (\fBBlockStreamBase\fP &block)"
+.br
+.ti -1c
+.RI "void \fBcopyBlock\fP (void *addr, unsigned length)"
+.br
+.ti -1c
+.RI "void \fBdeepCopy\fP (const \fBBlock\fP *block)"
+.br
+.ti -1c
+.RI "unsigned \fBgetSerializedBlockSize\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBgetBlockCapacityInTuples\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBgetTuplesInBlock\fP () const "
+.br
+.ti -1c
+.RI "\fBBlockStreamBase\fP * \fBcreateBlockAndDeepCopy\fP ()"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Member Function Documentation"
+.PP 
+.SS "void BlockStreamVar::deepCopy (const \fBBlock\fP *block)\fC [inline]\fP, \fC [virtual]\fP"
+deep copy from block, including block content and member variables that maintain the block status\&. the user should guarantee that rest block and desc block are of equal derived class type(e\&.g\&., both are \fBBlockStreamFix\fP), otherwise the copy may be incomplete\&. 
+.PP
+Implements \fBBlockStreamBase\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,75 @@
+.TH "claims::logical_operator::LogicalScan" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+claims::logical_operator::LogicalScan \- 
+.PP
+Method description:This is the implementation of Scan operator in logical layer\&. Currently, we only choose the third of constructor functions\&. Through the method of \fBLogicalScan\fP, we can get data context and a physical operator\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <logical_scan\&.h>\fP
+.PP
+Inherits \fBclaims::logical_operator::LogicalOperator\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLogicalScan\fP (std::vector< \fBAttribute\fP > attribute_list)"
+.br
+.ti -1c
+.RI "\fBLogicalScan\fP (const TableID &)"
+.br
+.ti -1c
+.RI "\fBLogicalScan\fP (\fBProjectionDescriptor\fP *projection, const float sample_rate_=1)"
+.br
+.ti -1c
+.RI "\fBLogicalScan\fP (const TableID &, const std::vector< unsigned > &selected_attribute_index_list)"
+.br
+.ti -1c
+.RI "\fBPlanContext\fP \fBGetPlanContext\fP ()"
+.br
+.RI "\fIIt can generate many projection\&. We need the smallest cost of projections, so we should choose the best one what we need with traversing scan_attribute_list_\&. \fP"
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBGetPhysicalPlan\fP (const unsigned &)"
+.br
+.RI "\fISet the value of class state and get instantiation of physical operator to transform logical operator\&. In the current implementation, all the attributes within the involved projection are read\&. \fP"
+.ti -1c
+.RI "bool \fBGetOptimalPhysicalPlan\fP (\fBRequirement\fP requirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &kBlock_size=4096 *1024)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Method description:This is the implementation of Scan operator in logical layer\&. Currently, we only choose the third of constructor functions\&. Through the method of \fBLogicalScan\fP, we can get data context and a physical operator\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool claims::logical_operator::LogicalScan::GetOptimalPhysicalPlan (\fBRequirement\fPrequirement, \fBPhysicalPlanDescriptor\fP &physical_plan_descriptor, const unsigned &block_size = \fC4096 * 1024\fP)\fC [virtual]\fP"
+get the optimal Physical plan that meets the requirement\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+true if find physical plan that meets the requirement and store the physical plan and its corresponding information in physical_plan_descriptor\&. 
+.RE
+.PP
+Currently, the join output size cannot be predicted due to the absence of data statistics\&. We just use the magic number as following
+.PP
+Reimplemented from \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References claims::logical_operator::PlanContext::GetAggregatedDatasize(), GetPlanContext(), and claims::logical_operator::Requirement::requireNetworkTransfer()\&.
+.SS "\fBPlanContext\fP claims::logical_operator::LogicalScan::GetPlanContext ()\fC [virtual]\fP"
+
+.PP
+It can generate many projection\&. We need the smallest cost of projections, so we should choose the best one what we need with traversing scan_attribute_list_\&. build the \fBPlanContext\fP
+.PP
+Implements \fBclaims::logical_operator::LogicalOperator\fP\&.
+.PP
+References ProjectionBinding::BindingEntireProjection(), and ProjectionDescriptor::getProjectionCost()\&.
+.PP
+Referenced by GetOptimalPhysicalPlan()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

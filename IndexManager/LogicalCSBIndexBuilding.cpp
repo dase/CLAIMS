@@ -33,7 +33,7 @@ PlanContext LogicalCSBIndexBuilding::GetPlanContext()
 	return blc_dataflow_;
 }
 
-BlockStreamIteratorBase* LogicalCSBIndexBuilding::GetPhysicalPlan(const unsigned &block_size)
+PhysicalOperatorBase* LogicalCSBIndexBuilding::GetPhysicalPlan(const unsigned &block_size)
 {
 	bottomLayerCollecting::State blc_state;
 	blc_state.schema_ = GetSchema(blc_dataflow_.attribute_list_);
@@ -47,7 +47,7 @@ BlockStreamIteratorBase* LogicalCSBIndexBuilding::GetPhysicalPlan(const unsigned
 		}
 	}
 	blc_state.block_size_ = block_size;
-	BlockStreamIteratorBase* blc = new bottomLayerCollecting(blc_state);
+	PhysicalOperatorBase* blc = new bottomLayerCollecting(blc_state);
 
 	bottomLayerSorting::State bls_state;
 

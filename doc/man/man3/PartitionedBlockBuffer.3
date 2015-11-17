@@ -1,0 +1,56 @@
+.TH "PartitionedBlockBuffer" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+PartitionedBlockBuffer \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBPartitionedBlockBuffer\fP (unsigned nPartitions, unsigned block_size, unsigned nBlocks)"
+.br
+.ti -1c
+.RI "\fBPartitionedBlockBuffer\fP (unsigned nPartitions, unsigned block_size)"
+.br
+.ti -1c
+.RI "bool \fBhasEmptyBlock\fP () const "
+.br
+.ti -1c
+.RI "bool \fBisEmpty\fP ()"
+.br
+.ti -1c
+.RI "bool \fBinsertBlockToPartitionedList\fP (\fBBlock\fP *src, unsigned partition_id)"
+.br
+.ti -1c
+.RI "int \fBgetBlock\fP (\fBBlock\fP &desc)"
+.br
+.ti -1c
+.RI "bool \fBgetBlock\fP (\fBBlock\fP &desc, unsigned partition_id)"
+.br
+.ti -1c
+.RI "unsigned \fBgetBlockInBuffer\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBinserted\fP"
+.br
+.ti -1c
+.RI "unsigned \fBremoved\fP"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "bool PartitionedBlockBuffer::insertBlockToPartitionedList (\fBBlock\fP *src, unsignedpartition_id)"
+'copy' a block into the corresponding partitioned block list\&. In fact, the swap of pointer is used rather than actually coping the content for performance concern\&. 
+.PP
+Referenced by ExpandableBlockStreamExchangeLowerMaterialized::Next()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

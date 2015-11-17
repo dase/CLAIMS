@@ -49,53 +49,63 @@ static const char* CStrError(int errorno) {
 
 ErrorInit::ErrorInit() {
   memset(kErrorMessage, 0, sizeof(kErrorMessage));
-  DefineErrorAndMessage(kSuccess, "Success");
+  DefineErrorAndMessage(rSuccess, "Success");
 
   /* errorno for common  -1 ~ -1000 */
-  DefineErrorAndMessage(kTypeError, "Type error");
-  DefineErrorAndMessage(kNotInit, "Not initialize");
-  DefineErrorAndMessage(EReadHdfsFileFail, "Read data from hdfs failed");
-  DefineErrorAndMessage(EOpenHdfsFileFail, "Open hdfs file failed");
-  DefineErrorAndMessage(EReadDiskFileFail, "Read data from disk failed");
-  DefineErrorAndMessage(EOpenDiskFileFail, "Open disk file failed");
-  DefineErrorAndMessage(EWriteDiskFileFail,
+  DefineErrorAndMessage(rTypeError, "Type error");
+  DefineErrorAndMessage(rNotInit, "Not initialize");
+  DefineErrorAndMessage(rReadHdfsFileFail, "Read data from hdfs failed");
+  DefineErrorAndMessage(rOpenHdfsFileFail, "Open hdfs file failed");
+  DefineErrorAndMessage(rReadDiskFileFail, "Read data from disk failed");
+  DefineErrorAndMessage(rOpenDiskFileFail, "Open disk file failed");
+  DefineErrorAndMessage(rWriteDiskFileFail,
                         "failed to write data into disk file");
-  DefineErrorAndMessage(EWriteHdfsFileFail,
+  DefineErrorAndMessage(rWriteHdfsFileFail,
                         "failed to write data into hdfs file");
-  DefineErrorAndMessage(ELSeekDiskFileFail, "lseek a disk file failed");
-  DefineErrorAndMessage(ELSeekHdfsFileFail, "failed to seek hdfs file");
-  DefineErrorAndMessage(EParamInvalid, "parameter of function is invalid");
-  DefineErrorAndMessage(ECloseDiskFileFail, "failed to close disk file");
-  DefineErrorAndMessage(ECloseHdfsFileFail, "failed to close hdfs file");
-  DefineErrorAndMessage(EFileEOF, "reached the end of file");
-  DefineErrorAndMessage(EAccessDiskFileFail, "failed to access disk file");
-  DefineErrorAndMessage(EAccessHdfsFileFail, "failed to access hdfs file");
+  DefineErrorAndMessage(rLSeekDiskFileFail, "lseek a disk file failed");
+  DefineErrorAndMessage(rLSeekHdfsFileFail, "failed to seek hdfs file");
+  DefineErrorAndMessage(rParamInvalid, "parameter of function is invalid");
+  DefineErrorAndMessage(rCloseDiskFileFail, "failed to close disk file");
+  DefineErrorAndMessage(rCloseHdfsFileFail, "failed to close hdfs file");
+  DefineErrorAndMessage(rFileEOF, "reached the end of file");
+  DefineErrorAndMessage(rAccessDiskFileFail, "failed to access disk file");
+  DefineErrorAndMessage(rAccessHdfsFileFail, "failed to access hdfs file");
 
-  DefineErrorAndMessage(ENoMemory, "failed to allocate memory from system");
+  DefineErrorAndMessage(rNoMemory, "failed to allocate memory from system");
 
   /* errorno for SQL parser -1001 ~ -2000  */
-  DefineErrorAndMessage(kNoTableFound, "No such table found");
-  DefineErrorAndMessage(EInvalidInsertData, "data to insert is invalid");
+  DefineErrorAndMessage(rNoTableFound, "No such table found");
+  DefineErrorAndMessage(rInvalidInsertData, "data to insert is invalid");
 
   /* errorno for loader -2001 ~ -3000  */
-  DefineErrorAndMessage(EUnbindEntireProjectionFail,
+  DefineErrorAndMessage(rUnbindEntireProjectionFail,
                         "failed to unbind entire projection");
-  /* errorno for codegen -3001 ~ -4000 */
-  DefineErrorAndMessage(kTestError, "test it is error ");
+  DefineErrorAndMessage(rTooLargeData, "Load Too Large Data");
+  DefineErrorAndMessage(rTooSmallData, "Load Too Small Data");
+  DefineErrorAndMessage(rTooLongData, "Load Too Long Data");
+  DefineErrorAndMessage(rInterruptedData, "The Load data is interrupted");
+  DefineErrorAndMessage(rIncorrectData, "The Load data format is incorrected");
+  DefineErrorAndMessage(rInvaildNullData, "The null value is invaild");
 
-  /* errorno for logical_query_plan -4001~ -5000 */
-  DefineErrorAndMessage(kUninitializedJoinPolicy,
+  /* errorno for codegen -3001 ~ -4000 */
+  DefineErrorAndMessage(rTestError, "test it is error ");
+
+  /* errorno for logical_operator -4001~ -5000 */
+  DefineErrorAndMessage(rUninitializedJoinPolicy,
                         "the dedicated join police is not initialized, e.g., "
                         "in corss join, equal join logical operator");
-  DefineErrorAndMessage(kGeneratePlanContextFailed,
+  DefineErrorAndMessage(rGeneratePlanContextFailed,
                         "generate the dataflow failed in the logical operator");
 
   /* errorno for physical query plan -5001 ~ -6000 */
-  DefineErrorAndMessage(kGenerateSubPhyPlanFailed,
+  DefineErrorAndMessage(rGenerateSubPhyPlanFailed,
                         "generate the sub physical plan failed");
+  DefineErrorAndMessage(rNoPartitionIdScan,
+                        "The partition id does not existed.");
+  DefineErrorAndMessage(rCodegenFailed, "codegen failed.");
 
-  DefineErrorAndMessage(ECatalogRestoreInvild, "restore catalog failed");
-  DefineErrorAndMessage(ECatalogNotFound, "catalog file is not existed");
+  DefineErrorAndMessage(rCatalogRestoreInvild, "restore catalog failed");
+  DefineErrorAndMessage(rCatalogNotFound, "catalog file is not existed");
 
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }

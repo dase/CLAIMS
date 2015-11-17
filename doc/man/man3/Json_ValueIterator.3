@@ -1,0 +1,83 @@
+.TH "Json::ValueIterator" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::ValueIterator \- 
+.PP
+Iterator for object and array value\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <json\&.h>\fP
+.PP
+Inherits \fBJson::ValueIteratorBase\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBValue\fP \fBvalue_type\fP"
+.br
+.ti -1c
+.RI "typedef unsigned int \fBsize_t\fP"
+.br
+.ti -1c
+.RI "typedef int \fBdifference_type\fP"
+.br
+.ti -1c
+.RI "typedef \fBValue\fP & \fBreference\fP"
+.br
+.ti -1c
+.RI "typedef \fBValue\fP * \fBpointer\fP"
+.br
+.ti -1c
+.RI "typedef \fBValueIterator\fP \fBSelfType\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBValueIterator\fP (const \fBValueConstIterator\fP &other)"
+.br
+.ti -1c
+.RI "\fBValueIterator\fP (const \fBValueIterator\fP &other)"
+.br
+.ti -1c
+.RI "\fBSelfType\fP & \fBoperator=\fP (const \fBSelfType\fP &other)"
+.br
+.ti -1c
+.RI "\fBSelfType\fP \fBoperator++\fP (int)"
+.br
+.ti -1c
+.RI "\fBSelfType\fP \fBoperator--\fP (int)"
+.br
+.ti -1c
+.RI "\fBSelfType\fP & \fBoperator--\fP ()"
+.br
+.ti -1c
+.RI "\fBSelfType\fP & \fBoperator++\fP ()"
+.br
+.ti -1c
+.RI "\fBreference\fP \fBoperator*\fP () const "
+.br
+.ti -1c
+.RI "\fBpointer\fP \fBoperator->\fP () const "
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBValue\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Iterator for object and array value\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

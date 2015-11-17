@@ -1,0 +1,33 @@
+.TH "Estimation" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Estimation \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static unsigned long \fBestEqualOper\fP (\fBAttributeID\fP attrID, void *para)"
+.br
+.ti -1c
+.RI "static unsigned long \fBestRangeOper\fP (\fBAttributeID\fP attrID, void *lowPara, void *upperPara)"
+.br
+.ti -1c
+.RI "static unsigned long \fBestEqualJoin\fP (\fBAttributeID\fP attrID1, \fBAttributeID\fP attrID2)"
+.br
+.in -1c
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned long Estimation::estEqualOper (\fBAttributeID\fPattrID, void *para)\fC [static]\fP"
+如果找到最小的 i 满足 para < valueList[i]，那么para必然落在i-1号bucket中。 如果始终找不到，那么para必然是最大值，落在最后一个bucket中。
+.PP
+最大值，属于上一个边界。因为，唯独最后一个bucket两边都是闭区间。
+.SS "unsigned long Estimation::estRangeOper (\fBAttributeID\fPattrID, void *lowPara, void *upperPara)\fC [static]\fP"
+assume both lowPara and upperPara is legal lowPara: upperPara: range is used with < and >, instead of = for <=, it decomposed into < and = 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

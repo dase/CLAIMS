@@ -80,11 +80,7 @@ Daemon::~Daemon() {
  printf("-Worker add result into the queue!\n");
  pthis->addExecutedResult(result);
 
-<<<<<<< HEAD
  //		pthis->;
-=======
- //   pthis->;
->>>>>>> refs/heads/master
  }
  }
  */

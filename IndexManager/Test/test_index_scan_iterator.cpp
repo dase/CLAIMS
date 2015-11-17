@@ -14,8 +14,10 @@
 #include "../../Resource/ResourceManagerMaster.h"
 #include "../../catalog/catalog.h"
 #include "../../catalog/table.h"
-#include "../../physical_query_plan/BlockStreamPrint.h"
-#include "../../physical_query_plan/ExpandableBlockStreamProjectionScan.h"
+#include "../../physical_operator/physical_projection_scan.h"
+#include "../../physical_operator/result_printer.h"
+
+using claims::catalog::TableDescriptor;
 
 static int test_index_scan_iterator() {
   int master;
@@ -92,12 +94,12 @@ static int test_index_scan_iterator() {
         catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema,
         3, block_size);
     //			ExpandableBlockStreamIteratorBase* blc = new
-    //bottomLayerCollecting(blc_state);
-    BlockStreamIteratorBase* blc = new bottomLayerCollecting(blc_state);
+    // bottomLayerCollecting(blc_state);
+    PhysicalOperatorBase* blc = new bottomLayerCollecting(blc_state);
 
     vector<column_type> bls_column_list;
-    bls_column_list.push_back(t_int);  // chunk offset
-    bls_column_list.push_back(t_int);  // sec_code
+    bls_column_list.push_back(t_int);         // chunk offset
+    bls_column_list.push_back(t_int);         // sec_code
     bls_column_list.push_back(t_u_smallInt);  // chunk offset
     bls_column_list.push_back(t_u_smallInt);  // chunk offset
 
@@ -107,8 +109,8 @@ static int test_index_scan_iterator() {
         catalog->getTable(0)->getProjectoin(0)->getProjectionID(), 3,
         "sec_code_index");
     //			ExpandableBlockStreamIteratorBase* bls = new
-    //bottomLayerSorting(bls_state);
-    BlockStreamIteratorBase* bls = new bottomLayerSorting(bls_state);
+    // bottomLayerSorting(bls_state);
+    PhysicalOperatorBase* bls = new bottomLayerSorting(bls_state);
 
     bls->Open();
     BlockStreamBase* block;
@@ -146,7 +148,7 @@ static int test_index_scan_iterator() {
     IndexScanIterator::State isi_state(
         catalog->getTable(0)->getProjectoin(0)->getProjectionID(), blc_schema,
         index_id, q_range, block_size);
-    BlockStreamIteratorBase* isi = new IndexScanIterator(isi_state);
+    PhysicalOperatorBase* isi = new IndexScanIterator(isi_state);
 
     std::vector<std::string> attribute_name;
     attribute_name.clear();
@@ -156,9 +158,9 @@ static int test_index_scan_iterator() {
     attribute_name.push_back("sec_code");
     attribute_name.push_back("trade_dir");
     attribute_name.push_back("order_type");
-    BlockStreamPrint::State bsp_state(blc_schema, isi, block_size,
-                                      attribute_name, "\t");
-    BlockStreamIteratorBase* bsp = new BlockStreamPrint(bsp_state);
+    ResultPrinter::State bsp_state(blc_schema, isi, block_size, attribute_name,
+                                   "\t");
+    PhysicalOperatorBase* bsp = new ResultPrinter(bsp_state);
     bsp->Open();
     while (bsp->Next(block)) {
     }
@@ -169,4 +171,5 @@ static int test_index_scan_iterator() {
     sleep(1);
   }
   return 0;
+>>>>>>> origin/checkset-lzf1116
 }

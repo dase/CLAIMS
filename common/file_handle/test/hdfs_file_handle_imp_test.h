@@ -69,19 +69,19 @@ TEST_F(HdfsFileHandleImpTest, TestAccess2) {
   bool ret = imp_->CanAccess(file_name_);
   EXPECT_TRUE(ret);
   int res = imp_->Close();
-  EXPECT_EQ(kSuccess, res);
+  EXPECT_EQ(rSuccess, res);
 }
 
 TEST_F(HdfsFileHandleImpTest, Write) {
   imp_->Open(file_name_, kCreateFile);
   char* buffer = "abc";
   char* data = static_cast<char*>(Malloc(4));
-  int ret = kSuccess;
-  if (kSuccess != (imp_->Write(buffer, 3)) || kSuccess != (imp_->Close()) ||
-      kSuccess != (imp_->Open(file_name_, kReadFile)) ||
-      kSuccess != (imp_->SetPosition(0)) ||
-      kSuccess != (ret = imp_->Read(data, 3)) ||
-      kSuccess != (ret = imp_->Close())) {
+  int ret = rSuccess;
+  if (rSuccess != (imp_->Write(buffer, 3)) || rSuccess != (imp_->Close()) ||
+      rSuccess != (imp_->Open(file_name_, kReadFile)) ||
+      rSuccess != (imp_->SetPosition(0)) ||
+      rSuccess != (ret = imp_->Read(data, 3)) ||
+      rSuccess != (ret = imp_->Close())) {
     FAIL();
   }
   EXPECT_STREQ("abc", data);
@@ -91,12 +91,12 @@ TEST_F(HdfsFileHandleImpTest, Append) {
   imp_->Open(file_name_, kAppendFile);
   char* buffer = "abc";
   char* data = static_cast<char*>(Malloc(7));
-  int ret = kSuccess;
-  if (kSuccess != (imp_->Write(buffer, 3)) || kSuccess != (imp_->Close()) ||
-      kSuccess != (imp_->Open(file_name_, kReadFile)) ||
-      kSuccess != (imp_->SetPosition(0)) ||
-      kSuccess != (ret = imp_->Read(data, 6)) ||
-      kSuccess != (ret = imp_->Close())) {
+  int ret = rSuccess;
+  if (rSuccess != (imp_->Write(buffer, 3)) || rSuccess != (imp_->Close()) ||
+      rSuccess != (imp_->Open(file_name_, kReadFile)) ||
+      rSuccess != (imp_->SetPosition(0)) ||
+      rSuccess != (ret = imp_->Read(data, 6)) ||
+      rSuccess != (ret = imp_->Close())) {
     FAIL();
   }
   EXPECT_STREQ("abcabc", data);
@@ -105,9 +105,9 @@ TEST_F(HdfsFileHandleImpTest, Append) {
 TEST_F(HdfsFileHandleImpTest, Read) {
   imp_->Open(file_name_, kReadFile);
   char* data = static_cast<char*>(Malloc(7));
-  int ret = kSuccess;
-  if (kSuccess != (ret = imp_->Read(data, 6)) ||
-      kSuccess != (ret = imp_->Close())) {
+  int ret = rSuccess;
+  if (rSuccess != (ret = imp_->Read(data, 6)) ||
+      rSuccess != (ret = imp_->Close())) {
     FAIL();
   }
   EXPECT_STREQ("abcabc", data);
@@ -118,11 +118,11 @@ TEST_F(HdfsFileHandleImpTest, ReadTotalFile) {
   char* buffer = "abc";
   void* data = NULL;
   size_t a = 0;
-  int ret = kSuccess;
-  if (kSuccess != (imp_->Write(buffer, 3)) || kSuccess != (imp_->Close()) ||
-      kSuccess != (imp_->Open(file_name_, kReadFile)) ||
-      kSuccess != (ret = imp_->ReadTotalFile(data, &a)) ||
-      kSuccess != (ret = imp_->Close())) {
+  int ret = rSuccess;
+  if (rSuccess != (imp_->Write(buffer, 3)) || rSuccess != (imp_->Close()) ||
+      rSuccess != (imp_->Open(file_name_, kReadFile)) ||
+      rSuccess != (ret = imp_->ReadTotalFile(data, &a)) ||
+      rSuccess != (ret = imp_->Close())) {
     FAIL();
   }
   EXPECT_STREQ("abcabcabc", static_cast<char*>(data));
@@ -133,10 +133,10 @@ TEST_F(HdfsFileHandleImpTest, PositionalRead) {
   char* buffer = "abc";
   char* data = static_cast<char*>(Malloc(4));
   size_t a = 0;
-  int ret = kSuccess;
-  if (kSuccess != (ret = imp_->SetPosition(5)) ||
-      kSuccess != (ret = imp_->Read(data, 3)) ||
-      kSuccess != (ret = imp_->Close())) {
+  int ret = rSuccess;
+  if (rSuccess != (ret = imp_->SetPosition(5)) ||
+      rSuccess != (ret = imp_->Read(data, 3)) ||
+      rSuccess != (ret = imp_->Close())) {
     FAIL();
   }
   EXPECT_STREQ("cab", data);
@@ -147,11 +147,11 @@ TEST_F(HdfsFileHandleImpTest, OverWrite) {
   char* buffer = "abc";
   void* data = NULL;
   size_t a = 0;
-  int ret = kSuccess;
-  if (kSuccess != (imp_->Write(buffer, 3)) || kSuccess != (imp_->Close()) ||
-      kSuccess != (imp_->Open(file_name_, kReadFile)) ||
-      kSuccess != (ret = imp_->ReadTotalFile(data, &a)) ||
-      kSuccess != (ret = imp_->Close())) {
+  int ret = rSuccess;
+  if (rSuccess != (imp_->Write(buffer, 3)) || rSuccess != (imp_->Close()) ||
+      rSuccess != (imp_->Open(file_name_, kReadFile)) ||
+      rSuccess != (ret = imp_->ReadTotalFile(data, &a)) ||
+      rSuccess != (ret = imp_->Close())) {
     FAIL();
   }
   EXPECT_STREQ("abc", static_cast<char*>(data));

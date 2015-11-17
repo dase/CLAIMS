@@ -1,0 +1,28 @@
+var classOperate =
+[
+    [ "Operate", "classOperate.html#a025d9517f543841a2679f9f6f4d186bc", null ],
+    [ "~Operate", "classOperate.html#aebf141cef280e4297e450388bd2336bc", null ],
+    [ "add", "classOperate.html#a54c8afe415da9ffeba209a05127c3ae1", null ],
+    [ "ass", "classOperate.html#a531ac0c6b6f6133a2cbc0c5d8a1db375", null ],
+    [ "assignment", "classOperate.html#ab2f650b67c01ffb6e5fb40fd4d5bf535", null ],
+    [ "compare", "classOperate.html#a60bfb75a4428e91aa69eb1265fcb2405", null ],
+    [ "duplicateOperator", "classOperate.html#a6a8f7ac81ec7746fc660047bcdea05bb", null ],
+    [ "equal", "classOperate.html#a3c118ffe8f2a29dd5f55aba008c8ca0f", null ],
+    [ "GetADDFunction", "classOperate.html#aa29cbeb0ec5c6e3b03d33acd6125026a", null ],
+    [ "GetAVGFunction", "classOperate.html#a013eef225b2a3af2dc143e3845a9da1d", null ],
+    [ "GetIncreateByOneFunction", "classOperate.html#ac14c63985e6cd532cd4814413bab2650", null ],
+    [ "GetMAXFunction", "classOperate.html#a9708cd2356be86dee266d6883eba5d86", null ],
+    [ "GetMINFunction", "classOperate.html#a71604891141ff3b8a3ac118d2657e1b4", null ],
+    [ "getPartitionValue", "classOperate.html#ac6ade579c3432f106fd43087d902b795", null ],
+    [ "getPartitionValue", "classOperate.html#a4336e8305d4a75453dfde387326db7eb", null ],
+    [ "getPartitionValue", "classOperate.html#a92d957a9cead8d4e7f5b850998e53d03", null ],
+    [ "greate", "classOperate.html#a4477ccbdfc66058735cc625fe330a42b", null ],
+    [ "isNull", "classOperate.html#a4429ddd3813b4ad2b26fc284d45d44cc", null ],
+    [ "less", "classOperate.html#af6de96bc8260ce18897c74839844ec28", null ],
+    [ "multiple", "classOperate.html#ab246611725686be54e8aecd01cae17ba", null ],
+    [ "setNull", "classOperate.html#a148e38106395135badb0fc4d558f3b03", null ],
+    [ "toString", "classOperate.html#a5a9bb41cd24832df38bc42cbd82c877b", null ],
+    [ "toValue", "classOperate.html#af1c18bada6e9e0642018145675452d2d", null ],
+    [ "assign", "classOperate.html#a6d947b41b95254ef3f9f6df03d2de053", null ],
+    [ "nullable", "classOperate.html#a656b7cbeacc61ed06e141234c2c36d90", null ]
+];

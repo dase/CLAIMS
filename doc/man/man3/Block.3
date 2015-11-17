@@ -1,0 +1,55 @@
+.TH "Block" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Block \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBBlockContainer\fP, and \fBBlockStreamBase\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBlock\fP (unsigned BlockSize)"
+.br
+.ti -1c
+.RI "\fBBlock\fP (const \fBBlock\fP &block)"
+.br
+.ti -1c
+.RI "\fBBlock\fP (const unsigned &size, const void *start)"
+.br
+.ti -1c
+.RI "void * \fBgetBlock\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetBlock\fP (void *)"
+.br
+.ti -1c
+.RI "unsigned \fBgetsize\fP () const "
+.br
+.ti -1c
+.RI "unsigned \fBsetsize\fP (const unsigned &size)"
+.br
+.ti -1c
+.RI "bool \fBisIsReference\fP () const "
+.br
+.ti -1c
+.RI "void \fBsetIsReference\fP (bool isReference)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBBlockSize\fP"
+.br
+.ti -1c
+.RI "char * \fBstart\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

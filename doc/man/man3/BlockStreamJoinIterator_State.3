@@ -1,0 +1,75 @@
+.TH "BlockStreamJoinIterator::State" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamJoinIterator::State \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBState\fP (\fBBlockStreamIteratorBase\fP *child_left, \fBBlockStreamIteratorBase\fP *child_right, \fBSchema\fP *input_schema_left, \fBSchema\fP *input_schema_right, \fBSchema\fP *output_schema, \fBSchema\fP *ht_schema, std::vector< unsigned > joinIndex_left, std::vector< unsigned > joinIndex_right, std::vector< unsigned > payload_left, std::vector< unsigned > payload_right, unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size)"
+.br
+.ti -1c
+.RI "template<class Archive > void \fBserialize\fP (Archive &ar, const unsigned int version)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild_left\fP"
+.br
+.ti -1c
+.RI "\fBBlockStreamIteratorBase\fP * \fBchild_right\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBinput_schema_left\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBinput_schema_right\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBoutput_schema\fP"
+.br
+.ti -1c
+.RI "\fBSchema\fP * \fBht_schema\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBjoinIndex_left\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBjoinIndex_right\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBpayload_left\fP"
+.br
+.ti -1c
+.RI "std::vector< unsigned > \fBpayload_right\fP"
+.br
+.ti -1c
+.RI "unsigned \fBht_nbuckets\fP"
+.br
+.ti -1c
+.RI "unsigned \fBht_bucketsize\fP"
+.br
+.ti -1c
+.RI "unsigned \fBblock_size_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBBlockStreamJoinIterator\fP"
+.br
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

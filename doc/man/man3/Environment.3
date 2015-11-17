@@ -1,0 +1,100 @@
+.TH "Environment" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Environment \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBgetIp\fP ()"
+.br
+.ti -1c
+.RI "unsigned \fBgetPort\fP ()"
+.br
+.ti -1c
+.RI "\fBAdaptiveEndPoint\fP * \fBgetEndPoint\fP ()"
+.br
+.ti -1c
+.RI "\fBExchangeTracker\fP * \fBgetExchangeTracker\fP ()"
+.br
+.ti -1c
+.RI "\fBResourceManagerMaster\fP * \fBgetResourceManagerMaster\fP ()"
+.br
+.ti -1c
+.RI "\fBInstanceResourceManager\fP * \fBgetResourceManagerSlave\fP ()"
+.br
+.ti -1c
+.RI "NodeID \fBgetNodeID\fP () const "
+.br
+.ti -1c
+.RI "\fBCatalog\fP * \fBgetCatalog\fP () const "
+.br
+.ti -1c
+.RI "\fBThreadPool\fP * \fBgetThreadPool\fP () const "
+.br
+.ti -1c
+.RI "\fBIteratorExecutorSlave\fP * \fBgetIteratorExecutorSlave\fP () const "
+.br
+.ti -1c
+.RI "\fBEnvironment\fP (bool ismaster=false)"
+.br
+.ti -1c
+.RI "std::string \fBgetIp\fP ()"
+.br
+.ti -1c
+.RI "unsigned \fBgetPort\fP ()"
+.br
+.ti -1c
+.RI "\fBAdaptiveEndPoint\fP * \fBgetEndPoint\fP ()"
+.br
+.ti -1c
+.RI "\fBExchangeTracker\fP * \fBgetExchangeTracker\fP ()"
+.br
+.ti -1c
+.RI "\fBResourceManagerMaster\fP * \fBgetResourceManagerMaster\fP ()"
+.br
+.ti -1c
+.RI "\fBInstanceResourceManager\fP * \fBgetResourceManagerSlave\fP ()"
+.br
+.ti -1c
+.RI "NodeID \fBgetNodeID\fP () const "
+.br
+.ti -1c
+.RI "\fBCatalog\fP * \fBgetCatalog\fP () const "
+.br
+.ti -1c
+.RI "\fBThreadPool\fP * \fBgetThreadPool\fP () const "
+.br
+.ti -1c
+.RI "\fBIteratorExecutorSlave\fP * \fBgetIteratorExecutorSlave\fP () const "
+.br
+.ti -1c
+.RI "\fBEnvironment\fP (bool ismaster=false)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static \fBEnvironment\fP * \fBgetInstance\fP (bool ismaster=0)"
+.br
+.ti -1c
+.RI "static \fBEnvironment\fP * \fBgetInstance\fP (bool ismaster=0)"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Environment::Environment (boolismaster = \fCfalse\fP)"
+TODO: DO something in \fBAdaptiveEndPoint\fP such that the construction function does not return until the connection is completed\&. If so, the following sleep() dose not needed\&.
+.PP
+This is done in Aug\&.18 by Li :)
+.PP
+References Logging::elog()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,80 @@
+.TH "Json::StyledWriter" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::StyledWriter \- 
+.PP
+Writes a \fBValue\fP in \fCJSON\fP format in a human friendly way\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <json\&.h>\fP
+.PP
+Inherits \fBJson::Writer\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual std::string \fBwrite\fP (const \fBValue\fP &root)"
+.br
+.RI "\fISerialize a \fBValue\fP in \fCJSON\fP format\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Writes a \fBValue\fP in \fCJSON\fP format in a human friendly way\&. 
+
+The rules for line break and indent are as follow:
+.IP "\(bu" 2
+Object value:
+.IP "  \(bu" 4
+if empty then print {} without indent and line break
+.IP "  \(bu" 4
+if not empty the print '{', line break & indent, print one value per line and then unindent and line break and print '}'\&.
+.PP
+
+.IP "\(bu" 2
+Array value:
+.IP "  \(bu" 4
+if empty then print [] without indent and line break
+.IP "  \(bu" 4
+if the array contains no object value, empty array or some other value types, and all the values fit on one lines, then print the array on a single line\&.
+.IP "  \(bu" 4
+otherwise, it the values do not fit on one line, or the array contains object or non empty array, then print one value per line\&.
+.PP
+
+.PP
+.PP
+If the \fBValue\fP have comments then they are outputed according to their \fBCommentPlacement\fP\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBReader\fP, \fBValue\fP, \fBValue::setComment()\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "std::string Json::StyledWriter::write (const \fBValue\fP &root)\fC [virtual]\fP"
+
+.PP
+Serialize a \fBValue\fP in \fCJSON\fP format\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIroot\fP \fBValue\fP to serialize\&. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+String containing the JSON document that represents the root value\&. 
+.RE
+.PP
+
+.PP
+Implements \fBJson::Writer\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

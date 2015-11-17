@@ -1,0 +1,33 @@
+.TH "ttmath::RuntimeError" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ttmath::RuntimeError \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <ttmathtypes\&.h>\fP
+.PP
+Inherits runtime_error, and \fBttmath::ExceptionInfo\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRuntimeError\fP (const char *f, int l)"
+.br
+.ti -1c
+.RI "std::string \fBWhere\fP () const "
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+a small class used for reporting errors
+.PP
+in the library is used macro TTMATH_ASSERT which (if the condition in it is false) throw an exception of this type
+.PP
+if you compile with gcc you can get a small benefit from using method Where() (it returns std::string) with the name and the line of a file where the macro TTMATH_ASSERT was used) 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

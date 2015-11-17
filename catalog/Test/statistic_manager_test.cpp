@@ -14,11 +14,11 @@
 #include "../../catalog/stat/Analyzer.h"
 #include "../../Environment.h"
 
-#include "../../logical_query_plan/logical_scan.h"
-#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
-#include "../../logical_query_plan/logical_equal_join.h"
-#include "../../logical_query_plan/Filter.h"
-#include "../../logical_query_plan/logical_aggregation.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/LogicalQueryPlanRoot.h"
+#include "../../logical_operator/logical_equal_join.h"
+#include "../../logical_operator/Filter.h"
+#include "../../logical_operator/logical_aggregation.h"
 
 #include "../../utility/rdtsc.h"
 #include "../ProjectionBinding.h"

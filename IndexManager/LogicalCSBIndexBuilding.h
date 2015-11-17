@@ -8,12 +8,12 @@
 #ifndef LOGICALCSBINDEXBUILDING_H_
 #define LOGICALCSBINDEXBUILDING_H_
 #include "../catalog/table.h"
-#include "../logical_query_plan/logical_operator.h"
 #include "../catalog/attribute.h"
 #include "../common/ids.h"
+#include "../logical_operator/logical_operator.h"
 
-using namespace claims::logical_query_plan;
 using namespace claims::catalog;
+using namespace claims::logical_operator;
 
 class LogicalCSBIndexBuilding : public LogicalOperator {
  public:
@@ -23,7 +23,7 @@ class LogicalCSBIndexBuilding : public LogicalOperator {
   virtual ~LogicalCSBIndexBuilding();
 
   PlanContext GetPlanContext();
-  BlockStreamIteratorBase* GetPhysicalPlan(const unsigned&);
+  PhysicalOperatorBase* GetPhysicalPlan(const unsigned&);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
                               const unsigned& block_size = 4096 * 1024);

@@ -60,7 +60,7 @@ class SingleFileConnector : public FileConnector {
   virtual RetCode Flush(unsigned projection_offset, unsigned partition_offset,
                         const void* source, unsigned length) {
     assert(false && "not implemented");
-    return common::kFailure;
+    return common::rFailure;
   }
 
   virtual bool CanAccess() { return imp_->CanAccess(file_name_); }
@@ -86,7 +86,7 @@ class SingleFileConnector : public FileConnector {
    */
   virtual RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {
     int ret = imp_->SetPosition(start);
-    if (ret != common::kSuccess) {
+    if (ret != common::rSuccess) {
       LOG(ERROR) << "failed to set postion at " << start << ". ret:" << ret;
       return ret;
     }

@@ -1,0 +1,88 @@
+.TH "Json::StyledStreamWriter" 3 "Fri Oct 9 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Json::StyledStreamWriter \- 
+.PP
+Writes a \fBValue\fP in \fCJSON\fP format in a human friendly way, to a stream rather than to a string\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <json\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBStyledStreamWriter\fP (std::string indentation='\\t')"
+.br
+.ti -1c
+.RI "void \fBwrite\fP (std::ostream &out, const \fBValue\fP &root)"
+.br
+.RI "\fISerialize a \fBValue\fP in \fCJSON\fP format\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Writes a \fBValue\fP in \fCJSON\fP format in a human friendly way, to a stream rather than to a string\&. 
+
+The rules for line break and indent are as follow:
+.IP "\(bu" 2
+Object value:
+.IP "  \(bu" 4
+if empty then print {} without indent and line break
+.IP "  \(bu" 4
+if not empty the print '{', line break & indent, print one value per line and then unindent and line break and print '}'\&.
+.PP
+
+.IP "\(bu" 2
+Array value:
+.IP "  \(bu" 4
+if empty then print [] without indent and line break
+.IP "  \(bu" 4
+if the array contains no object value, empty array or some other value types, and all the values fit on one lines, then print the array on a single line\&.
+.IP "  \(bu" 4
+otherwise, it the values do not fit on one line, or the array contains object or non empty array, then print one value per line\&.
+.PP
+
+.PP
+.PP
+If the \fBValue\fP have comments then they are outputed according to their \fBCommentPlacement\fP\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIindentation\fP Each level will be indented by this amount extra\&. 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBReader\fP, \fBValue\fP, \fBValue::setComment()\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void Json::StyledStreamWriter::write (std::ostream &out, const \fBValue\fP &root)"
+
+.PP
+Serialize a \fBValue\fP in \fCJSON\fP format\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIout\fP Stream to write to\&. (Can be ostringstream, e\&.g\&.) 
+.br
+\fIroot\fP \fBValue\fP to serialize\&. 
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+There is no point in deriving from \fBWriter\fP, since \fBwrite()\fP should not return a value\&. 
+.RE
+.PP
+
+.PP
+Referenced by Json::operator<<()\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

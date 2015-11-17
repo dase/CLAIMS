@@ -1,0 +1,77 @@
+.TH "BlockStreamExchangeBase" 3 "Mon Oct 5 2015" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+BlockStreamExchangeBase \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBBlockStreamIteratorBase\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBBlockStreamExchangeBase\fP (const std::vector< std::string > &upper_ip_list, const unsigned &nlowers)"
+.br
+.ti -1c
+.RI "virtual bool \fBOpen\fP (const PartitionOffset &part_off=0)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBNext\fP (\fBBlockStreamBase\fP *)=0"
+.br
+.ti -1c
+.RI "virtual bool \fBClose\fP ()=0"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBPrepareTheSocket\fP ()"
+.br
+.ti -1c
+.RI "bool \fBRegisterExchange\fP (\fBExchangeID\fP exchange_id)"
+.br
+.ti -1c
+.RI "bool \fBisMaster\fP ()"
+.br
+.ti -1c
+.RI "bool \fBWaitForConnectionFromLowerExchanges\fP ()"
+.br
+.ti -1c
+.RI "void \fBCloseTheSocket\fP ()"
+.br
+.ti -1c
+.RI "void \fBSendBlockBufferedNotification\fP (int target_socket_fd)"
+.br
+.ti -1c
+.RI "void \fBSendBlockAllConsumedNotification\fP (int target_socket_fd)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBnlowers_\fP"
+.br
+.ti -1c
+.RI "int * \fBsocket_fd_lower_list_\fP"
+.br
+.ti -1c
+.RI "std::string * \fBlower_ip_array_\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBboost::serialization::access\fP"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

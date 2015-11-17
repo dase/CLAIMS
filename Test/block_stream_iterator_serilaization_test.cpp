@@ -19,8 +19,8 @@ int mainasdfaf234(int argc,const char** argv){
 	Schema* input=new SchemaFix(column_list);
 
 	BlockStreamSingleColumnScan::State bsscs_state("/home/claims/temp/Uniform_0_99.column",input);
-	BlockStreamIteratorBase* bsscs1=new BlockStreamSingleColumnScan(bsscs_state);
-	BlockStreamIteratorBase* bsscs2=new BlockStreamSingleColumnScan(bsscs_state);
+	PhysicalOperatorBase* bsscs1=new BlockStreamSingleColumnScan(bsscs_state);
+	PhysicalOperatorBase* bsscs2=new BlockStreamSingleColumnScan(bsscs_state);
 
 	int f=atoi(argv[2]);
 
@@ -30,7 +30,7 @@ int mainasdfaf234(int argc,const char** argv){
 	std::vector<AttributeComparator> ComparatorList;
 	ComparatorList.push_back(fA);
 	BlockStreamFilter::State bsf_state(input,bsscs1,ComparatorList,4096);
-	BlockStreamIteratorBase* bsf=new BlockStreamFilter(bsf_state);
+	PhysicalOperatorBase* bsf=new BlockStreamFilter(bsf_state);
 
 //
 	BlockStreamBase *block=new BlockStreamFix(4096,4);
