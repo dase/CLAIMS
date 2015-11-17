@@ -46,7 +46,6 @@ using boost::hash_combine;
 using decimal::NValue;
 using decimal::ExportSerializeOutput;
 using boost::lexical_cast;
-
 using namespace decimal;
 #define DATA_TYPE_NUMBER 20
 enum data_type {
@@ -68,7 +67,7 @@ enum data_type {
   t_date_year,
   t_date_quarter
 };
-//enum TransformRet { kSuccess = 0, kWarning, kError };
+// enum TransformRet { kSuccess = 0, kWarning, kError };
 inline string GetPrecision(double d) {
   ostringstream ss;
   ss.precision(1000);
@@ -77,15 +76,15 @@ inline string GetPrecision(double d) {
 }
 typedef int RetCode;
 
-const string kIntMin = GetPrecision(-INT_MAX);           //"-2147483648";
-const string kIntMax = GetPrecision(INT_MAX);            //"2147483647";
+const string kIntMin = GetPrecision(-INT_MAX);       //"-2147483648";
+const string kIntMax = GetPrecision(INT_MAX);        //"2147483647";
 const string kIntMax_1 = GetPrecision(INT_MAX - 1);  // "2147483646";
 const string kFloatMin =
     GetPrecision(-FLT_MAX);  //"-340282346638528859811704183484516925440";
 const string kFloatMax =
     GetPrecision(FLT_MAX);  //"340282346638528859811704183484516925440";
-const string kFloatMax_1 = GetPrecision(
-    FLT_MAX - 1e23);  // "340282346638528746474908594613031796736";
+const string kFloatMax_1 =
+    GetPrecision(FLT_MAX - 1e23);  // "340282346638528746474908594613031796736";
 const string kDoubleMin = GetPrecision(-DBL_MAX);
 const string kDoubleMax = GetPrecision(DBL_MAX);
 const string kDoubleMax_1 = GetPrecision(DBL_MAX - 1e305);
@@ -274,11 +273,11 @@ class OperateInt : public Operate {
   OperateInt(bool _nullable = true) {
     this->nullable = _nullable;
     assign = assigns<int>;
-  };
+  }
   ~OperateInt(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(int*)desc = *(int*)src;
-  };
+  }
   inline std::string toString(void* value) {
     std::string ret;
     if (this->nullable == true && (*(int*)value) == NULL_INT)
@@ -295,7 +294,7 @@ class OperateInt : public Operate {
       *(int*)target = NULL_INT;
     else
       *(int*)target = atoi(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(int*)a == *(int*)b;
   }
@@ -760,20 +759,20 @@ class OperateTime : public Operate {
   inline void assignment(const void* const& src, void* const& desc) const {
     assert(desc != 0 && src != 0);
     *(time_duration*)desc = *(time_duration*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true &&
         (*(time_duration*)value).is_neg_infinity() == true)
       return "NULL";
     else
       return to_simple_string(*(time_duration*)value);
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       setNull(target);
     else
       *(time_duration*)target = duration_from_string(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(time_duration*)a == *(time_duration*)b;
   }
@@ -844,19 +843,19 @@ class OperateDatetime : public Operate {
   inline void assignment(const void* const& src, void* const& desc) const {
     assert(desc != 0 && src != 0);
     *(ptime*)desc = *(ptime*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(ptime*)value).is_neg_infinity() == true)
       return "NULL";
     else
       return to_iso_extended_string(*(ptime*)value);
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       setNull(target);
     else
       *(ptime*)target = time_from_string(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(ptime*)a == *(ptime*)b;
   }
@@ -924,11 +923,11 @@ class OperateSmallInt : public Operate {
   OperateSmallInt(bool _nullable = true) {
     this->nullable = _nullable;
     assign = assigns<short>;
-  };
+  }
   //	~OperateSmallInt(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(short*)desc = *(short*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(short*)value) == NULL_SMALL_INT)
       return "NULL";
@@ -938,7 +937,7 @@ class OperateSmallInt : public Operate {
       std::string ret = ss.str();
       return ret;
     }
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) &&
         this->nullable == true)  // modified by Li Wang in Sep.10th
@@ -1004,11 +1003,11 @@ class OperateUSmallInt : public Operate {
   OperateUSmallInt(bool _nullable = true) {
     this->nullable = _nullable;
     assign = assigns<unsigned short>;
-  };
+  }
   //	~OperateSmallInt(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(unsigned short*)desc = *(unsigned short*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(unsigned short*)value) == NULL_U_SMALL_INT)
       return "NULL";
@@ -1016,13 +1015,13 @@ class OperateUSmallInt : public Operate {
     ss << *(unsigned short*)value;
     std::string ret = ss.str();
     return ret;
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       *(unsigned short*)target = NULL_U_SMALL_INT;
     else
       *(unsigned short*)target = (unsigned short)atoi(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(unsigned short*)a == *(unsigned short*)b;
   }
@@ -1083,11 +1082,11 @@ class OperateDecimal : public Operate {
     assign = assigns<int>;
     this->size = size;
     this->nullable = nullable;
-  };
+  }
   //	~OperateDecimal(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(NValue*)desc = *(NValue*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && compare(value, (void*)(&NULL_DECIMAL)) == 0)
       return "NULL";
@@ -1111,7 +1110,7 @@ class OperateDecimal : public Operate {
       *(NValue*)target = NULL_DECIMAL;
     else
       *(NValue*)target = NValue::getDecimalValueFromString(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return ((NValue*)a)->op_equals(*(NValue*)b);
   }
@@ -1204,10 +1203,10 @@ class OperateBool : public Operate {
   OperateBool(bool _nullable = true) {
     this->nullable = _nullable;
     assign = assigns<int>;
-  };
+  }
   inline void assignment(const void* const& src, void* const& desc) const {
     *(int*)desc = *(int*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(int*)value) == NULL_BOOLEAN)
       return "NULL";
@@ -1326,7 +1325,7 @@ class column_type {
         operate = 0;
         break;
     }
-  };
+  }
   column_type(const column_type& r) {
     this->type = r.type;
     this->size = r.size;
@@ -1343,7 +1342,7 @@ class column_type {
   ~column_type() {
     delete operate;
     operate = 0;
-  };
+  }
   inline unsigned get_length() const {
     switch (type) {
       case t_int:
