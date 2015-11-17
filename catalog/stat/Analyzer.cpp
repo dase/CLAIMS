@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <vector>
 
+#include "../../catalog/attribute.h"
 #include "../../catalog/catalog.h"
 #include "../../catalog/stat/StatManager.h"
 #include "../../common/Block/BlockStream.h"
@@ -382,7 +383,8 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
       std::vector<PhysicalAggregation::State::Aggregation>(), scan);
 
   std::vector<Attribute> aggregation_attributes;
-  aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+  aggregation_attributes.push_back(
+      Attribute(Attribute::AttributeType::kAttributeAny));
   std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
   aggregation_function.push_back(PhysicalAggregation::State::kCount);
 

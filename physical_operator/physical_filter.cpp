@@ -120,7 +120,10 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
                     << getMilliSecond(start) << "ms)" << std::endl;
         } else {
           filter_function_ = ComputeFilter;
-          LOG(ERROR) << "filter:" << claims::common::kErrorMessage[claims::common::kCodegenFailed] << std::endl;
+          LOG(ERROR)
+              << "filter:"
+              << claims::common::kErrorMessage[claims::common::rCodegenFailed]
+              << std::endl;
         }
       }
     } else {
@@ -301,9 +304,9 @@ ThreadContext* PhysicalFilter::CreateContext() {
 int PhysicalFilter::DecideFilterFunction(
     expr_func const& generate_filter_function) {
   if (generate_filter_function) {
-    return claims::common::kSuccess;
+    return claims::common::rSuccess;
   } else {
-    return claims::common::kCodegenFailed;
+    return claims::common::rCodegenFailed;
   }
 }
 

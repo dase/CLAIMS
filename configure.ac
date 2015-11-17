@@ -38,7 +38,6 @@ AC_CONFIG_FILES([
   physical_operator/Makefile
   logical_operator/Makefile 
   Parsetree/Makefile 
-  Parsetree/Test/Makefile 
   Resource/Makefile 
   storage/Makefile 
   Test/Makefile

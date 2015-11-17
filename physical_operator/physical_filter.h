@@ -46,7 +46,7 @@
 #include "../common/AttributeComparator.h"
 #include "../common/ExpressionItem.h"
 #include "../common/Mapping.h"
-#include "../Catalog/Attribute.h"
+#include "../catalog/attribute.h"
 #include "../physical_operator/physical_project.h"
 #include "../common/Expression/qnode.h"
 #include "../codegen/ExpressionGenerator.h"
