@@ -20,9 +20,8 @@ endif
 LDADD =  \
 	Test/libtest.a \
 	Test/common/libcommon.a \
-	Test/TestSuit/libtestsuit.a \
 	Test/utility/libutility.a \
-	BlockStreamIterator/Serialization/libserialization.a \
+	common/serialization/libserialization.a \
 	Client/libclient.a \
 	Client/Test/libtest.a \
 	Daemon/libdaemon.a \
@@ -33,12 +32,9 @@ LDADD =  \
 	IndexManager/Test/libtest.a \
 	Parsetree/libparsetree.a \
 	Parsetree/Test/libtest.a \
-	LogicalQueryPlan/Test/libtest.a \
-	LogicalQueryPlan/liblogicalqueryplan.a \
+	logical_operator/liblogicalqueryplan.a \
+	physical_operator/libphysicalqueryplan.a \
 	storage/libstorage.a \
-	BlockStreamIterator/ParallelBlockStreamIterator/Test/libtest.a \
-	BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
-	BlockStreamIterator/libblockstreamiterator.a \
 	Resource/libresouce.a \
 	Catalog/libcatalog.a \
 	Catalog/Test/libtest.a \
@@ -55,7 +51,7 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-    codegen/libcodegen.a\
+    codegen/libcodegen.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
@@ -65,11 +61,11 @@ LDADD =  \
 	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 	${THERON_HOME}/Lib/libtherond.a \
 	${GTEST_HOME}/libgtest.a \
+	${GLOG_HOME}/.libs/libglog.so.0 \
 	-lLLVMJIT -lLLVMX86Disassembler -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter \
 	-lLLVMMCParser -lLLVMCodeGen -lLLVMScalarOpts -lLLVMInstCombine -lLLVMTransformUtils -lLLVMipa -lLLVMAnalysis \
 	-lLLVMX86Desc -lLLVMX86Info -lLLVMX86AsmPrinter -lLLVMX86Utils -lLLVMMCJIT -lLLVMTarget -lLLVMRuntimeDyld \
 	-lLLVMExecutionEngine -lLLVMMC -lLLVMObject -lLLVMBitReader -lLLVMCore -lLLVMSupport -lLLVMMCParser 
-	
 
  
 include_HEADERS = Config.h \
@@ -99,10 +95,10 @@ test_SOURCES = Test/gtest_main.cpp\
 				
 
 
-SUBDIRS= BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
-Loader LogicalQueryPlan Parsetree Resource \
+SUBDIRS=  Catalog Client common Daemon Executor IndexManager\
+Loader physical_operator logical_operator Parsetree Resource \
 storage Test utility codegen
 
-DIST_SUBDIRS = BlockStreamIterator Catalog Client common Daemon Executor IndexManager\
-Loader LogicalQueryPlan Parsetree Resource \
+DIST_SUBDIRS =  Catalog Client common Daemon Executor IndexManager\
+Loader physical_operator logical_operator Parsetree Resource \
 storage Test utility codegen

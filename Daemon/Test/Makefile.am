@@ -15,7 +15,7 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../../Parsetree/libparsetree.a \
-		../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../logical_operator/liblogicalqueryplan.a \
 		../../Catalog/stat/libstat.a \
 		../../Catalog/libcatalog.a \
 		../libdaemon.a \
@@ -27,4 +27,4 @@ LDADD = 	../../Parsetree/libparsetree.a \
 		${THERON_HOME}/Lib/libtherond.a
 
 noinst_LIBRARIES=libtest.a
-libtest_a_SOURCES =	daemon_test.h	Executing_test.cpp
+libtest_a_SOURCES =	

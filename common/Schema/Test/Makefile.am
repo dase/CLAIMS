@@ -19,7 +19,7 @@ endif
 LDADD = 	../libschema.a \
 		../../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../../BlockStreamIterator/libblockstreamiterator.a \
-		../../../LogicalQueryPlan/liblogicalqueryplan.a \
+		../../../logical_operator/liblogicalqueryplan.a \
 		../../../Catalog/libcatalog.a \
 		../../../common/Block/libblock.a \
 		../../libcommon.a \
@@ -33,6 +33,4 @@ LDADD = 	../libschema.a \
 
 noinst_LIBRARIES=libtest.a
 
-libtest_a_SOURCES = 	\
-	SubTuple_test.cpp 		VariableSchema_test.cpp \
-	generateVariableData_test.cpp 		test_suits.cpp
+libtest_a_SOURCES = 
