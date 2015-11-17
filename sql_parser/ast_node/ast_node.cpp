@@ -56,7 +56,7 @@ void AstNode::Print(int level) const {
 }
 ErrorNo AstNode::SemanticAnalisys(SemanticContext* sem_cnxt) {
   LOG(WARNING) << "This is AstNode's semantic analysis" << endl;
-  return eOK;
+  return rSuccess;
 }
 
 AstNodeType AstNode::ast_node_type() { return ast_node_type_; }
@@ -120,16 +120,16 @@ ErrorNo AstNode::GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
       return eEqualJoinCondiNotMatch;
     }
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo AstNode::GetFilterCondition(vector<ExprNode*>& condition,
                                     const set<AstNode*>& normal_condition,
                                     LogicalOperator* logic_plan) {
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   ExprNode* expr_node = NULL;
   for (auto it = normal_condition.begin(); it != normal_condition.end(); ++it) {
     ret = (*it)->GetLogicalPlan(expr_node, logic_plan);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       LOG(ERROR) << "get normal condition upon from list, due to [err: " << ret
                  << " ] !" << endl;
       return ret;
@@ -137,7 +137,7 @@ ErrorNo AstNode::GetFilterCondition(vector<ExprNode*>& condition,
     assert(NULL != expr_node);
     condition.push_back(expr_node);
   }
-  return eOK;
+  return rSuccess;
 }
 AstNode* AstNode::GetAndExpr(const set<AstNode*>& expression) {
   if (expression.size() == 0) {
@@ -169,20 +169,20 @@ void AstStmtList::Print(int level) const {
   }
 }
 ErrorNo AstStmtList::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   if (NULL != stmt_) {
     ret = stmt_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
   if (NULL != next_) {
     LOG(ERROR) << "just support one statement now!" << endl;
     assert(false);
-    return eOK;
+    return rSuccess;
     return next_->SemanticAnalisys(sem_cnxt);
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo AstStmtList::PushDownCondition(PushDownConditionContext* pdccnxt) {
   if (NULL != stmt_) {
@@ -191,7 +191,7 @@ ErrorNo AstStmtList::PushDownCondition(PushDownConditionContext* pdccnxt) {
   if (NULL != next_) {
     next_->PushDownCondition(pdccnxt);
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo AstStmtList::GetLogicalPlan(LogicalOperator*& logic_plan) {
   return stmt_->GetLogicalPlan(logic_plan);
@@ -212,7 +212,7 @@ SemanticContext::~SemanticContext() {}
 
 ErrorNo SemanticContext::IsTableExist(const string table) {
   if (1 != tables_.count(table)) return eTableNotExist;
-  return eOK;
+  return rSuccess;
 }
 /**
  * "NULL".column could be ambiguous or not exist, otherwise replace "NULL" with
@@ -231,7 +231,7 @@ ErrorNo SemanticContext::IsColumnExist(string& table, const string column) {
       auto table_range = column_to_table_.equal_range(column);
       for (auto it = table_range.first; it != table_range.second; ++it) {
         if (it->second == table) {
-          return eOK;
+          return rSuccess;
         }
       }
       LOG(ERROR) << table << " don't have " << column << endl;
@@ -241,10 +241,10 @@ ErrorNo SemanticContext::IsColumnExist(string& table, const string column) {
     auto it = column_to_table_.find(column);
     if (table == "NULL") {  // NULL.col
       table = it->second;
-      return eOK;
+      return rSuccess;
     } else {  // tbl.col
       if (it->second == table) {
-        return eOK;
+        return rSuccess;
       } else {
         LOG(ERROR) << column << " doesn't exist in " << table << endl;
         return eColumnNotExist;
@@ -254,11 +254,11 @@ ErrorNo SemanticContext::IsColumnExist(string& table, const string column) {
 }
 ErrorNo SemanticContext::AddTable(set<string> table) {
   tables_.insert(table.begin(), table.end());
-  return eOK;
+  return rSuccess;
 }
 ErrorNo SemanticContext::AddTable(string table) {
   tables_.insert(table);
-  return eOK;
+  return rSuccess;
 }
 set<string> SemanticContext::get_tables() { return tables_; }
 
@@ -283,7 +283,7 @@ ErrorNo SemanticContext::AddTableColumn(const string& table,
       column_to_table_.insert(make_pair(column, table));
     }
   }
-  return eOK;
+  return rSuccess;
 }
 
 /**
@@ -300,7 +300,7 @@ ErrorNo SemanticContext::AddTableColumn(
     }
   }
   column_to_table_.insert(column_to_table.begin(), column_to_table.end());
-  return eOK;
+  return rSuccess;
 }
 void SemanticContext::GetTableAllColumn(string table,
                                         multimap<string, string>& new_columns) {
@@ -324,7 +324,7 @@ void SemanticContext::GetUniqueAggAttr(set<AstNode*>& new_set) {
 
 ErrorNo SemanticContext::AddNewTableColumn(set<AstNode*>& new_set,
                                            bool need_clear) {
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   multimap<string, string> new_columns;
   new_columns.clear();
   for (auto it = new_set.begin(); it != new_set.end(); ++it) {
@@ -354,7 +354,7 @@ ErrorNo SemanticContext::AddNewTableColumn(set<AstNode*>& new_set,
         return eMoreColumnsInSelectHaveALLALL;
       }
       assert(new_set.size() == 1);
-      return eOK;
+      return rSuccess;
     } else {  // expr_str_ = tb.col, alias, col and expr_name
       new_columns.insert(make_pair((*it)->expr_str_, "NULL_MID"));
     }
@@ -363,23 +363,23 @@ ErrorNo SemanticContext::AddNewTableColumn(set<AstNode*>& new_set,
     ClearColumn();
   }
   ret = AddTableColumn(new_columns);
-  if (eOK != ret) {
+  if (rSuccess != ret) {
     return ret;
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo SemanticContext::RebuildTableColumn(set<AstNode*>& aggregation) {
   ClearTable();
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   ret = AddNewTableColumn(aggregation, true);
-  if (eOK != ret) {
+  if (rSuccess != ret) {
     return ret;
   }
   ret = AddNewTableColumn(groupby_attrs_, false);
-  if (eOK != ret) {
+  if (rSuccess != ret) {
     return ret;
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo SemanticContext::RebuildTableColumn() {
   ClearTable();
@@ -397,11 +397,11 @@ ErrorNo SemanticContext::GetAliasColumn(
     }
     column_to_table.insert(make_pair(it->first, alias));
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo SemanticContext::AddAggregation(AstNode* agg_node) {
   if (aggregation_.count(agg_node) > 0) {
-    return eOK;
+    return rSuccess;
   }
   bool exist = false;
   for (auto it = aggregation_.begin(); it != aggregation_.end(); ++it) {
@@ -418,11 +418,11 @@ ErrorNo SemanticContext::AddAggregation(AstNode* agg_node) {
   } else {
     aggregation_.insert(agg_node);
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo SemanticContext::AddGroupByAttrs(AstNode* groupby_node) {
   if (groupby_attrs_.count(groupby_node) > 0) {
-    return eOK;
+    return rSuccess;
   }
   bool exist = false;
   for (auto it = groupby_attrs_.begin(); it != groupby_attrs_.end(); ++it) {
@@ -439,11 +439,11 @@ ErrorNo SemanticContext::AddGroupByAttrs(AstNode* groupby_node) {
   } else {
     groupby_attrs_.insert(groupby_node);
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo SemanticContext::AddSelectAttrs(AstNode* select_node) {
   if (select_attrs_.count(select_node) > 0) {
-    return eOK;
+    return rSuccess;
   }
   bool exist = false;
   // no need to check conflict in select
@@ -462,7 +462,7 @@ ErrorNo SemanticContext::AddSelectAttrs(AstNode* select_node) {
   } else {
     select_attrs_.insert(select_node);
   }
-  return eOK;
+  return rSuccess;
 }
 set<AstNode*> SemanticContext::get_aggregation() { return aggregation_; }
 set<AstNode*> SemanticContext::get_groupby_attrs() {

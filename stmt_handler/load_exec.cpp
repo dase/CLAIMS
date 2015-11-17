@@ -33,7 +33,7 @@
 #include "../Loader/Hdfsloader.h"
 namespace claims {
 namespace stmt_handler {
-
+#define NEWRESULT
 LoadExec::LoadExec(AstNode *stmt) : StmtExec(stmt) {
   // TODO Auto-generated constructor stub
   assert(stmt_);
@@ -56,9 +56,16 @@ RetCode LoadExec::Execute(executed_result *exec_result) {
   int ret = common::kStmtHandlerOk;
 
   if (!isTableExist()) {
+#ifdef NEWRESULT
+    exec_result->error_info =
+        "the table " + tablename_ + " does not exist during loading!";
+    exec_result->status = false;
+    exec_result->result = NULL;
+#else
     error_msg_ = "the table " + tablename_ + " does not exist during loading!";
     result_flag_ = false;
     result_set_ = NULL;
+#endif
     ret = common::kStmtHandlerTableExistDuringCreate;
   } else {
     string column_separator = load_ast_->column_separator_;
@@ -105,11 +112,15 @@ RetCode LoadExec::Execute(executed_result *exec_result) {
         new HdfsLoader(column_separator[0], tuple_separator[0], path_names,
                        table_desc_, (open_flag)load_ast_->mode_);
     loader->load(load_ast_->sample_);
-
+#ifdef NEWRESULT
+    exec_result->status = true;
+    exec_result->result = NULL;
+    exec_result->info = "load data successfully";
+#else
     result_flag_ = true;
     result_set_ = NULL;
     info_ = "load data successfully";
-
+#endif
     Environment::getInstance()->getCatalog()->saveCatalog();
     ret = common::kStmtHandlerCreateTableSuccess;
   }

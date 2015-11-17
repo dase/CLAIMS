@@ -30,6 +30,7 @@
 #include <assert.h>
 #include "../Environment.h"
 #include "create_table_exec.h"
+
 namespace claims {
 namespace stmt_handler {
 /**
@@ -38,6 +39,7 @@ namespace stmt_handler {
  * table name,
  *  firstly get the descriptor from catalog by table name.
  */
+#define NEWRESULT
 CreateTableExec::CreateTableExec(AstNode* stmt) : StmtExec(stmt) {
   // TODO Auto-generated constructor stub
   assert(stmt_);
@@ -76,9 +78,12 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
   int ret = common::kStmtHandlerOk;
 
   if (isTableExist()) {
-    result_flag_ = false;
-    result_set_ = NULL;
-    error_msg_ =
+    exec_result->status = false;
+    // result_flag_ = false;
+    // result_set_ = NULL;
+    // error_msg_ =
+    //     "The table " + tablename_ + " has existed during creating table!";
+    exec_result->error_info =
         "The table " + tablename_ + " has existed during creating table!";
     LOG(ERROR) << "The table " + tablename_ +
                       " has existed during creating table!" << std::endl;
@@ -177,12 +182,16 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
               }
               LOG(INFO) << colname + " is created" << std::endl;
             } else {
-              // TODO:not supports
-              error_msg_ = "This type is not supported during creating table!";
+              // TODO(fzh): not supports
+              exec_result->error_info =
+                  "This type is not supported during creating table!";
+              exec_result->status = false;
+              // error_msg_ = "This type is not supported during creating
+              // table!";
               LOG(ERROR) << "This type is not supported during creating table!"
                          << std::endl;
-              result_flag_ = false;
-              result_set_ = NULL;
+              // result_flag_ = false;
+              // result_set_ = NULL;
               ret = common::kStmtHandlerTypeNotSupport;
             }
             break;
@@ -317,6 +326,16 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
             break;
           }
           default: {
+#ifdef NEWRESULT
+            exec_result->error_info =
+                "This type is not supported now during creating table!";
+            LOG(ERROR)
+                << "This type is not supported now during creating table!"
+                << std::endl;
+            exec_result->status = false;
+            exec_result->result = NULL;
+            ret = common::kStmtHandlerTypeNotSupport;
+#else
             error_msg_ =
                 "This type is not supported now during creating table!";
             LOG(ERROR)
@@ -325,6 +344,7 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
             result_flag_ = false;
             result_set_ = NULL;
             ret = common::kStmtHandlerTypeNotSupport;
+#endif
           }
         }
       }
@@ -335,10 +355,17 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
     if (result_flag_) {
       Environment::getInstance()->getCatalog()->add_table(table_desc_);
       Environment::getInstance()->getCatalog()->saveCatalog();
+#ifdef NEWRESULT
+      exec_result->info = "create table successfully";
+      LOG(INFO) << "create table successfully" << std::endl;
+      exec_result->result = NULL;
+      ret = common::kStmtHandlerCreateTableSuccess;
+#else
       info_ = "create table successfully";
       LOG(INFO) << "create table successfully" << std::endl;
       result_set_ = NULL;
       ret = common::kStmtHandlerCreateTableSuccess;
+#endif
     }
   }
   return ret;
