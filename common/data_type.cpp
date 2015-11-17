@@ -45,20 +45,41 @@ using claims::common::rInterruptedData;
 using claims::common::rIncorrectData;
 using claims::common::rInvalidNullData;
 using claims::common::kErrorMessage;
-
+/**
+ * if a string to input is warning, we modify it to a right value
+ *     and return it's warning-code
+ * if a string to input is error, we don't modify it, but return a error-code
+ *
+ * if there is no error or warning exist , we return success-code
+ * @param str
+ * @return warning/error code
+ */
 RetCode OperateInt::CheckSet(string& str) const {
   RetCode ret = rSuccess;
+  /*
+   * Input a null value, and it is valid (warning)
+   */
   if (str == "" && nullable) return rSuccess;
+  /*
+   * Input a null value, but it is inValid (error)
+   */
   if (str == "" && !nullable) {
     LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
                << str << endl;
     return rInvalidNullData;
   }
+  /*
+   * The input's format is error for number type like a12, c21, etc. (error)
+   */
   if (!isdigit(str[0]) && str[0] != '-') {
     LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
                << str << endl;
     return rIncorrectData;
   }
+  /*
+   * The input need to be interrupted like 12a34, the string will be cut off to
+   *   12. (warning)
+   */
   for (auto i = 1; i < str.length(); i++)
     if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
       LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
@@ -68,12 +89,20 @@ RetCode OperateInt::CheckSet(string& str) const {
       break;
     }
   long value = atol(str.c_str());
+  /*
+   * The input is less than int_min, we set it to int_min
+   */
   if (value < INT_MIN) {
     LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData] << "] for "
                  << str << endl;
     str = kIntMin;
     ret = rTooSmallData;
   } else if (value > INT_MAX || (value == INT_MAX && nullable)) {
+    /*
+     * if input is int_max, we set it to int_max - 1, because int_max is
+     *    null-value actually.
+     * if input is larger than int_max, we set it to int_max-1
+     */
     LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData] << "] for "
                  << str << endl;
     str = kIntMax_1;
@@ -140,11 +169,14 @@ RetCode OperateDouble::CheckSet(string& str) const {
       break;
     }
   /*
-   * @brief integer part of a double number
+   *  integer part of a double number
    */
   auto len = 0;
   for (auto i = str.begin(); i != str.end(); i++, len++)
     if (*i == '.') break;
+  /*
+   * ToDo we could improve the size check for double type *_*
+   */
   if (len >= 309) {
     if (str[0] == '-') {
       LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
@@ -192,6 +224,9 @@ RetCode OperateULong::CheckSet(string& str) const {
     auto len = 0;
     for (auto i = str.begin(); i != str.end(); i++, len++)
       if (*i == '.') break;
+    /*
+     * ToDo we could improve the size check for unsigned long type *_*
+     */
     if (len >= 20 && str[19] > '1') {
       LOG(WARNING) << "[checkSet]: [" << kErrorMessage[rTooLargeData]
                    << "] for " << str << endl;
@@ -210,6 +245,9 @@ RetCode OperateString::CheckSet(string& str) const {
                << str << endl;
     return rInvalidNullData;
   }
+  /*
+   * The input string is too long to storage in a tuple
+   */
   if (str.length() > size) {
     LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLongData] << "] for "
                  << str << endl;
@@ -235,6 +273,9 @@ RetCode OperateDate::CheckSet(string& str) const {
         return rIncorrectData;
       }
     if (ret == rSuccess) {
+      /*
+       * Claims don't support date before 1400-01-01, but why?
+       */
       if (str < "14000101") {
         LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
                      << "] for " << str << endl;
@@ -415,7 +456,9 @@ RetCode OperateUSmallInt::CheckSet(string& str) const {
   }
   return ret;
 }
-
+/*
+ * ToDo There is still some work for decimal type
+ */
 RetCode OperateDecimal::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
