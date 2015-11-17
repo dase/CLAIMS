@@ -40,6 +40,7 @@ const int InsertExec::INT_LENGTH = 10;
 const int InsertExec::FLOAT_LENGTH = 10;
 const int InsertExec::SMALLINT_LENGTH = 4;
 
+#define NEWRESULT
 /**
  * @brief Constructor
  * @detail convert the base class member stmt_ to insert_ast_ and get the table
@@ -149,10 +150,15 @@ RetCode InsertExec::Execute(executed_result *exec_result) {
     AstInsertValList *insert_value_list =
         dynamic_cast<AstInsertValList *>(insert_ast_->insert_val_list_);
     if (NULL == insert_value_list) {
+#ifdef NEWRESULT
+      exec_result->error_info = "No value!";
+      exec_result->status = false;
+      exec_result->result = NULL;
+#else
       error_msg_ = "No value!";
       result_flag_ = false;
       result_set_ = NULL;
-
+#endif
       ret = common::kStmtHandlerInsertNoValue;
     } else {
       std::ostringstream ostr;
@@ -173,11 +179,18 @@ RetCode InsertExec::Execute(executed_result *exec_result) {
                position < table_desc_->getNumberOfAttribute(); position++) {
             // check value count
             if (insert_value == NULL) {
-              // ASTParserLogging::elog("Value count is too few");
+// ASTParserLogging::elog("Value count is too few");
+#ifdef NEWRESULT
+              is_correct_ = false;
+              exec_result->error_info = "Value count is too few";
+              exec_result->status = false;
+              exec_result->result = NULL;
+#else
               is_correct_ = false;
               error_msg_ = "Value count is too few";
               result_flag_ = false;
               result_set_ = NULL;
+#endif
               break;
             }
 
@@ -194,10 +207,17 @@ RetCode InsertExec::Execute(executed_result *exec_result) {
           if (!is_correct_) break;
           // check insert value count
           if (insert_value) {
+#ifdef NEWRESULT
+            exec_result->error_info = "Value count is too many";
+            exec_result->status = false;
+            exec_result->result = NULL;
+            is_correct_ = false;
+#else
             error_msg_ = "Value count is too many";
             result_flag_ = false;
             result_set_ = NULL;
             is_correct_ = false;
+#endif
             break;
           }
 
@@ -209,12 +229,20 @@ RetCode InsertExec::Execute(executed_result *exec_result) {
             insert_value = dynamic_cast<AstInsertVals *>(insert_value->next_);
           }
           if (insert_value_count != col_count) {
-            // ASTParserLogging::elog("Column count doesn't match value count");
+// ASTParserLogging::elog("Column count doesn't match value count");
+#ifdef NEWRESULT
+            exec_result->error_info = "Column count doesn't match value count";
+            LOG(ERROR) << "Column count doesn't match value count";
+            exec_result->status = false;
+            exec_result->result = NULL;
+            is_correct_ = false;
+#else
             error_msg_ = "Column count doesn't match value count";
             LOG(ERROR) << "Column count doesn't match value count" << std::endl;
             result_flag_ = false;
             result_set_ = NULL;
             is_correct_ = false;
+#endif
             break;
           }
           unsigned int used_col_count = 0;
@@ -257,12 +285,20 @@ RetCode InsertExec::Execute(executed_result *exec_result) {
 
           // check if every insert column is existed
           if (used_col_count != col_count) {
-            // ASTParserLogging::elog("Some columns don't exist");
+// ASTParserLogging::elog("Some columns don't exist");
+#ifdef NEWRESULT
+            exec_result->error_info = "Some columns don't exist";
+            LOG(ERROR) << "Some columns don't exist" << std::endl;
+            exec_result->status = false;
+            exec_result->result = NULL;
+            is_correct_ = false;
+#else
             error_msg_ = "Some columns don't exist";
             LOG(ERROR) << "Some columns don't exist" << std::endl;
             result_flag_ = false;
             result_set_ = NULL;
             is_correct_ = false;
+#endif
             break;
           }
         }
@@ -279,7 +315,11 @@ RetCode InsertExec::Execute(executed_result *exec_result) {
 
       if (is_correct_) {
         if (has_warning_) {
-          // ASTParserLogging::log("[WARNING]: The type is not matched!\n");
+// ASTParserLogging::log("[WARNING]: The type is not matched!\n");
+#ifdef NEWRESULT
+          exec_result->info = "The type is not matched";
+#else
+#endif
           LOG(WARNING) << "The type is not matched!" << std::endl;
         }
         // ASTParserLogging::log("the insert content is \n%s\n",
@@ -297,17 +337,28 @@ RetCode InsertExec::Execute(executed_result *exec_result) {
         ostr.str("");
         ostr << "insert data successfully. " << changed_row_num
              << " rows changed.";
+#ifdef NEWRESULT
+        exec_result->info = ostr.str();
+        exec_result->result = NULL;
+#else
         info_ = ostr.str();
         result_set_ = NULL;
-
+#endif
         ret = common::kStmtHandlerInsertDataSuccess;
       }
     }
   } else {
+#ifdef NEWRESULT
+    exec_result->error_info = "The table " + tablename_ + "does not exist!";
+    LOG(ERROR) << "The table " + tablename_ + "does not exist!";
+    exec_result->status = false;
+    exec_result->result = NULL;
+#else
     error_msg_ = "The table " + tablename_ + "does not exist!";
     LOG(ERROR) << "The table " + tablename_ + "does not exist!" << std::endl;
     result_flag_ = false;
     result_set_ = NULL;
+#endif
     ret = common::kStmtHandlerTableNotExistDuringInsert;
   }
 

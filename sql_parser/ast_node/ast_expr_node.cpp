@@ -77,7 +77,7 @@ AstNode* AstExprConst::AstNodeCopy() { return new AstExprConst(this); }
 
 // TODO(FZH) be strict to the type of const
 ErrorNo AstExprConst::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   if (expr_type_ == "CONST_INT") {
   } else if (expr_type_ == "CONST_DOUBLE") {
   } else if (expr_type_ == "CONST_STRING") {
@@ -117,7 +117,7 @@ ErrorNo AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
     return eNoDataTypeInConst;
   }
   logic_expr = new ExprConst(ExprNodeType::t_qexpr, actual_type, data_, data_);
-  return eOK;
+  return rSuccess;
 }
 
 AstExprUnary::AstExprUnary(AstNodeType ast_node_type, string expr_type,
@@ -159,7 +159,7 @@ ErrorNo AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
     sem_cnxt->select_expr_have_agg = true;
 
     expr_str_ = "COUNT(*)";
-    return eOK;
+    return rSuccess;
   }
   if (NULL != arg0_) {
     // upper node have agg and this node is agg, then error
@@ -175,11 +175,11 @@ ErrorNo AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
       sem_cnxt->select_expr_have_agg = true;
     }
     ErrorNo ret = arg0_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
     sem_cnxt->have_agg = false;
-    return eOK;
+    return rSuccess;
   }
   LOG(ERROR) << "arg0 is NULL in unary expr!" << endl;
   return eUnaryArgNotExist;
@@ -275,7 +275,7 @@ ErrorNo AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
     assert(false);
   }
   ExprNode* child_logic_expr = NULL;
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   // count(*) = count(1)
   if (expr_type_ == "COUNT_ALL" || expr_type_ == "COUNT") {
     child_logic_expr =
@@ -283,14 +283,14 @@ ErrorNo AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
   } else {
     ret = arg0_->GetLogicalPlan(child_logic_expr, child_logic_plan);
   }
-  if (eOK != ret) {
+  if (rSuccess != ret) {
     return ret;
   }
   assert(NULL != child_logic_expr);
   logic_expr =
       new ExprUnary(ExprNodeType::t_qexpr_unary, child_logic_expr->actual_type_,
                     expr_str_, oper, child_logic_expr);
-  return eOK;
+  return rSuccess;
 }
 ErrorNo AstExprUnary::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
@@ -299,7 +299,7 @@ ErrorNo AstExprUnary::SolveSelectAlias(
     select_alias_solver->SetNewNode(arg0_);
     select_alias_solver->DeleteOldNode();
   }
-  return eOK;
+  return rSuccess;
 }
 AstExprCalBinary::AstExprCalBinary(AstNodeType ast_node_type,
                                    std::string expr_type, AstNode* arg0,
@@ -331,21 +331,21 @@ void AstExprCalBinary::Print(int level) const {
   if (arg1_ != NULL) arg1_->Print(level + 1);
 }
 ErrorNo AstExprCalBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   if (NULL != arg0_) {
     ret = arg0_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
   if (NULL != arg1_) {
     ret = arg1_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
 
-  return eOK;
+  return rSuccess;
 }
 // cal>cmp>bool
 // if right child have the same level, add ()
@@ -440,13 +440,13 @@ ErrorNo AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
                                          LogicalOperator* child_logic_plan) {
   ExprNode* left_expr_node = NULL;
   ExprNode* right_expr_node = NULL;
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
-  if (eOK != ret) {
+  if (rSuccess != ret) {
     return ret;
   }
   ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
-  if (eOK != ret) {
+  if (rSuccess != ret) {
     return ret;
   }
   data_type get_type = TypeConversionMatrix::type_conversion_matrix
@@ -494,7 +494,7 @@ ErrorNo AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
   }
   logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cal, actual_type, get_type,
                               expr_str_, oper, left_expr_node, right_expr_node);
-  return eOK;
+  return rSuccess;
 }
 
 ErrorNo AstExprCalBinary::SolveSelectAlias(
@@ -509,7 +509,7 @@ ErrorNo AstExprCalBinary::SolveSelectAlias(
     select_alias_solver->SetNewNode(arg1_);
     select_alias_solver->DeleteOldNode();
   }
-  return eOK;
+  return rSuccess;
 }
 AstExprCmpBinary::AstExprCmpBinary(AstNodeType ast_node_type, string expr_type,
                                    AstNode* arg0, AstNode* arg1)
@@ -582,21 +582,21 @@ void AstExprCmpBinary::Print(int level) const {
   if (arg1_ != NULL) arg1_->Print(level + 1);
 }
 ErrorNo AstExprCmpBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   if (NULL != arg0_) {
     ret = arg0_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
   if (NULL != arg1_) {
     ret = arg1_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
 
-  return eOK;
+  return rSuccess;
 }
 void AstExprCmpBinary::RecoverExprName(string& name) {
   expr_str_ = "";
@@ -653,13 +653,13 @@ ErrorNo AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
                                          LogicalOperator* child_logic_plan) {
   ExprNode* left_expr_node = NULL;
   ExprNode* right_expr_node = NULL;
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
-  if (eOK != ret) {
+  if (rSuccess != ret) {
     return ret;
   }
   ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
-  if (eOK != ret) {
+  if (rSuccess != ret) {
     return ret;
   }
   data_type get_type = TypeConversionMatrix::type_conversion_matrix
@@ -682,7 +682,7 @@ ErrorNo AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
   }
   logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cmp, t_boolean, get_type,
                               expr_str_, oper, left_expr_node, right_expr_node);
-  return eOK;
+  return rSuccess;
 }
 ErrorNo AstExprCmpBinary::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
@@ -696,7 +696,7 @@ ErrorNo AstExprCmpBinary::SolveSelectAlias(
     select_alias_solver->SetNewNode(arg1_);
     select_alias_solver->DeleteOldNode();
   }
-  return eOK;
+  return rSuccess;
 }
 
 AstExprList::AstExprList(AstNodeType ast_node_type, AstNode* expr,
@@ -728,17 +728,17 @@ void AstExprList::Print(int level) const {
   if (next_ != NULL) next_->Print(level);
 }
 ErrorNo AstExprList::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   if (NULL != expr_) {
     ret = expr_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
   if (NULL != next_) {
     return next_->SemanticAnalisys(sem_cnxt);
   }
-  return eOK;
+  return rSuccess;
 }
 void AstExprList::RecoverExprName(string& name) {
   string expr_name = "";
@@ -801,7 +801,7 @@ ErrorNo AstExprList::SolveSelectAlias(
     select_alias_solver->SetNewNode(next_);
     select_alias_solver->DeleteOldNode();
   }
-  return eOK;
+  return rSuccess;
 }
 AstExprFunc::AstExprFunc(AstNodeType ast_node_type, std::string expr_type,
                          AstNode* arg0, AstNode* arg1, AstNode* arg2)
@@ -843,26 +843,26 @@ void AstExprFunc::Print(int level) const {
   if (arg2_ != NULL) arg2_->Print(level + 3);
 }
 ErrorNo AstExprFunc::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = eOK;
+  ErrorNo ret = rSuccess;
   if (NULL != arg0_) {
     ret = arg0_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
   if (NULL != arg1_) {
     ret = arg1_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
   if (NULL != arg2_) {
     ret = arg2_->SemanticAnalisys(sem_cnxt);
-    if (eOK != ret) {
+    if (rSuccess != ret) {
       return ret;
     }
   }
-  return eOK;
+  return rSuccess;
 }
 
 void AstExprFunc::RecoverExprName(string& name) {
@@ -1001,7 +1001,7 @@ ErrorNo AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
                                 expr_str_, OperType::oper_both_trim,
                                 arg0_logic_expr, arg1_logic_expr);
   }
-  return eOK;
+  return rSuccess;
 }
 ErrorNo AstExprFunc::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
@@ -1020,7 +1020,7 @@ ErrorNo AstExprFunc::SolveSelectAlias(
     select_alias_solver->SetNewNode(arg2_);
     select_alias_solver->DeleteOldNode();
   }
-  return eOK;
+  return rSuccess;
 }
 //}  // namespace sql_parser
 //}  // namespace claims

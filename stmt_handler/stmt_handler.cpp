@@ -30,6 +30,8 @@
 #include <iostream>
 #include <string>
 #include "../stmt_handler/stmt_handler.h"
+
+#include "../stmt_handler/show_exec.h"
 namespace claims {
 namespace stmt_handler {
 
@@ -69,6 +71,16 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
       }
       break;
     }
+    case AST_SHOW_STMT: {
+      stmt_exec_ = new ShowExec(stmt_ast);
+      break;
+    }
+    case AST_CREATE_TABLE_LIST:
+    case AST_CREATE_TABLE_LIST_SEL:
+    case AST_CREATE_TABLE_SEL: {
+      stmt_exec_ = new CreateTableExec(stmt_ast);
+      break;
+    }
     default: {
       LOG(ERROR) << "unknow statement type!" << std::endl;
       return rUnknowStmtType;
@@ -81,6 +93,9 @@ RetCode StmtHandler::Execute(executed_result* exec_result) {
   sql_parser_ = new Parser(sql_stmt_);
   AstNode* raw_ast = sql_parser_->GetRawAST();
   if (NULL == raw_ast) {
+    exec_result->error_info = "Parser Error";
+    exec_result->status = false;
+    exec_result->result = NULL;
     return rParserError;
   }
   ret = GenerateStmtExec(raw_ast);

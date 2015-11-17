@@ -118,9 +118,10 @@ enum AstNodeType {
   AST_APPROXNUM,
   AST_STRINGVAL,
   AST_BOOL,
+  AST_SHOW_STMT
 };
 enum ErrorNoType {
-  eOK = 10000,
+  rSuccess = 0,
   eTableNotExist,
   eTableillegal,
   eTableAliasEqualExistedTable,
@@ -285,12 +286,14 @@ class AstNode {
   virtual void GetRefTable(set<string>& ref_table);
 
   virtual ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt) {
-    return eOK;
+    return rSuccess;
   }
-  virtual ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan) { return eOK; }
+  virtual ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan) {
+    return rSuccess;
+  }
   virtual ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
                                  LogicalOperator* child_logic_plan) {
-    return eOK;
+    return rSuccess;
   }
   ErrorNo GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
                            LogicalOperator* args_lplan,
@@ -301,7 +304,7 @@ class AstNode {
                              LogicalOperator* logic_plan);
   virtual ErrorNo SolveSelectAlias(
       SelectAliasSolver* const select_alias_solver) {
-    return eOK;
+    return rSuccess;
   }
   AstNode* GetAndExpr(const set<AstNode*>& expression);
   AstNodeType ast_node_type_;

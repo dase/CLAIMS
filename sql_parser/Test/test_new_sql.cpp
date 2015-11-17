@@ -51,7 +51,7 @@ int TestNewSql() {
 #endif
       SemanticContext sem_cnxt;
       ErrorNo ret = raw_ast->SemanticAnalisys(&sem_cnxt);
-      if (eOK != ret) {
+      if (rSuccess != ret) {
         cout << "semantic analysis error result= : " << ret << endl;
         continue;
       }

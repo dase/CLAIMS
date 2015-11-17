@@ -378,7 +378,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2579 of glr.c  */
-#line 32 "sql.ypp"
+#line 33 "sql.ypp"
 
 	int intval;		
 	double floatval;
