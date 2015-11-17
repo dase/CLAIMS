@@ -59,13 +59,13 @@ ErrorInit::ErrorInit() {
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(kNoTableFound, "No such table found");
 
-  /* errorno for Loarder -2001 ~ -3000 */
+  /* errorno for Loader -2001 ~ -3000 */
   DefineErrorAndMessage(rTooLargeData, "Load Too Large Data");
   DefineErrorAndMessage(rTooSmallData, "Load Too Small Data");
   DefineErrorAndMessage(rTooLongData, "Load Too Long Data");
   DefineErrorAndMessage(rInterruptedData, "The Load data is interrupted");
-  DefineErrorAndMessage(rIncorrectData, "The Load data format is incorrected");
-  DefineErrorAndMessage(rInvaildNullData, "The null value is invaild");
+  DefineErrorAndMessage(rIncorrectData, "The Load data format is incorrect");
+  DefineErrorAndMessage(rInvalidNullData, "The null value is invalid");
 
   /* errorno for codegen -3001 ~ -4000 */
   DefineErrorAndMessage(kTestError, "test it is error ");

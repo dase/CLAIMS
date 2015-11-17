@@ -42,9 +42,8 @@
 #include "../Parsetree/sql_node_struct.h"
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
-using namespace claims::common;
 #define NEWCONDITION
-
+using namespace claims::common;
 namespace claims {
 namespace physical_operator {
 
