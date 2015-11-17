@@ -88,9 +88,9 @@ int LogicalCrossJoin::get_join_policy_() {
     return join_policy_;
   } else {
     LOG(WARNING) << "[CrossJoin]: "
-                 << "[" << kErrorMessage[kUninitializedJoinPolicy] << ","
+                 << "[" << kErrorMessage[rUninitializedJoinPolicy] << ","
                  << "]" << std::endl;
-    return kUninitializedJoinPolicy;
+    return rUninitializedJoinPolicy;
   }
 }
 /**
@@ -109,7 +109,8 @@ PlanContext LogicalCrossJoin::GetPlanContext() {
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
   PlanContext ret;
-  if (claims::common::kSuccess == DecideJoinPolicy(left_plan_context, right_plan_context)) {
+  if (claims::common::rSuccess ==
+      DecideJoinPolicy(left_plan_context, right_plan_context)) {
     const Attribute left_partition_key =
         left_plan_context.plan_partitioner_.get_partition_key();
     const Attribute right_partition_key =
@@ -193,7 +194,7 @@ PlanContext LogicalCrossJoin::GetPlanContext() {
     return ret;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
-                 << "[" << kErrorMessage[kGeneratePlanContextFailed] << "],"
+                 << "[" << kErrorMessage[rGeneratePlanContextFailed] << "],"
                  << std::endl;
     return ret;
   }
@@ -221,12 +222,12 @@ int LogicalCrossJoin::DecideJoinPolicy(const PlanContext& left_plan_context,
     }
   }
   if (kUninitialized != join_policy_) {
-    return claims::common::kSuccess;
+    return claims::common::rSuccess;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
-                 << "[" << kErrorMessage[kUninitializedJoinPolicy] << ",]"
+                 << "[" << kErrorMessage[rUninitializedJoinPolicy] << ",]"
                  << std::endl;
-    return kUninitializedJoinPolicy;
+    return rUninitializedJoinPolicy;
   }
 }
 
@@ -265,7 +266,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
     PhysicalOperatorBase*& left_child_iterator_tree,
     PhysicalOperatorBase*& right_child_iterator_tree,
     const unsigned& blocksize) {
-  int ret = claims::common::kSuccess;
+  int ret = claims::common::rSuccess;
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
   switch (join_policy_) {
@@ -330,16 +331,16 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
     }
     default: { assert(false); }
       if (NULL == left_child_iterator_tree) {
-        ret = kGenerateSubPhyPlanFailed;
+        ret = rGenerateSubPhyPlanFailed;
         LOG(WARNING) << "[CrossJoin]: "
-                     << "[" << kErrorMessage[kGenerateSubPhyPlanFailed] << ","
+                     << "[" << kErrorMessage[rGenerateSubPhyPlanFailed] << ","
                      << "left child sub physical plan"
                      << "]" << std::endl;
       }
       if (NULL == right_child_iterator_tree) {
-        ret = kGenerateSubPhyPlanFailed;
+        ret = rGenerateSubPhyPlanFailed;
         LOG(WARNING) << "[CrossJoin]: "
-                     << "[" << kErrorMessage[kGenerateSubPhyPlanFailed] << ","
+                     << "[" << kErrorMessage[rGenerateSubPhyPlanFailed] << ","
                      << "right child sub physical plan"
                      << "]" << std::endl;
       }

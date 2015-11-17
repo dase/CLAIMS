@@ -26,6 +26,7 @@
 #include "../utility/string_process.h"
 #include "types/NValue.hpp"
 
+using claims::common::rSuccess;
 using claims::common::rTooSmallData;
 using claims::common::rTooLargeData;
 using claims::common::rTooLongData;

@@ -40,7 +40,7 @@
 #define SQL_Parser
 using namespace std;
 using claims::catalog::Catalog;
-using claims::common::kSuccess;
+using claims::common::rSuccess;
 using claims::common::FileOpenFlag;
 using claims::loader::DataInjector;
 
@@ -1139,10 +1139,10 @@ void Query(Catalog *catalog, Node *node, ExecutedResult *result,
   root->Print(0);
 #endif
 
-<<<<<<< HEAD
-  BlockStreamIteratorBase *physical_iterator_tree =
+  PhysicalOperatorBase *physical_iterator_tree =
       root->GetPhysicalPlan(64 * 1024);
-  //	puts("+++++++++++++++++++++begin time++++++++++++++++");
+  //					puts("+++++++++++++++++++++begin
+  // time++++++++++++++++");
   unsigned long long start = curtick();
   physical_iterator_tree->Print();
 
@@ -1151,13 +1151,8 @@ void Query(Catalog *catalog, Node *node, ExecutedResult *result,
   while (physical_iterator_tree->Next(0)) {
   }
   physical_iterator_tree->Close();
-  //					printf("++++++++++++++++Q1: execution
-  // time:
-  //%4.4f
-  // second.++++++++++++++\n",getSecond(start));
-  ResultSet *result_set = physical_iterator_tree->getResultSet();
+  ResultSet *result_set = physical_iterator_tree->GetResultSet();
   cout << "execute " << result_set->query_time_ << " s" << endl;
-  //  result_flag = true;
   result->SetResult("", result_set);
 
   if (local_mode) {
@@ -1167,33 +1162,6 @@ void Query(Catalog *catalog, Node *node, ExecutedResult *result,
     delete result_set;
   }
   return;
-=======
-  PhysicalOperatorBase *physical_iterator_tree =
-      root->GetPhysicalPlan(64 * 1024);
-  //					puts("+++++++++++++++++++++begin
-  //time++++++++++++++++");
-  unsigned long long start = curtick();
-  physical_iterator_tree->Print();
-
-  physical_iterator_tree->Open();
-
-  while (physical_iterator_tree->Next(0))
-    ;
-  physical_iterator_tree->Close();
-  //					printf("++++++++++++++++Q1: execution time: %4.4f
-  //second.++++++++++++++\n",getSecond(start));
-  result_set = physical_iterator_tree->GetResultSet();
-  cout << "execute " << result_set->query_time_ << " s" << endl;
-  result_flag = true;
-
-  if (local_mode) {
-    result_set->print();
-    delete physical_iterator_tree;
-    delete root;
-    delete result_set;
-  }
-  return;
->>>>>>> origin/checkset-lzf1116
 }
 /*
 

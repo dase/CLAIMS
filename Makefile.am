@@ -32,7 +32,6 @@ LDADD =  \
 	IndexManager/libindexmanager.a \
 	IndexManager/Test/libtest.a \
 	Parsetree/libparsetree.a \
-	Parsetree/Test/libtest.a \
 	logical_operator/liblogicalqueryplan.a \
 	physical_operator/libphysicalqueryplan.a \
 	storage/libstorage.a \

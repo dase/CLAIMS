@@ -44,7 +44,6 @@
 
 using namespace claims::logical_operator;
 using claims::physical_operator::PhysicalAggregation;
-using namespace claims::logical_query_plan;
 using namespace claims::catalog;
 
 static LogicalOperator *parsetree2logicalplan(Node *parsetree);
@@ -271,11 +270,7 @@ static LogicalOperator *solve_insubquery(Node *exprnode,
           }  // 2.2在1中的logicalplan上做groupby
           LogicalOperator *aggrection_sublogicalplan = new LogicalAggregation(
               group_by_attributes, std::vector<Attribute>(),
-<<<<<<< HEAD
-              std::vector<BlockStreamAggregationIterator::State::aggregation>(),
-=======
               std::vector<PhysicalAggregation::State::Aggregation>(),
->>>>>>> origin/checkset-lzf1116
               sublogicalplan);
           vector<LogicalEqualJoin::JoinPair> join_pair_list;
           Node *lp, *sp;
@@ -521,12 +516,7 @@ static char *get_expr_str(Node *node) {
 
 static void get_aggregation_args(
     Node *selectlist, vector<Attribute> &aggregation_attributes,
-<<<<<<< HEAD
-    vector<BlockStreamAggregationIterator::State::aggregation> &
-        aggregation_function,
-=======
     vector<PhysicalAggregation::State::Aggregation> &aggregation_function,
->>>>>>> origin/checkset-lzf1116
     LogicalOperator *input) {
   if (selectlist == NULL) {
     //	puts("get_aggregation_args is null");
@@ -549,20 +539,11 @@ static void get_aggregation_args(
     case t_expr_func: {
       Expr_func *funcnode = (Expr_func *)selectlist;
       if (strcmp(funcnode->funname, "FCOUNTALL") == 0) {
-<<<<<<< HEAD
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::count);
+        aggregation_function.push_back(PhysicalAggregation::State::kCount);
         aggregation_attributes.push_back(
             Attribute(Attribute::AttributeType::kAttributeAny));
       } else if (strcmp(funcnode->funname, "FCOUNT") == 0) {
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::count);
-=======
         aggregation_function.push_back(PhysicalAggregation::State::kCount);
-        aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-      } else if (strcmp(funcnode->funname, "FCOUNT") == 0) {
-        aggregation_function.push_back(PhysicalAggregation::State::kCount);
->>>>>>> origin/checkset-lzf1116
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -575,12 +556,7 @@ static void get_aggregation_args(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FSUM") == 0) {
-<<<<<<< HEAD
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::sum);
-=======
         aggregation_function.push_back(PhysicalAggregation::State::kSum);
->>>>>>> origin/checkset-lzf1116
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -593,12 +569,7 @@ static void get_aggregation_args(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FMIN") == 0) {
-<<<<<<< HEAD
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::min);
-=======
         aggregation_function.push_back(PhysicalAggregation::State::kMin);
->>>>>>> origin/checkset-lzf1116
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -611,12 +582,7 @@ static void get_aggregation_args(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FMAX") == 0) {
-<<<<<<< HEAD
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::max);
-=======
         aggregation_function.push_back(PhysicalAggregation::State::kMax);
->>>>>>> origin/checkset-lzf1116
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -629,12 +595,7 @@ static void get_aggregation_args(
               get_expr_str(funcnode->parameter1)));
         }
       } else if (strcmp(funcnode->funname, "FAVG") == 0) {
-<<<<<<< HEAD
-        aggregation_function.push_back(
-            BlockStreamAggregationIterator::State::avg);
-=======
         aggregation_function.push_back(PhysicalAggregation::State::kAvg);
->>>>>>> origin/checkset-lzf1116
         if (input == NULL) {
           Columns *funccol = (Columns *)funcnode->parameter1;
           aggregation_attributes.push_back(
@@ -1162,12 +1123,7 @@ static LogicalOperator *groupby_select_where_from2logicalplan(
       where_from2logicalplan(node->from_list);
   vector<Attribute> group_by_attributes;
   vector<Attribute> aggregation_attributes;
-<<<<<<< HEAD
-  vector<BlockStreamAggregationIterator::State::aggregation>
-      aggregation_function;
-=======
   vector<PhysicalAggregation::State::Aggregation> aggregation_function;
->>>>>>> origin/checkset-lzf1116
   int agg_has_expr, agg_in_expr, has_agg, sid = 0;
   agg_has_expr = agg_in_expr = has_agg = 0;
   judge_selectlist_agg_has_or_in_expr(node->select_list, has_agg, agg_has_expr,

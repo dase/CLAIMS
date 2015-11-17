@@ -52,14 +52,14 @@ namespace common {
 
 #define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info) \
   do {                                            \
-    if (kSuccess != (ret = f)) {                  \
+    if (rSuccess != (ret = f)) {                  \
       ELOG(ret, err_info)                         \
     }                                             \
   } while (0)
 
 #define EXEC_AND_LOG(ret, f, info, err_info) \
   do {                                       \
-    if (kSuccess == (ret = f)) {             \
+    if (rSuccess == (ret = f)) {             \
       LOG(INFO) << info << std::endl;        \
     } else {                                 \
       ELOG(ret, err_info)                    \
@@ -68,7 +68,7 @@ namespace common {
 
 #define EXEC_AND_PLOG(ret, f, info, err_info)                       \
   do {                                                              \
-    if (kSuccess == (ret = f)) {                                    \
+    if (rSuccess == (ret = f)) {                                    \
       LOG(INFO) << info << std::endl;                               \
     } else {                                                        \
       PLOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " \
@@ -99,7 +99,7 @@ const int rParamInvalid = -14;
 const int rAccessDiskFileFail = -15;
 const int rAccessHdfsFileFail = -16;
 
-const int rNoMemory = -15;
+const int rNoMemory = -17;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int rNoTableFound = -1001;

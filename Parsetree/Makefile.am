@@ -38,5 +38,3 @@ libparsetree_a_SOURCES = \
 	sql.tab.cpp 			sql.tab.hpp \
 	sql_node_struct.h 		wc2tb.cpp
 
-SUBDIRS = Test
-DIST_SUBDIRS = Test
