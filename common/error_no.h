@@ -40,7 +40,7 @@ static struct ErrorInit {
   ErrorInit();
 
   static inline void DefineErrorAndMessage(int value, const char* messege) {
-    ERROR_MESSEGE[-value] = messege;
+    kErrorMessage[-value] = messege;
   }
 }local_init;
 

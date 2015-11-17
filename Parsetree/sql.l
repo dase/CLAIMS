@@ -368,6 +368,7 @@ MAX    { int c = yyinput(pp->yyscan_info_); unput(c);
                           return NAME; }
 `[^`/\\.\n]+`           { yylval->strval = strdup(yytext+1);
                           yylval->strval[yyleng-2] = 0;
+                          //printf("NAME is %s\n", yylval->strval);
                           return NAME; }
 
 `[^`\n]*$               { yyerror(pp,"unterminated quoted name %s", yytext); }

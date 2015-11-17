@@ -30,24 +30,22 @@
 
 #include "../common/Schema/SchemaFix.h"
 
-#include "../BlockStreamIterator/BlockStreamIteratorBase.h"
+#include "../physical_operator/physical_operator_base.h"
 #include "../BlockStreamIterator/BlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/BlockStreamPerformanceTest.h"
 
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamExpander.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScan.h"
 #include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamSingleColumnScanDisk.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamFilter.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamExchangeEpoll.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomMemAccess.h"
-#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStreamRandomDiskAccess.h"
+#include "../BlockStreamIterator/ParallelBlockStreamIterator/ExpandableBlockStredomDiskAccess.h"
+#include "../physical_operator/BlockStreamExpander.h"
 
-using namespace std;
-
-/***********************************Pthread && Block at a time*******************************************/
+using namespace#include "../physical_operator/ExpandableBlockStreamRandomDiskAccess.h"
+e***************************#include "../physical_operator/ExpandableBlockStreamRandomMemAccess.h"
+****************/
 
 
-/************Local Disk Access************/
+/*******#include "../physical_operator/ExpandableBlockStreamSingleColumnScan.h"
+*****Local Disk Access******#include "../physical_operator/ExpandableBlockStreamSingleColumnScanDisk.h"
+******/
 int main_ld (int argc, char** argv)
 {
 	const unsigned block_size = atoi(argv[1]);
@@ -77,28 +75,28 @@ int main_ld (int argc, char** argv)
 //	block_->~BlockStreamBase();
 
 	ExpandableBlockStreamSingleColumnScanDisk::State ebsscsd_state("/home/claims/temp/5_0.column", d_schema, block_size, scan_size);
-	BlockStreamIteratorBase* ebsscsd = new ExpandableBlockStreamSingleColumnScanDisk(ebsscsd_state);
+	PhysicalOperatorBase* ebsscsd = new ExpandableBlockStreamSingleColumnScanDisk(ebsscsd_state);
 
 	ExpandableBlockStreamSingleColumnScan::State ebssc_state("/home/claims/temp/6_0.column", i_schema, block_size, random_size);
-	BlockStreamIteratorBase* ebssc = new ExpandableBlockStreamSingleColumnScan(ebssc_state);
+	PhysicalOperatorBase* ebssc = new ExpandableBlockStreamSingleColumnScan(ebssc_state);
 
 //	BlockStreamExpander::State bse_state(i_schema,ebssc,thread_count,block_size,expander_buffer);
 //	BlockStreamIteratorBase* bse=new BlockStreamExpander(bse_state);
 
 	ExpandableBlockStreamRandomDiskAccess::State ebsrda_state("/home/claims/temp/Uniform_0_9999.column", ebssc, d_schema, i_schema, block_size);
-	BlockStreamIteratorBase* ebsrda = new ExpandableBlockStreamRandomDiskAccess(ebsrda_state);
+	PhysicalOperatorBase* ebsrda = new ExpandableBlockStreamRandomDiskAccess(ebsrda_state);
 
-	BlockStreamExpander::State bse_state1(d_schema,ebsscsd,thread_count,block_size,expander_buffer);
-	BlockStreamIteratorBase* bse1=new BlockStreamExpander(bse_state1);
-	BlockStreamExpander::State bse_state2(d_schema,ebsrda,thread_count,block_size,expander_buffer);
-	BlockStreamIteratorBase* bse2=new BlockStreamExpander(bse_state2);
+	Expander::State bse_state1(d_schema,ebsscsd,thread_count,block_size,expander_buffer);
+	PhysicalOperatorBase* bse1=new Expander(bse_state1);
+	Expander::State bse_state2(d_schema,ebsrda,thread_count,block_size,expander_buffer);
+	PhysicalOperatorBase* bse2=new Expander(bse_state2);
 
 	BlockStreamPerformanceTest::State bspt_state(d_schema, bse1, bse2, block_size, 1000);
-	BlockStreamIteratorBase* bspt = new BlockStreamPerformanceTest(bspt_state);
+	PhysicalOperatorBase* bspt = new BlockStreamPerformanceTest(bspt_state);
 
-	bspt->open();
-	while (bspt->next(0));
-	bspt->close();
+	bspt->Open();
+	while (bspt->Next(0));
+	bspt->Close();
 
 	return 0;
 }
