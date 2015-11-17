@@ -15,14 +15,14 @@
 
 #include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 
-#include "../../logical_query_plan/logical_aggregation.h"
-#include "../../logical_query_plan/logical_scan.h"
-#include "../../logical_query_plan/logical_filter.h"
-#include "../../logical_query_plan/logical_equal_join.h"
+#include "../../logical_operator/logical_aggregation.h"
+#include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/logical_filter.h"
+#include "../../logical_operator/logical_equal_join.h"
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
 #include "../../common/types/NValue.hpp"
-#include "../../logical_query_plan/logical_project.h"
+#include "../../logical_operator/logical_project.h"
 #include "../../utility/rdtsc.h"
 
 static void query_select_aggregation(){
@@ -217,7 +217,7 @@ static void query_select_aggregation(){
 	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PERFORMANCE);
 
 	cout<<"performance is ok!"<<endl;
-	BlockStreamIteratorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
+	PhysicalOperatorBase* physical_iterator_tree=root->GetPhysicalPlan(64*1024);
 //	physical_iterator_tree->print();
 	physical_iterator_tree->Open();
 	while(physical_iterator_tree->Next(0));

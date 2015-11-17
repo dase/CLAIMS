@@ -57,15 +57,15 @@ class TableFileConnector : public FileConnector {
                         const void* source, unsigned length);
   virtual RetCode Flush(const void* source, unsigned length) {
     assert(false && "not implemented");
-    return common::kFailure;
+    return common::rFailure;
   }
   virtual RetCode LoadTotalFile(void*& buffer, uint64_t* length) {
     assert(false);
-    return common::kFailure;
+    return common::rFailure;
   }
   virtual RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {
     assert(false);
-    return common::kFailure;
+    return common::rFailure;
   }
 
  private:

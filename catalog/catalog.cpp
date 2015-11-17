@@ -166,7 +166,7 @@ RetCode Catalog::saveCatalog() {
   boost::archive::text_oarchive oa(oss);
   oa << *this;
 
-  int ret = kSuccess;
+  int ret = rSuccess;
   FileConnector* connector = new SingleFileConnector(
       Config::local_disk_mode ? kDisk : kHdfs, Config::catalog_file);
 
@@ -180,7 +180,7 @@ RetCode Catalog::saveCatalog() {
 
   EXEC_AND_ONLY_LOG_ERROR(ret, connector->Close(),
                           "catalog file name:" << Config::catalog_file);
-  return kSuccess;
+  return rSuccess;
 }
 
 bool Catalog::IsDataFileExist() {
@@ -224,7 +224,7 @@ bool Catalog::IsDataFileExist() {
 }
 
 RetCode Catalog::restoreCatalog() {
-  int ret = kSuccess;
+  int ret = rSuccess;
   string catalog_file = Config::catalog_file;
   SingleFileConnector* connector = new SingleFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
@@ -234,14 +234,14 @@ RetCode Catalog::restoreCatalog() {
   if (!connector->CanAccess() && IsDataFileExist()) {
     LOG(ERROR) << "The data file are existed while catalog file "
                << catalog_file << " is not existed!" << endl;
-    return ECatalogNotFound;
+    return rCatalogNotFound;
   } else if (!connector->CanAccess()) {
     LOG(INFO) << "The catalog file and data file all are not existed" << endl;
-    return kSuccess;
+    return rSuccess;
   } else if (!IsDataFileExist()) {
     LOG(WARNING) << "There are no data file while catalog file exists. "
                     "The catalog file will be overwrite" << endl;
-    return kSuccess;
+    return rSuccess;
   } else {
     uint64_t file_length = 0;
     void* buffer;
@@ -255,7 +255,7 @@ RetCode Catalog::restoreCatalog() {
     std::istringstream iss(temp);
     boost::archive::text_iarchive ia(iss);
     ia >> *this;
-    return kSuccess;
+    return rSuccess;
   }
 }
 

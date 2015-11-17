@@ -54,7 +54,7 @@ HdfsFileHandleImp::HdfsFileHandleImp() : read_start_pos_(-1) {
 }
 
 HdfsFileHandleImp::~HdfsFileHandleImp() {
-  int ret = kSuccess;
+  int ret = rSuccess;
   EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "failed to close ");
   ret = hdfsDisconnect(fs_);
   if (ret != 0) LOG(ERROR) << "failed to disconnect to hdfs" << endl;
@@ -62,11 +62,11 @@ HdfsFileHandleImp::~HdfsFileHandleImp() {
 
 RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
   assert(fs_ != NULL && "failed to connect hdfs");
-  int ret = kSuccess;
+  int ret = rSuccess;
   open_flag_ = open_flag;
   file_name_ = file_name;
   if (false == CanAccess(file_name_)) {
-    ret = EAccessHdfsFileFail;
+    ret = rAccessHdfsFileFail;
     ELOG(ret, "File name:" << file_name_);
     return ret;
   }
@@ -79,18 +79,18 @@ RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
     file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_RDONLY, 0, 0, 0);
   } else {
     LOG(ERROR) << "parameter flag:" << open_flag << " is invalid" << endl;
-    return EParamInvalid;
+    return rParamInvalid;
   }
   if (NULL == file_) {
     PLOG(ERROR) << "failed to open hdfs file :" << file_name_;
-    return EOpenHdfsFileFail;
+    return rOpenHdfsFileFail;
   } else {
     LOG(INFO) << "opened hdfs file:" << file_name_ << "with "
               << (kCreateFile == open_flag
                       ? "kCreateFile"
                       : kAppendFile == open_flag ? "kAppendFile" : "kReadFile")
               << endl;
-    return kSuccess;
+    return rSuccess;
   }
 }
 
@@ -106,7 +106,7 @@ RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
     if (-1 == write_num) {
       PLOG(ERROR) << "failed to write buffer(" << buffer
                   << ") to file: " << file_name_ << endl;
-      return EWriteDiskFileFail;
+      return rWriteDiskFileFail;
     }
     total_write_num += write_num;
   }
@@ -119,31 +119,31 @@ RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
   //               << " from " << buffer << " into  hdfs file:" << file_name_
   //               << endl;
   //  }
-  return kSuccess;
+  return rSuccess;
 }
 
 RetCode HdfsFileHandleImp::Close() {
   if (NULL == file_) {
-    return kSuccess;
+    return rSuccess;
   }
   assert(fs_ != NULL && "failed to connect hdfs");
   if (0 != hdfsCloseFile(fs_, file_)) {
     LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
-    return ECloseHdfsFileFail;
+    return rCloseHdfsFileFail;
   }
   file_ = NULL;
-  return kSuccess;
+  return rSuccess;
 }
 
 RetCode HdfsFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
   assert(fs_ != NULL && "failed to connect hdfs");
-  int ret = kSuccess;
+  int ret = rSuccess;
   hdfsFileInfo* hdfsfile = hdfsGetPathInfo(fs_, file_name_.c_str());
   int file_length = hdfsfile->mSize;
   LOG(INFO) << "The length of file " << file_name_ << "is " << file_length
             << endl;
   // set position 0
-  if (kSuccess != (ret = SetPosition(0))) {
+  if (rSuccess != (ret = SetPosition(0))) {
     return ret;
   }
 
@@ -156,7 +156,7 @@ RetCode HdfsFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
     LOG(ERROR) << "failed to read file [" << file_name_
                << "] from hdfs , expected read " << file_length
                << " , actually read " << read_num << endl;
-    return EReadHdfsFileFail;
+    return rReadHdfsFileFail;
   }
   *length = read_num;
   return ret;
@@ -172,13 +172,13 @@ RetCode HdfsFileHandleImp::Read(void* buffer, size_t length) {
     if (-1 == read_num) {
       LOG(ERROR) << "failed to read " << length << "from file:" << file_name_
                  << endl;
-      return EReadHdfsFileFail;
+      return rReadHdfsFileFail;
     }
     total_read_num += read_num;
   }
   LOG(INFO) << "read total " << total_read_num << " from hdfs file "
             << file_name_ << endl;
-  return kSuccess;
+  return rSuccess;
 }
 
 RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
@@ -189,11 +189,11 @@ RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
   if (0 != ret) {
     LOG(ERROR) << "failed to seek to " << pos << " in " << file_name_ << " file"
                << endl;
-    return ELSeekHdfsFileFail;
+    return rLSeekHdfsFileFail;
   }
 
   LOG(INFO) << "Seek to " << pos << "in " << file_name_ << " file" << endl;
-  return kSuccess;
+  return rSuccess;
 }
 
 }  // namespace common

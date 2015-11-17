@@ -9,13 +9,15 @@
 #define EXECUTELOGICALQUERYPLAN_H_
 #include <string>
 #include "./sql_node_struct.h"
+#include "../catalog/catalog.h"
 #include "../common/Block/ResultSet.h"
 #include "../common/data_type.h"
 #include "../catalog/table.h"
-#include "../logical_query_plan/logical_operator.h"
+#include "../logical_operator/logical_operator.h"
 
+using claims::catalog::Catalog;
 using claims::catalog::TableDescriptor;
-using claims::logical_query_plan::LogicalOperator;
+using claims::logical_operator::LogicalOperator;
 
 struct query_result {
   query_result() : result_set(0) {}

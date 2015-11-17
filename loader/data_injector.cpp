@@ -153,7 +153,7 @@ DataInjector::~DataInjector() {
 }
 
 RetCode DataInjector::PrepareInitInfo(FileOpenFlag open_flag) {
-  int ret = kSuccess;
+  int ret = rSuccess;
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
     vector<BlockStreamBase*> temp_v;
     vector<size_t> tmp_block_num;
@@ -196,7 +196,7 @@ RetCode DataInjector::PrepareInitInfo(FileOpenFlag open_flag) {
 RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
                                    FileOpenFlag open_flag,
                                    ExecutedResult* result, double sample_rate) {
-  int ret = kSuccess;
+  int ret = rSuccess;
 
   total_get_substr_time_ = 0;
   total_check_string_time_ = 0;
@@ -209,7 +209,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
 
   GETCURRENTTIME(open_start_time);
   ret = connector_->Open(open_flag);
-  if (kSuccess != ret) {
+  if (rSuccess != ret) {
     LOG(ERROR) << " failed to open connector" << endl;
     return ret;
   }
@@ -235,7 +235,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
         } else {
           LOG(ERROR) << "failed to unbind entire projection " << i
                      << " in table " << table_->getTableName() << std::endl;
-          return kFailure;
+          return rFailure;
         }
       }
     }
@@ -257,13 +257,13 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   string tuple_record;
 
   void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
-  if (tuple_buffer == NULL) return ENoMemory;
+  if (tuple_buffer == NULL) return rNoMemory;
 
   GETCURRENTTIME(start_read_time);
   for (auto file_name : input_file_names) {
     ifstream input_file(file_name.c_str());
     if (!input_file.good()) {
-      ret = EOpenDiskFileFail;
+      ret = rOpenDiskFileFail;
       PLOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ]"
                   << "File name:" << file_name << ". Reason";
       result->SetError("Can't open file :" + file_name);
@@ -296,7 +296,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
             << " line is invalid " << std::endl;
         LOG(ERROR) << oss.str();
         result->SetError(oss.str());
-        return EInvalidInsertData;
+        return rInvalidInsertData;
       }
       for (auto it : warning_indexs) {
         ostringstream oss;
@@ -365,7 +365,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
  */
 RetCode DataInjector::InsertFromString(const string tuples,
                                        ExecutedResult* result) {
-  int ret = kSuccess;
+  int ret = rSuccess;
   LOG(INFO) << "tuples is: " << tuples << endl;
 
   if (0 == tuples.length()) {
@@ -379,7 +379,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
   EXEC_AND_ONLY_LOG_ERROR(ret, PrepareInitInfo(kAppendFile),
                           "failed to prepare initialization info");
   ret = connector_->Open(kAppendFile);
-  if (kSuccess != ret) {
+  if (rSuccess != ret) {
     LOG(ERROR) << " failed to open connector. ret:" << ret << endl;
     return ret;
   }
@@ -403,7 +403,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
 
     vector<unsigned> warning_indexs;
     void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
-    if (tuple_buffer == NULL) return ENoMemory;
+    if (tuple_buffer == NULL) return rNoMemory;
     if (!CheckAndToValue(tuple_record, tuple_buffer, RawDataSource::kSQL,
                          warning_indexs)) {
       // eliminate the side effect of AddRowIdColumn() in row_id_
@@ -415,7 +415,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
       oss << "The data at " << line << " line is invalid " << std::endl;
       LOG(ERROR) << oss.str();
       result->SetError(oss.str());
-      return EInvalidInsertData;
+      return rInvalidInsertData;
     }
 
     correct_tuple_buffer.push_back(tuple_buffer);
@@ -454,7 +454,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
 
 // flush the last block which is not full of 64*1024Byte
 RetCode DataInjector::FlushNotFullBlock() {
-  int ret = kSuccess;
+  int ret = rSuccess;
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
     for (
         int j = 0;
@@ -480,7 +480,7 @@ RetCode DataInjector::FlushNotFullBlock() {
 }
 
 RetCode DataInjector::UpdateCatalog(FileOpenFlag open_flag) {
-  int ret = kSuccess;
+  int ret = rSuccess;
   // register the number of rows in table to catalog
   table_->setRowNumber(row_id_);
   // register the partition information to catalog
@@ -522,24 +522,24 @@ inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
   //  snprintf(res, sizeof(res), "%lu", row_id_);
   //  tuple_string = string(res) + col_separator_ + tuple_string;
 
-  return kSuccess;
+  return rSuccess;
 }
 
 // TODO(yukai): may be executed by multithreading
 RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
                                                 void* tuple_buffer) {
-  int ret = kSuccess;
+  int ret = rSuccess;
   if (proj_index >= table_->getNumberOfProjection()) {
     LOG(ERROR) << "projection index is " << proj_index
                << ", larger than projection number" << endl;
-    return EParamInvalid;
+    return rParamInvalid;
   }
 
   int i = proj_index;
   unsigned tuple_max_length = projections_schema_[i]->getTupleMaxSize();
   // extract the sub tuple according to the projection schema
   void* target = Malloc(tuple_max_length);  // newmalloc
-  if (target == NULL) return ENoMemory;
+  if (target == NULL) return rNoMemory;
   sub_tuple_generator[i]->getSubTuple(tuple_buffer, target);
 
   // determine the partition to write the tuple "target"
@@ -588,7 +588,7 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
  * if the block is full, write to real data file in HDFS/disk.
  */
 RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
-  int ret = kSuccess;
+  int ret = rSuccess;
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
     ret = InsertTupleIntoProjection(i, tuple_buffer);
   }

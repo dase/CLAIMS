@@ -64,12 +64,12 @@ void SingleFileConnectorTest::WriteOrAppendFile(FilePlatform file_platform,
                                                 char* expect,
                                                 int expect_length) {
   connector_ = new SingleFileConnector(file_platform, path_);
-  if (kSuccess != connector_->Open(open_flag)) FAIL();
-  if (kSuccess != connector_->Flush(data_, data_length_)) {
+  if (rSuccess != connector_->Open(open_flag)) FAIL();
+  if (rSuccess != connector_->Flush(data_, data_length_)) {
     LOG(ERROR) << "failed to flush (" << path_ << ")" << std::endl;
     FAIL();
   }
-  if (kSuccess != connector_->Close()) FAIL();
+  if (rSuccess != connector_->Close()) FAIL();
   DELETE_PTR(connector_);
 
   void* read_buffer = NULL;
@@ -77,7 +77,7 @@ void SingleFileConnectorTest::WriteOrAppendFile(FilePlatform file_platform,
   FileConnector* reader = NULL;
   reader = new SingleFileConnector(file_platform, path_);
   reader->Open(kReadFile);
-  if (kSuccess != reader->LoadTotalFile(read_buffer, &length)) {
+  if (rSuccess != reader->LoadTotalFile(read_buffer, &length)) {
     FAIL();
   }
   EXPECT_EQ(expect_length, length);

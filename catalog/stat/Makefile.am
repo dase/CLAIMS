@@ -12,7 +12,7 @@ endif
 
 LDADD = 	../libcatalog.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
-		../../logical_query_plan/liblogicalqueryplan.a \
+		../../logical_operator/liblogicalqueryplan.a \
 		../../common/Block/libblock.a \
 		../../common/libcommon.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \

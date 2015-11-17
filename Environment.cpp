@@ -40,7 +40,7 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
     logging_->log("Initializing the Coordinator...");
     initializeCoordinator();
     catalog_ = Catalog::getInstance();
-    if (kSuccess != catalog_->restoreCatalog()) {
+    if (rSuccess != catalog_->restoreCatalog()) {
       LOG(ERROR) << "failed to restore catalog" << std::endl;
       cerr << "ERROR: restore catalog failed" << endl;
     }

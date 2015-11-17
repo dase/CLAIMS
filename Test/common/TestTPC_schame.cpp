@@ -10,19 +10,20 @@
 //#include "../../Environment.h"
 //#include "../../catalog/table.h"
 //#include "../../loader/Hdfsloader.h"
-//#include "../../logical_query_plan/LogicalQueryPlanRoot.h"
-//#include "../../logical_query_plan/logical_aggregation.h"
-//#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
-//#include "../../logical_query_plan/logical_scan.h"
-//#include "../../logical_query_plan/Filter.h"
-//#include "../../logical_query_plan/Project.h"
-//#include "../../logical_query_plan/logical_equal_join.h"
+//#include "../../logical_operator/LogicalQueryPlanRoot.h"
+//#include "../../logical_operator/logical_aggregation.h"
+//#include
+//"../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+//#include "../../logical_operator/logical_scan.h"
+//#include "../../logical_operator/Filter.h"
+//#include "../../logical_operator/Project.h"
+//#include "../../logical_operator/logical_equal_join.h"
 //#include "../../types/NValue.hpp"
 //#include "../../utility/rdtsc.h"
 //#include "../../common/ExpressionItem.h"
 //#include "../../common/ExpressionCalculator.h"
 //
-//static void query_select_aggregation(){
+// static void query_select_aggregation(){
 //	/*
 //	 * select sum(a+1)+count(a),b
 //	 * from T
@@ -31,7 +32,8 @@
 //	 * notation: p a p s
 //	 * */
 //	unsigned long long int start=curtick();
-//	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
+//	TableDescriptor*
+//table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
 //	//===========================scan===========================
 //	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 //
@@ -75,7 +77,8 @@
 //	ExpressionItem ei17;
 //
 //	table_1->addAttribute("row_id", data_type(t_u_long));
-//	table_1->addAttribute("L_ORDERKEY",data_type(t_u_long));  				//0
+//	table_1->addAttribute("L_ORDERKEY",data_type(t_u_long));
+////0
 //	table_1->addAttribute("L_PARTKEY",data_type(t_u_long));
 //	table_1->addAttribute("L_SUPPKEY",data_type(t_u_long));
 //	table_1->addAttribute("L_LINENUMBER",data_type(t_u_long));
@@ -162,22 +165,26 @@
 //	aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
 //	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
 //	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-//	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+//	std::vector<BlockStreamAggregationIterator::State::aggregation>
+//aggregation_function;
 //
 //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 //	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-//	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
+//	LogicalOperator* aggregation=new
+//Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
 //
 //	//==========================project=========================
 //	vector< vector<ExpressionItem> >expr_list2;
 //	LogicalOperator* project2=new LogicalProject(aggregation,expr_list2);
 //	//===========================root===========================
-//	LogicalOperator* root=new LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PRINT);
+//	LogicalOperator* root=new
+//LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PRINT);
 //
 //	cout<<"performance is ok!"<<endl;
-//	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+//	BlockStreamIteratorBase*
+//physical_iterator_tree=root->getIteratorTree(64*1024);
 ////	physical_iterator_tree->print();
 //	physical_iterator_tree->open();
 //	while(physical_iterator_tree->next(0));
@@ -186,18 +193,21 @@
 //
 //}
 //
-//static void init_single_node_tpc_h_envoriment_(bool master=true){
+// static void init_single_node_tpc_h_envoriment_(bool master=true){
 //	Environment::getInstance(master);
 //	printf("Press any key to continue!\n");
 //	int input;
 //	scanf("%d",&input);
-//	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+//	ResourceManagerMaster
+//*rmms=Environment::getInstance()->getResourceManagerMaster();
 //	Catalog* catalog=Environment::getInstance()->getCatalog();
 //
-//	/////////////////////////////// LINEITEM TABLE //////////////////////////////////
+//	/////////////////////////////// LINEITEM TABLE
+////////////////////////////////////
 //	TableDescriptor* table_1=new TableDescriptor("LINEITEM",0);
 //	table_1->addAttribute("row_id", data_type(t_u_long));
-//	table_1->addAttribute("L_ORDERKEY",data_type(t_u_long));  				//0
+//	table_1->addAttribute("L_ORDERKEY",data_type(t_u_long));
+////0
 //	table_1->addAttribute("L_PARTKEY",data_type(t_u_long));
 //	table_1->addAttribute("L_SUPPKEY",data_type(t_u_long));
 //	table_1->addAttribute("L_LINENUMBER",data_type(t_u_long));
@@ -218,24 +228,28 @@
 //
 //	catalog->add_table(table_1);
 //
-//	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+//	for(unsigned
+//i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 //
 //		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,5);
 //	}
 //}
 //
-//static void init_multi_node_tpc_h_envoriment_(bool master=true){
+// static void init_multi_node_tpc_h_envoriment_(bool master=true){
 //	Environment::getInstance(master);
 //	printf("Press any key to continue!\n");
 //	int input;
 //	scanf("%d",&input);
-//	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+//	ResourceManagerMaster
+//*rmms=Environment::getInstance()->getResourceManagerMaster();
 //	Catalog* catalog=Environment::getInstance()->getCatalog();
 //
-//	/////////////////////////////// LINEITEM TABLE //////////////////////////////////
+//	/////////////////////////////// LINEITEM TABLE
+////////////////////////////////////
 //	TableDescriptor* table_1=new TableDescriptor("LINEITEM",5);
 //	table_1->addAttribute("row_id", data_type(t_u_long));
-//	table_1->addAttribute("L_ORDERKEY",data_type(t_u_long));  				//0
+//	table_1->addAttribute("L_ORDERKEY",data_type(t_u_long));
+////0
 //	table_1->addAttribute("L_PARTKEY",data_type(t_u_long));
 //	table_1->addAttribute("L_SUPPKEY",data_type(t_u_long));
 //	table_1->addAttribute("L_LINENUMBER",data_type(t_u_long));
@@ -256,12 +270,13 @@
 //
 //	catalog->add_table(table_1);
 //
-//	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+//	for(unsigned
+//i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 //		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
 //	}
 //}
 //
-//static int issue27_single_node(){
+// static int issue27_single_node(){
 //
 //	unsigned repeated_times=3;
 //
@@ -274,7 +289,7 @@
 //	return 0;
 //}
 //
-//static int issue27_multi_node(){
+// static int issue27_multi_node(){
 //	unsigned repeated_times=2;
 //	printf("Master or slave?\n");
 //	int input;

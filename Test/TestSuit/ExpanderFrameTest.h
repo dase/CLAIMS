@@ -4,7 +4,7 @@
 #include "../../common/AttributeComparator.h"
 #include "../../Parsetree/ExecuteLogicalQueryPlan.h"
 #include "../../Executor/IteratorExecutorSlave.h"
-#include "../../physical_query_plan/BlockStreamResultCollector.h"
+#include "../../physical_operator/result_collector.h"
 /*
  * ExpanderFrameTest.h
  *
@@ -30,7 +30,7 @@ static int test_scan(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64);
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64);
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
@@ -39,7 +39,7 @@ static int test_scan(){
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	if(!print_test_name_result(number_of_tuples==3966020,"Scan")){
 		printf("\tExpected:3966020 actual: %d\n",number_of_tuples);
 	}
@@ -71,7 +71,7 @@ static int test_scan_filter_high_selectivity(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
@@ -82,7 +82,7 @@ static int test_scan_filter_high_selectivity(){
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	if(!print_test_name_result(number_of_tuples==3651348,"High selectivity filter")){
 		printf("\tExpected:3651348 actual: %d\n",number_of_tuples);
 	}
@@ -117,14 +117,14 @@ static int test_scan_filter_low_selectivity(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	if(!print_test_name_result(number_of_tuples==26695,"Low selectivity filter")){
 		printf("\tExpected:26695 actual: %d\n",number_of_tuples);
 	}
@@ -150,9 +150,9 @@ static int test_scan_Aggregation_small_Groups(){
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
 
-	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
 
@@ -161,12 +161,12 @@ static int test_scan_Aggregation_small_Groups(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 	if(!print_test_name_result(number_of_tuples==1022,"Scan Aggregation small groups")){
@@ -194,9 +194,9 @@ static int test_scan_Aggregation_large_Groups(){
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
 
-	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,cj_join_key_scan);
 
 
@@ -205,11 +205,11 @@ static int test_scan_Aggregation_large_Groups(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 	if(!print_test_name_result(number_of_tuples==3966020,"Scan Aggregation large groups")){
@@ -244,9 +244,9 @@ static int test_scan_filter_Aggregation(){
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
 
-	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
@@ -255,14 +255,14 @@ static int test_scan_filter_Aggregation(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	if(!print_test_name_result(number_of_tuples==870,"Filtered Aggregation")){
 		printf("\tExpected:870 actual: %d\n",number_of_tuples);
 	}
@@ -294,9 +294,9 @@ static int test_scan_filter_Scalar_Aggregation(){
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
 
-	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
@@ -305,12 +305,12 @@ static int test_scan_filter_Scalar_Aggregation(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
 //	executable_query_plan
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 	ResultSet::Iterator it=result_set->createIterator();
 	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
 
@@ -366,11 +366,11 @@ static int test_no_repartition_filtered_join(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -419,11 +419,11 @@ static int test_complete_repartition_filtered_join(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -459,10 +459,10 @@ static int test_complete_repartition_scan_join(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -493,10 +493,10 @@ static int test_no_repartition_scan_join(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 	IteratorExecutorSlave::executePhysicalQueryPlan(PhysicalQueryPlan(executable_query_plan));
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -769,7 +769,7 @@ static int test_multiple_scan(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
@@ -778,7 +778,7 @@ static int test_multiple_scan(){
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	if(!print_test_name_result(number_of_tuples==15882988,"Scan")){
 		printf("\tExpected:15882988 actual: %d\n",number_of_tuples);
 	}
@@ -807,7 +807,7 @@ static int test_multiple_scan_filter_high_selectivity(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64 );
 	executable_query_plan->Print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
@@ -816,7 +816,7 @@ static int test_multiple_scan_filter_high_selectivity(){
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	if(!print_test_name_result(number_of_tuples==14623495,"High selectivity filter")){
 		printf("\tExpected:14623495 actual: %d\n",number_of_tuples);
 	}
@@ -845,7 +845,7 @@ static int test_multiple_scan_filter_low_selectivity(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,filter_1,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
@@ -854,7 +854,7 @@ static int test_multiple_scan_filter_low_selectivity(){
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	if(!print_test_name_result(number_of_tuples==104010,"Low selectivity filter")){
 		printf("\tExpected:104010 actual: %d\n",number_of_tuples);
 	}
@@ -888,9 +888,9 @@ static int test_multiple_scan_filter_Aggregation(){
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
 
-	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
@@ -899,7 +899,7 @@ static int test_multiple_scan_filter_Aggregation(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kPerformance);
 
-	BlockStreamPerformanceMonitorTop* executable_query_plan=(BlockStreamPerformanceMonitorTop*)root->GetPhysicalPlan(1024*64 );
+	PerformanceMonitor* executable_query_plan=(PerformanceMonitor*)root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
@@ -908,7 +908,7 @@ static int test_multiple_scan_filter_Aggregation(){
 //	executable_query_plan
 //	ResultSet *result_set=executable_query_plan->getResultSet();
 
-	const unsigned long int number_of_tuples=executable_query_plan->getNumberOfTuples();
+	const unsigned long int number_of_tuples=executable_query_plan->GetNumberOfTuples();
 	if(!print_test_name_result(number_of_tuples==3480,"Filtered Aggregation")){
 		printf("\tExpected:3480 actual: %d\n",number_of_tuples);
 	}
@@ -940,9 +940,9 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 
 
-	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+	std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
-	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+	aggregation_function.push_back(PhysicalAggregation::State::kCount);
 	LogicalOperator* aggregation=new LogicalAggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter_1);
 
 
@@ -951,14 +951,14 @@ static int test_multiple_scan_filter_Scalar_Aggregation(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,aggregation,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
 //	executable_query_plan
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 	ResultSet::Iterator it=result_set->createIterator();
 	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
 
@@ -1012,13 +1012,13 @@ static int test_multiple_no_repartition_filtered_join(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -1067,13 +1067,13 @@ static int test_multiple_complete_repartition_filtered_join(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -1104,13 +1104,13 @@ static int test_multiple_complete_repartition_scan_join(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 
@@ -1141,13 +1141,13 @@ static int test_multiple_no_repartition_scan_join(){
 	const NodeID collector_node_id=0;
 	LogicalOperator* root=new LogicalQueryPlanRoot(collector_node_id,sb_cj_join,LogicalQueryPlanRoot::kResultCollector);
 
-	BlockStreamIteratorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
+	PhysicalOperatorBase* executable_query_plan=root->GetPhysicalPlan(1024*64 );
 //	executable_query_plan->print();
 	executable_query_plan->Open();
 	while(executable_query_plan->Next(0));
 	executable_query_plan->Close();
 
-	ResultSet *result_set=executable_query_plan->getResultSet();
+	ResultSet *result_set=executable_query_plan->GetResultSet();
 
 	const unsigned long int number_of_tuples=result_set->getNumberOftuples();
 

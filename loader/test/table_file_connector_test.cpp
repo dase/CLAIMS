@@ -79,16 +79,16 @@ void TableFileConnectorTest::WriteOrAppendFile(
     char* expect, int expect_length) {
   connector_ = new TableFileConnector(file_platform, paths_);
 
-  if (common::kSuccess != connector_->Open(open_flag)) FAIL();
+  if (common::rSuccess != connector_->Open(open_flag)) FAIL();
   for (int i = 0; i < 3; ++i) {
     for (int j = 0; j < 3; ++j) {
-      if (kSuccess != connector_->Flush(i, j, data_, data_length_)) {
+      if (rSuccess != connector_->Flush(i, j, data_, data_length_)) {
         LOG(ERROR) << "failed to flush (" << i << "," << j << ")" << endl;
         FAIL();
       }
     }
   }
-  if (kSuccess != connector_->Close()) FAIL();
+  if (rSuccess != connector_->Close()) FAIL();
   DELETE_PTR(connector_);
 
   FileConnector* reader = NULL;
@@ -98,7 +98,7 @@ void TableFileConnectorTest::WriteOrAppendFile(
     for (int j = 0; j < 3; ++j) {
       reader = new SingleFileConnector(file_platform, paths_[i][j]);
       reader->Open(kReadFile);
-      if (kSuccess != reader->LoadTotalFile(read_buffer, &length)) {
+      if (rSuccess != reader->LoadTotalFile(read_buffer, &length)) {
         FAIL();
       }
       EXPECT_EQ(expect_length, length);
