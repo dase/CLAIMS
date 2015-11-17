@@ -69,7 +69,7 @@ enum data_type {
   t_date_quarter
 };
 //enum TransformRet { kSuccess = 0, kWarning, kError };
-inline string get_precision(double d) {
+inline string GetPrecision(double d) {
   ostringstream ss;
   ss.precision(1000);
   ss << d;
@@ -77,28 +77,28 @@ inline string get_precision(double d) {
 }
 typedef int RetCode;
 
-const string kIntMin = get_precision(-INT_MAX);           //"-2147483648";
-const string kIntMax = get_precision(INT_MAX);            //"2147483647";
-const string kIntMax_1 = get_precision(INT_MAX - 1);  // "2147483646";
+const string kIntMin = GetPrecision(-INT_MAX);           //"-2147483648";
+const string kIntMax = GetPrecision(INT_MAX);            //"2147483647";
+const string kIntMax_1 = GetPrecision(INT_MAX - 1);  // "2147483646";
 const string kFloatMin =
-    get_precision(-FLT_MAX);  //"-340282346638528859811704183484516925440";
+    GetPrecision(-FLT_MAX);  //"-340282346638528859811704183484516925440";
 const string kFloatMax =
-    get_precision(FLT_MAX);  //"340282346638528859811704183484516925440";
-const string kFloatMax_1 = get_precision(
+    GetPrecision(FLT_MAX);  //"340282346638528859811704183484516925440";
+const string kFloatMax_1 = GetPrecision(
     FLT_MAX - 1e23);  // "340282346638528746474908594613031796736";
-const string kDoubleMin = get_precision(-DBL_MAX);
-const string kDoubleMax = get_precision(DBL_MAX);
-const string kDoubleMax_1 = get_precision(DBL_MAX - 1e305);
+const string kDoubleMin = GetPrecision(-DBL_MAX);
+const string kDoubleMax = GetPrecision(DBL_MAX);
+const string kDoubleMax_1 = GetPrecision(DBL_MAX - 1e305);
 const string kULongMax =
-    get_precision(ULONG_LONG_MAX);  // lexical_cast<string>(ULONG_LONG_MAX);
-const string kULongMax_1 = get_precision(
+    GetPrecision(ULONG_LONG_MAX);  // lexical_cast<string>(ULONG_LONG_MAX);
+const string kULongMax_1 = GetPrecision(
     ULONG_LONG_MAX - 1);  // lexical_cast<string>(ULONG_LONG_MAX - 1);
 const string kSmallIntMin =
-    get_precision(-SHRT_MAX);  // lexical_cast<string>(-SHRT_MAX);
-const string kSmallIntMax = get_precision(SHRT_MAX);
-const string kSmallIntMax_1 = get_precision(SHRT_MAX - 1);
-const string kUSmallIntMax = get_precision(USHRT_MAX);
-const string kUSmallIntMax_1 = get_precision(USHRT_MAX - 1);
+    GetPrecision(-SHRT_MAX);  // lexical_cast<string>(-SHRT_MAX);
+const string kSmallIntMax = GetPrecision(SHRT_MAX);
+const string kSmallIntMax_1 = GetPrecision(SHRT_MAX - 1);
+const string kUSmallIntMax = GetPrecision(USHRT_MAX);
+const string kUSmallIntMax_1 = GetPrecision(USHRT_MAX - 1);
 
 typedef void (*fun)(void*, void*);
 
