@@ -5,8 +5,8 @@
  *      Author: wangli
  */
 
-#ifndef DATA_TYPE_H_
-#define DATA_TYPE_H_
+#ifndef COMMON_DATA_TYPE_H_
+#define COMMON_DATA_TYPE_H_
 #include <assert.h>
 #include <string.h>
 
