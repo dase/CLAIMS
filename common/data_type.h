@@ -9,8 +9,6 @@
 #define DATA_TYPE_H_
 #include <assert.h>
 #include <string.h>
-#include <string>
-#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -21,10 +19,12 @@
 #include <limits.h>
 #include <float.h>
 #include <glog/logging.h>
+#include <string>
+#include <sstream>
 #include "./error_define.h"
-#include "hash.h"
+#include "./hash.h"
 #include "../utility/string_process.h"
-
+#include "./types/NValue.hpp"
 using claims::common::rSuccess;
 using claims::common::rTooSmallData;
 using claims::common::rTooLargeData;
@@ -33,13 +33,23 @@ using claims::common::rInterruptedData;
 using claims::common::rIncorrectData;
 using claims::common::rInvaildNullData;
 using claims::common::kErrorMessage;
-
-using namespace boost::gregorian;
-using namespace boost::posix_time;
+using boost::gregorian::date_duration;
+using boost::gregorian::from_undelimited_string;
+using boost::gregorian::from_string;
+using boost::posix_time::duration_from_string;
+using boost::gregorian::date;
+using boost::posix_time::ptime;
+using boost::posix_time::time_duration;
+using boost::posix_time::time_from_string;
+using boost::posix_time::neg_infin;
+using boost::hash_value;
+using boost::hash_combine;
 using boost::lexical_cast;
-#include "types/NValue.hpp"
+using decimal::NValue;
+using decimal::ExportSerializeOutput;
 using namespace decimal;
 #define DATA_TYPE_NUMBER 20
+typedef int RetCode;
 enum data_type {
   t_smallInt,
   t_int,
@@ -70,7 +80,6 @@ inline string get_precision(double d) {
   ss << d;
   return ss.str();
 }
-typedef int RetCode ;
 
 const string int_min = get_precision(-INT_MAX); //"-2147483648";
 const string int_max = get_precision(INT_MAX); //"2147483647";
