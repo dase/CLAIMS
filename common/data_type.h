@@ -1,12 +1,33 @@
 /*
- * data_type.h
+ * Copyright [2012-2015] DaSE@ECNU
  *
- *  Created on: May 12, 2013
- *      Author: wangli
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/common/data_type.h
+ *
+ *  Created on: Nov 17, 2015
+ *      Author: imdb
+ *       Email:
+ *
+ * Description:
+ *
  */
 
-#ifndef DATA_TYPE_H_
-#define DATA_TYPE_H_
+#ifndef COMMON_DATA_TYPE_H_
+#define COMMON_DATA_TYPE_H_
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -47,9 +68,11 @@ using boost::hash_combine;
 using boost::lexical_cast;
 using decimal::NValue;
 using decimal::ExportSerializeOutput;
+
 using namespace decimal;
 #define DATA_TYPE_NUMBER 20
 typedef int RetCode;
+typedef void (*fun)(void*, void*);
 enum data_type {
   t_smallInt,
   t_int,
@@ -98,7 +121,7 @@ const string smallint_max_1 = get_precision(SHRT_MAX-1);
 const string usmallint_max = get_precision(USHRT_MAX);
 const string usmallint_max_1 = get_precision(USHRT_MAX-1);
 
-typedef void (*fun)(void*, void*);
+
 
 #define NULL_SMALL_INT SHRT_MAX
 #define NULL_INT INT_MAX
