@@ -220,24 +220,28 @@ void ExecuteLogicalQueryPlan() {
 
 bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
                          unsigned position, ostringstream &ostr) {
-  bool has_warning = true;
+  bool has_warning = false;
   if (insert_value->value_type == 0) {  // 指定具体的值
     // check whether the column type match value type
-    has_warning = CheckType(table->getAttribute(position).attrType,
-                            (Expr *)insert_value->expr);
+    //    has_warning = CheckType(table->getAttribute(position).attrType,
+    //                            (Expr *)insert_value->expr);
 
-    switch (insert_value->expr->type) {
-      // 2014-4-17---only these type are supported now---by Yu
-      case t_stringval:
-      case t_intnum:
-      case t_approxnum:
-      case t_bool: {
-        Expr *expr = (Expr *)insert_value->expr;
-        ostr << expr->data;
-      } break;
-      default: {}
-    }
+    //    switch (insert_value->expr->type) {
+    //      // 2014-4-17---only these type are supported now---by Yu
+    //      case t_stringval:
+    //      case t_intnum:
+    //      case t_approxnum:
+    //      case t_bool: {
+    Expr *expr = (Expr *)insert_value->expr;
+    DLOG(INFO) << (expr->data == NULL ? "NULL" : expr->data) << endl;
+    ostr << expr->data;
+    //      } break;
+    //      default: {}
+    //    }
   } else if (insert_value->type == 1) {
+    string data;
+    table->getAttribute(position).attrType->operate->SetDefault(data);
+    ostr << data;
   }  // 设置为default, 暂不支持
 
   return has_warning;
@@ -1387,11 +1391,7 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
   TableDescriptor *table =
       Environment::getInstance()->getCatalog()->getTable(table_name);
   if (table == NULL) {
-    // ASTParserLogging::elog("The table %s does not exist!",
-    // table_name.c_str());
-    //    error_msg = "The table " + table_name + " does not exist!";
-    //    result_flag = false;
-    //    result_set = NULL;
+    ASTParserLogging::elog("The table %s does not exist!", table_name.c_str());
     result->SetError("The table " + table_name + " does not exist!");
     return;
   }
@@ -1409,9 +1409,6 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
       (Insert_val_list *)insert_stmt->insert_val_list;
   if (insert_value_list == NULL) {
     LOG(ERROR) << "No value!" << endl;
-    //    error_msg = "No value!";
-    //    result_flag = false;
-    //    result_set = NULL;
     result->SetError("No value!");
     return;
   }
@@ -1423,7 +1420,6 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
     // make sure: the insert column count = insert value count = used column
     // count = used value count
 
-    // init
     Insert_vals *insert_value = (Insert_vals *)insert_value_list->insert_vals;
     col = (Columns *)insert_stmt->col_list;
 
@@ -1437,20 +1433,11 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
         if (insert_value == NULL) {
           LOG(ERROR) << "Value count is too few" << endl;
           is_correct = false;
-          //          error_msg = "Value count is too few";
-          //          result_flag = false;
-          //          result_set = NULL;
-
           result->SetError("Value count is too few");
           break;
         }
-        /*
-         * insert value to ostringstream and if has warning return 1;
-         * look out the order !
-         */
-        has_warning =
-            InsertValueToStream(insert_value, table, position, ostr) ||
-            has_warning;
+        // insert value to ostringstream
+        InsertValueToStream(insert_value, table, position, ostr);
 
         // move back
         insert_value = (Insert_vals *)insert_value->next;
@@ -1462,9 +1449,6 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
       // check insert value count
       if (insert_value) {
         LOG(ERROR) << "Value count is too many " << endl;
-        //        error_msg = "Value count is too many";
-        //        result_flag = false;
-        //        result_set = NULL;
         result->SetError("Value count is too many");
         is_correct = false;
         break;
@@ -1478,9 +1462,6 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
       }
       if (insert_value_count != col_count) {
         LOG(ERROR) << "Column count doesn't match value count" << endl;
-        //        error_msg = "Column count doesn't match value count";
-        //        result_flag = false;
-        //        result_set = NULL;
         result->SetError("Column count doesn't match value count");
         is_correct = false;
         break;
@@ -1505,27 +1486,20 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
           insert_value = (Insert_vals *)insert_value->next;
         }
 
-        // if find
-        // the column count is proved to match the insert value count, so column
-        // exist, then insert_value exist
+        // if find the column count is proved to match the insert value count,
+        // so column exist, then insert_value exist
         if (col && insert_value) {
           ++used_col_count;
 
           // insert value to ostringstream and if has warning return 1; look out
           // the order!
-          has_warning =
-              InsertValueToStream(insert_value, table, position, ostr) ||
-              has_warning;
+          InsertValueToStream(insert_value, table, position, ostr);
         }
         ostr << "|";
       }  // end for
 
       // check if every insert column is existed
       if (used_col_count != col_count) {
-        //  ASTParserLogging::elog("Some columns don't exist");
-        //        error_msg = "Some columns don't exist";
-        //        result_flag = false;
-        //        result_set = NULL;
         result->SetError("Some columns don't exist");
         is_correct = false;
         break;
@@ -1541,8 +1515,8 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
   }  // end while
 
   if (!is_correct) return;
-  if (has_warning)
-    ASTParserLogging::log("[WARNING]: The type is not matched!\n");
+  //  if (has_warning)
+  //    ASTParserLogging::log("[WARNING]: The type is not matched!\n");
   ASTParserLogging::log("the insert content is \n%s\n", ostr.str().c_str());
 
 #ifdef NEW_LOADER

@@ -84,8 +84,10 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rTooSmallData, "Load Too Small Data");
   DefineErrorAndMessage(rTooLongData, "Load Too Long Data");
   DefineErrorAndMessage(rInterruptedData, "The Load data is interrupted");
-  DefineErrorAndMessage(rIncorrectData, "The Load data format is incorrected");
-  DefineErrorAndMessage(rInvaildNullData, "The null value is invaild");
+  DefineErrorAndMessage(rIncorrectData, "The Load data format is incorrect");
+  DefineErrorAndMessage(rInvalidNullData, "The null value is invalid");
+  DefineErrorAndMessage(rTooFewColumn, "too few column data");
+  DefineErrorAndMessage(rTooManyColumn, "too many column data");
 
   /* errorno for codegen -3001 ~ -4000 */
   DefineErrorAndMessage(rTestError, "test it is error ");

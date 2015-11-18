@@ -36,19 +36,16 @@
 
 #include <stdlib.h>
 #include "./error_no.h"
+using claims::common::CStrError;
 
 typedef int RetCode;  // means return code
-using claims::common::CStrError;
-/*
- * have to add Error Message in error_no.h and error_no.cpp, if new error no is
- * add
- */
-namespace claims {
-namespace common {
-
 #define ELOG(ret, err_info)                                                \
   LOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " << err_info \
              << std::endl;
+
+#define WLOG(ret, warning_info)                                  \
+  LOG(WARNING) << "[ " << ret << ", " << CStrError(ret) << " ] " \
+               << warning_info << std::endl;
 
 #define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info) \
   do {                                            \
@@ -76,11 +73,18 @@ namespace common {
     }                                                               \
   } while (0)
 
+namespace claims {
+namespace common {
+
 const int rSuccess = EXIT_SUCCESS;
 const int rFailure = EXIT_FAILURE;
 
 /* errorno begin from here   */
-
+/******************************************************************************
+ * ATTENTION: have to add Error Message in error_no.h and error_no.cpp, if new
+ * error no is add
+ ******************************************************************************
+ */
 /* errorno for common  -1 ~ -1000 */
 const int rTypeError = -1;
 const int rNotInit = -2;
@@ -106,13 +110,15 @@ const int rNoTableFound = -1001;
 
 /* errorno for loader -2001 ~ -3000  */
 const int rUnbindEntireProjectionFail = -2001;
-const int rInvalidInsertData = -1002;
+const int rInvalidInsertData = -2002;
 const int rTooLargeData = -2003;
 const int rTooSmallData = -2004;
 const int rTooLongData = -2005;
 const int rInterruptedData = -2006;  // 123a45 => 123
 const int rIncorrectData = -2007;    // a
-const int rInvaildNullData = -2008;
+const int rInvalidNullData = -2008;
+const int rTooFewColumn = -2009;
+const int rTooManyColumn = -2010;
 
 /* errorno for codegen -3001 ~ -4000 */
 const int rTestError = -3001;

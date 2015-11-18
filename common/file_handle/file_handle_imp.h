@@ -34,7 +34,9 @@ namespace claims {
 namespace common {
 
 class FileHandleImpFactory;
-enum FileOpenFlag { kCreateFile, kAppendFile, kReadFile };
+enum FileOpenFlag { kCreateFile = 0, kAppendFile, kReadFile };
+static const char* file_open_flag_info[3] = {"create file", "append file",
+                                             "read file"};
 
 class FileHandleImp {
   friend FileHandleImpFactory;

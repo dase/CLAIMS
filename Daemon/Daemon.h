@@ -33,7 +33,7 @@ struct ExecutedResult {
   void SetError(string err_info, string warning_info = "") {
     status_ = false;
     result_ = NULL;
-    error_info_ = err_info;
+    if ("" == err_info) error_info_ = err_info;
     info_ = "";
     warning_ = warning_info;
   }
