@@ -29,7 +29,8 @@
 #include <string.h>
 #include <iostream>
 #include "./error_no.h"
-
+#include "./error_define.h"
+using namespace claims::common;
 namespace claims {
 namespace common {
 
