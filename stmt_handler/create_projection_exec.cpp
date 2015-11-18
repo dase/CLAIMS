@@ -126,7 +126,7 @@ RetCode CreateProjectionExec::Execute(executed_result* exec_result) {
     vector<ColumnOffset> indexDEL;
     indexDEL.push_back(0);
 
-    if (table->isExist(tablename + "_DEL" + "row_id_DEL")) {
+    if (table->isExist(tablename + "_DEL.row_id_DEL")) {
       indexDEL.push_back(table->getAttribute("row_id_DEL").index);
     }
 

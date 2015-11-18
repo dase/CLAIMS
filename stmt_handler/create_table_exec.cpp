@@ -29,8 +29,9 @@
 
 #include <assert.h>
 #include "../Environment.h"
-#include "create_table_exec.h"
-
+#include "../stmt_handler/create_table_exec.h"
+#include "../common/error_define.h"
+#include "../Catalog/Catalog.h"
 namespace claims {
 namespace stmt_handler {
 /**
@@ -75,11 +76,12 @@ CreateTableExec::~CreateTableExec() {
  * @return a result code cooperate with the client.
  */
 RetCode CreateTableExec::Execute(executed_result* exec_result) {
-  int ret = common::kStmtHandlerOk;
-
+  int ret = rSuccess;
+  string tablename_del;
+  tablename_del = tablename_ + "_DEL";
   if (isTableExist()) {
     exec_result->status = false;
-    // result_flag_ = false;
+    result_flag_ = false;
     // result_set_ = NULL;
     // error_msg_ =
     //     "The table " + tablename_ + " has existed during creating table!";
@@ -87,7 +89,7 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
         "The table " + tablename_ + " has existed during creating table!";
     LOG(ERROR) << "The table " + tablename_ +
                       " has existed during creating table!" << std::endl;
-    ret = common::kStmtHandlerTableExistDuringCreate;
+    ret = claims::common::kStmtHandlerTableExistDuringCreate;
   } else {
     table_desc_ = new TableDescriptor(
         tablename_,
@@ -190,7 +192,7 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
               // table!";
               LOG(ERROR) << "This type is not supported during creating table!"
                          << std::endl;
-              // result_flag_ = false;
+              result_flag_ = false;
               // result_set_ = NULL;
               ret = common::kStmtHandlerTypeNotSupport;
             }
@@ -352,13 +354,33 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
       list = dynamic_cast<AstCreateColList*>(list->next_);
     }
 
-    if (result_flag_) {
+#if 1
+    TableDescriptor* new_table =
+        Environment::getInstance()->getCatalog()->getTable(tablename_del);
+    if (new_table == NULL) {
+      new_table = new TableDescriptor(
+          tablename_del,
+          Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+      new_table->addAttribute("row_id", data_type(t_u_long), 0, true);
+      new_table->addAttribute("row_id_DEL", data_type(t_u_long), 0, true);
+      // new_table->createHashPartitionedProjectionOnAllAttribute(
+      //    new_table->getAttribute(0).getName(), 4);
+
+    } else {
+      LOG(ERROR) << "The table " + tablename_del +
+                        " has existed during creating table_DEL!" << std::endl;
+    }
+#endif
+
+    if (exec_result->status) {
       Environment::getInstance()->getCatalog()->add_table(table_desc_);
+      Environment::getInstance()->getCatalog()->add_table(new_table);
       Environment::getInstance()->getCatalog()->saveCatalog();
 #ifdef NEWRESULT
       exec_result->info = "create table successfully";
       LOG(INFO) << "create table successfully" << std::endl;
       exec_result->result = NULL;
+      result_flag_ = true;
       ret = common::kStmtHandlerCreateTableSuccess;
 #else
       info_ = "create table successfully";
@@ -368,6 +390,7 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
 #endif
     }
   }
+
   return ret;
 }
 
