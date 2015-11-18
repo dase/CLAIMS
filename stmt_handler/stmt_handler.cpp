@@ -32,6 +32,7 @@
 #include "../stmt_handler/stmt_handler.h"
 
 #include "../stmt_handler/create_projection_exec.h"
+#include "../stmt_handler/drop_table_exec.h"
 #include "../stmt_handler/show_exec.h"
 namespace claims {
 namespace stmt_handler {
@@ -85,6 +86,11 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
     case AST_CREATE_PROJECTION:
     case AST_CREATE_PROJECTION_NUM: {
       stmt_exec_ = new CreateProjectionExec(stmt_ast);
+      break;
+    }
+    case AST_DROP_TABLE: {
+      stmt_exec_ = new DropTableExec(stmt_ast);
+      break;
     }
     default: {
       LOG(ERROR) << "unknow statement type!" << std::endl;
@@ -103,6 +109,7 @@ RetCode StmtHandler::Execute(executed_result* exec_result) {
     exec_result->result = NULL;
     return rParserError;
   }
+  // raw_ast->Print();
   ret = GenerateStmtExec(raw_ast);
   if (rSuccess != ret) {
     return ret;

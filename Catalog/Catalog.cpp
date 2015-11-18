@@ -135,10 +135,10 @@ void Catalog::getTables(ostringstream& ostr) const {
       tbname = tbname.substr(0, len - 4);
       if (name_to_table.find(tbname) != name_to_table.cend()) {
       } else {
-        ostr << tbname << endl;
+        ostr << "  " << tbname << endl;
       }
     } else {
-      ostr << tbname << endl;
+      ostr << "  " << tbname << endl;
     }
   }
 }

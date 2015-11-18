@@ -1021,7 +1021,7 @@ stmt: drop_table_stmt                       { $$ = $1; /*output($$, 1); puts("SQ
 
 drop_table_stmt:
 	DROP opt_temporary TABLE opt_if_exists table_list opt_rc	
-	                                        { $$ = new AstDropTable(AST_DROP_TABLE, $2, $4, $6, NULL); }
+	                                        { $$ = new AstDropTable(AST_DROP_TABLE, $2, $4, $6, $5); }
 	;
 	
 table_list: NAME 					        { $$ = new AstDropTableList(AST_DROP_TABLE_LIST, "", string($1), NULL); }
