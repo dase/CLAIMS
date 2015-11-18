@@ -34,7 +34,6 @@ namespace claims {
 namespace common {
 
 const int kErrorMaxNumber = 10000;
-
 static const char* kErrorMessage[kErrorMaxNumber];
 
 const char* CStrError(int errorno);

@@ -33,7 +33,6 @@
 
 #ifndef COMMON_ERROR_DEFINE_H_
 #define COMMON_ERROR_DEFINE_H_
-
 #include <stdlib.h>
 #include "./error_no.h"
 using claims::common::CStrError;
@@ -125,9 +124,7 @@ const int rTestError = -3001;
 
 /* errorno for logical_operator -4001 ~ -5000*/
 const int rUninitializedJoinPolicy = -4001;
-
 const int rGeneratePlanContextFailed = -4002;
-
 const int rGenerateDataflowFailed = -4003;
 
 /* errorno for physical_operator -5001 ~ -6000 */

@@ -74,6 +74,14 @@ TEST_F(OperateTest, Int) {
   test("12a12", "12", rInterruptedData, opt);
   test("a12", "a12", rIncorrectData, opt);
 
+  test("-" + big.substr(0, 40), kIntMin, rTooSmallData, opt);
+  test(kIntMax, kIntMax_1, rTooLargeData, opt);
+  test(kIntMax, kIntMax, rSuccess, opf);
+  test(big, kIntMax_1, rTooLargeData, opt);
+  test("123456.654321", "123456.654321", rSuccess, opt);
+  test("12a12", "12", rInterruptedData, opt);
+  test("a12", "a12", rIncorrectData, opt);
+
   test("-12345", "-12345", rSuccess, opt);
   test("12345", "12345", rSuccess, opt);
   delete opt;
@@ -84,10 +92,10 @@ TEST_F(OperateTest, Float) {
   OperateFloat* opt = new OperateFloat(true);
   OperateFloat* opf = new OperateFloat(false);
 
-  test("-" + big.substr(0, 40), float_min, rTooSmallData, opt);
-  test(float_max, float_max_1, rTooLargeData, opt);
-  test(float_max, float_max, rSuccess, opf);
-  test(big.substr(0, 40), float_max_1, rTooLargeData, opt);
+  test("-" + big.substr(0, 40), kFloatMin, rTooSmallData, opt);
+  test(kFloatMax, kFloatMax_1, rTooLargeData, opt);
+  test(kFloatMax, kFloatMax, rSuccess, opf);
+  test(big.substr(0, 40), kFloatMax_1, rTooLargeData, opt);
   test("12a12.12", "12", rInterruptedData, opt);
   test("a12.12", "a12.12", rIncorrectData, opt);
 
@@ -101,10 +109,10 @@ TEST_F(OperateTest, Double) {
   OperateDouble* opt = new OperateDouble(true);
   OperateDouble* opf = new OperateDouble(false);
 
-  test("-" + big, double_min, rTooSmallData, opt);
-  test(double_max, double_max_1, rTooLargeData, opt);
-  test(double_max, double_max, rSuccess, opf);
-  test(big, double_max_1, rTooLargeData, opt);
+  test("-" + big, kDoubleMin, rTooSmallData, opt);
+  test(kDoubleMax, kDoubleMax_1, rTooLargeData, opt);
+  test(kDoubleMax, kDoubleMax, rSuccess, opf);
+  test(big, kDoubleMax_1, rTooLargeData, opt);
   test("9." + big, "9." + big, rSuccess, opt);
   test("1234a56789.987654321", "1234", rInterruptedData, opt);
   test("a123456789.987654321", "a123456789.987654321", rIncorrectData, opt);
@@ -120,9 +128,9 @@ TEST_F(OperateTest, ULong) {
   OperateULong* opf = new OperateULong(false);
 
   test("-" + big, "0", rTooSmallData, opt);
-  test(ulong_max, ulong_max_1, rTooLargeData, opt);
-  test(ulong_max, ulong_max, rSuccess, opf);
-  test(big, ulong_max_1, rTooLargeData, opt);
+  test(kULongMax, kULongMax_1, rTooLargeData, opt);
+  test(kULongMax, kULongMax, rSuccess, opf);
+  test(big, kULongMax_1, rTooLargeData, opt);
   test("123456789.987654321", "123456789.987654321", rSuccess, opt);
   test("12345a", "12345", rInterruptedData, opt);
   test("a123", "a123", rIncorrectData, opt);
@@ -136,10 +144,10 @@ TEST_F(OperateTest, SmallInt) {
   OperateSmallInt* opt = new OperateSmallInt(true);
   OperateSmallInt* opf = new OperateSmallInt(false);
 
-  test("-123456789", smallint_min, rTooSmallData, opt);
-  test(smallint_max, smallint_max_1, rTooLargeData, opt);
-  test(smallint_max, smallint_max, rSuccess, opf);
-  test("123456789", smallint_max_1, rTooLargeData, opt);
+  test("-123456789", kSmallIntMin, rTooSmallData, opt);
+  test(kSmallIntMax, kSmallIntMax_1, rTooLargeData, opt);
+  test(kSmallIntMax, kSmallIntMax, rSuccess, opf);
+  test("123456789", kSmallIntMax_1, rTooLargeData, opt);
   test("12345.54321", "12345.54321", rSuccess, opt);
   test("123a45", "123", rInterruptedData, opt);
   test("a123", "a123", rIncorrectData, opt);
@@ -155,9 +163,9 @@ TEST_F(OperateTest, USmallInt) {
   OperateUSmallInt* opf = new OperateUSmallInt(false);
 
   test("-123456789", "0", rTooSmallData, opt);
-  test(usmallint_max, usmallint_max_1, rTooLargeData, opt);
-  test(usmallint_max, usmallint_max, rSuccess, opf);
-  test("123456789", usmallint_max_1, rTooLargeData, opt);
+  test(kUSmallIntMax, kUSmallIntMax_1, rTooLargeData, opt);
+  test(kUSmallIntMax, kUSmallIntMax, rSuccess, opf);
+  test("123456789", kUSmallIntMax_1, rTooLargeData, opt);
   test("1234.4321", "1234.4321", rSuccess, opt);
   test("a123", "a123", rIncorrectData, opt);
   test("123a12", "123", rInterruptedData, opt);

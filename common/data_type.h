@@ -5,8 +5,8 @@
  *      Author: wangli
  */
 
-#ifndef DATA_TYPE_H_
-#define DATA_TYPE_H_
+#ifndef COMMON_DATA_TYPE_H_
+#define COMMON_DATA_TYPE_H_
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -24,8 +24,7 @@
 #include "./error_define.h"
 #include "./hash.h"
 #include "../utility/string_process.h"
-#include "types/NValue.hpp"
-
+#include "./types/NValue.hpp"
 using claims::common::rSuccess;
 using claims::common::rTooSmallData;
 using claims::common::rTooLargeData;
@@ -33,10 +32,19 @@ using claims::common::rTooLongData;
 using claims::common::rInterruptedData;
 using claims::common::rIncorrectData;
 using claims::common::rInvalidNullData;
-using claims::common::kErrorMessage;
-
-using namespace boost::gregorian;
-using namespace boost::posix_time;
+using boost::gregorian::date_duration;
+using boost::gregorian::from_undelimited_string;
+using boost::gregorian::from_string;
+using boost::posix_time::duration_from_string;
+using boost::gregorian::date;
+using boost::posix_time::ptime;
+using boost::posix_time::time_duration;
+using boost::posix_time::time_from_string;
+using boost::posix_time::neg_infin;
+using boost::hash_value;
+using boost::hash_combine;
+using decimal::NValue;
+using decimal::ExportSerializeOutput;
 using boost::lexical_cast;
 using namespace decimal;
 #define DATA_TYPE_NUMBER 20
@@ -59,8 +67,8 @@ enum data_type {
   t_date_year,
   t_date_quarter
 };
-enum TransformRet { kSuccess = 0, kWarning, kError };
-inline string get_precision(double d) {
+// enum TransformRet { kSuccess = 0, kWarning, kError };
+inline string GetPrecision(double d) {
   ostringstream ss;
   ss.precision(1000);
   ss << d;
@@ -68,28 +76,28 @@ inline string get_precision(double d) {
 }
 typedef int RetCode;
 
-const string int_min = get_precision(-INT_MAX);       //"-2147483648";
-const string int_max = get_precision(INT_MAX);        //"2147483647";
-const string int_max_1 = get_precision(INT_MAX - 1);  // "2147483646";
-const string float_min =
-    get_precision(-FLT_MAX);  //"-340282346638528859811704183484516925440";
-const string float_max =
-    get_precision(FLT_MAX);  //"340282346638528859811704183484516925440";
-const string float_max_1 = get_precision(
-    FLT_MAX - 1e23);  // "340282346638528746474908594613031796736";
-const string double_min = get_precision(-DBL_MAX);
-const string double_max = get_precision(DBL_MAX);
-const string double_max_1 = get_precision(DBL_MAX - 1e305);
-const string ulong_max =
-    get_precision(ULONG_LONG_MAX);  // lexical_cast<string>(ULONG_LONG_MAX);
-const string ulong_max_1 = get_precision(
+const string kIntMin = GetPrecision(-INT_MAX);       //"-2147483648";
+const string kIntMax = GetPrecision(INT_MAX);        //"2147483647";
+const string kIntMax_1 = GetPrecision(INT_MAX - 1);  // "2147483646";
+const string kFloatMin =
+    GetPrecision(-FLT_MAX);  //"-340282346638528859811704183484516925440";
+const string kFloatMax =
+    GetPrecision(FLT_MAX);  //"340282346638528859811704183484516925440";
+const string kFloatMax_1 =
+    GetPrecision(FLT_MAX - 1e23);  // "340282346638528746474908594613031796736";
+const string kDoubleMin = GetPrecision(-DBL_MAX);
+const string kDoubleMax = GetPrecision(DBL_MAX);
+const string kDoubleMax_1 = GetPrecision(DBL_MAX - 1e305);
+const string kULongMax =
+    GetPrecision(ULONG_LONG_MAX);  // lexical_cast<string>(ULONG_LONG_MAX);
+const string kULongMax_1 = GetPrecision(
     ULONG_LONG_MAX - 1);  // lexical_cast<string>(ULONG_LONG_MAX - 1);
-const string smallint_min =
-    get_precision(-SHRT_MAX);  // lexical_cast<string>(-SHRT_MAX);
-const string smallint_max = get_precision(SHRT_MAX);
-const string smallint_max_1 = get_precision(SHRT_MAX - 1);
-const string usmallint_max = get_precision(USHRT_MAX);
-const string usmallint_max_1 = get_precision(USHRT_MAX - 1);
+const string kSmallIntMin =
+    GetPrecision(-SHRT_MAX);  // lexical_cast<string>(-SHRT_MAX);
+const string kSmallIntMax = GetPrecision(SHRT_MAX);
+const string kSmallIntMax_1 = GetPrecision(SHRT_MAX - 1);
+const string kUSmallIntMax = GetPrecision(USHRT_MAX);
+const string kUSmallIntMax_1 = GetPrecision(USHRT_MAX - 1);
 
 typedef void (*fun)(void*, void*);
 
@@ -333,41 +341,7 @@ class OperateInt : public Operate {
   }
   Operate* duplicateOperator() const { return new OperateInt(this->nullable); }
 
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (!isdigit(str[0]) && str[0] != '-') {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    for (auto i = 1; i < str.length(); i++)
-      if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                     << "] for " << str << endl;
-        str = str.substr(0, i);
-        ret = rInterruptedData;
-        break;
-      }
-    long value = atol(str.c_str());
-    if (value < INT_MIN) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                   << "] for " << str << endl;
-      str = int_min;
-      ret = rTooSmallData;
-    } else if (value > INT_MAX || (value == INT_MAX && nullable)) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                   << "] for " << str << endl;
-      str = int_max_1;
-      ret = rTooLargeData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = string("0"); }
 };
 
@@ -388,13 +362,13 @@ class OperateFloat : public Operate {
       ret = ss.str();
     }
     return ret;
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       *(float*)target = NULL_FLOAT;
     else
       *(float*)target = atof(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(float*)a == *(float*)b;
   }
@@ -443,41 +417,7 @@ class OperateFloat : public Operate {
       return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (!isdigit(str[0]) && str[0] != '-') {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    for (auto i = 0; i < str.length(); i++)
-      if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                     << "] for " << str << endl;
-        str = str.substr(0, i);
-        ret = rInterruptedData;
-        break;
-      }
-    double value = atof(str.c_str());
-    if (value < -FLT_MAX) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                   << "] for " << str << endl;
-      str = float_min;
-      ret = rTooSmallData;
-    } else if (value > FLT_MAX || (value == FLT_MAX && nullable)) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                   << "] for " << str << endl;
-      str = float_max_1;
-      ret = rTooLargeData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = string("0"); }
 };
 
@@ -487,7 +427,7 @@ class OperateDouble : public Operate {
   ~OperateDouble(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(double*)desc = *(double*)src;
-  };
+  }
   inline std::string toString(void* value) {
     std::string ret;
     if (this->nullable == true && (*(double*)value) == NULL_DOUBLE)
@@ -498,13 +438,13 @@ class OperateDouble : public Operate {
       ret = ss.str();
     }
     return ret;
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       *(double*)target = NULL_DOUBLE;
     else
       *(double*)target = atof(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(double*)a == *(double*)b;
   }
@@ -553,49 +493,7 @@ class OperateDouble : public Operate {
       return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (str == double_max && !nullable) return rSuccess;
-    if (!isdigit(str[0]) && str[0] != '-') {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    for (auto i = 0; i < str.length(); i++)
-      if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                     << "] for " << str << endl;
-        str = str.substr(0, i);
-        ret = rInterruptedData;
-        break;
-      }
-    /*
-     * @brief integer part of a double number
-     */
-    auto len = 0;
-    for (auto i = str.begin(); i != str.end(); i++, len++)
-      if (*i == '.') break;
-    if (len >= 309) {
-      if (str[0] == '-') {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                     << "] for " << str << endl;
-        str = double_min;
-        ret = rTooSmallData;
-      } else {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                     << "] for " << str << endl;
-        str = double_max_1;
-        ret = rTooLargeData;
-      }
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = string("0"); }
 };
 
@@ -605,7 +503,7 @@ class OperateULong : public Operate {
   ~OperateULong(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(unsigned long*)desc = *(unsigned long*)src;
-  };
+  }
   inline std::string toString(void* value) {
     std::string ret;
     if (this->nullable == true && (*(unsigned long*)value) == NULL_U_LONG)
@@ -616,13 +514,13 @@ class OperateULong : public Operate {
       ret = ss.str();
     }
     return ret;
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       *(unsigned long*)target = NULL_U_LONG;
     else
       *(unsigned long*)target = strtoul(string, 0, 10);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(unsigned long*)a == *(unsigned long*)b;
   }
@@ -671,46 +569,7 @@ class OperateULong : public Operate {
       return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (str == ulong_max && !nullable) return rSuccess;
-    if (!isdigit(str[0]) && str[0] != '-') {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    for (auto i = 0; i < str.length(); i++)
-      if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-        LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                   << "] for " << str << endl;
-        str = str.substr(0, i);
-        ret = rInterruptedData;
-        break;
-      }
-    if (str[0] == '-') {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                   << "] for " << str << endl;
-      str = '0';
-      ret = rTooSmallData;
-    } else {
-      auto len = 0;
-      for (auto i = str.begin(); i != str.end(); i++, len++)
-        if (*i == '.') break;
-      if (len >= 20 && str[19] > '1') {
-        LOG(WARNING) << "[checkSet]: [" << kErrorMessage[rTooLargeData]
-                     << "] for " << str << endl;
-        str = ulong_max_1;
-        ret = rTooLargeData;
-      }
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = string("0"); }
 };
 
@@ -719,24 +578,24 @@ class OperateString : public Operate {
   OperateString(unsigned size, bool nullable = true) {
     this->size = size;
     this->nullable = nullable;
-  };
-  ~OperateString(){};
+  }
+  ~OperateString() {}
   inline void assignment(const void* const& src, void* const& desc) const {
     assert(desc != 0 && src != 0);
     strcpy((char*)desc, (char*)src);
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(char*)value) == NULL_STRING)
       return "NULL";
     else
       return trimSpecialCharactor(std::string((char*)value));
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       *(char*)target = NULL_STRING;
     else
       strcpy((char*)target, string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return strcmp((char*)a, (char*)b) == 0;
   }
@@ -793,22 +652,7 @@ class OperateString : public Operate {
     if (this->nullable == true && (*(char*)value) == NULL_STRING) return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str[0] == NULL_STRING && nullable) return rSuccess;
-    if (str[0] == NULL_STRING && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (str.length() > size) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLongData] << "] for "
-                   << str << endl;
-      str = str.substr(0, size);
-      ret = rTooLongData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = ""; }
 };
 
@@ -819,13 +663,13 @@ class OperateDate : public Operate {
   inline void assignment(const void* const& src, void* const& desc) const {
     assert(desc != 0 && src != 0);
     *(date*)desc = *(date*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(date*)value).is_neg_infinity() == true)
       return "NULL";
     else
       return to_iso_extended_string(*(date*)value);
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       setNull(target);
@@ -846,7 +690,7 @@ class OperateDate : public Operate {
       else
         *(date*)target = from_string(s);
     }
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(date*)a == *(date*)b;
   }
@@ -903,62 +747,7 @@ class OperateDate : public Operate {
       return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (str.length() == 8) {
-      for (auto i = str.begin(); i != str.end(); i++)
-        if (!isdigit(*i)) {
-          LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData]
-                     << "] for " << str << endl;
-          return rIncorrectData;
-        }
-      if (ret == rSuccess) {
-        if (str < "14000101") {
-          LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                       << "] for " << str << endl;
-          str = "14000101";
-          ret = rTooSmallData;
-        }
-        if (str > "99991231") {
-          LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                       << "] for " << str << endl;
-          str = "99991231";
-          ret = rTooLargeData;
-        }
-      }
-    } else if (str.length() == 10) {
-      for (auto i = 0; i < str.length(); i++)
-        if (!isdigit(str[i]) && i != 4 && i != 7) {
-          LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData]
-                     << "] for " << str << endl;
-          ret = rIncorrectData;
-          break;
-        }
-      if (str < "1400-01-01") {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                     << "] for " << str << endl;
-        str = "1400-01-01";
-        ret = rTooSmallData;
-      }
-      if (str > "9999-12-31") {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                     << "] for " << str << endl;
-        str = "9999-12-31";
-        ret = rTooLargeData;
-      }
-    } else {
-      LOG(ERROR) << "[CheckSet]: " << kErrorMessage[rIncorrectData] << "] for"
-                 << str << endl;
-      return rIncorrectData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "1400-01-01"; }
 };
 
@@ -969,20 +758,20 @@ class OperateTime : public Operate {
   inline void assignment(const void* const& src, void* const& desc) const {
     assert(desc != 0 && src != 0);
     *(time_duration*)desc = *(time_duration*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true &&
         (*(time_duration*)value).is_neg_infinity() == true)
       return "NULL";
     else
       return to_simple_string(*(time_duration*)value);
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       setNull(target);
     else
       *(time_duration*)target = duration_from_string(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(time_duration*)a == *(time_duration*)b;
   }
@@ -1042,39 +831,7 @@ class OperateTime : public Operate {
       return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (str.length() != 15) {
-      LOG(ERROR) << "[CheckSet]:" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    for (auto i = 0; i < str.length(); i++)
-      if (!isdigit(str[i]) && i != 2 && i != 5 && i != 8) {
-        LOG(ERROR) << "[CheckSet]: " << kErrorMessage[rIncorrectData]
-                   << "] for " << str << endl;
-        return rIncorrectData;
-      }
-    if (str < "00:00:00.000000") {
-      LOG(WARNING) << "[CheckSet]: " << kErrorMessage[rTooSmallData] << "] for "
-                   << str << endl;
-      str = "00:00:00.000000";
-      ret = rTooSmallData;
-    }
-    if (str > "23:59:59.999999") {
-      LOG(WARNING) << "[CheckSet]: " << kErrorMessage[rTooLargeData] << "] for "
-                   << str << endl;
-      str = "23:59:59.999999";
-      ret = rTooLargeData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "00:00:00.000000"; }
 };
 
@@ -1085,19 +842,19 @@ class OperateDatetime : public Operate {
   inline void assignment(const void* const& src, void* const& desc) const {
     assert(desc != 0 && src != 0);
     *(ptime*)desc = *(ptime*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(ptime*)value).is_neg_infinity() == true)
       return "NULL";
     else
       return to_iso_extended_string(*(ptime*)value);
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       setNull(target);
     else
       *(ptime*)target = time_from_string(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(ptime*)a == *(ptime*)b;
   }
@@ -1156,39 +913,7 @@ class OperateDatetime : public Operate {
       return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (str.length() != 26) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    for (auto i = 0; i < str.length(); i++)
-      if (!isdigit(str[i]) && i != 4 && i != 7 && i != 10 & i != 13 &&
-          i != 16 & i != 19) {
-        LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData]
-                   << "] for " << str << endl;
-        return rIncorrectData;
-      }
-    if (str < "1400-01-01 00:00:00.000000") {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                   << "]  for " << str << endl;
-      str = "1400-01-01 00:00:00.000000";
-      return rTooSmallData;
-    } else if (str > "9999-12-31 23:59:59.999999") {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                   << "] for " << str << endl;
-      str = "9999-12-31 23:59:59.999999";
-      return rTooLargeData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "1400-01-01 00:00:00.000000"; }
 };
 
@@ -1197,11 +922,11 @@ class OperateSmallInt : public Operate {
   OperateSmallInt(bool _nullable = true) {
     this->nullable = _nullable;
     assign = assigns<short>;
-  };
+  }
   //	~OperateSmallInt(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(short*)desc = *(short*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(short*)value) == NULL_SMALL_INT)
       return "NULL";
@@ -1211,7 +936,7 @@ class OperateSmallInt : public Operate {
       std::string ret = ss.str();
       return ret;
     }
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) &&
         this->nullable == true)  // modified by Li Wang in Sep.10th
@@ -1268,41 +993,7 @@ class OperateSmallInt : public Operate {
       return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (!isdigit(str[0]) && str[0] != '-') {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    for (auto i = 0; i < str.length(); i++)
-      if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                     << "] for " << str << endl;
-        str = str.substr(0, i);
-        ret = rInterruptedData;
-        break;
-      }
-    long value = atol(str.c_str());
-    if (value < SHRT_MIN) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                   << "] for " << str << endl;
-      str = smallint_min;
-      ret = rTooSmallData;
-    } else if (value > SHRT_MAX || (value == SHRT_MAX && nullable)) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                   << "] for " << str << endl;
-      str = smallint_max_1;
-      ret = rTooLargeData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "0"; }
 };
 
@@ -1311,11 +1002,11 @@ class OperateUSmallInt : public Operate {
   OperateUSmallInt(bool _nullable = true) {
     this->nullable = _nullable;
     assign = assigns<unsigned short>;
-  };
+  }
   //	~OperateSmallInt(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(unsigned short*)desc = *(unsigned short*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(unsigned short*)value) == NULL_U_SMALL_INT)
       return "NULL";
@@ -1323,13 +1014,13 @@ class OperateUSmallInt : public Operate {
     ss << *(unsigned short*)value;
     std::string ret = ss.str();
     return ret;
-  };
+  }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)
       *(unsigned short*)target = NULL_U_SMALL_INT;
     else
       *(unsigned short*)target = (unsigned short)atoi(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return *(unsigned short*)a == *(unsigned short*)b;
   }
@@ -1380,41 +1071,7 @@ class OperateUSmallInt : public Operate {
       return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (!isdigit(str[0]) && str[0] != '-') {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    for (auto i = 0; i < str.length(); i++)
-      if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                     << "] for " << str << endl;
-        str = str.substr(0, i);
-        ret = rInterruptedData;
-        break;
-      }
-    long value = atol(str.c_str());
-    if (value < 0) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                   << "] for " << str << endl;
-      str = "0";
-      ret = rTooSmallData;
-    } else if (value > USHRT_MAX || (value == USHRT_MAX && nullable)) {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                   << "] for " << str << endl;
-      str = usmallint_max_1;
-      ret = rTooLargeData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "0"; }
 };
 
@@ -1424,11 +1081,11 @@ class OperateDecimal : public Operate {
     assign = assigns<int>;
     this->size = size;
     this->nullable = nullable;
-  };
+  }
   //	~OperateDecimal(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(NValue*)desc = *(NValue*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && compare(value, (void*)(&NULL_DECIMAL)) == 0)
       return "NULL";
@@ -1452,7 +1109,7 @@ class OperateDecimal : public Operate {
       *(NValue*)target = NULL_DECIMAL;
     else
       *(NValue*)target = NValue::getDecimalValueFromString(string);
-  };
+  }
   inline bool equal(const void* const& a, const void* const& b) const {
     return ((NValue*)a)->op_equals(*(NValue*)b);
   }
@@ -1491,6 +1148,7 @@ class OperateDecimal : public Operate {
       const void* key, const PartitionFunction* partition_function) const {
     //		return partition_function->get_partition_value(*(NValue*)key);
     //		printf("The hash function for decimal type is not implemented
+    // yet!\n");
     unsigned long ul1 = *(unsigned long*)((*(NValue*)key).m_data);
     unsigned long ul2 = *(unsigned long*)((*(NValue*)key).m_data + 8);
     return partition_function->get_partition_value(ul1 + ul2);
@@ -1501,6 +1159,7 @@ class OperateDecimal : public Operate {
   unsigned getPartitionValue(const void* key) const {
     //		return boost::hash_value(*(NValue*)key);
     //		printf("The hash function for decimal type is not implemented
+    // yet!\n");
     unsigned long ul1 = *(unsigned long*)((*(NValue*)key).m_data);
     unsigned long ul2 = *(unsigned long*)((*(NValue*)key).m_data + 8);
     boost::hash_combine(ul1, ul2);
@@ -1536,16 +1195,7 @@ class OperateDecimal : public Operate {
   /**
    * @TODO min and max check is not implemented yet ! *-_-*
    */
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = string("0"); }
 };
 
@@ -1554,10 +1204,10 @@ class OperateBool : public Operate {
   OperateBool(bool _nullable = true) {
     this->nullable = _nullable;
     assign = assigns<int>;
-  };
+  }
   inline void assignment(const void* const& src, void* const& desc) const {
     *(int*)desc = *(int*)src;
-  };
+  }
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(int*)value) == NULL_BOOLEAN)
       return "NULL";
@@ -1626,21 +1276,7 @@ class OperateBool : public Operate {
     if (this->nullable == true && (*(int*)value) == NULL_SMALL_INT) return true;
     return false;
   }
-  RetCode CheckSet(string& str) const {
-    RetCode ret = rSuccess;
-    if (str == "" && nullable) return rSuccess;
-    if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
-                 << "] for " << str << endl;
-      return rInvalidNullData;
-    }
-    if (str != "false" && str != "true") {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
-    }
-    return ret;
-  }
+  RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "false"; }
 };
 
@@ -1690,7 +1326,7 @@ class column_type {
         operate = 0;
         break;
     }
-  };
+  }
   column_type(const column_type& r) {
     this->type = r.type;
     this->size = r.size;
@@ -1707,7 +1343,7 @@ class column_type {
   ~column_type() {
     delete operate;
     operate = 0;
-  };
+  }
   inline unsigned get_length() const {
     switch (type) {
       case t_int:
