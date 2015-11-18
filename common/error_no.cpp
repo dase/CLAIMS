@@ -31,7 +31,6 @@
 #include <string>
 #include "./error_no.h"
 #include "./error_define.h"
-
 namespace claims {
 namespace common {
 
