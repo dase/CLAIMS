@@ -64,17 +64,17 @@ RetCode OperateInt::CheckSet(string& str) const {
    * Input a null value, but it is inValid (error)
    */
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   /*
    * The input's format is error for number type like a12, c21, etc. (error)
    */
   if (!isdigit(str[0]) && str[0] != '-') {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   /*
    * The input need to be interrupted like 12a34, the string will be cut off to
@@ -82,10 +82,9 @@ RetCode OperateInt::CheckSet(string& str) const {
    */
   for (auto i = 1; i < str.length(); i++)
     if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                   << "] for " << str << endl;
-      str = str.substr(0, i);
       ret = rInterruptedData;
+      WLOG(ret, str);
+      str = str.substr(0, i);
       break;
     }
   long value = atol(str.c_str());
@@ -93,20 +92,18 @@ RetCode OperateInt::CheckSet(string& str) const {
    * The input is less than int_min, we set it to int_min
    */
   if (value < INT_MIN) {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData] << "] for "
-                 << str << endl;
-    str = kIntMin;
     ret = rTooSmallData;
+    WLOG(ret, str);
+    str = kIntMin;
   } else if (value > INT_MAX || (value == INT_MAX && nullable)) {
     /*
      * if input is int_max, we set it to int_max - 1, because int_max is
      *    null-value actually.
      * if input is larger than int_max, we set it to int_max-1
      */
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData] << "] for "
-                 << str << endl;
-    str = kIntMax_1;
     ret = rTooLargeData;
+    WLOG(ret, str);
+    str = kIntMax_1;
   }
   return ret;
 }
@@ -115,34 +112,31 @@ RetCode OperateFloat::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str)
+    return ret;
   }
   if (!isdigit(str[0]) && str[0] != '-') {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   for (auto i = 0; i < str.length(); i++)
     if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                   << "] for " << str << endl;
-      str = str.substr(0, i);
       ret = rInterruptedData;
+      WLOG(ret, str);
+      str = str.substr(0, i);
       break;
     }
   double value = atof(str.c_str());
   if (value < -FLT_MAX) {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData] << "] for "
-                 << str << endl;
-    str = kFloatMin;
     ret = rTooSmallData;
+    WLOG(ret, str);
+    str = kFloatMin;
   } else if (value > FLT_MAX || (value == FLT_MAX && nullable)) {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData] << "] for "
-                 << str << endl;
-    str = kFloatMax_1;
     ret = rTooLargeData;
+    WLOG(ret, str);
+    str = kFloatMax_1;
   }
   return ret;
 }
@@ -150,22 +144,21 @@ RetCode OperateDouble::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   if (str == kDoubleMax && !nullable) return rSuccess;
   if (!isdigit(str[0]) && str[0] != '-') {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   for (auto i = 0; i < str.length(); i++)
     if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                   << "] for " << str << endl;
-      str = str.substr(0, i);
       ret = rInterruptedData;
+      WLOG(ret, str);
+      str = str.substr(0, i);
       break;
     }
   /*
@@ -179,15 +172,13 @@ RetCode OperateDouble::CheckSet(string& str) const {
    */
   if (len >= 309) {
     if (str[0] == '-') {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                   << "] for " << str << endl;
-      str = kDoubleMin;
       ret = rTooSmallData;
+      WLOG(ret, str);
+      str = kDoubleMin;
     } else {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                   << "] for " << str << endl;
-      str = kDoubleMax_1;
       ret = rTooLargeData;
+      WLOG(ret, str);
+      str = kDoubleMax_1;
     }
   }
   return ret;
@@ -197,29 +188,27 @@ RetCode OperateULong::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   if (str == kULongMax && !nullable) return rSuccess;
   if (!isdigit(str[0]) && str[0] != '-') {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   for (auto i = 0; i < str.length(); i++)
     if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                 << "] for " << str << endl;
-      str = str.substr(0, i);
       ret = rInterruptedData;
+      WLOG(ret, str);
+      str = str.substr(0, i);
       break;
     }
   if (str[0] == '-') {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData] << "] for "
-                 << str << endl;
-    str = '0';
     ret = rTooSmallData;
+    WLOG(ret, str);
+    str = '0';
   } else {
     auto len = 0;
     for (auto i = str.begin(); i != str.end(); i++, len++)
@@ -228,10 +217,9 @@ RetCode OperateULong::CheckSet(string& str) const {
      * ToDo we could improve the size check for unsigned long type *_*
      */
     if (len >= 20 && str[19] > '1') {
-      LOG(WARNING) << "[checkSet]: [" << kErrorMessage[rTooLargeData]
-                   << "] for " << str << endl;
-      str = kULongMax_1;
       ret = rTooLargeData;
+      WLOG(ret, str)
+      str = kULongMax_1;
     }
   }
   return ret;
@@ -241,18 +229,17 @@ RetCode OperateString::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str[0] == NULL_STRING && nullable) return rSuccess;
   if (str[0] == NULL_STRING && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   /*
    * The input string is too long to storage in a tuple
    */
   if (str.length() > size) {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLongData] << "] for "
-                 << str << endl;
-    str = str.substr(0, size);
     ret = rTooLongData;
+    WLOG(ret, str);
+    str = str.substr(0, size);
   }
   return ret;
 }
@@ -268,51 +255,46 @@ RetCode OperateDate::CheckSet(string& str) const {
   if (str.length() == 8) {
     for (auto i = str.begin(); i != str.end(); i++)
       if (!isdigit(*i)) {
-        LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData]
-                   << "] for " << str << endl;
-        return rIncorrectData;
+        ret = rIncorrectData;
+        ELOG(ret, str);
+        return ret;
       }
     if (ret == rSuccess) {
       /*
        * Claims don't support date before 1400-01-01, but why?
        */
       if (str < "14000101") {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                     << "] for " << str << endl;
-        str = "14000101";
         ret = rTooSmallData;
+        WLOG(ret, str);
+        str = "14000101";
       }
       if (str > "99991231") {
-        LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                     << "] for " << str << endl;
-        str = "99991231";
         ret = rTooLargeData;
+        WLOG(ret, str);
+        str = "99991231";
       }
     }
   } else if (str.length() == 10) {
     for (auto i = 0; i < str.length(); i++)
       if (!isdigit(str[i]) && i != 4 && i != 7) {
-        LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData]
-                   << "] for " << str << endl;
         ret = rIncorrectData;
-        break;
+        WLOG(ret, str);
+        return ret;
       }
     if (str < "1400-01-01") {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData]
-                   << "] for " << str << endl;
-      str = "1400-01-01";
       ret = rTooSmallData;
+      WLOG(ret, str);
+      str = "1400-01-01";
     }
     if (str > "9999-12-31") {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData]
-                   << "] for " << str << endl;
-      str = "9999-12-31";
       ret = rTooLargeData;
+      WLOG(ret, str);
+      str = "9999-12-31";
     }
   } else {
-    LOG(ERROR) << "[CheckSet]: " << kErrorMessage[rIncorrectData] << "] for"
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   return ret;
 }
@@ -321,32 +303,30 @@ RetCode OperateTime::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   if (str.length() != 15) {
-    LOG(ERROR) << "[CheckSet]:" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   for (auto i = 0; i < str.length(); i++)
     if (!isdigit(str[i]) && i != 2 && i != 5 && i != 8) {
-      LOG(ERROR) << "[CheckSet]: " << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
+      ret = rIncorrectData;
+      ELOG(ret, str);
+      return ret;
     }
   if (str < "00:00:00.000000") {
-    LOG(WARNING) << "[CheckSet]: " << kErrorMessage[rTooSmallData] << "] for "
-                 << str << endl;
-    str = "00:00:00.000000";
     ret = rTooSmallData;
+    ELOG(ret, str);
+    str = "00:00:00.000000";
   }
   if (str > "23:59:59.999999") {
-    LOG(WARNING) << "[CheckSet]: " << kErrorMessage[rTooLargeData] << "] for "
-                 << str << endl;
-    str = "23:59:59.999999";
     ret = rTooLargeData;
+    ELOG(ret, str)
+    str = "23:59:59.999999";
   }
   return ret;
 }
@@ -355,32 +335,31 @@ RetCode OperateDatetime::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   if (str.length() != 26) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   for (auto i = 0; i < str.length(); i++)
     if (!isdigit(str[i]) && i != 4 && i != 7 && i != 10 & i != 13 &&
         i != 16 & i != 19) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-                 << str << endl;
-      return rIncorrectData;
+      ret = rIncorrectData;
+      ELOG(ret, str);
+      return ret;
     }
   if (str < "1400-01-01 00:00:00.000000") {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData] << "]  for "
-                 << str << endl;
+    ret = rTooSmallData;
+    ELOG(ret, str);
     str = "1400-01-01 00:00:00.000000";
-    return rTooSmallData;
+    return ret;
   } else if (str > "9999-12-31 23:59:59.999999") {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData] << "] for "
-                 << str << endl;
+    ret = rTooLargeData;
     str = "9999-12-31 23:59:59.999999";
-    return rTooLargeData;
+    return ret;
   }
   return ret;
 }
@@ -389,34 +368,31 @@ RetCode OperateSmallInt::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   if (!isdigit(str[0]) && str[0] != '-') {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   for (auto i = 0; i < str.length(); i++)
     if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                   << "] for " << str << endl;
-      str = str.substr(0, i);
       ret = rInterruptedData;
+      WLOG(ret, str);
+      str = str.substr(0, i);
       break;
     }
   long value = atol(str.c_str());
   if (value < SHRT_MIN) {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData] << "] for "
-                 << str << endl;
-    str = kSmallIntMin;
     ret = rTooSmallData;
+    WLOG(ret, str);
+    str = kSmallIntMin;
   } else if (value > SHRT_MAX || (value == SHRT_MAX && nullable)) {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData] << "] for "
-                 << str << endl;
-    str = kSmallIntMax_1;
     ret = rTooLargeData;
+    WLOG(ret, str);
+    str = kSmallIntMax_1;
   }
   return ret;
 }
@@ -425,34 +401,31 @@ RetCode OperateUSmallInt::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   if (!isdigit(str[0]) && str[0] != '-') {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   for (auto i = 0; i < str.length(); i++)
     if (!isdigit(str[i]) && str[i] != '.' && str[i] != '-') {
-      LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rInterruptedData]
-                   << "] for " << str << endl;
-      str = str.substr(0, i);
       ret = rInterruptedData;
+      WLOG(ret, str);
+      str = str.substr(0, i);
       break;
     }
   long value = atol(str.c_str());
   if (value < 0) {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooSmallData] << "] for "
-                 << str << endl;
-    str = "0";
     ret = rTooSmallData;
+    WLOG(ret, str);
+    str = "0";
   } else if (value > USHRT_MAX || (value == USHRT_MAX && nullable)) {
-    LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLargeData] << "] for "
-                 << str << endl;
-    str = kUSmallIntMax_1;
     ret = rTooLargeData;
+    WLOG(ret, str);
+    str = kUSmallIntMax_1;
   }
   return ret;
 }
@@ -463,9 +436,9 @@ RetCode OperateDecimal::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   return ret;
 }
@@ -474,14 +447,14 @@ RetCode OperateBool::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData] << "] for "
-               << str << endl;
-    return rInvalidNullData;
+    ret = rInvalidNullData;
+    ELOG(ret, str);
+    return ret;
   }
   if (str != "false" && str != "true") {
-    LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
-               << str << endl;
-    return rIncorrectData;
+    ret = rIncorrectData;
+    ELOG(ret, str);
+    return ret;
   }
   return ret;
 }
