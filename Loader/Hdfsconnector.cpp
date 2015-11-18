@@ -59,6 +59,30 @@ bool HdfsConnector::assgin_open_file(open_flag open_flag_){
 	return true;
 }
 
+bool HdfsConnector::deleteFiles()
+{
+    vector<vector<string> >::iterator prj_writepath;
+	vector<string>::iterator par_writepath;
+
+    for (prj_writepath = writepath.begin(); prj_writepath != writepath.end(); prj_writepath++)
+	{
+		for (par_writepath = (*prj_writepath).begin(); par_writepath != (*prj_writepath).end(); par_writepath++)
+		{
+		    if (hdfsExists(fs, (*par_writepath).c_str()) == 0)
+            {
+                if(hdfsDelete(fs, (*par_writepath).c_str()) != 0)
+                {
+                    cout << "Failed to delete file : [" + *par_writepath + "]." << endl;   
+                }
+            }
+            else
+            {
+                cout << "[ERROR:HdfsConnector deleteFiles()]: The file " << *par_writepath << "is not exits!\n" << endl;
+            }
+        }
+    }
+}
+
 bool HdfsConnector::openFiles(open_flag open_flag_){
 	if(!fs)
 	{

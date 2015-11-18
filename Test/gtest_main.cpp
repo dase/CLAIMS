@@ -29,6 +29,7 @@
 #include "../codegen/codegen_test.h"
 #include "common/errno_test.h"
 #include "iterator/elastic_iterator_model_test.h"
+
 static int consumed_args = 0;
 
 struct option long_options[] = {

@@ -197,7 +197,7 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
           state_.schema_->copyTuple(tuple_from_child,
                                     tuple_in_cur_block_stream);
         }
-      } else if (state_.partition_schema_.isBoardcastPartition()) {
+      } else if (state_.partition_schema_.isBroadcastPartition()) {
         /**
          * for boardcast case, all block from child should inserted into all
          * partitioned_data_buffer
@@ -209,24 +209,33 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
         }
       }
     } else {
-      /* the child iterator is exhausted. We add the last block stream block
-       * which would be not full into the buffer for hash partitioned case.
-       * but for broadcast, it mean to add one empty block at the end.
-       */
-
-      for (unsigned i = 0; i < upper_num_; ++i) {
-        partitioned_block_stream_[i]->serialize(*block_for_serialization_);
-        partitioned_data_buffer_->insertBlockToPartitionedList(
-            block_for_serialization_, i);
-      }
-
-      /* The following lines send an empty block to the upper, indicating that
-       * all the data from current sent has been transmit to the uppers.
-       */
-      for (unsigned i = 0; i < upper_num_; ++i) {
-        if (!partitioned_block_stream_[i]->Empty()) {  // only for hash
-          partitioned_block_stream_[i]->setEmpty();
+      if (state_.partition_schema_.isHashPartition()) {
+        /* the child iterator is exhausted. We add the last block stream block
+         * which would be not full into the buffer for hash partitioned case.
+         */
+        for (unsigned i = 0; i < upper_num_; ++i) {
           partitioned_block_stream_[i]->serialize(*block_for_serialization_);
+          partitioned_data_buffer_->insertBlockToPartitionedList(
+              block_for_serialization_, i);
+        }
+        /* The following lines send an empty block to the upper, indicating that
+         * all the data from current sent has been transmit to the uppers.
+         */
+        for (unsigned i = 0; i < upper_num_; ++i) {
+          if (!partitioned_block_stream_[i]->Empty()) {
+            partitioned_block_stream_[i]->setEmpty();
+            partitioned_block_stream_[i]->serialize(*block_for_serialization_);
+            partitioned_data_buffer_->insertBlockToPartitionedList(
+                block_for_serialization_, i);
+          }
+        }
+      } else if (state_.partition_schema_.isBroadcastPartition()) {
+        /* The following lines send an empty block to the upper, indicating that
+         * all the data from current sent has been transmit to the uppers.
+         */
+        block_for_asking_->setEmpty();
+        block_for_asking_->serialize(*block_for_serialization_);
+        for (unsigned i = 0; i < upper_num_; ++i) {
           partitioned_data_buffer_->insertBlockToPartitionedList(
               block_for_serialization_, i);
         }

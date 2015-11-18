@@ -35,6 +35,7 @@ extern "C" void emit(char *s, ...);
 
 enum nodetype {
   t_none,
+
   t_name,
   t_uservar,
   t_name_name,
@@ -46,61 +47,82 @@ enum nodetype {
   t_timeval,
   t_datatimeval,  //---6.21fzh---
   t_table,
+
   t_column,
   t_join,
   t_subquery,
   t_condition,
+
   t_query_stmt,
   t_stmt,
   t_do_stmt,
   t_truncate_stmt,
+
   t_select_list,
   t_select_opts,
   t_select_expr,
+
   t_expr_list_header,
   t_expr,
   t_expr_list,
   t_expr_cal,
   t_expr_func,
   t_expr_relation,
+
   t_from_list,
   t_from_expr,
   t_from_table,
+
   t_where_list,
+
   t_groupby_list,
   t_groupby_expr,
+
   t_having_list,
+
   t_orderby_list,
   t_orderby_expr,
+
   t_limit_list,
   t_limit_expr,
+
   t_insert_stmt,
   t_insert_val_list,
   t_insert_vals,
   t_insert_assign,  // 2014-4-17---增加---by Yu
+
   t_create_database_stmt,
   t_create_table_stmt,
   t_create_col_list,
   t_create_def,
   t_create_projection_stmt,  // 2014-2-24---新增t_create_projection_stmt类型---by余楷
+
   t_alter_database_stmt,
   t_alter_table_stmt,
   t_alter_def,
+
   t_create_select_stmt,
   t_column_atts,
   t_opt_csc,
+
   t_datatype,
   t_length,
   t_enum_list,
+
   t_create_index_stmt,
   t_index_col_list,
   t_drop_index,  // 2014-3-24---增加---by Yu
+
   t_drop_database_stmt,
   t_drop_table_stmt,
-  t_table_list,       // 2014-3-24---增加---by Yu
+  t_table_list,  // 2014-3-24---增加---by Yu
+
   t_load_table_stmt,  // 2014-3-24---add---by Yu
   t_show_stmt,        // 2014-5-4---add---by Yu
-  t_drop_stmt
+  t_drop_stmt,
+
+  t_delete_stmt
+
 };
 
 // 2014-4-14---delete union dataval, because only char* is need---by Yu
@@ -375,6 +397,17 @@ struct Insert_assign_list {
 /******************DDL语句开始***************************************
 ******************************************************************/
 
+struct DeleteStmt {
+  nodetype type_;
+  Node *from_list_;
+  Node *where_list_;
+  int options_;
+  DeleteStmt(nodetype type, Node *from_list, Node *where_list, int options)
+      : type_(type),
+        from_list_(from_list),
+        where_list_(where_list),
+        options_(options) {}
+};
 struct Create_database_stmt {
   nodetype type;
   int create_type;

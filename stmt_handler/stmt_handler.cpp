@@ -31,6 +31,7 @@
 #include <string>
 #include "../stmt_handler/stmt_handler.h"
 
+#include "../stmt_handler/create_projection_exec.h"
 #include "../stmt_handler/show_exec.h"
 namespace claims {
 namespace stmt_handler {
@@ -80,6 +81,10 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
     case AST_CREATE_TABLE_SEL: {
       stmt_exec_ = new CreateTableExec(stmt_ast);
       break;
+    }
+    case AST_CREATE_PROJECTION:
+    case AST_CREATE_PROJECTION_NUM: {
+      stmt_exec_ = new CreateProjectionExec(stmt_ast);
     }
     default: {
       LOG(ERROR) << "unknow statement type!" << std::endl;

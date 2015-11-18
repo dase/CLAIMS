@@ -17,6 +17,27 @@ LocalDiskConnector::LocalDiskConnector(vector<vector <string> > hdfs_writepath):
 LocalDiskConnector::~LocalDiskConnector() {
 }
 
+bool LocalDiskConnector::deleteFiles()
+{
+    vector<vector<string> >::iterator prj_writepath;
+    vector<string>::iterator par_writepath;
+
+    for (prj_writepath = writepath.begin(); prj_writepath != writepath.end(); prj_writepath++)
+    {
+        vector<int> partitions_file_handles;
+        for (par_writepath = (*prj_writepath).begin(); par_writepath != (*prj_writepath).end(); par_writepath++)
+        {
+           if( remove((*par_writepath).c_str()) != 0 )
+           {
+                cout << "Cannot delete disk file : ["+ *par_writepath +"] ! Reason: " + strerror(errno) << endl;
+           }
+        }
+    }
+
+    return true;
+}
+
+
 bool LocalDiskConnector::openFiles(open_flag open_flag_) {
 	vector<vector<string> >::iterator prj_writepath;
 		vector<string>::iterator par_writepath;

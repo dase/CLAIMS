@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /CLAIMS/stmt_handler/show_exec.h
+ * /CLAIMS/stmt_handler/create_projection_exec.h
  *
  *  Created on: Nov 17, 2015
  *      Author: yuyang
@@ -26,35 +26,36 @@
  *
  */
 
-#ifndef STMT_HANDLER_SHOW_EXEC_H_
-#define STMT_HANDLER_SHOW_EXEC_H_
+#ifndef STMT_HANDLER_CREATE_PROJECTION_EXEC_H_
+#define STMT_HANDLER_CREATE_PROJECTION_EXEC_H_
 
 #include "../stmt_handler/stmt_exec.h"
-#include "../sql_parser/ast_node/ast_show_stmt.h"
+#include "../sql_parser/ast_node/ast_create_stmt.h"
 namespace claims {
 namespace stmt_handler {
 /**
  * @brief
- * @details
  */
-class ShowExec : public StmtExec {
+class CreateProjectionExec : public StmtExec {
  public:
   /**
-   * @brief Method description: The executor about show statement.
-   * @param AstNode* stmt   point to AST
+   * @brief The executor about create projection statement.
+   * @param AstNode* stmt
    */
-  ShowExec(AstNode *stmt);  // NOLINT
-  virtual ~ShowExec();
+  CreateProjectionExec(AstNode* stmt);  // NOLINT
+  virtual ~CreateProjectionExec();
+
   /**
-   * @brief the concrete operation of show statement.
+   * @brief the concrete operation of create projection statement.
+   * @param executed_result *exec_result
    */
-  RetCode Execute(executed_result *exec_result);
+  RetCode Execute(executed_result* exec_result);
 
  private:
-  AstShowStmt *show_stmt_ast_;
+  AstCreateProjection* create_projection_ast_;
 };
 
-}  // namespace stmt_handler
-}  // namespace claims
+} /* namespace stmt_handler */
+} /* namespace claims */
 
-#endif  //  STMT_HANDLER_SHOW_EXEC_H_
+#endif  //  STMT_HANDLER_CREATE_PROJECTION_EXEC_H_

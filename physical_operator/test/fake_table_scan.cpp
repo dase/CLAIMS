@@ -16,45 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /CLAIMS/stmt_handler/show_exec.h
+ * /CLAIMS/physical_operator/test/fake_table_scan.cpp
  *
  *  Created on: Nov 17, 2015
- *      Author: yuyang
- *		   Email: youngfish93@hotmail.com
+ *      Author: minqi
+ *		   Email: mqzhou@sei.ecnu.edu.cn
  *
  * Description:
  *
  */
 
-#ifndef STMT_HANDLER_SHOW_EXEC_H_
-#define STMT_HANDLER_SHOW_EXEC_H_
+#include "fake_table_scan.h"
 
-#include "../stmt_handler/stmt_exec.h"
-#include "../sql_parser/ast_node/ast_show_stmt.h"
 namespace claims {
-namespace stmt_handler {
-/**
- * @brief
- * @details
- */
-class ShowExec : public StmtExec {
- public:
-  /**
-   * @brief Method description: The executor about show statement.
-   * @param AstNode* stmt   point to AST
-   */
-  ShowExec(AstNode *stmt);  // NOLINT
-  virtual ~ShowExec();
-  /**
-   * @brief the concrete operation of show statement.
-   */
-  RetCode Execute(executed_result *exec_result);
+namespace physical_query_plan {
+namespace test {
 
- private:
-  AstShowStmt *show_stmt_ast_;
-};
+FakeTableScan::~FakeTableScan() {
+  // TODO Auto-generated destructor stub
+}
 
-}  // namespace stmt_handler
-}  // namespace claims
+FakeTableScan::FakeTableScan() {
+  // TODO Auto-generated constructor stub
+}
 
-#endif  //  STMT_HANDLER_SHOW_EXEC_H_
+bool FakeTableScan::Open(const PartitionOffset& part_off) {}
+
+bool FakeTableScan::Next() {}
+
+bool FakeTableScan::Close() {}
+
+bool FakeTableScan::Print() {}
+
+} /* namespace test */
+} /* namespace physical_query_plan */
+} /* namespace claims */

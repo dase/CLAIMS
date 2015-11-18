@@ -114,6 +114,11 @@ void LogicalScan::ChangeAliasAttr() {
  * @brief It can generate many projection. We need the smallest cost of
  * projections, so we should choose the best one what we need with traversing
  * scan_attribute_list_.
+ *  TODO（minqi）add a set of policies to select a best projection (or group of
+ * best projections), while now it only supports to select one projection. If a
+ * group of projections is selected, join or later materialized join should be
+ * supported to minimize the cost of the storage or transmission of the
+ * intermediate result
  */
 PlanContext LogicalScan::GetPlanContext() {
   lock_->acquire();
@@ -126,7 +131,7 @@ PlanContext LogicalScan::GetPlanContext() {
   TableID table_id = scan_attribute_list_[0].table_id_;
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
 
-  if (target_projection_ == NULL) {
+  if (NULL == target_projection_) {
     ProjectionOffset target_projection_off = -1;
     unsigned int min_projection_cost = -1;
     // TODO(KaiYu): get real need column as scan_attribute_list_, otherwise,

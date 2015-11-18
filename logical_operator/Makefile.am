@@ -42,7 +42,9 @@ liblogicalqueryplan_a_SOURCES = \
 	logical_limit.cpp                   logical_limit.h \
 	logical_cross_join.cpp				logical_cross_join.h \
 	logical_subquery.cpp				logical_subquery.h	\
-	logical_sort.cpp 					logical_sort.h 
+	logical_sort.cpp 					logical_sort.h \
+	logical_delete_filter.cpp           logical_delete_filter.h
+
 
 SUBDIRS = 
 DIST_SUBDIRS = 

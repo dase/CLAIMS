@@ -10,15 +10,24 @@
 #include "../../Environment.h"
 #include "../../Catalog/table.h"
 #include "../../Loader/Hdfsloader.h"
-#include "../../physical_operator/physical_operator_base.h"
+//#include "../../physical_operator/physical_operator_base.h"
+#include "../../physical_operator/physical_operator.h"
+
+#include "../../physical_operator/physical_aggregation.h"
+
+#include "../../logical_operator/logical_query_plan_root.h"
 #include "../../logical_operator/logical_aggregation.h"
 #include "../../logical_operator/logical_scan.h"
+#include "../../logical_operator/logical_filter.h"
 #include "../../logical_operator/logical_equal_join.h"
 #include "../../common/AttributeComparator.h"
 #include "../../common/types/NValue.hpp"
 #include "../../utility/rdtsc.h"
 #include "../set_up_environment.h"
 #include "../../Executor/IteratorExecutorSlave.h"
+
+using namespace claims::physical_operator;
+using namespace claims::logical_operator;
 
 static void query_1() {
   unsigned long long int start = curtick();

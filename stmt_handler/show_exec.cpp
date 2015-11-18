@@ -57,9 +57,10 @@ RetCode ShowExec::Execute(executed_result* exec_result) {
   switch (show_stmt_ast_->show_type_) {
     case 1: {
       ostr << "TABLES:   Num = " << table_count << endl;
-      for (unsigned i = 0; i < table_count; ++i) {
-        ostr << "    " << local_catalog->getTable(i)->getTableName() << endl;
-      }
+      local_catalog->getTables(ostr);
+      // for (unsigned i = 0; i < table_count; ++i) {
+      //   ostr << "    " << local_catalog->getTable(i)->getTableName() << endl;
+      // }
       exec_result->info = ostr.str();
       exec_result->status = true;
       exec_result->result = NULL;
