@@ -8,11 +8,12 @@
 #include "./table.h"
 #include <string>
 #include <vector>
-#include "../common/Schema/SchemaFix.h"\
+#include "../common/Schema/SchemaFix.h"
+#define GLOG_NO_ABBREVIATED_SEVERITIES
+#include "../common/log/logging.h"
 
 ProjectionDescriptor::ProjectionDescriptor(ProjectionID pid)
-    : projection_id_(pid) {
-}
+    : projection_id_(pid) {}
 
 ProjectionDescriptor::ProjectionDescriptor(const string& name)
     : Projection_name_(name) {
@@ -20,14 +21,13 @@ ProjectionDescriptor::ProjectionDescriptor(const string& name)
   // Meanwhile create a hsfsfile to store this column's data.
 }
 
-ProjectionDescriptor::~ProjectionDescriptor() {
-}
+ProjectionDescriptor::~ProjectionDescriptor() { delete partitioner; }
 void ProjectionDescriptor::addAttribute(Attribute attr) {
   const ColumnID cid(projection_id_, column_list_.size());
   const Column col(attr, cid);
   column_list_.push_back(col);
 }
-bool ProjectionDescriptor::hasAttribute(const Attribute &attr) const {
+bool ProjectionDescriptor::hasAttribute(const Attribute& attr) const {
   for (unsigned i = 0; i < column_list_.size(); i++) {
     if (column_list_[i].index == attr.index) return true;
   }
@@ -35,13 +35,18 @@ bool ProjectionDescriptor::hasAttribute(const Attribute &attr) const {
 }
 
 void ProjectionDescriptor::DefinePartitonier(
-    const unsigned& number_of_partitions, const Attribute &partition_key,
+    const unsigned& number_of_partitions, const Attribute& partition_key,
     PartitionFunction* partition_functin) {
   partitioner = new Partitioner(projection_id_, number_of_partitions,
                                 partition_key, partition_functin);
 }
 Partitioner* ProjectionDescriptor::getPartitioner() const {
-  return partitioner;
+  if (NULL == this) {
+    LOG(WARNING) << "no partitions has been created on this table" << endl;
+    return NULL;
+  } else {
+    return partitioner;
+  }
 }
 bool ProjectionDescriptor::isExist(const string& name) const {
   for (unsigned i = 0; i < column_list_.size(); i++) {
@@ -55,7 +60,7 @@ bool ProjectionDescriptor::AllPartitionBound() const {
 std::vector<Attribute> ProjectionDescriptor::getAttributeList() const {
   std::vector<Attribute> ret;
   for (unsigned i = 0; i < this->column_list_.size(); i++) {
-    ret.push_back((Attribute) column_list_[i]);
+    ret.push_back((Attribute)column_list_[i]);
   }
   return ret;
 }
@@ -83,17 +88,18 @@ int ProjectionDescriptor::getAttributeIndex(const Attribute& att) const {
 
 // TableDescritptor
 TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
-    : tableName(name),
-      table_id_(table_id),
-      row_number_(0) {
+    : tableName(name), table_id_(table_id), row_number_(0) {
   /*
    * Automatically add row_id as the first column.
    */
-//  addAttribute("row_id",data_type(t_u_long));
+  //  addAttribute("row_id",data_type(t_u_long));
 }
 
 TableDescriptor::~TableDescriptor() {
-
+  for (auto iter = projection_list_.begin(); iter != projection_list_.end();
+       ++iter) {
+    delete *iter;
+  }
 }
 
 void TableDescriptor::addAttribute(Attribute attr) {
@@ -116,9 +122,9 @@ bool TableDescriptor::addAttribute(string attname, data_type dt,
 }
 
 void TableDescriptor::addColumn(ProjectionDescriptor* column) {
-//  ColumnID current = (ColumnID)columns.size();
-//  column->setColumnID(current);
-//  columns[current] = column;
+  //  ColumnID current = (ColumnID)columns.size();
+  //  column->setColumnID(current);
+  //  columns[current] = column;
 }
 // void TableDescriptor::addProjection(vector<ColumnID> id_list){
 //  ProjectionDescriptor* projection=new ProjectionDescriptor();
@@ -131,9 +137,9 @@ bool TableDescriptor::createHashPartitionedProjection(
     vector<ColumnOffset> column_list, ColumnOffset partition_key_index,
     unsigned number_of_partitions) {
   ProjectionID projection_id(table_id_, projection_list_.size());
-  ProjectionDescriptor *projection = new ProjectionDescriptor(projection_id);
+  ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
-//  projection->projection_offset_=projection_list_.size();
+  //  projection->projection_offset_=projection_list_.size();
   for (unsigned i = 0; i < column_list.size(); i++) {
     projection->addAttribute(attributes[column_list[i]]);
   }
@@ -141,21 +147,21 @@ bool TableDescriptor::createHashPartitionedProjection(
   PartitionFunction* hash_function =
       PartitionFunctionFactory::createGeneralModuloFunction(
           number_of_partitions);
-//  projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
+  //  projection->partitioner=new
+  //  Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
   projection->DefinePartitonier(number_of_partitions,
                                 attributes[partition_key_index], hash_function);
 
   projection_list_.push_back(projection);
   return true;
-
 }
 bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute(
     std::string partition_attribute_name, unsigned number_of_partitions) {
   ProjectionID projection_id(table_id_, projection_list_.size());
-  ProjectionDescriptor *projection = new ProjectionDescriptor(projection_id);
+  ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
-//  projection->projection_offset_=projection_list_.size();
-//  projection->addAttribute(attributes[0]);
+  //  projection->projection_offset_=projection_list_.size();
+  //  projection->addAttribute(attributes[0]);
 
   for (unsigned i = 0; i < attributes.size(); i++) {
     projection->addAttribute(attributes[i]);
@@ -164,7 +170,8 @@ bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute(
   PartitionFunction* hash_function =
       PartitionFunctionFactory::createGeneralModuloFunction(
           number_of_partitions);
-//  projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
+  //  projection->partitioner=new
+  //  Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
   projection->DefinePartitonier(number_of_partitions,
                                 getAttribute2(partition_attribute_name),
                                 hash_function);
@@ -175,12 +182,11 @@ bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute(
 bool TableDescriptor::createHashPartitionedProjection(
     vector<ColumnOffset> column_list, std::string partition_attribute_name,
     unsigned number_of_partitions) {
-
   ProjectionID projection_id(table_id_, projection_list_.size());
-  ProjectionDescriptor *projection = new ProjectionDescriptor(projection_id);
+  ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
-//  projection->projection_offset_=projection_list_.size();
-//  projection->addAttribute(attributes[0]);
+  //  projection->projection_offset_=projection_list_.size();
+  //  projection->addAttribute(attributes[0]);
   for (unsigned i = 0; i < column_list.size(); i++) {
     projection->addAttribute(attributes[column_list[i]]);
   }
@@ -188,7 +194,8 @@ bool TableDescriptor::createHashPartitionedProjection(
   PartitionFunction* hash_function =
       PartitionFunctionFactory::createGeneralModuloFunction(
           number_of_partitions);
-//  projection->partitioner=new Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
+  //  projection->partitioner=new
+  //  Partitioner(number_of_partitions,attributes[partition_key_index],hash_function);
   projection->DefinePartitonier(number_of_partitions,
                                 getAttribute(partition_attribute_name),
                                 hash_function);
@@ -199,11 +206,10 @@ bool TableDescriptor::createHashPartitionedProjection(
 bool TableDescriptor::createHashPartitionedProjection(
     vector<Attribute> attribute_list, std::string partition_attribute_name,
     unsigned number_of_partitions) {
-
   ProjectionID projection_id(table_id_, projection_list_.size());
-  ProjectionDescriptor *projection = new ProjectionDescriptor(projection_id);
+  ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
-//  projection->projection_offset_=projection_list_.size();
+  //  projection->projection_offset_=projection_list_.size();
   projection->addAttribute(attributes[0]);  // add row_id
   for (unsigned i = 0; i < attribute_list.size(); i++) {
     projection->addAttribute(attribute_list[i]);
@@ -212,9 +218,9 @@ bool TableDescriptor::createHashPartitionedProjection(
   PartitionFunction* hash_function =
       PartitionFunctionFactory::createGeneralModuloFunction(
           number_of_partitions);
-//  projection->partitioner = new Partitioner(number_of_partitions,
-//                                            attributes[partition_key_index],
-//                                            hash_function);
+  //  projection->partitioner = new Partitioner(number_of_partitions,
+  //                                            attributes[partition_key_index],
+  //                                            hash_function);
   projection->DefinePartitonier(number_of_partitions,
                                 getAttribute(partition_attribute_name),
                                 hash_function);
@@ -248,8 +254,10 @@ ProjectionDescriptor* TableDescriptor::getProjectoin(
     ProjectionOffset pid) const {
   if (pid >= 0 && pid < projection_list_.size()) {
     return projection_list_.at(pid);
+  } else {
+    LOG(WARNING) << "no projection has been created on this table" << endl;
+    return NULL;
   }
-  return NULL;
 }
 unsigned TableDescriptor::getNumberOfProjection() const {
   return projection_list_.size();
@@ -259,10 +267,10 @@ Attribute TableDescriptor::getAttribute(const std::string& name) const {
   // format of name is colname, not tablename.colname
   stringstream ss;
   ss << tableName.c_str() << "." << name.c_str();
-//  cout<<"partition_name :"<<name<<endl; // for test--by yu
+  //  cout<<"partition_name :"<<name<<endl; // for test--by yu
   for (unsigned i = 0; i < attributes.size(); i++) {
-//    cout<<attributes[i].attrName<<endl; // for test -- by yu
-//    cout<<"--"<<attributes[i].attrName<<"--"<<ss.str()<<endl;
+    //    cout<<attributes[i].attrName<<endl; // for test -- by yu
+    //    cout<<"--"<<attributes[i].attrName<<"--"<<ss.str()<<endl;
     if (attributes[i].attrName == ss.str()) {
       return attributes[i];
     }
@@ -277,7 +285,7 @@ Attribute TableDescriptor::getAttribute2(const std::string& name) const {
   stringstream ss;
   ss << name.c_str();
   for (unsigned i = 0; i < attributes.size(); i++) {
-//    cout<<"--"<<attributes[i].attrName<<endl;
+    //    cout<<"--"<<attributes[i].attrName<<endl;
     if (attributes[i].attrName == ss.str()) {
       return attributes[i];
     }
@@ -309,4 +317,3 @@ unsigned int ProjectionDescriptor::getProjectionCost() const {
 
   return sum;
 }
-

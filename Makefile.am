@@ -20,7 +20,6 @@ endif
 LDADD =  \
 	Test/libtest.a \
 	Test/common/libcommon.a \
-	Test/TestSuit/libtestsuit.a \
 	Test/utility/libutility.a \
 	common/serialization/libserialization.a \
 	Client/libclient.a \

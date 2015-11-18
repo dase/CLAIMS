@@ -49,6 +49,7 @@ const int kFailure = EXIT_FAILURE;
 /* errorno for common  -1 ~ -1000 */
 const int kTypeError = -1;
 const int kNotInit = -2;
+const int EMemoryAllocationFailed = -3;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int kNoTableFound = -1001;

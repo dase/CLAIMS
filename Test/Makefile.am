@@ -45,5 +45,5 @@ libtest_a_SOURCES =
 #	test_adaptiveendpoint.cpp 	test_coordinator.cpp \
 #	test_scdong.cpp
 
-SUBDIRS = TestSuit common utility
-DIST_SUBDIRS = TestSuit common utility
+SUBDIRS =  common utility
+DIST_SUBDIRS =  common utility

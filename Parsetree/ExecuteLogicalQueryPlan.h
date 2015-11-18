@@ -16,6 +16,10 @@
 
 using claims::logical_operator::LogicalOperator;
 
+#define _DELETE_DATA_SUPPORT_
+
+class LogicalOperator;
+
 struct query_result {
   query_result() : result_set(0){};
   ~query_result() { delete result_set; }
@@ -30,6 +34,14 @@ void ExecuteLogicalQueryPlan();
 void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
                              bool &result_flag, string &error_msg, string &info,
                              int fd = 0);
+
+#ifdef _DELETE_DATA_SUPPORT_
+void DeleteData(Catalog *catalog, Node *node, ResultSet *&result_set,
+                bool &result_flag, string &error_msg, string &info);
+
+void InsertDeletedDataIntoTableDEL(string tablename, ResultSet *result_set);
+
+#endif
 
 void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
                  bool &result_flag, string &error_msg, string &info);

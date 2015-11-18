@@ -16,45 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /CLAIMS/stmt_handler/show_exec.h
+ * /CLAIMS/physical_operator/test/delete_filter_test.cpp
  *
- *  Created on: Nov 17, 2015
- *      Author: yuyang
- *		   Email: youngfish93@hotmail.com
+ *  Created on: Nov 5, 2015
+ *      Author: minqi
+ *		   Email: mqzhou@sei.ecnu.edu.cn
  *
  * Description:
  *
  */
 
-#ifndef STMT_HANDLER_SHOW_EXEC_H_
-#define STMT_HANDLER_SHOW_EXEC_H_
+#include "delete_filter_test.h"
 
-#include "../stmt_handler/stmt_exec.h"
-#include "../sql_parser/ast_node/ast_show_stmt.h"
 namespace claims {
-namespace stmt_handler {
-/**
- * @brief
- * @details
- */
-class ShowExec : public StmtExec {
- public:
-  /**
-   * @brief Method description: The executor about show statement.
-   * @param AstNode* stmt   point to AST
-   */
-  ShowExec(AstNode *stmt);  // NOLINT
-  virtual ~ShowExec();
-  /**
-   * @brief the concrete operation of show statement.
-   */
-  RetCode Execute(executed_result *exec_result);
+namespace physical_query_plan {
 
- private:
-  AstShowStmt *show_stmt_ast_;
-};
+DeleteFilterTest::DeleteFilterTest() {
+  // TODO Auto-generated constructor stub
+}
 
-}  // namespace stmt_handler
-}  // namespace claims
+DeleteFilterTest::~DeleteFilterTest() {
+  // TODO Auto-generated destructor stub
+}
 
-#endif  //  STMT_HANDLER_SHOW_EXEC_H_
+} /* namespace physical_query_plan */
+} /* namespace claims */

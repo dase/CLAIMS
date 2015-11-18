@@ -17,6 +17,32 @@
 
 #define HDFS_LOAD
 
+/**
+    This constructor used to delete the data file on local disk or hdfs during drop table 
+*/
+HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, open_flag open_flag_)
+:table_descriptor_(tableDescriptor),open_flag_(open_flag_), block_size(64*1024)
+{
+   //only used for delete data file when drop a table, so assert open_flag_ == DELETE_FILE
+   assert(open_flag_ == DELETE_FILE);
+
+   table_schema = table_descriptor_->getSchema();
+	vector <unsigned> prj_index;
+	for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
+	{
+		projection_schema.push_back(table_descriptor_->getProjectoin(i)->getSchema());
+		vector<string> prj_writepath;
+		prj_writepath.clear();
+		for(int j=0; j<table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions();j++){
+			string path = PartitionID(table_descriptor_->getProjectoin(i)->getProjectionID(),j).getPathAndName();
+			prj_writepath.push_back(path);
+		}
+		writepath.push_back(prj_writepath);
+    }
+
+   
+}
+
 HdfsLoader::HdfsLoader(TableDescriptor* tableDescriptor, const char c_separator, const char r_separator, open_flag open_flag_)
 :table_descriptor_(tableDescriptor), col_separator(c_separator), row_separator(r_separator), open_flag_(open_flag_), block_size(64*1024)
 {
@@ -230,6 +256,28 @@ bool HdfsLoader::insertRecords(){
 	return true;
 }
 
+bool HdfsLoader::DeleteDataFilesForDropTable()
+{
+	if(Config::local_disk_mode) {
+		connector_ = new LocalDiskConnector(writepath);
+	}
+	else {
+		connector_ = new HdfsConnector(writepath);
+	}
+
+    connector_->deleteFiles();
+#if 1
+    if (table_descriptor_->getProjectoin(0)->getPartitioner()->allPartitionBound())
+    {
+		for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
+		{
+			Catalog::getInstance()->getBindingModele()->UnbindingEntireProjection(table_descriptor_->getProjectoin(i)->getPartitioner());
+		}
+	}
+#endif
+    return true;
+}
+
 bool HdfsLoader::load(double sample_rate){
 #ifdef HDFS_LOAD
 	if(Config::local_disk_mode) {
@@ -248,7 +296,7 @@ bool HdfsLoader::load(double sample_rate){
 		{
 			for(int i = 0; i < table_descriptor_->getNumberOfProjection(); i++)
 			{
-				for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
+//				for(int j = 0; j < table_descriptor_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions(); j++)
 				{
 					Catalog::getInstance()->getBindingModele()->UnbindingEntireProjection(table_descriptor_->getProjectoin(i)->getPartitioner());
 				}

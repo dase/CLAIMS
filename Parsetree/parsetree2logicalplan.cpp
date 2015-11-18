@@ -35,6 +35,7 @@
 #include "../logical_operator/logical_project.h"
 #include "../logical_operator/logical_scan.h"
 #include "../logical_operator/logical_sort.h"
+#include "../logical_operator/logical_delete_filter.h"
 #include "../physical_operator/physical_aggregation.h"
 
 using namespace claims::logical_operator;
@@ -306,14 +307,44 @@ static LogicalOperator *where_from2logicalplan(
       Table *node = (Table *)parsetree;
       LogicalOperator *tablescan;
       if (node->issubquery == 0) {
-        tablescan = new LogicalScan(Environment::getInstance()
-                                        ->getCatalog()
-                                        ->getTable(std::string(node->tablename))
-                                        ->getProjectoin(0));  // todo
+        if (NULL !=
+            Environment::getInstance()->getCatalog()->getTable(
+                std::string(node->tablename) + "_DEL")) {
+          LogicalOperator *tablescan_base =
+              new LogicalScan(Environment::getInstance()
+                                  ->getCatalog()
+                                  ->getTable(std::string(node->tablename))
+                                  ->getProjectoin(0));
+          LogicalOperator *tablescan_del = new LogicalScan(
+              Environment::getInstance()
+                  ->getCatalog()
+                  ->getTable(std::string(node->tablename) + "_DEL")
+                  ->getProjectoin(0));
+          Attribute filter_del =
+              Environment::getInstance()
+                  ->getCatalog()
+                  ->getTable(std::string(node->tablename) + "_DEL")
+                  ->getAttribute("row_id_DEL");
+          Attribute filter_base = Environment::getInstance()
+                                      ->getCatalog()
+                                      ->getTable(std::string(node->tablename))
+                                      ->getAttribute("row_id");
+          vector<LogicalDeleteFilter::FilterPair> filter_pair;
+          filter_pair.push_back(
+              LogicalDeleteFilter::FilterPair(filter_del, filter_base));
+          tablescan = new LogicalDeleteFilter(filter_pair, tablescan_del,
+                                              tablescan_base);
+        } else {
+          tablescan =
+              new LogicalScan(Environment::getInstance()
+                                  ->getCatalog()
+                                  ->getTable(std::string(node->tablename))
+                                  ->getProjectoin(0));  // todo
 
-        //				// change for selecting best projection
-        //				tablescan=new
-        // LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->get_table_id());//
+          //				// change for selecting best projection
+          //				tablescan=new
+          // LogicalScan(Environment::getInstance()->getCatalog()->getTable(std::string(node->tablename))->get_table_id());//
+        }
       } else  // need to modify the output_schema_attrname from the subquery to
               // the form of subquery's alias.attrname
       {
