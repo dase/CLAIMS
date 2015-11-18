@@ -76,15 +76,15 @@ RetCode DropTableExec::Execute(executed_result* exec_result) {
         cout << tablename + " is dropped from this database!" << endl;
         exec_result->info = "drop table successfully!";
 
-#if 0
+#if 1
         // drop table_DEL couple with table.
         {
-          TableDescriptor *table_desc_DEL =
+          TableDescriptor* table_desc_DEL =
               Environment::getInstance()->getCatalog()->getTable(tablename +
                                                                  "_DEL");
           Environment::getInstance()->getCatalog()->drop_table(
               tablename + "_DEL", table_desc_DEL->get_table_id());
-          HdfsLoader *Hl =
+          HdfsLoader* Hl =
               new HdfsLoader(table_desc_DEL, (open_flag)(DELETE_FILE));
           Hl->DeleteDataFilesForDropTable();
 
