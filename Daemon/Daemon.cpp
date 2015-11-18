@@ -130,7 +130,8 @@ void* Daemon::worker(void* para) {
 #else
     StmtHandler* stmt_handler = new StmtHandler(rc.cmd);
     stmt_handler->Execute(&result);
-    LOG(INFO) << "the result of after running sql: status: " << result.status
+    LOG(INFO) << "the result of after running sql: " << rc.cmd
+              << " status: " << result.status
               << "error info: " << result.error_info << " info: " << result.info
               << endl;
 

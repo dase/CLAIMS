@@ -4926,7 +4926,8 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
             yyvsp)[YYFILL((4) - (6))].yystate.yysemantics.yysval.intval),
           (((yyGLRStackItem const *)
             yyvsp)[YYFILL((6) - (6))].yystate.yysemantics.yysval.intval),
-          NULL);
+          (((yyGLRStackItem const *)
+            yyvsp)[YYFILL((5) - (6))].yystate.yysemantics.yysval.ast_node));
     } break;
 
     case 287:

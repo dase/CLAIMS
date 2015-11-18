@@ -53,10 +53,10 @@ RetCode ShowExec::Execute(executed_result* exec_result) {
   int ret = rSuccess;
   ostringstream ostr;
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
-  int table_count = local_catalog->getTableCount();
+  // int table_count = local_catalog->getTableCount();
   switch (show_stmt_ast_->show_type_) {
     case 1: {
-      ostr << "TABLES:   Num = " << table_count << endl;
+      ostr << "TABLES: " << endl;  //   Num = " << table_count << endl;
       local_catalog->getTables(ostr);
       // for (unsigned i = 0; i < table_count; ++i) {
       //   ostr << "    " << local_catalog->getTable(i)->getTableName() << endl;
