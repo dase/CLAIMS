@@ -256,6 +256,9 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   double total_add_time = 0;
   string tuple_record;
 
+  /* store the validity of every column data, the extra 2 validity is used for
+   * too many columns and too few columns
+   */
   void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
   if (tuple_buffer == NULL) return rNoMemory;
 
@@ -287,24 +290,95 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       //      endl;
 
       GETCURRENTTIME(start_check_time);
-      vector<unsigned> warning_indexs;
+      vector<Validity> columns_validities;
       memset(tuple_buffer, 0, table_schema_->getTupleMaxSize());
-      if (!CheckAndToValue(tuple_record, tuple_buffer, RawDataSource::kFile,
-                           warning_indexs)) {
-        ostringstream oss;
-        oss << "The data in " << file_name << ":" << row_id_in_file
-            << " line is invalid " << std::endl;
-        LOG(ERROR) << oss.str();
-        result->SetError(oss.str());
-        return rInvalidInsertData;
+      if (rSuccess !=
+          (ret = CheckAndToValue(tuple_record, tuple_buffer,
+                                 RawDataSource::kFile, columns_validities))) {
+        /**
+         * contain error, but not include data error.
+         * when loading from file, all invalid data will be treated as warning
+         * and set default
+         */
+        ELOG(ret, "Data is in file name: " << file_name
+                                           << "  Line: " << row_id_in_file);
+        return ret;
       }
-      for (auto it : warning_indexs) {
-        ostringstream oss;
-        oss << "Data truncated from " << table_->getAttribute(it).attrName
-            << " at line: " << row_id_in_file << " in file: " << file_name
-            << "\n";
-        result->AppendWarning(oss.str());
-        LOG(WARNING) << oss.str();
+      // only handle data warnings, because of no data error
+      ostringstream oss;
+      for (auto it : columns_validities) {
+        //        switch (it.check_res_) {
+        //          case rTooLargeData: {
+        //            oss << "Data larger than range value for column '"
+        //                << table_->getAttribute(it.column_index_).attrName
+        //                << "' at line: " << row_id_in_file << " in file: " <<
+        //                file_name
+        //                << "\n";
+        //            break;
+        //          }
+        //          case rTooSmallData: {
+        //            oss << "Data smaller than range value for column '"
+        //                << table_->getAttribute(it.column_index_).attrName
+        //                << "' at line: " << row_id_in_file << " in file: " <<
+        //                file_name
+        //                << "\n";
+        //            break;
+        //          }
+        //          case rTooLongData: {
+        //            oss << "Data truncated from non-digit for column '"
+        //                << table_->getAttribute(it.column_index_).attrName
+        //                << "' at line: " << row_id_in_file << " in file: " <<
+        //                file_name
+        //                << "\n";
+        //            break;
+        //          }
+        //          case rInterruptedData: {
+        //            oss << "Data truncated for column '"
+        //                << table_->getAttribute(it.column_index_).attrName
+        //                << "' at line: " << row_id_in_file << " in file: " <<
+        //                file_name
+        //                << "\n";
+        //            break;
+        //          }
+        //          case rIncorrectData: {
+        //            oss << "Incorrect digit value for column '"
+        //                << table_->getAttribute(it.column_index_).attrName
+        //                << "' at line: " << row_id_in_file << " in file: " <<
+        //                file_name
+        //                << "\n";
+        //            break;
+        //          }
+        //          case rInvalidNullData: {
+        //            oss << "Null Data value is invalid for column '"
+        //                << table_->getAttribute(it.column_index_).attrName
+        //                << "' at line: " << row_id_in_file << " in file: " <<
+        //                file_name
+        //                << "\n";
+        //            break;
+        //          }
+        //          case rTooFewColumn: {
+        //            oss << "Line: " << row_id_in_file << " in file: " <<
+        //            file_name
+        //                << " doesn't contain data for all columns\n";
+        //            break;
+        //          }
+        //          case rTooManyColumn: {
+        //            oss << "Line: " << row_id_in_file << " in file: " <<
+        //            file_name
+        //                << " was truncated; it contained more data than there
+        //                were "
+        //                   "input columns\n";
+        //            break;
+        //          }
+        //          default:
+        //            LOG(ERROR) << "Unknown ERROR" << endl;
+        //            break;
+        //        }
+
+        string validity_info = GenerateDataValidityInfo(
+            it, oss, table_, row_id_in_file, file_name);
+        LOG(WARNING) << validity_info;
+        result->AppendWarning(validity_info);
       }
       total_check_time += GetElapsedTime(start_check_time);
 
@@ -380,7 +454,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
                           "failed to prepare initialization info");
   ret = connector_->Open(kAppendFile);
   if (rSuccess != ret) {
-    LOG(ERROR) << " failed to open connector. ret:" << ret << endl;
+    ELOG(ret, "");
     return ret;
   }
   row_id_ = table_->getRowNumber();
@@ -392,8 +466,6 @@ RetCode DataInjector::InsertFromString(const string tuples,
   vector<void*> correct_tuple_buffer;
 
   while (string::npos != (cur = tuples.find('\n', prev_cur))) {
-    ++line;
-
     string tuple_record = tuples.substr(prev_cur, cur);
     LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
@@ -401,32 +473,69 @@ RetCode DataInjector::InsertFromString(const string tuples,
         ret, AddRowIdColumn(tuple_record),
         "failed to add row_id column for tuple. ret:" << ret);
 
-    vector<unsigned> warning_indexs;
+    vector<Validity> columns_validities;
     void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
     if (tuple_buffer == NULL) return rNoMemory;
-    if (!CheckAndToValue(tuple_record, tuple_buffer, RawDataSource::kSQL,
-                         warning_indexs)) {
-      // eliminate the side effect of AddRowIdColumn() in row_id_
+    if (rSuccess != CheckAndToValue(tuple_record, tuple_buffer,
+                                    RawDataSource::kSQL, columns_validities)) {
+      // contain data error, which is stored in the end of columns_validities
+
+      // eliminate the side effect in row_id_
       row_id_ -= correct_tuple_buffer.size();
       for (auto it : correct_tuple_buffer) DELETE_PTR(it);
       correct_tuple_buffer.clear();
 
       ostringstream oss;
-      oss << "The data at " << line << " line is invalid " << std::endl;
-      LOG(ERROR) << oss.str();
-      result->SetError(oss.str());
+      Validity err = columns_validities.back();
+      columns_validities.pop_back();
+
+      // handle all warnings
+      for (auto it : columns_validities) {
+        string validity_info =
+            GenerateDataValidityInfo(it, oss, table_, line, "");
+        result->AppendWarning(validity_info);
+      }
+
+      // handle error
+      //      oss.clear();
+      //      switch (err.check_res_) {
+      //        case rIncorrectData: {
+      //          oss << "Incorrect digit value for column '"
+      //              << table_->getAttribute(err.column_index_).attrName
+      //              << "' at line: " << line << "\n";
+      //          break;
+      //        }
+      //        case rInvalidNullData: {
+      //          oss << "Null Data value is invalid for column '"
+      //              << table_->getAttribute(err.column_index_).attrName
+      //              << "' at line: " << line << "\n";
+      //          break;
+      //        }
+      //        case rTooFewColumn: {
+      //          oss << "Line: " << line << " doesn't contain data for all
+      //          columns\n";
+      //          break;
+      //        }
+      //        case rTooManyColumn: {
+      //          oss << "Line: " << line
+      //              << " was truncated; it contained more data than there were
+      //              "
+      //                 "input columns\n";
+      //          break;
+      //        }
+      //        default:
+      //          LOG(ERROR) << "Unknown ERROR" << endl;
+      //      }
+      string validity_info =
+          GenerateDataValidityInfo(err, oss, table_, line, "");
+      LOG(ERROR) << validity_info;
+      result->SetError(validity_info);
       return rInvalidInsertData;
     }
 
     correct_tuple_buffer.push_back(tuple_buffer);
-    for (auto it : warning_indexs) {
-      ostringstream oss;
-      oss << "Data truncated from " << table_->getAttribute(it).attrName
-          << " at line: " << line << "\n";
-      result->AppendWarning(oss.str());
-      LOG(WARNING) << oss.str();
-    }
     ++row_id_;
+    ++line;
     prev_cur = cur + 1;
   }
 
@@ -552,7 +661,8 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
                      partition_key_addr,
                      partition_functin_list_[i]->getNumberOfPartitions());
 
-  //  DLOG(INFO) << "insert tuple into projection: " << i << ", partition: " <<
+  //  DLOG(INFO) << "insert tuple into projection: " << i << ",
+  //  partition: " <<
   //  part
   //             << endl;
   ++tuples_per_partition[i][part];
@@ -584,7 +694,8 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
 
 /**
  * for every projection, get sub tuple according to projection schema,
- * write into the partition block whose id equal to the tuple's partition key
+ * write into the partition block whose id equal to the tuple's
+ * partition key
  * if the block is full, write to real data file in HDFS/disk.
  */
 RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
@@ -597,22 +708,23 @@ RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
 
 /**
  * TODO(ANYONE):
- * if called by load/append from files, always return true and set all value
+ * if called by load/append from files, always return true and set all
+ * value
  * that is invalid to default value
- * if called by insert from SQL, return true or false depending on whether there
+ * if called by insert from SQL, return true or false depending on
+ * whether there
  * is invalid data value
  */
-inline bool DataInjector::CheckAndToValue(string tuple_string,
-                                          void* tuple_buffer,
-                                          RawDataSource raw_data_source,
-                                          vector<unsigned>& warning_indexs) {
+inline RetCode DataInjector::CheckAndToValue(
+    string tuple_string, void* tuple_buffer, RawDataSource raw_data_source,
+    vector<Validity>& columns_validities) {
   if (tuple_string.length() == 0) {
     LOG(ERROR) << "The tuple record is null!\n";
     return false;
   }
-  bool success =
+  RetCode success =
       table_schema_->CheckAndToValue(tuple_string, tuple_buffer, col_separator_,
-                                     raw_data_source, warning_indexs);
+                                     raw_data_source, columns_validities);
 
   //  DLOG(INFO) << "text : " << tuple_string << endl;
   //  DLOG(INFO) << "tuple: ";
@@ -645,6 +757,93 @@ istream& DataInjector::GetTupleTerminatedBy(ifstream& ifs, string& res,
     }
   }
   return ifs;
+}
+
+const char* validity_info[9][2] = {
+    {"Data larger than range value for column '%s' at line: %d\n",
+     "Data larger than range value for column '%s' at line: %d in file:%s\n"},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}};
+
+string DataInjector::GenerateDataValidityInfo(const Validity& vali,
+                                              ostringstream& oss,
+                                              TableDescriptor* table, int line,
+                                              const string& file) {
+  oss.clear();
+  switch (vali.check_res_) {
+    case rTooLargeData: {
+      oss << "Data larger than range value for column '"
+          << table_->getAttribute(vali.column_index_).attrName
+          << "' at line: " << line;
+      if ("" != file) oss << " in file: " << file;
+      oss << "\n";
+      break;
+    }
+    case rTooSmallData: {
+      oss << "Data smaller than range value for column '"
+          << table_->getAttribute(vali.column_index_).attrName
+          << "' at line: " << line;
+      if ("" != file) oss << " in file: " << file;
+      oss << "\n";
+      break;
+    }
+    case rTooLongData: {
+      oss << "Data truncated from non-digit for column '"
+          << table_->getAttribute(vali.column_index_).attrName
+          << "' at line: " << line;
+      if ("" != file) oss << " in file: " << file;
+      oss << "\n";
+      break;
+    }
+    case rInterruptedData: {
+      oss << "Data truncated for column '"
+          << table_->getAttribute(vali.column_index_).attrName
+          << "' at line: " << line;
+      if ("" != file) oss << " in file: " << file;
+      oss << "\n";
+      break;
+    }
+    case rIncorrectData: {
+      oss << "Incorrect digit value for column '"
+          << table_->getAttribute(vali.column_index_).attrName
+          << "' at line: " << line;
+      if ("" != file) oss << " in file: " << file;
+      oss << "\n";
+      break;
+    }
+    case rInvalidNullData: {
+      oss << "Null Data value is invalid for column '"
+          << table_->getAttribute(vali.column_index_).attrName
+          << "' at line: " << line;
+      if ("" != file) oss << " in file: " << file;
+      oss << "\n";
+      break;
+    }
+    case rTooFewColumn: {
+      oss << "Line: " << line;
+      if ("" != file) oss << " in file: " << file;
+      oss << " doesn't contain data for all columns\n";
+      break;
+    }
+    case rTooManyColumn: {
+      oss << "Line: " << line;
+      if ("" != file) oss << " in file: " << file;
+      oss << " was truncated; it contained more data than there were "
+             "input columns\n";
+      break;
+    }
+    default:
+      LOG(ERROR) << "Unknown ERROR" << endl;
+      oss << "Unknown ERROR\n";
+      break;
+  }
+  return oss.str();
 }
 
 /*RetCode DataInjector::HandleSingleLine(string tuple_record, void*
@@ -689,7 +888,8 @@ tuple_buffer,
   ret = InsertSingleTuple(tuple_buffer);
 
   if (kSuccess != ret)
-    LOG(ERROR) << "failed to insert tuple in " << data_source << ": line "
+    LOG(ERROR) << "failed to insert tuple in " << data_source << ": line
+"
                << row_id_in_raw_data << "" << std::endl;
   tuple_record.clear();
 }*/

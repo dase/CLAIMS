@@ -15,10 +15,13 @@
 #include <string>
 #include <algorithm>
 #include <vector>
-#include "../../utility/Timer.h"
-#include "../../loader/data_injector.h"
 
+#include "../../loader/data_injector.h"
+#include "../../utility/Timer.h"
+#include "../common/error_define.h"
 using claims::loader::DataInjector;
+using claims::common::rTooFewColumn;
+using claims::common::rTooManyColumn;
 
 SchemaFix::SchemaFix(const std::vector<column_type>& col) : Schema(col) {
   //	accum_offsets=new unsigned[columns.size()];	//new
@@ -78,40 +81,68 @@ int SchemaFix::getColumnOffset(unsigned index) const {
  * int Check(const string& raw_string), 返回0:success, 1: warning, 2: error
  * void SetDefault(string& raw_string) 设置源数据为默认值
  */
-bool SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
-                                const string attr_separator,
-                                RawDataSource raw_data_source,
-                                vector<unsigned>& warning_columns_index) {
+
+RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
+                                   const string attr_separator,
+                                   RawDataSource raw_data_source,
+                                   vector<Validity>& columns_validities) {
+  int ret = rSuccess;
   string::size_type prev_pos = 0;
   string::size_type pos = 0;
-  warning_columns_index.clear();
+  string text_column;
+  columns_validities.clear();
 
+  /**
+   * let's think : '|' is column separator, '\n' is line separator
+   * data format is always: xxx|xxx|xxx|......xxx|\n
+   */
   GETCURRENTTIME(to_value_func_time_);
   for (int i = 0; i < columns.size(); ++i) {
     GETCURRENTTIME(get_substr_time);
     pos = text_tuple.find(attr_separator, prev_pos);
 
-    int actual_column_data_length = pos - prev_pos;
-    string text_column = text_tuple.substr(prev_pos, pos - prev_pos);
-    DataInjector::total_get_substr_time_ += GetElapsedTime(get_substr_time);
-
-    // TODO(yukai, lizhifang): should be implemented by Operate.Check()
-    /*
-     * check the real data size of column whose type is string and choose the
-     * minimum, and set the last char of string to '\0'
-     */
-    GETCURRENTTIME(check_string_time);
-    if (0 == strcmp(typeid(*(columns[i].operate)).name(),
-                    typeid(OperateString).name())) {
-      int column_max_length = columns[i].size - 1;
-
-      if (actual_column_data_length > column_max_length) {
-        LOG(WARNING) << "Data truncated for column " << i << std::endl;
-        text_column = text_tuple.substr(prev_pos, column_max_length) + "\0 ";
-        warning_columns_index.push_back(i);
+    if (string::npos == pos) {  // the first column without data
+      ret = rTooFewColumn;
+      columns_validities.push_back(Validity(-1, ret));
+      if (kSQL == raw_data_source) {  // treated as error
+        ELOG(ret, "Data  from File is lost  from column whose index is " << i);
+        return ret;
+      } else {  // treated as warning
+        WLOG(ret, "Data  from File is lost  from column whose index is " << i);
+        columns[i].operate->SetDefault(text_column);  // no more need to check
+        prev_pos = string::npos;
+        ret = rSuccess;
       }
+    } else if (string::npos == prev_pos) {  // not the first column without data
+      prev_pos = string::npos;
+      columns[i].operate->SetDefault(text_column);  // no more need to check
+      ret = rSuccess;
+    } else {  // correct
+      text_column = text_tuple.substr(prev_pos, pos - prev_pos);
+      prev_pos = pos + 1;
+
+      GETCURRENTTIME(check_string_time);
+      ret = columns[i].operate->CheckSet(text_column);
+      if (rIncorrectData == ret || rInvalidNullData == ret) {  // error
+        if (kSQL == raw_data_source) {  // treated as error
+          columns_validities.push_back(Validity(i, ret));
+          ELOG(ret, "Data from SQL is for column whose index is " << i);
+          return ret;
+        } else {  // treated as warning and set default
+          columns_validities.push_back(Validity(i, ret));
+          columns[i].operate->SetDefault(text_column);
+          ret = rSuccess;
+        }
+      } else if (rSuccess != ret) {  // warning
+        columns_validities.push_back(Validity(i, ret));
+        columns[i].operate->SetDefault(text_column);
+        ret = rSuccess;
+      }
+      DataInjector::total_check_string_time_ +=
+          GetElapsedTime(check_string_time);
     }
-    DataInjector::total_check_string_time_ += GetElapsedTime(check_string_time);
+    DataInjector::total_get_substr_time_ += GetElapsedTime(get_substr_time);
+    DLOG(INFO) << "Before toValue, column data is " << text_column << endl;
 
     GETCURRENTTIME(to_value_time);
     columns[i].operate->toValue(
@@ -124,12 +155,23 @@ bool SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
     //               << columns[i].operate->toString(binary_tuple +
     //               accum_offsets[i])
     //               << endl;
-    prev_pos = pos + 1;
     DataInjector::total_to_value_time_ += GetElapsedTime(to_value_time);
   }
   DataInjector::total_to_value_func_time_ +=
       GetElapsedTime(to_value_func_time_);
-  return true;
+
+  if (string::npos == prev_pos) {  // too many column data
+    if (kSQL == raw_data_source) {
+      ret = rTooManyColumn;
+      columns_validities.push_back(Validity(-1, ret));
+      ELOG(ret, "");
+      return ret;
+    } else {
+      columns_validities.push_back(Validity(-1, ret));
+      WLOG(ret, "");
+    }
+  }
+  return ret;
 }
 
 // TODO(ANYONE): implement this method, which is used when it is sure that the

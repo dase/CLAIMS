@@ -65,9 +65,10 @@ RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
   int ret = rSuccess;
   open_flag_ = open_flag;
   file_name_ = file_name;
-  if (kCreateFile != open_flag && false == CanAccess(file_name_)) {
+  if (kReadFile == open_flag && false == CanAccess(file_name_)) {
     ret = rAccessHdfsFileFail;
-    ELOG(ret, "File name:" << file_name_);
+    ELOG(ret, "File name:" << file_name_
+                           << " open mode:" << file_open_flag_info[open_flag]);
     return ret;
   }
 

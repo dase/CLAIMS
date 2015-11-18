@@ -18,6 +18,9 @@
 #include "dmalloc.h"
 #endif
 #include "./Schema.h"
+
+using claims::loader::Validity;
+
 class SchemaFix : public Schema {
  public:
   SchemaFix(const std::vector<column_type>& columns);
@@ -63,9 +66,10 @@ class SchemaFix : public Schema {
    * @param warning_columns_index: the index of columns that have warning
    * @return true only if there is no error
    */
-  bool CheckAndToValue(std::string text_tuple, void* binary_tuple,
-               const string attr_separator, RawDataSource raw_data_source,
-               vector<unsigned>& warning_columns_index);
+  RetCode CheckAndToValue(std::string text_tuple, void* binary_tuple,
+                          const string attr_separator,
+                          RawDataSource raw_data_source,
+                          vector<Validity>& columns_validities);
   inline void showAccum_off() {
     for (int i = 0; i < accum_offsets.size(); i++) {
       printf("%d  %d\n", i, accum_offsets[i]);

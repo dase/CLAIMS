@@ -31,7 +31,8 @@ libloader_a_SOURCES = \
 	data_injector.cpp \
 	data_injector.h 				file_connector.h \
 	single_file_connector.cpp 		single_file_connector.h \
-	table_file_connector.cpp 		table_file_connector.h 
+	table_file_connector.cpp 		table_file_connector.h  \
+	validity.h 						validity.cpp
 
 SUBDIRS = test
 DIST_SUBDIRS = test

@@ -32,7 +32,7 @@ using claims::common::rTooLargeData;
 using claims::common::rTooLongData;
 using claims::common::rInterruptedData;
 using claims::common::rIncorrectData;
-using claims::common::rInvaildNullData;
+using claims::common::rInvalidNullData;
 using claims::common::kErrorMessage;
 
 using namespace boost::gregorian;
@@ -337,9 +337,9 @@ class OperateInt : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (!isdigit(str[0]) && str[0] != '-') {
       LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
@@ -447,9 +447,9 @@ class OperateFloat : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (!isdigit(str[0]) && str[0] != '-') {
       LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
@@ -557,9 +557,9 @@ class OperateDouble : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (str == double_max && !nullable) return rSuccess;
     if (!isdigit(str[0]) && str[0] != '-') {
@@ -675,9 +675,9 @@ class OperateULong : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (str == ulong_max && !nullable) return rSuccess;
     if (!isdigit(str[0]) && str[0] != '-') {
@@ -797,9 +797,9 @@ class OperateString : public Operate {
     RetCode ret = rSuccess;
     if (str[0] == NULL_STRING && nullable) return rSuccess;
     if (str[0] == NULL_STRING && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (str.length() > size) {
       LOG(WARNING) << "[CheckSet]: [" << kErrorMessage[rTooLongData] << "] for "
@@ -907,9 +907,9 @@ class OperateDate : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (str.length() == 8) {
       for (auto i = str.begin(); i != str.end(); i++)
@@ -1046,9 +1046,9 @@ class OperateTime : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (str.length() != 15) {
       LOG(ERROR) << "[CheckSet]:" << kErrorMessage[rIncorrectData] << "] for "
@@ -1160,9 +1160,9 @@ class OperateDatetime : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (str.length() != 26) {
       LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
@@ -1272,9 +1272,9 @@ class OperateSmallInt : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (!isdigit(str[0]) && str[0] != '-') {
       LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
@@ -1384,9 +1384,9 @@ class OperateUSmallInt : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (!isdigit(str[0]) && str[0] != '-') {
       LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "
@@ -1540,9 +1540,9 @@ class OperateDecimal : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     return ret;
   }
@@ -1630,9 +1630,9 @@ class OperateBool : public Operate {
     RetCode ret = rSuccess;
     if (str == "" && nullable) return rSuccess;
     if (str == "" && !nullable) {
-      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvaildNullData]
+      LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rInvalidNullData]
                  << "] for " << str << endl;
-      return rInvaildNullData;
+      return rInvalidNullData;
     }
     if (str != "false" && str != "true") {
       LOG(ERROR) << "[CheckSet]: [" << kErrorMessage[rIncorrectData] << "] for "

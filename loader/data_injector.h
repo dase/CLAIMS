@@ -35,6 +35,7 @@
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/hash.h"
 #include "../catalog/table.h"
+#include "validity.h"
 
 class SubTuple;
 class Block;
@@ -104,9 +105,9 @@ class DataInjector {
    * @param warning_indexs: store the index of columns which have warning
    * @return true if tuple is not valid even though there are some warnings
    */
-  inline bool CheckAndToValue(string tuple_string, void* tuple_buffer,
+  inline RetCode CheckAndToValue(string tuple_string, void* tuple_buffer,
                                  RawDataSource raw_data_source,
-                                 vector<unsigned>& warning_indexs);
+                                 vector<Validity>& columns_validities);
 
   /**
    * @brief Method description: add row_id column value
@@ -134,6 +135,10 @@ class DataInjector {
   RetCode HandleSingleLine(string tuple_record, void* tuple_buffer,
                            string data_source, uint64_t row_id_in_raw_data,
                            ExecutedResult* result);
+
+  string GenerateDataValidityInfo(const Validity& vali, ostringstream& oss,
+                                  TableDescriptor* table, int line,
+                                  const string& file);
 
  public:
   static istream& GetTupleTerminatedBy(ifstream& ifs, string& res,

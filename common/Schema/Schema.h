@@ -16,6 +16,9 @@
 #include "dmalloc.h"
 #endif
 #include "../data_type.h"
+#include "../../loader/validity.h"
+
+using claims::loader::Validity;
 
 enum RawDataSource { kFile = 0, kSQL };
 
@@ -55,10 +58,10 @@ class Schema {
   /**
    * @brief Method description: see more in its derived class
    */
-  virtual bool CheckAndToValue(std::string text_tuple, void* binary_tuple,
-                       const string attr_separator,
-                       RawDataSource raw_data_source,
-                       vector<unsigned>& warning_columns_index) {
+  virtual RetCode CheckAndToValue(std::string text_tuple, void* binary_tuple,
+                                  const string attr_separator,
+                                  RawDataSource raw_data_source,
+                                  vector<Validity>& columns_validities) {
     assert(false);
   }
   inline virtual void showAccum_off(){};

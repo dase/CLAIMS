@@ -286,8 +286,9 @@ void *ClientListener::receiveHandler(void *para) {
                                          buf);
             }
 
-            //					strcpy(buf, "select row_id from trade
-            //limit
+            //					strcpy(buf, "select row_id from
+            // trade
+            // limit
             // 100;\0");
 
             assert(buffer_size > nread);
@@ -302,8 +303,9 @@ void *ClientListener::receiveHandler(void *para) {
             //						stop = true;
             //						printf("Shut Down!\n");
             //					} else {
-            //						printf("Failed query from
-            //client
+            //						printf("Failed query
+            // from
+            // client
             //%d.\n",
             //								server->m_clientFds[i]);
             //					}
@@ -752,10 +754,16 @@ void *ClientListener::sendHandler(void *para) {
       // OK
       if (result.result_ == NULL) {
         // DDL return true
-        cliRes.setChange(result.info_);
+        if ("" == result.warning_)
+          cliRes.setChange(result.info_);
+        else
+          cliRes.setChange(result.info_ + "\n\nWARNINGS:" + result.warning_ +
+                           "\n");
         ClientListenerLogging::log(
-            "to send change response-- status:%d  length:%d  content:%s",
-            cliRes.status, cliRes.length, cliRes.content.c_str());
+            "to send change response-- status:%d  length:%d  content:%s "
+            "warnings: %s",
+            cliRes.status, cliRes.length, cliRes.content.c_str(),
+            result.warning_.c_str());
         server->write(result.fd_, cliRes);
       } else {
         if (client_type::java == server->client_type_) {
@@ -817,10 +825,16 @@ void *ClientListener::sendHandler(void *para) {
       }
     } else {
       // ERROR
-      cliRes.setError(result.error_info_);
+      if ("" == result.warning_)
+        cliRes.setError(result.error_info_);
+      else
+        cliRes.setError(result.error_info_ + "\n\nWARNINGS:" + result.warning_ +
+                        "\n");
       ClientListenerLogging::log(
-          "to send err response-- status:%d  length:%d  content:%s",
-          cliRes.status, cliRes.length, cliRes.content.c_str());
+          "to send err response-- status:%d  length:%d  content:%s"
+          "warnings: %s",
+          cliRes.status, cliRes.length, cliRes.content.c_str(),
+          result.warning_.c_str());
       server->write(result.fd_, cliRes);
       printf("send error packet ok\n");
     }
@@ -938,7 +952,7 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, ExecutedResult &res) {
 //&sockLen)) >= 0) {
 //
 //						printf("open communication with
-//client,
+// client,
 //%d\n",
 //								clientSockFd);
 //						m_clientFds[m_num++] =
@@ -960,8 +974,9 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, ExecutedResult &res) {
 //
 //					ioctl(m_clientFds[i], FIONREAD, &nread);
 //					if (0 == nread) {
-//						//TODO does here means a client close
-//the
+//						//TODO does here means a client
+// close
+// the
 // connection with server?
 //						printf("retained!!!\n");
 //						FD_CLR(m_clientFds[i],
@@ -975,11 +990,12 @@ void ClientListener::sendJsonPacket(ClientResponse &cr, ExecutedResult &res) {
 //					read(m_clientFds[i], buf, nread);
 //
 //					int retCode =
-//answerRequest(m_clientFds[i],
+// answerRequest(m_clientFds[i],
 // buf);
 //					if (1 == retCode) {
-//						printf("Successfully answer query
-//from
+//						printf("Successfully answer
+// query
+// from
 // client %d.\n",
 //								m_clientFds[i]);
 //					} else if (-1 == retCode) {
@@ -1033,19 +1049,19 @@ int ClientListener::write(const int fd, const ClientResponse &res) const {
   //	ret = ::write(fd,buffer,length);
   //	if (ret < 0) {
   //		ClientLogging::elog("when send to fd %d, send buffer failed.%s",
-  //fd,
+  // fd,
   // strerror(errno));
   //		if (EBADF == errno) {
   //			FileClose(fd);
   //			removeClient(fd);
   //			ClientLogging::log("-----for debug:close fd %d in
-  //write()\n",
+  // write()\n",
   // fd);
   //		}
   //	}
   //	else if (length <= 1000) {
   ////		printf("Server: %d bytes:%d\t%d\t%s is send!\n", ret,
-  ///res.status,
+  /// res.status,
   /// res.length, res.content.c_str());
   //		printf("Server: %d bytes:%d\t%d\t is send!\n", ret, res.status,
   // res.length);
