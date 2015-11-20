@@ -31,6 +31,8 @@
 
 #include "./ast_node.h"
 #include "../../common/expression/expr_node.h"
+#include "../../logical_operator/logical_operator.h"
+using claims::logical_operator::LogicalOperator;
 using std::string;
 using std::vector;
 // namespace claims {

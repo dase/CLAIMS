@@ -48,13 +48,16 @@ using claims::physical_operator::Expander;
 using claims::physical_operator::PhysicalDeleteFilter;
 using claims::physical_operator::PhysicalOperatorBase;
 using claims::physical_operator::PhysicalHashJoin;
+using std::vector;
 
 namespace claims {
 namespace logical_operator {
+
 LogicalDeleteFilter::LogicalDeleteFilter(
     std::vector<FilterPair> filterpair_list, LogicalOperator* left_input,
     LogicalOperator* right_input)
-    : filterkey_pair_list_(filterpair_list),
+    : LogicalOperator(kLogicalDeleteFilter),
+      filterkey_pair_list_(filterpair_list),
       left_child_(left_input),
       right_child_(right_input),
       filter_policy_(kNull),
@@ -82,8 +85,10 @@ LogicalDeleteFilter::~LogicalDeleteFilter() {
 }
 
 PlanContext LogicalDeleteFilter::GetPlanContext() {
+  lock_->acquire();
   if (NULL != dataflow_) {
-    // the data flow has been generated already*/
+    // the data flow has been computed*/
+    lock_->release();
     return *dataflow_;
   }
 
@@ -313,7 +318,7 @@ PlanContext LogicalDeleteFilter::GetPlanContext() {
   }
   dataflow_ = new PlanContext();
   *dataflow_ = ret;
-
+  lock_->release();
   return ret;
 }
 
@@ -818,36 +823,7 @@ PlanPartitioner LogicalDeleteFilter::DecideOutputDataflowProperty(
   ret.set_partition_func(partition_function);
   return ret;
 }
-void LogicalDeleteFilter::Print(int level) const {
-  printf("%*.sEqualJoin:", level * 8, " ");
-  switch (filter_policy_) {
-    case kNoRepartition: {
-      printf("no_repartition\n");
-      break;
-    }
-    case kLeftRepartition: {
-      printf("left_repartition\n");
-      break;
-    }
-    case kRightRepartition: {
-      printf("right_repartition!\n");
-      break;
-    }
-    case kCompleteRepartition: {
-      printf("complete_repartition!\n");
-      break;
-    }
-    default: { printf("not given!\n"); }
-  }
-  for (unsigned i = 0; i < this->filterkey_pair_list_.size(); i++) {
-    printf("%*.s", level * 8, " ");
-    printf("%s=%s\n",
-           filterkey_pair_list_[i].left_filter_attr_.attrName.c_str(),
-           filterkey_pair_list_[i].right_filter_attr_.attrName.c_str());
-  }
-  left_child_->Print(level + 1);
-  right_child_->Print(level + 1);
-}
+
 double LogicalDeleteFilter::PredictFilterSelectivity(
     const PlanContext& left_dataflow, const PlanContext& right_dataflow) const {
   /**
@@ -939,6 +915,50 @@ double LogicalDeleteFilter::PredictFilterSelectivityOnSingleJoinAttributePair(
             << std::endl;
   return ret;
 }
-
+void LogicalDeleteFilter::Print(int level = 0) const {
+  cout << setw(level * kTabSize) << " "
+       << "Delete_filer:" << endl;
+  ++level;
+  switch (filter_policy_) {
+    case kNoRepartition: {
+      cout << setw(level * kTabSize) << " "
+           << "no_repartition" << endl;
+      break;
+    }
+    case kLeftRepartition: {
+      cout << setw(level * kTabSize) << " "
+           << "left_repartition" << endl;
+      break;
+    }
+    case kRightRepartition: {
+      cout << setw(level * kTabSize) << " "
+           << "right_repartition!" << endl;
+      break;
+    }
+    case kCompleteRepartition: {
+      cout << setw(level * kTabSize) << " "
+           << "complete_repartition!" << endl;
+      break;
+    }
+    case kLeftBroadcast: {
+      cout << setw(level * kTabSize) << " "
+           << "Left Broadcast!" << endl;
+      break;
+    }
+    default: {
+      cout << setw(level * kTabSize) << " "
+           << "not given!" << endl;
+    }
+  }
+  for (unsigned i = 0; i < this->filterkey_pair_list_.size(); i++) {
+    cout << setw(level * kTabSize) << " "
+         << filterkey_pair_list_[i].left_filter_attr_.attrName
+         << filterkey_pair_list_[i].right_filter_attr_.attrName << endl;
+    cout << endl;
+  }
+  --level;
+  left_child_->Print(level);
+  right_child_->Print(level);
+}
 }  // namespace logical_operator
 }  // namespace claims

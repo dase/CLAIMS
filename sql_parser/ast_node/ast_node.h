@@ -118,7 +118,8 @@ enum AstNodeType {
   AST_APPROXNUM,
   AST_STRINGVAL,
   AST_BOOL,
-  AST_SHOW_STMT
+  AST_SHOW_STMT,
+  AST_DELETE_STMT
 };
 enum ErrorNoType {
   rSuccess = 0,

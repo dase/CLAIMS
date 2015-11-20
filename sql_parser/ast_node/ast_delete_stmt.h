@@ -16,38 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /CLAIMS/stmt_handler/select_exec.h
+ * /CLAIMS/sql_parser/ast_node/ast_delete_stmt.h
  *
- *  Created on: Sep 23, 2015
- *      Author: fzh
- *       Email: fzhedu@gmail.com
+ *  Created on: Nov 19, 2015
+ *      Author: yuyang
+ *		   Email: youngfish93@hotmail.com
  *
  * Description:
  *
  */
 
-#ifndef STMT_HANDLER_SELECT_EXEC_H_
-#define STMT_HANDLER_SELECT_EXEC_H_
-#include <string>
+#ifndef SQL_PARSER_AST_NODE_AST_DELETE_STMT_H_
+#define SQL_PARSER_AST_NODE_AST_DELETE_STMT_H_
 
-#include "../stmt_handler/delete_stmt_exec.h"
-#include "../stmt_handler/stmt_exec.h"
-#include "../stmt_handler/stmt_handler.h"
+#include "../ast_node/ast_node.h"
 
-using std::string;
-namespace claims {
-namespace stmt_handler {
-class SelectExec : public StmtExec {
-  friend class DeleteStmtExec;
+// namespace claims {
+// namespace ast_node {
 
+class AstDeleteStmt : public AstNode {
  public:
-  SelectExec(AstNode* stmt);  // NOLINT
-  virtual ~SelectExec();
-  RetCode Execute(executed_result* exec_result);
+  AstDeleteStmt(AstNodeType ast_node_type, AstNode* from_list,
+                AstNode* where_list, int options);
+  virtual ~AstDeleteStmt();
+  void Print(int level = 0) const;
 
- private:
-  AstSelectStmt* select_ast_;
+  AstNodeType ast_node_type_;
+  AstNode* from_list_;
+  AstNode* where_list_;
+  int options_;
 };
-}  // namespace stmt_handler
-}  // namespace claims
-#endif  //  STMT_HANDLER_SELECT_EXEC_H_
+
+// } /* namespace ast_node */
+// } /* namespace claims */
+
+#endif  //  SQL_PARSER_AST_NODE_AST_DELETE_STMT_H_

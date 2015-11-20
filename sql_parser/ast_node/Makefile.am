@@ -36,6 +36,7 @@ LDADD =	../../Executor/libexecutor.a \
 noinst_LIBRARIES=libast_node.a
 
 libast_node_a_SOURCES = \
+    ast_delete_stmt.cpp          ast_delete.h  \
 	ast_show_stmt.cpp           ast_show_stmt.h \
 	ast_select_stmt.cpp			ast_select_stmt.h \
 	ast_create_stmt.cpp			ast_create_stmt.h \

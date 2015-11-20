@@ -47,6 +47,7 @@
 #include "../../logical_operator/logical_scan.h"
 #include "../../logical_operator/logical_sort.h"
 #include "../../logical_operator/logical_subquery.h"
+#include "../../logical_operator/logical_delete_filter.h"
 
 #include "../ast_node/ast_expr_node.h"
 #include "../ast_node/ast_node.h"
@@ -61,6 +62,7 @@ using claims::logical_operator::LogicalProject;
 using claims::logical_operator::LogicalScan;
 using claims::logical_operator::LogicalSort;
 using claims::logical_operator::LogicalSubquery;
+using claims::logical_operator::LogicalDeleteFilter;
 
 using std::bitset;
 using std::endl;
@@ -393,11 +395,42 @@ ErrorNo AstTable::PushDownCondition(PushDownConditionContext* pdccnxt) {
 // TODO(FZH) diver table_name_ to LogicalScan
 ErrorNo AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
   ErrorNo ret = rSuccess;
-  logic_plan = new LogicalScan(Environment::getInstance()
-                                   ->getCatalog()
-                                   ->getTable(table_name_)
-                                   ->getProjectoin(0),
-                               table_alias_);
+
+  //
+  // TODO(xiaozhou): judge del is null or not
+  if (NULL !=
+      Environment::getInstance()->getCatalog()->getTable(table_name_ +
+                                                         "_DEL")) {
+    LogicalOperator* base_table = new LogicalScan(Environment::getInstance()
+                                                      ->getCatalog()
+                                                      ->getTable(table_name_)
+                                                      ->getProjectoin(0),
+                                                  table_alias_);
+    Attribute filter_base =
+        base_table->GetPlanContext().GetAttribute(table_alias_ + ".row_id");
+    LogicalOperator* del_table =
+        new LogicalScan(Environment::getInstance()
+                            ->getCatalog()
+                            ->getTable(table_name_ + "_DEL")
+                            ->getProjectoin(0),
+                        table_alias_ + "_DEL");
+    Attribute filter_del = del_table->GetPlanContext().GetAttribute(
+        table_alias_ + "_DEL.row_id_DEL");
+
+    assert(filter_base.attrName != "NULL");
+    assert(filter_del.attrName != "NULL");
+    vector<LogicalDeleteFilter::FilterPair> filter_pair;
+    filter_pair.push_back(
+        LogicalDeleteFilter::FilterPair(filter_del, filter_base));
+    logic_plan = new LogicalDeleteFilter(filter_pair, del_table, base_table);
+
+  } else {
+    logic_plan = new LogicalScan(Environment::getInstance()
+                                     ->getCatalog()
+                                     ->getTable(table_name_)
+                                     ->getProjectoin(0),
+                                 table_alias_);
+  }
   if (equal_join_condition_.size() > 0) {
     LOG(ERROR) << "equal join condition shouldn't occur in a single table!"
                << endl;
@@ -423,7 +456,6 @@ ErrorNo AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
   }
   return rSuccess;
 }
-
 AstSubquery::AstSubquery(AstNodeType ast_node_type, std::string subquery_alias,
                          AstNode* subquery)
     : AstNode(ast_node_type),
@@ -459,8 +491,10 @@ ErrorNo AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
   SemanticContext sub_sem_cnxt;
   //  // subquery_alias_ == existed_table?
   //  if (NULL !=
-  //      Environment::getInstance()->getCatalog()->getTable(subquery_alias_)) {
-  //    LOG(ERROR) << "subquery's alias couldn't equal to table that's exist in
+  //      Environment::getInstance()->getCatalog()->getTable(subquery_alias_))
+  //      {
+  //    LOG(ERROR) << "subquery's alias couldn't equal to table that's exist
+  //    in
   //    DB"
   //               << endl;
   //    return eTableAliasEqualExistedTable;
@@ -1172,7 +1206,8 @@ void AstColumn::RecoverExprName(string& name) {
 }
 
 /**
- * because GetRefTable from where clause, so there couldn't be AST_COLUMN_ALL or
+ * because GetRefTable from where clause, so there couldn't be AST_COLUMN_ALL
+ * or
  * AST_COLUMN_ALL_ALL
  * relation_name_=="NULL" is illegal, but "NULL_MID" means for aggregation, so
  * it's legal
@@ -1303,7 +1338,8 @@ ErrorNo AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       LOG(ERROR) << "select list has error" << endl;
       return ret;
     }
-    // collecting aggregation and replace a aggregation expression to one column
+    // collecting aggregation and replace a aggregation expression to one
+    // column
     AstNode* agg_column = NULL;
     select_list_->ReplaceAggregation(agg_column, agg_attrs_, true);
 

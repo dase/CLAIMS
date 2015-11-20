@@ -76,7 +76,9 @@ class PhysicalDeleteFilter : public PhysicalOperator {
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
       ar& child_left_& child_right_& input_schema_left_& input_schema_right_&
-          output_schema_& hashtable_schema_;
+          output_schema_& hashtable_schema_& filter_key_base_&
+              filter_key_deleted_& payload_base_& payload_deleted_&
+                  hashtable_bucket_num_& hashtable_bucket_size_& block_size_;
     }
 
    public:
