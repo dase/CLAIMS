@@ -78,15 +78,6 @@ Attribute PlanContext::GetAttribute(std::string name) const {
       return attribute_list_[i];
     }
   }
-  //  if (name.find('.') >= name.size()) {
-  //    for (unsigned i = 0; i < attribute_list_.size(); i++) {
-  //      if (attribute_list_[i].attrName.substr(
-  //              attribute_list_[i].attrName.find('.') + 1) == name) {
-  //        return attribute_list_[i];
-  //      }
-  //    }
-  //  }
-  assert(false);
   LOG(WARNING) << "Failed to find attribute " << name.c_str() << std::endl;
   return Attribute(ATTRIBUTE_NULL);
 }

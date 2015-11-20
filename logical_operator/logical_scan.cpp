@@ -314,7 +314,7 @@ void LogicalScan::Print(int level) const {
        << "table name: "
        << Catalog::getInstance()
               ->getTable(target_projection_->getProjectionID().table_id)
-              ->getTableName() << endl << "alias: " << table_alias_ << endl;
+              ->getTableName() << "   alias: " << table_alias_ << endl;
 }
 
 }  // namespace logical_operator

@@ -39,22 +39,30 @@ using namespace claims::common;
 namespace claims {
 namespace physical_operator {
 
-PhysicalDeleteFilter::PhysicalDeleteFilter() {
-  // TODO Auto-generated constructor stub
-}
-
-PhysicalDeleteFilter::PhysicalDeleteFilter(State state)
-    : state_(state),
+PhysicalDeleteFilter::PhysicalDeleteFilter()
+    : PhysicalOperator(barrier_number(2), serialized_section_number(1)),
       hash_(NULL),
       hashtable_(NULL),
       hashtable_schema_(NULL),
-      PhysicalOperator(barrier_number(2), serialized_section_number(1)) {
+      eftt_(NULL),
+      memcpy_(NULL),
+      memcat_(NULL) {
   InitExpandedStatus();
 }
 
-PhysicalDeleteFilter::~PhysicalDeleteFilter() {
-  // TODO Auto-generated destructor stub
+PhysicalDeleteFilter::PhysicalDeleteFilter(State state)
+    : PhysicalOperator(barrier_number(2), serialized_section_number(1)),
+      state_(state),
+      hash_(NULL),
+      hashtable_(NULL),
+      hashtable_schema_(NULL),
+      eftt_(NULL),
+      memcpy_(NULL),
+      memcat_(NULL) {
+  InitExpandedStatus();
 }
+
+PhysicalDeleteFilter::~PhysicalDeleteFilter() {}
 
 PhysicalDeleteFilter::State::State(PhysicalOperatorBase* child_left,
                                    PhysicalOperatorBase* child_right,
@@ -80,8 +88,8 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
   startTimer(&timer);
 #endif
 
-  int ret = kSuccess;
   RegisterExpandedThreadToAllBarriers();
+  int ret = kSuccess;
   int64_t timer;
   bool winning_thread = false;
   if (TryEntryIntoSerializedSection(0)) {
@@ -117,34 +125,36 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
 
     // start to create the join expression, based on which it is able to the
     // probe the deleted tuples
-    QNode* expr = createEqualJoinExpression(
-        state_.hashtable_schema_, state_.input_schema_right_,
-        state_.filter_key_deleted_, state_.filter_key_base_);
-    if (NULL == expr) {
-      ret = kSuccess;
-      LOG(ERROR) << "The generation of the enqual join expression for delete "
-                    "filter is failed" << endl;
-    }
-    ticks start = curtick();
-
-    // start to generate the dedicated function, based on which the probe is
-    // eventually acted, including using llvm and the function pointer
-    if (Config::enable_codegen) {
-      eftt_ = getExprFuncTwoTuples(expr, state_.hashtable_schema_,
-                                   state_.input_schema_right_);
-      memcpy_ = getMemcpy(state_.hashtable_schema_->getTupleMaxSize());
-      memcat_ = getMemcat(state_.hashtable_schema_->getTupleMaxSize(),
-                          state_.input_schema_right_->getTupleMaxSize());
-    }
-    if (eftt_) {
-      cff_ = PhysicalDeleteFilter::isMatchCodegen;
-      printf("Codegen(delete filter) succeed(%4.3fms)!\n",
-             getMilliSecond(start));
-    } else {
-      cff_ = PhysicalDeleteFilter::isMatch;
-      printf("Codegen(delete filter) failed!\n");
-    }
-    delete expr;
+    //    QNode* expr = createEqualJoinExpression(
+    //        state_.hashtable_schema_, state_.input_schema_right_,
+    //        state_.filter_key_deleted_, state_.filter_key_base_);
+    //    if (NULL == expr) {
+    //      ret = kSuccess;
+    //      LOG(ERROR) << "The generation of the enqual join expression for
+    //      delete "
+    //                    "filter is failed" << endl;
+    //    }
+    //    ticks start = curtick();
+    //
+    //    // start to generate the dedicated function, based on which the probe
+    //    is
+    //    // eventually acted, including using llvm and the function pointer
+    //    if (Config::enable_codegen) {
+    //      eftt_ = getExprFuncTwoTuples(expr, state_.hashtable_schema_,
+    //                                   state_.input_schema_right_);
+    //      memcpy_ = getMemcpy(state_.hashtable_schema_->getTupleMaxSize());
+    //      memcat_ = getMemcat(state_.hashtable_schema_->getTupleMaxSize(),
+    //                          state_.input_schema_right_->getTupleMaxSize());
+    //    }
+    //    if (eftt_) {
+    //      cff_ = PhysicalDeleteFilter::isMatchCodegen;
+    //      printf("Codegen(delete filter) succeed(%4.3fms)!\n",
+    //             getMilliSecond(start));
+    //    } else {
+    cff_ = PhysicalDeleteFilter::isMatch;
+    //      printf("Codegen(delete filter) failed!\n");
+    //    }
+    //    delete expr;
   }
 
   /**
@@ -202,7 +212,8 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
     }
     dftc->l_block_for_asking_->setEmpty();
   }
-  //  printf("%d cycles per tuple!\n",(curtick()-start)/processed_tuple_count);
+  //  printf("%d cycles per
+  //  tuple!\n",(curtick()-start)/processed_tuple_count);
   unsigned tmp = 0;
 #ifdef _DEBUG_
   tuples_in_hashtable = 0;
@@ -256,7 +267,8 @@ bool PhysicalDeleteFilter::Next(BlockStreamBase* block) {
                       state_.filter_key_base_[0], tuple_from_right_child),
                   state_.hashtable_bucket_num_);
       // hashtable_->placeIterator(dftc->hashtable_iterator_, bn);
-      // if there is no tuple in the bn bucket of the hash table, then the tuple
+      // if there is no tuple in the bn bucket of the hash table, then the
+      // tuple
       // in the base table will be output
       if (NULL ==
           (tuple_in_hashtable = dftc->hashtable_iterator_.readCurrent())) {
@@ -386,11 +398,11 @@ void PhysicalDeleteFilter::Print() {
   printf("Delete Filter: buckets:%d\n", state_.hashtable_bucket_num_);
   LOG(INFO) << "Delete Filter: buckets:%d\n" << state_.hashtable_bucket_num_
             << endl;
-  printf("------Join Left-------\n");
-  LOG(INFO) << "------Join Left-------" << endl;
+  printf("------Delete Filter Left-------\n");
+  LOG(INFO) << "------Delete Filter Left-------" << endl;
   state_.child_left_->Print();
-  printf("------Join Right-------\n");
-  LOG(INFO) << "------Join Right-------" << endl;
+  printf("------Delete Filter Right-------\n");
+  LOG(INFO) << "------Delete Filter Right-------" << endl;
   state_.child_right_->Print();
 }
 

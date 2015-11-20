@@ -5,7 +5,7 @@
 %parse-param { struct ParseResult* result}
 %glr-parser
 %expect 4
-%expect-rr 60
+%expect-rr 61
 %defines
 %{
 #include <stdlib.h>
@@ -25,6 +25,7 @@ using namespace std;
 #include "../ast_node/ast_insert_stmt.h"
 #include "../ast_node/ast_load_stmt.h"
 #include "../ast_node/ast_show_stmt.h"
+#include "../ast_node/ast_delete_stmt.h"
 
 void yyerror(struct ParseResult *pp,const char *s, ...);
 void emit(char *s, ...);
@@ -415,6 +416,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %type <ast_node> opt_ondupupdate  opt_csc
 %type <ast_node> opt_col_names enum_list opt_length
 %type <ast_node> column_atts data_type load_table_stmt
+%type <ast_node> delete_opts delete_list delete_stmt
 
 
 %type <intval> opt_if_exists opt_if_not_exists opt_ignore_replace
@@ -1152,6 +1154,37 @@ opt_bdb: /* nil */
 opt_trans_level: /* nil */	{ $$ = 0; }
    | GLOBAL					{ $$ = 1; }
    | SESSION				{ $$ = 2; }
+   ;
+   
+stmt: delete_stmt { $$ = $1; }
+	;
+delete_stmt: DELETE delete_opts FROM table_references
+    opt_where opt_orderby opt_limit 
+        { $$ = new AstDeleteStmt(AST_DELETE_STMT,$4,$5,$2 );}
+	;
+
+delete_stmt: DELETE delete_opts FROM delete_list USING table_references opt_where
+        { emit("DELETEMULTI %d %d %d", $2, $4, $6); }
+    ;
+
+delete_stmt: DELETE delete_opts
+    delete_list
+    FROM table_references opt_where  {}
+	;
+
+delete_opts: delete_opts LOW_PRIORITY { $$ = $1 + 01; }
+   | delete_opts QUICK { $$ = $1 + 02; }
+   | delete_opts IGNORE { $$ = $1 + 04; }
+   | /* nil */ { $$ = 0; }
+   ;
+
+
+delete_list: NAME opt_dot_star {  }
+   | delete_list ',' NAME opt_dot_star {  }
+   ;
+
+opt_dot_star: /* nil */ 
+   | '.' '*' 
    ;
    
 %%

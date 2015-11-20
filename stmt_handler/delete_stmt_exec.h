@@ -16,38 +16,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /CLAIMS/stmt_handler/select_exec.h
+ * /CLAIMS/stmt_handler/delete_stmt_exec.h
  *
- *  Created on: Sep 23, 2015
- *      Author: fzh
- *       Email: fzhedu@gmail.com
+ *  Created on: Nov 19, 2015
+ *      Author: yuyang
+ *		   Email: youngfish93@hotmail.com
  *
  * Description:
  *
  */
 
-#ifndef STMT_HANDLER_SELECT_EXEC_H_
-#define STMT_HANDLER_SELECT_EXEC_H_
+#ifndef STMT_HANDLER_DELETE_STMT_EXEC_H_
+#define STMT_HANDLER_DELETE_STMT_EXEC_H_
+
 #include <string>
 
-#include "../stmt_handler/delete_stmt_exec.h"
+#include "../common/Block/ResultSet.h"
 #include "../stmt_handler/stmt_exec.h"
-#include "../stmt_handler/stmt_handler.h"
-
+#include "../sql_parser/ast_node/ast_delete_stmt.h"
 using std::string;
+
 namespace claims {
 namespace stmt_handler {
-class SelectExec : public StmtExec {
-  friend class DeleteStmtExec;
 
+class DeleteStmtExec : public StmtExec {
  public:
-  SelectExec(AstNode* stmt);  // NOLINT
-  virtual ~SelectExec();
-  RetCode Execute(executed_result* exec_result);
+  /**
+   * @brief Method description: The executor about delete statement.
+   * @param AstNode* stmt   point to AST
+   */
+  DeleteStmtExec(AstNode *stmt);  // NOLINT
+  virtual ~DeleteStmtExec();
+
+  /**
+   * @brief the concrete operation of delete statement.
+   */
+  RetCode Execute(executed_result *exec_result);
+  void InsertDeletedDataIntoTableDEL(string del_table_name,
+                                     ResultSet *result_set);
 
  private:
-  AstSelectStmt* select_ast_;
+  AstDeleteStmt *delete_stmt_ast_;
 };
-}  // namespace stmt_handler
-}  // namespace claims
-#endif  //  STMT_HANDLER_SELECT_EXEC_H_
+
+} /* namespace stmt_handler */
+} /* namespace claims */
+
+#endif  //  STMT_HANDLER_DELETE_STMT_EXEC_H_

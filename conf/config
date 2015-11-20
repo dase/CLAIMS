@@ -32,7 +32,7 @@ client_listener_port = 10000
 #data="/home/imdb/data/stock/"
  
  
-data="/home/imdb/data/test/"
+data="/home/fish/data/test/"
 #data="/home/imdb/data/POC/"
 #data="/home/imdb/data/POC/"
 #hdfs主节点

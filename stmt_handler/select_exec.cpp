@@ -74,7 +74,7 @@ RetCode SelectExec::Execute(executed_result* exec_result) {
   cout << "--------------begin push down condition ------------" << endl;
 #endif
   select_ast_->PushDownCondition(NULL);
-#ifdef PRINTCONTEXT
+#ifndef PRINTCONTEXT
   select_ast_->Print();
   cout << "--------------begin logical plan -------------------" << endl;
 #endif
@@ -85,13 +85,13 @@ RetCode SelectExec::Execute(executed_result* exec_result) {
   logic_plan = new LogicalQueryPlanRoot(0, logic_plan,
                                         LogicalQueryPlanRoot::kResultCollector);
   logic_plan->GetPlanContext();
-#ifdef PRINTCONTEXT
+#ifndef PRINTCONTEXT
   logic_plan->Print();
   cout << "--------------begin physical plan -------------------" << endl;
 #endif
 
   PhysicalOperatorBase* physical_plan = logic_plan->GetPhysicalPlan(64 * 1024);
-#ifdef PRINTCONTEXT
+#ifndef PRINTCONTEXT
   physical_plan->Print();
   cout << "--------------begin output result -------------------" << endl;
 #endif

@@ -92,6 +92,10 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
       stmt_exec_ = new DropTableExec(stmt_ast);
       break;
     }
+    case AST_DELETE_STMT: {
+      stmt_exec_ = new DeleteStmtExec(stmt_ast);
+      break;
+    }
     default: {
       LOG(ERROR) << "unknow statement type!" << std::endl;
       return rUnknowStmtType;
@@ -109,7 +113,7 @@ RetCode StmtHandler::Execute(executed_result* exec_result) {
     exec_result->result = NULL;
     return rParserError;
   }
-  // raw_ast->Print();
+  raw_ast->Print();
   ret = GenerateStmtExec(raw_ast);
   if (rSuccess != ret) {
     return ret;
