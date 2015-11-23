@@ -38,11 +38,11 @@
 namespace claims {
 namespace common {
 
-const int kErrorMaxNumber = 10000;
+const int kErrorMaxNumber = 100000;
 static const char* kErrorMessage[kErrorMaxNumber];
 
-const int kSuccess = EXIT_SUCCESS;
-const int kFailure = EXIT_FAILURE;
+const int rSuccess = EXIT_SUCCESS;
+const int rFailure = EXIT_FAILURE;
 
 /* errorno begin from here   */
 
@@ -82,6 +82,41 @@ const int kStmtHandlerLoadDataSuccess = -14006;
 const int kStmtHandlerTableNotExistDuringInsert = -14007;
 const int kStmtHandlerInsertDataSuccess = -14008;
 const int kStmtHandlerInsertNoValue = -14009;
+
+const int rTableNotExist = -14100;
+const int rTableillegal = -14101;
+const int rTableAliasEqualExistedTable = -14102;
+const int rTableAliasEqualLowerAlias = -14103;
+const int rColumnNotExist = -14104;
+const int rColumnIsAmbiguous = -14105;
+const int rTabelHaveNotColumn = -14106;
+const int rColumnAliasIsAmbiguous = -14107;
+const int rColumnIsAmbiguousAfterAlias = -14108;
+const int rColumnIsAmbiguousToExistedColumn = -14109;
+const int rUnaryArgNotExist = -14110;
+const int rFromClauseIsNULL = -14111;
+const int rSelectClauseIsNULL = -14112;
+const int rGroupbyListIsNULL = -14113;
+const int rGroupByNotSupportColumn = -141014;
+const int rAggNodeExprStrIsNULL = -14115;
+const int rGroupbyNodeExprStrIsNULL = -14116;
+const int rSelectNodeExprStrIsNULL = -14117;
+const int rAliasConfictInSelectNode = -14118;
+const int rAggHaveAgg = -14119;
+const int rAggCouldNotInWhereClause = -14120;
+const int rAggCouldNotInGroupByClause = -14121;
+const int rAggSelectExprHaveOtherColumn = -14122;
+const int rHavingNotAgg = -14123;
+const int rTableNotExistInTableColumnALL = -14124;
+const int rColumnAllShouldNotInOtherClause = -14125;
+const int rMoreColumnsInSelectHaveALLALL = -14126;
+const int rRightTableIsNULLInJoin = -14127;
+const int rLeftTableIsNULLInJoin = -14128;
+const int rNoDataTypeInConst = -14129;
+const int rEqualJoinCondiInATable = -14130;
+const int rEqualJoinCondiNotMatch = -14131;
+const int rTableAlreadyExist = -14132;
+const int rNoTalbeFound = -14133;
 }  // end namespace common
 }  // end namespace claims
 

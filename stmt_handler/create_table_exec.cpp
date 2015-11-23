@@ -28,6 +28,7 @@
  */
 
 #include <assert.h>
+#include <string>
 #include "../Environment.h"
 #include "../stmt_handler/create_table_exec.h"
 #include "../common/error_define.h"
@@ -42,19 +43,13 @@ namespace stmt_handler {
  */
 #define NEWRESULT
 CreateTableExec::CreateTableExec(AstNode* stmt) : StmtExec(stmt) {
-  // TODO Auto-generated constructor stub
   assert(stmt_);
   result_flag_ = true;
   createtable_ast_ = dynamic_cast<AstCreateTable*>(stmt_);
   if (!createtable_ast_->additional_name_.empty()) {
     tablename_ = createtable_ast_->additional_name_;
-  } else if (!createtable_ast_->table_name_.empty()) {
-    tablename_ = createtable_ast_->table_name_;
   } else {
-    error_msg_ = "No table name during creating table!";
-    LOG(ERROR) << "No table name during creating table!" << std::endl;
-    result_flag_ = false;
-    result_set_ = NULL;
+    tablename_ = createtable_ast_->table_name_;
   }
   if (!tablename_.empty()) {
     table_desc_ =
@@ -62,9 +57,7 @@ CreateTableExec::CreateTableExec(AstNode* stmt) : StmtExec(stmt) {
   }
 }
 
-CreateTableExec::~CreateTableExec() {
-  // TODO Auto-generated destructor stub
-}
+CreateTableExec::~CreateTableExec() {}
 /**
  * @brief create a table by the AST.
  * @detail check whether the table we have created or not.
@@ -76,21 +69,29 @@ CreateTableExec::~CreateTableExec() {
  * @return a result code cooperate with the client.
  */
 RetCode CreateTableExec::Execute(executed_result* exec_result) {
-  int ret = rSuccess;
+  SemanticContext sem_cnxt;
+  RetCode ret = createtable_ast_->SemanticAnalisys(&sem_cnxt);
+  if (rSuccess != ret) {
+    exec_result->error_info = "semantic analysis error";
+    exec_result->status = false;
+    LOG(ERROR) << "semantic analysis error result= : " << ret;
+    cout << "semantic analysis error result= : " << ret << endl;
+    return ret;
+  }
+
   string tablename_del;
   tablename_del = tablename_ + "_DEL";
+#ifdef sem_cnxt
   if (isTableExist()) {
     exec_result->status = false;
     result_flag_ = false;
-    // result_set_ = NULL;
-    // error_msg_ =
-    //     "The table " + tablename_ + " has existed during creating table!";
     exec_result->error_info =
         "The table " + tablename_ + " has existed during creating table!";
     LOG(ERROR) << "The table " + tablename_ +
                       " has existed during creating table!" << std::endl;
     ret = claims::common::kStmtHandlerTableExistDuringCreate;
   } else {
+#endif
     table_desc_ = new TableDescriptor(
         tablename_,
         Environment::getInstance()->getCatalog()->allocate_unique_table_id());
@@ -110,7 +111,8 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
         AstColumnAtts* column_atts =
             dynamic_cast<AstColumnAtts*>(data->col_atts_);
 
-        /* TODO: Whether column is unique or has default value is not finished,
+        /* TODO: Whether column is unique or has default value is not
+         * finished,
          *  because there are no supports
          */
         AstDataType* datatype = dynamic_cast<AstDataType*>(data->data_type_);
@@ -389,8 +391,9 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
       ret = common::kStmtHandlerCreateTableSuccess;
 #endif
     }
+#ifdef sem_cnxt
   }
-
+#endif
   return ret;
 }
 

@@ -114,7 +114,7 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
         generated_filter_function_ =
             getExprFunc(state_.qual_[0], state_.schema_);
 
-        if (kSuccess == DecideFilterFunction(generated_filter_function_)) {
+        if (rSuccess == DecideFilterFunction(generated_filter_function_)) {
           filter_function_ = ComputeFilterWithGeneratedCode;
           LOG(INFO) << "CodeGen (partial feature) succeeds!("
                     << getMilliSecond(start) << "ms)" << std::endl;
@@ -332,7 +332,7 @@ ThreadContext* PhysicalFilter::CreateContext() {
 int PhysicalFilter::DecideFilterFunction(
     expr_func const& generate_filter_function) {
   if (generate_filter_function) {
-    return kSuccess;
+    return rSuccess;
   } else {
     return kCodegenFailed;
   }

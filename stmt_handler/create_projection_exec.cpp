@@ -32,6 +32,7 @@
 #include <assert.h>  // NOLINT
 #include "../stmt_handler/create_projection_exec.h"
 #include "../Environment.h"
+#include "../../common/error_define.h"
 using std::vector;
 
 namespace claims {
@@ -47,62 +48,29 @@ CreateProjectionExec::CreateProjectionExec(AstNode* stmt) : StmtExec(stmt) {
 CreateProjectionExec::~CreateProjectionExec() {}
 
 RetCode CreateProjectionExec::Execute(executed_result* exec_result) {
-  int ret = rSuccess;
+  RetCode ret = rSuccess;
+  vector<ColumnOffset> index;
+  index.push_back(0);
+
+  SemanticContext sem_cnxt;
+  ret = create_projection_ast_->SemanticAnalisys(&sem_cnxt, index);
+  if (rSuccess != ret) {
+    exec_result->error_info = "semantic analysis error";
+    exec_result->status = false;
+    LOG(ERROR) << "semantic analysis error result= : " << ret;
+    cout << "semantic analysis error result= : " << ret << endl;
+    return ret;
+  }
+
   int partition_num = create_projection_ast_->partition_num_;
   string tablename = create_projection_ast_->table_name_;
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
   TableDescriptor* table =
       local_catalog->getTable(create_projection_ast_->table_name_);
 
-  if (NULL == table) {
-    exec_result->error_info = "There is no table named " +
-                              create_projection_ast_->table_name_ +
-                              " during creating projection";
-    exec_result->status = false;
-    exec_result->result = NULL;
-    LOG(ERROR) << "There is no table named "
-               << create_projection_ast_->table_name_
-               << " during creating projection";
-    // TODO(yuyang): add error number
-    return rParserError;
-  }
-
   TableID table_id = table->get_table_id();
   string partition_attribute_name =
       create_projection_ast_->partition_attribute_name_;
-
-  vector<ColumnOffset> index;
-  index.push_back(0);
-  AstColumn* col_list =
-      dynamic_cast<AstColumn*>(create_projection_ast_->column_list_);
-  string colname;
-  while (col_list) {
-    if ("NULL" != col_list->column_name_) {
-      colname = col_list->column_name_;
-    } else if ("NULL" != col_list->relation_name_) {
-      colname = col_list->relation_name_;
-    } else {
-      exec_result->error_info = "No column name during creating projection.";
-      exec_result->status = false;
-      exec_result->result = NULL;
-      // TODO(yuyang): add error number
-      return rParserError;
-      break;
-    }
-    cout << tablename + "." + colname << endl;
-    if (table->isExist(tablename + "." + colname)) {
-      index.push_back(table->getAttribute(colname).index);
-    } else {
-      exec_result->error_info =
-          "The column " + colname + "is not existed during creating projection";
-      exec_result->status = false;
-      exec_result->result = NULL;
-      // TODO(yuyang): add error number
-      return rParserError;
-      break;
-    }
-    col_list = dynamic_cast<AstColumn*>(col_list)->next_;
-  }
 
   local_catalog->getTable(table_id)->createHashPartitionedProjection(
       index, partition_attribute_name, partition_num);
@@ -154,7 +122,7 @@ RetCode CreateProjectionExec::Execute(executed_result* exec_result) {
   exec_result->result = NULL;
   exec_result->info = "create projection successfully";
 
-  return rSuccess;
+  return ret;
 }
 
 } /* namespace stmt_handler */

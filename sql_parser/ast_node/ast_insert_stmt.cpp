@@ -30,7 +30,8 @@
 #include <iomanip>
 #include <string>
 #include <bitset>
-
+#include "../../common/error_define.h"
+using namespace claims::common;  // NOLINT
 using std::cout;
 using std::endl;
 using std::cin;

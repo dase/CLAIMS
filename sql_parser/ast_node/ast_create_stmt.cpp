@@ -28,14 +28,23 @@
 #include <iomanip>
 #include <string>
 #include <bitset>
-#include "../ast_node/ast_create_stmt.h"
 
+#include <glog/logging.h>
+#include <vector>
+#include "../ast_node/ast_create_stmt.h"
+#include "./ast_select_stmt.h"
+#include "../../Catalog/Catalog.h"
+#include "../../Catalog/table.h"
+#include "../../Environment.h"
+#include "../../common/error_define.h"
+using namespace claims::common;
 using std::cout;
 using std::endl;
 using std::cin;
 using std::string;
 using std::setw;
 using std::bitset;
+using std::vector;
 // namespace claims {
 // namespace sql_parser {
 AstCreateDatabase::AstCreateDatabase(AstNodeType ast_node_type, int create_type,
@@ -67,6 +76,24 @@ AstCreateTable::AstCreateTable(AstNodeType ast_node_type, int create_type,
 AstCreateTable::~AstCreateTable() {
   delete col_list_;
   delete select_stmt_;
+}
+
+RetCode AstCreateTable::SemanticAnalisys(SemanticContext* sem_cntx) {
+  int ret = rSuccess;
+  if ((!additional_name_.empty()) && !(table_name_.empty())) {
+    ret = rTableNotExist;
+    LOG(ERROR) << "No table name during creating table!" << std::endl;
+    return rTableNotExist;
+  }
+  Catalog* local_catalog = Environment::getInstance()->getCatalog();
+  TableDescriptor* table = local_catalog->getTable(table_name_);
+  if (table != NULL) {
+    ret = rTableNotExist;
+    LOG(ERROR) << "The table " + table_name_ +
+                      " has existed during creating table!" << std::endl;
+    return rTableAlreadyExist;
+  }
+  return ret;
 }
 
 void AstCreateTable::Print(int level) const {
@@ -166,6 +193,47 @@ AstCreateProjection::AstCreateProjection(AstNodeType ast_node_type,
       partition_attribute_name_(partition_attribute_name) {}
 
 AstCreateProjection::~AstCreateProjection() { delete column_list_; }
+
+RetCode AstCreateProjection::SemanticAnalisys(SemanticContext* sem_cnxt,
+                                              vector<ColumnOffset>& index) {
+  RetCode ret = rSuccess;
+  Catalog* local_catalog = Environment::getInstance()->getCatalog();
+  TableDescriptor* table = local_catalog->getTable(table_name_);
+
+  if (NULL == table) {
+    ret = rTableNotExist;
+    LOG(ERROR) << "There is no table named " << table_name_
+               << " during creating projection";
+    return ret;
+  }
+
+  AstColumn* col_list = dynamic_cast<AstColumn*>(this->column_list_);
+  string colname;
+  while (col_list) {
+    if ("NULL" != col_list->column_name_) {
+      colname = col_list->column_name_;
+    } else if ("NULL" != col_list->relation_name_) {
+      colname = col_list->relation_name_;
+    } else {
+      LOG(ERROR) << "No column name during creating projection.";
+      ret = rColumnNotExist;
+      return ret;
+      break;
+    }
+    cout << table_name_ + "." + colname << endl;
+    if (table->isExist(table_name_ + "." + colname)) {
+      index.push_back(table->getAttribute(colname).index);
+    } else {
+      LOG(ERROR) << "The column " + colname +
+                        "is not existed during creating projection";
+      ret = rColumnNotExist;
+      return ret;
+      break;
+    }
+    col_list = dynamic_cast<AstColumn*>(col_list)->next_;
+  }
+  return ret;
+}
 
 void AstCreateProjection::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
