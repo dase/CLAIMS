@@ -33,6 +33,7 @@
 #include "../stmt_handler/drop_table_exec.h"
 #include "../Environment.h"
 #include "../Loader/Hdfsloader.h"
+
 using std::vector;
 namespace claims {
 namespace stmt_handler {
@@ -45,7 +46,18 @@ DropTableExec::DropTableExec(AstNode* stmt) : StmtExec(stmt) {
 DropTableExec::~DropTableExec() {}
 
 RetCode DropTableExec::Execute(executed_result* exec_result) {
-  int ret = rSuccess;
+  RetCode ret = rSuccess;
+
+  SemanticContext sem_cnxt;
+  ret = drop_table_ast_->SemanticAnalisys(&sem_cnxt);
+  if (rSuccess != ret) {
+    exec_result->error_info = "semantic analysis error";
+    exec_result->status = false;
+    LOG(ERROR) << "semantic analysis error result= : " << ret;
+    cout << "semantic analysis error result= : " << ret << endl;
+    return ret;
+  }
+
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
   AstDropTableList* table_list =
       dynamic_cast<AstDropTableList*>(drop_table_ast_->table_list_);
@@ -53,21 +65,25 @@ RetCode DropTableExec::Execute(executed_result* exec_result) {
     string tablename;
     if ("" != table_list->table_name_) {
       tablename = table_list->table_name_;
+#ifdef sem_cnxt
     } else {
       exec_result->error_info =
-          "No table name or invalid name during creating table!";
+          "No table name or invalid name during dropping table!";
       exec_result->status = false;
       exec_result->result = NULL;
       return rParserError;
       break;
     }
+#endif
     TableDescriptor* table_desc = local_catalog->getTable(tablename);
+#ifdef sem_cnxt
     if (NULL == table_desc) {
       exec_result->error_info = "table [" + tablename + "] is not exist!";
       exec_result->status = false;
       exec_result->result = NULL;
       return rParserError;
     } else {
+#endif
       if (local_catalog->drop_table(tablename, table_desc->get_table_id())) {
         HdfsLoader* Hl = new HdfsLoader(table_desc, (open_flag)(DELETE_FILE));
         Hl->DeleteDataFilesForDropTable();
@@ -107,7 +123,7 @@ RetCode DropTableExec::Execute(executed_result* exec_result) {
   exec_result->status = true;
   exec_result->result = NULL;
 
-  return rSuccess;
+  return ret;
 }
 } /* namespace stmt_handler */
 } /* namespace claims */

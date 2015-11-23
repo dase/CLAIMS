@@ -47,11 +47,11 @@ class AstSelectList : public AstNode {
                 AstNode* next);
   ~AstSelectList();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
 
   bool is_all_;
   AstNode* args_;
@@ -65,7 +65,7 @@ class AstSelectExpr : public AstNode {
   AstSelectExpr(AstNodeType ast_node_type, string expr_alias, AstNode* expr);
   ~AstSelectExpr();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
@@ -83,9 +83,9 @@ class AstFromList : public AstNode {
   AstFromList(AstNodeType ast_node_type, AstNode* args, AstNode* next);
   ~AstFromList();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode PushDownCondition(PushDownConditionContext* pdccnxt);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
 
   map<string, AstNode*> table_joined_root;
   AstNode* args_;
@@ -105,9 +105,9 @@ class AstTable : public AstNode {
            string table_alias);
   ~AstTable();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode PushDownCondition(PushDownConditionContext* pdccnxt);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
 
   set<AstNode*> equal_join_condition_;
   set<AstNode*> normal_condition_;
@@ -128,9 +128,9 @@ class AstSubquery : public AstNode {
               AstNode* subquery);
   ~AstSubquery();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode PushDownCondition(PushDownConditionContext* pdccnxt);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
 
   string subquery_alias_;
   AstNode* subquery_;
@@ -146,7 +146,7 @@ class AstJoinCondition : public AstNode {
                    AstNode* condition);
   ~AstJoinCondition();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   string join_condition_type_;
   AstNode* condition_;
 };
@@ -161,9 +161,9 @@ class AstJoin : public AstNode {
           AstNode* right_table, AstNode* join_condition);
   ~AstJoin();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode PushDownCondition(PushDownConditionContext* pdccnxt);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
 
   string join_type_;
   AstNode* left_table_;
@@ -180,7 +180,7 @@ class AstWhereClause : public AstNode {
   AstWhereClause(AstNodeType ast_node_type, AstNode* expr);
   ~AstWhereClause();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   AstNode* expr_;
 };
@@ -194,9 +194,9 @@ class AstGroupByList : public AstNode {
   void Print(int level = 0) const;
   // TODO(FZH) need to support expression and be sure group attributes are
   // different from each other
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* expr_;
   AstNode* next_;
@@ -210,9 +210,9 @@ class AstGroupByClause : public AstNode {
                    bool with_roolup);
   ~AstGroupByClause();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstGroupByList* groupby_list_;
   bool with_roolup_;
 };
@@ -225,11 +225,11 @@ class AstOrderByList : public AstNode {
                           int orderby_type, AstNode* next);
   ~AstOrderByList();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstNode* expr_;
   string orderby_direction_;
   AstNode* next_;
@@ -242,12 +242,12 @@ class AstOrderByClause : public AstNode {
   AstOrderByClause(AstNodeType ast_node_type, AstNode* orderby_list);
   ~AstOrderByClause();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstOrderByList* orderby_list_;
 };
 /**
@@ -258,12 +258,12 @@ class AstHavingClause : public AstNode {
   AstHavingClause(AstNodeType ast_node_type, AstNode* expr);
   ~AstHavingClause();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstNode* expr_;
 };
 /**
@@ -275,7 +275,7 @@ class AstLimitClause : public AstNode {
                  AstNode* row_count);
   ~AstLimitClause();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
 
   AstNode* offset_;
   AstNode* row_count_;
@@ -303,12 +303,12 @@ class AstColumn : public AstNode {
   explicit AstColumn(AstColumn* node);
   ~AstColumn();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+  RetCode GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstNode* AstNodeCopy();
   string relation_name_;
   string column_name_;
@@ -336,11 +336,11 @@ class AstSelectStmt : public AstNode {
                 AstNode* select_into_clause);
   ~AstSelectStmt();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
-  ErrorNo GetLogicalPlanOfAggeration(LogicalOperator*& logic_plan);
-  ErrorNo GetLogicalPlanOfProject(LogicalOperator*& logic_plan);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode PushDownCondition(PushDownConditionContext* pdccnxt);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode GetLogicalPlanOfAggeration(LogicalOperator*& logic_plan);
+  RetCode GetLogicalPlanOfProject(LogicalOperator*& logic_plan);
 
   string select_str_;
   SelectOpts select_opts_;

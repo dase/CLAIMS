@@ -89,7 +89,7 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
 #endif
 
   RegisterExpandedThreadToAllBarriers();
-  int ret = kSuccess;
+  int ret = rSuccess;
   int64_t timer;
   bool winning_thread = false;
   if (TryEntryIntoSerializedSection(0)) {
@@ -129,7 +129,7 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
     //        state_.hashtable_schema_, state_.input_schema_right_,
     //        state_.filter_key_deleted_, state_.filter_key_base_);
     //    if (NULL == expr) {
-    //      ret = kSuccess;
+    //      ret = rSuccess;
     //      LOG(ERROR) << "The generation of the enqual join expression for
     //      delete "
     //                    "filter is failed" << endl;

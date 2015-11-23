@@ -42,6 +42,8 @@
 #include "../../common/expression/expr_binary.h"
 #include "../../common/expression/expr_ternary.h"
 #include "../../common/expression/expr_unary.h"
+#include "../../common/error_define.h"
+using namespace claims::common;  // NOLINT
 
 using claims::common::ExprBinary;
 using claims::common::ExprNodeType;
@@ -76,8 +78,8 @@ void AstExprConst::Print(int level) const {
 AstNode* AstExprConst::AstNodeCopy() { return new AstExprConst(this); }
 
 // TODO(FZH) be strict to the type of const
-ErrorNo AstExprConst::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = rSuccess;
+RetCode AstExprConst::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
   if (expr_type_ == "CONST_INT") {
   } else if (expr_type_ == "CONST_DOUBLE") {
   } else if (expr_type_ == "CONST_STRING") {
@@ -95,7 +97,7 @@ void AstExprConst::ReplaceAggregation(AstNode*& agg_column,
   agg_column = NULL;
 }
 
-ErrorNo AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
+RetCode AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
                                      LogicalOperator* child_logic_plan) {
   data_type actual_type = t_string;
   if (expr_type_ == "CONST_INT") {
@@ -114,7 +116,7 @@ ErrorNo AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
     actual_type = t_string;
   } else {
     LOG(ERROR) << "no actual_type!" << endl;
-    return eNoDataTypeInConst;
+    return rNoDataTypeInConst;
   }
   logic_expr = new ExprConst(ExprNodeType::t_qexpr, actual_type, data_, data_);
   return rSuccess;
@@ -143,16 +145,16 @@ void AstExprUnary::Print(int level) const {
 
 AstNode* AstExprUnary::AstNodeCopy() { return new AstExprUnary(this); }
 
-ErrorNo AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
+RetCode AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
   // agg couldn't in where or groupby
   if (expr_type_ == "SUM" || expr_type_ == "MAX" || expr_type_ == "MIN" ||
       expr_type_ == "AVG" || expr_type_ == "COUNT" ||
       expr_type_ == "COUNT_ALL") {
     if (SemanticContext::kWhereClause == sem_cnxt->clause_type_) {
-      return eAggCouldNotInWhereClause;
+      return rAggCouldNotInWhereClause;
     }
     if (SemanticContext::kGroupByClause == sem_cnxt->clause_type_) {
-      return eAggCouldNotInGroupByClause;
+      return rAggCouldNotInGroupByClause;
     }
   }
   if (expr_type_ == "COUNT_ALL") {
@@ -168,13 +170,13 @@ ErrorNo AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
          expr_type_ == "AVG" || expr_type_ == "COUNT");
 
     if (sem_cnxt->have_agg && here_have_agg) {
-      return eAggHaveAgg;
+      return rAggHaveAgg;
     }
     sem_cnxt->have_agg = here_have_agg;
     if (sem_cnxt->have_agg) {
       sem_cnxt->select_expr_have_agg = true;
     }
-    ErrorNo ret = arg0_->SemanticAnalisys(sem_cnxt);
+    RetCode ret = arg0_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
       return ret;
     }
@@ -182,7 +184,7 @@ ErrorNo AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
     return rSuccess;
   }
   LOG(ERROR) << "arg0 is NULL in unary expr!" << endl;
-  return eUnaryArgNotExist;
+  return rUnaryArgNotExist;
 }
 
 void AstExprUnary::RecoverExprName(string& name) {
@@ -237,7 +239,7 @@ void AstExprUnary::GetRefTable(set<string>& ref_table) {
   }
 }
 
-ErrorNo AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
+RetCode AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
                                      LogicalOperator* child_logic_plan) {
   data_type get_type, actual_type;
   OperType oper;
@@ -275,7 +277,7 @@ ErrorNo AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
     assert(false);
   }
   ExprNode* child_logic_expr = NULL;
-  ErrorNo ret = rSuccess;
+  RetCode ret = rSuccess;
   // count(*) = count(1)
   if (expr_type_ == "COUNT_ALL" || expr_type_ == "COUNT") {
     child_logic_expr =
@@ -292,7 +294,7 @@ ErrorNo AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
                     expr_str_, oper, child_logic_expr);
   return rSuccess;
 }
-ErrorNo AstExprUnary::SolveSelectAlias(
+RetCode AstExprUnary::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
   if (NULL != arg0_) {
     arg0_->SolveSelectAlias(select_alias_solver);
@@ -330,8 +332,8 @@ void AstExprCalBinary::Print(int level) const {
   if (arg0_ != NULL) arg0_->Print(level + 1);
   if (arg1_ != NULL) arg1_->Print(level + 1);
 }
-ErrorNo AstExprCalBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = rSuccess;
+RetCode AstExprCalBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
   if (NULL != arg0_) {
     ret = arg0_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
@@ -436,11 +438,11 @@ void AstExprCalBinary::GetRefTable(set<string>& ref_table) {
   }
 }
 
-ErrorNo AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
+RetCode AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
                                          LogicalOperator* child_logic_plan) {
   ExprNode* left_expr_node = NULL;
   ExprNode* right_expr_node = NULL;
-  ErrorNo ret = rSuccess;
+  RetCode ret = rSuccess;
   ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
   if (rSuccess != ret) {
     return ret;
@@ -497,7 +499,7 @@ ErrorNo AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
   return rSuccess;
 }
 
-ErrorNo AstExprCalBinary::SolveSelectAlias(
+RetCode AstExprCalBinary::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
   if (NULL != arg0_) {
     arg0_->SolveSelectAlias(select_alias_solver);
@@ -581,8 +583,8 @@ void AstExprCmpBinary::Print(int level) const {
   if (arg0_ != NULL) arg0_->Print(level + 1);
   if (arg1_ != NULL) arg1_->Print(level + 1);
 }
-ErrorNo AstExprCmpBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = rSuccess;
+RetCode AstExprCmpBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
   if (NULL != arg0_) {
     ret = arg0_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
@@ -649,11 +651,11 @@ void AstExprCmpBinary::GetRefTable(set<string>& ref_table) {
   }
 }
 
-ErrorNo AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
+RetCode AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
                                          LogicalOperator* child_logic_plan) {
   ExprNode* left_expr_node = NULL;
   ExprNode* right_expr_node = NULL;
-  ErrorNo ret = rSuccess;
+  RetCode ret = rSuccess;
   ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
   if (rSuccess != ret) {
     return ret;
@@ -684,7 +686,7 @@ ErrorNo AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
                               expr_str_, oper, left_expr_node, right_expr_node);
   return rSuccess;
 }
-ErrorNo AstExprCmpBinary::SolveSelectAlias(
+RetCode AstExprCmpBinary::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
   if (NULL != arg0_) {
     arg0_->SolveSelectAlias(select_alias_solver);
@@ -727,8 +729,8 @@ void AstExprList::Print(int level) const {
   if (expr_ != NULL) expr_->Print(level);
   if (next_ != NULL) next_->Print(level);
 }
-ErrorNo AstExprList::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = rSuccess;
+RetCode AstExprList::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
   if (NULL != expr_) {
     ret = expr_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
@@ -789,7 +791,7 @@ void AstExprList::GetRefTable(set<string>& ref_table) {
   }
 }
 
-ErrorNo AstExprList::SolveSelectAlias(
+RetCode AstExprList::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
   if (NULL != expr_) {
     expr_->SolveSelectAlias(select_alias_solver);
@@ -842,8 +844,8 @@ void AstExprFunc::Print(int level) const {
   if (arg1_ != NULL) arg1_->Print(level + 2);
   if (arg2_ != NULL) arg2_->Print(level + 3);
 }
-ErrorNo AstExprFunc::SemanticAnalisys(SemanticContext* sem_cnxt) {
-  ErrorNo ret = rSuccess;
+RetCode AstExprFunc::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
   if (NULL != arg0_) {
     ret = arg0_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
@@ -952,7 +954,7 @@ void AstExprFunc::GetRefTable(set<string>& ref_table) {
   }
 }
 
-ErrorNo AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
+RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
                                     LogicalOperator* child_logic_plan) {
   ExprNode* arg0_logic_expr = NULL;
   ExprNode* arg1_logic_expr = NULL;
@@ -1003,7 +1005,7 @@ ErrorNo AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
   }
   return rSuccess;
 }
-ErrorNo AstExprFunc::SolveSelectAlias(
+RetCode AstExprFunc::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
   if (NULL != arg0_) {
     arg0_->SolveSelectAlias(select_alias_solver);

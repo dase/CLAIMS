@@ -49,7 +49,7 @@ const char* CStrError(int errorno) {
 
 ErrorInit::ErrorInit() {
   memset(kErrorMessage, 0, sizeof(kErrorMessage));
-  DefineErrorAndMessage(kSuccess, "Success");
+  DefineErrorAndMessage(rSuccess, "Success");
 
   /* errorno for common  -1 ~ -1000 */
   DefineErrorAndMessage(kTypeError, "Type error");

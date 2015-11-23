@@ -24,17 +24,25 @@
  */
 
 #include "../ast_node/ast_drop_stmt.h"
+
+#include <glog/logging.h>
 #include <iostream>  //  NOLINT
 #include <iomanip>
 #include <string>
 #include <bitset>
 
+#include "../../Catalog/Catalog.h"
+#include "../../Catalog/table.h"
+#include "../../Environment.h"
+#include "../../common/error_define.h"
+using namespace claims::common;
 using std::cout;
 using std::endl;
 using std::cin;
 using std::string;
 using std::setw;
 using std::bitset;
+
 // namespace claims {
 // namespace sql_parser {
 
@@ -74,6 +82,16 @@ AstDropTable::AstDropTable(AstNodeType ast_node_type, int is_temp, int is_check,
       table_list_(table_list) {}
 
 AstDropTable::~AstDropTable() { delete table_list_; }
+RetCode AstDropTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
+
+  if (NULL != table_list_) {
+    ret = table_list_->SemanticAnalisys(sem_cnxt);
+  } else {
+    ret = rNoTalbeFound;
+  }
+  return ret;
+}
 
 void AstDropTable::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
@@ -94,6 +112,25 @@ AstDropTableList::~AstDropTableList() { delete next_; }
 void AstDropTableList::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
        << "|Drop Table List|" << endl;
+}
+RetCode AstDropTableList::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
+  Catalog* local_catalog = Environment::getInstance()->getCatalog();
+  TableDescriptor* table_desc = local_catalog->getTable(table_name_);
+  if ("" == table_name_) {
+    LOG(ERROR) << "No table name or invalid name during dropping table!";
+    ret = rTableillegal;
+    return ret;
+  }
+  if (NULL == table_desc) {
+    LOG(ERROR) << "Table [" + table_name_ + "] is not exist!";
+    ret = rTableNotExist;
+    return ret;
+  }
+  if (NULL != next_) {
+    ret = next_->SemanticAnalisys(sem_cnxt);
+  }
+  return ret;
 }
 //}  // namespace sql_parser
 //}  // namespace claims

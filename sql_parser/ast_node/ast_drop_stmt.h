@@ -88,6 +88,7 @@ class AstDropTable : public AstNode {
   int is_if_exists_;
   int option_rc_;
   AstNode* table_list_;
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
 };
 
 /***
@@ -105,6 +106,7 @@ class AstDropTableList : public AstNode {
   string db_name_;
   string table_name_;
   AstNode* next_;
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
 
  private:
 };

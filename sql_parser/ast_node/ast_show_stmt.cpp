@@ -26,11 +26,12 @@
  *
  */
 
-#include "../ast_node/ast_show_stmt.h"
-#include <iostream>  //  NOLINT
+#include <iostream>
 #include <iomanip>
 #include <string>
-
+#include "../ast_node/ast_show_stmt.h"
+#include "../../common/error_define.h"
+using namespace claims::common;  // NOLINT
 using std::cout;
 using std::endl;
 using std::cin;

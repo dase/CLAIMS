@@ -27,10 +27,16 @@
  */
 
 #include "../ast_node/ast_delete_stmt.h"
+
+#include <glog/logging.h>
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <bitset>
+#include "../../common/error_define.h"
+#include "../../Catalog/table.h"
+#include "../../Environment.h"
+using namespace claims::common;  // NOLINT
 using std::cout;
 using std::endl;
 using std::string;
@@ -69,5 +75,27 @@ void AstDeleteStmt::Print(int level) const {
   }
 }
 
+RetCode AstDeleteStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
+  string tablename =
+      dynamic_cast<AstTable*>(dynamic_cast<AstFromList*>(from_list_)->args_)
+          ->table_name_;
+  TableDescriptor* new_table =
+      Environment::getInstance()->getCatalog()->getTable(tablename);
+  if (NULL == new_table) {
+    LOG(ERROR) << "The table " + tablename + " is not existed.";
+    ret = rTableNotExist;
+    return ret;
+  }
+  string tabledel = tablename + "_DEL";
+  new_table = Environment::getInstance()->getCatalog()->getTable(tabledel);
+  if (NULL == new_table) {
+    LOG(ERROR) << "The table DEL " + tabledel +
+                      " is not existed during delete data." << std::endl;
+    ret = rTableNotExist;
+    return ret;
+  }
+  return ret;
+}
 // } /* namespace ast_node */
 // } /* namespace claims */

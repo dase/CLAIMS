@@ -60,11 +60,11 @@ class AstExprConst : public AstNode {
   ~AstExprConst();
   AstNode* AstNodeCopy();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
-  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+  RetCode GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
 
   string expr_type_;
@@ -82,14 +82,14 @@ class AstExprUnary : public AstNode {
   ~AstExprUnary();
   AstNode* AstNodeCopy();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+  RetCode GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;
   string expr_type_;
@@ -105,14 +105,14 @@ class AstExprFunc : public AstNode {
   ~AstExprFunc();
   AstNode* AstNodeCopy();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+  RetCode GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -130,15 +130,15 @@ class AstExprCalBinary : public AstNode {
   ~AstExprCalBinary();
   AstNode* AstNodeCopy();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
   void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+  RetCode GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -157,14 +157,14 @@ class AstExprCmpBinary : public AstNode {
   ~AstExprCmpBinary();
   AstNode* AstNodeCopy();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+  RetCode GetLogicalPlan(ExprNode*& logic_expr,
                          LogicalOperator* child_logic_plan);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;
   AstNode* arg1_;
@@ -181,12 +181,12 @@ class AstExprList : public AstNode {
   ~AstExprList();
   AstNode* AstNodeCopy();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
-  ErrorNo SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
+  RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* expr_;
   AstNode* next_;

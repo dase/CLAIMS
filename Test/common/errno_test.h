@@ -21,7 +21,7 @@
  *  Created on: Aug 5, 2015
  *      Author: yukai
  *		 Email: yukai2014@gmail.com
- * 
+ *
  * Description:
  *
  */
@@ -29,29 +29,24 @@
 #ifndef TEST_COMMON_ERRNO_TEST_H_
 #define TEST_COMMON_ERRNO_TEST_H_
 
-
 #include <gtest/gtest.h>
 #include <iostream>
 
 #include "../../common/error_no.h"
 using std::cout;
 using std::endl;
-using namespace claims::common; // NOLINT
+using namespace claims::common;  // NOLINT
 
-class ErrorNoTest : public ::testing::Test{
+class ErrorNoTest : public ::testing::Test {
  protected:
-  static void SetUpTestCase() {
-    cout << "start new test case" << endl;
-  }
-  static void TearDownTestCase() {
-    cout << "finish new test case" << endl;
-  }
+  static void SetUpTestCase() { cout << "start new test case" << endl; }
+  static void TearDownTestCase() { cout << "finish new test case" << endl; }
 };
 
 TEST_F(ErrorNoTest, A) {
   int errerno = kTypeError;
 
-//  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
+  //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
   EXPECT_STREQ("Type error", res);
 }
@@ -59,15 +54,15 @@ TEST_F(ErrorNoTest, A) {
 TEST_F(ErrorNoTest, B) {
   int errerno = -3;
 
-//  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
+  //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
   EXPECT_STREQ("Unknown Error", res);
 }
 
 TEST_F(ErrorNoTest, C) {
-  int errerno = kSuccess;
+  int errerno = rSuccess;
 
-//  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
+  //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
   EXPECT_STREQ("Success", res);
 }

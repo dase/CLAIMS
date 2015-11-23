@@ -40,6 +40,7 @@ class AstDeleteStmt : public AstNode {
                 AstNode* where_list, int options);
   virtual ~AstDeleteStmt();
   void Print(int level = 0) const;
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
 
   AstNodeType ast_node_type_;
   AstNode* from_list_;

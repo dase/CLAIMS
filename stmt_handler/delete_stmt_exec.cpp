@@ -39,6 +39,7 @@
 #include "../Loader/Hdfsloader.h"
 #include "../sql_parser/ast_node/ast_select_stmt.h"
 #include "../stmt_handler/select_exec.h"
+#include "../common/error_define.h"
 using std::endl;
 using std::string;
 using std::vector;
@@ -54,19 +55,22 @@ DeleteStmtExec::DeleteStmtExec(AstNode* stmt) : StmtExec(stmt) {
 DeleteStmtExec::~DeleteStmtExec() {}
 
 RetCode DeleteStmtExec::Execute(executed_result* exec_result) {
+  RetCode ret = rSuccess;
   string tablename =
       dynamic_cast<AstTable*>(
           dynamic_cast<AstFromList*>(delete_stmt_ast_->from_list_)->args_)
           ->table_name_;
   TableDescriptor* new_table =
       Environment::getInstance()->getCatalog()->getTable(tablename);
-  if (NULL == new_table) {
-    exec_result->error_info = "The table " + tablename + " is not existed.";
-    exec_result->status = false;
-    exec_result->result = NULL;
 
-    // TODO(yuyang): add errorcode
-    return rParserError;
+  SemanticContext sem_cnxt;
+  ret = delete_stmt_ast_->SemanticAnalisys(&sem_cnxt);
+  if (rSuccess != ret) {
+    exec_result->error_info = "semantic analysis error";
+    exec_result->status = false;
+    LOG(ERROR) << "semantic analysis error result= : " << ret;
+    cout << "semantic analysis error result= : " << ret << endl;
+    return ret;
   }
 
   /**
@@ -98,7 +102,7 @@ RetCode DeleteStmtExec::Execute(executed_result* exec_result) {
 
   InsertDeletedDataIntoTableDEL(del_table_name, exec_result->result);
 
-  return rSuccess;
+  return ret;
 }
 
 void DeleteStmtExec::InsertDeletedDataIntoTableDEL(string tablename,
