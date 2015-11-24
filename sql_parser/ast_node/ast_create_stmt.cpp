@@ -83,6 +83,7 @@ RetCode AstCreateTable::SemanticAnalisys(SemanticContext* sem_cntx) {
   if ((!additional_name_.empty()) && !(table_name_.empty())) {
     ret = rTableNotExist;
     LOG(ERROR) << "No table name during creating table!" << std::endl;
+    sem_cntx->error_msg_ = "No table name during creating table!";
     return rTableNotExist;
   }
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
@@ -91,6 +92,8 @@ RetCode AstCreateTable::SemanticAnalisys(SemanticContext* sem_cntx) {
     ret = rTableNotExist;
     LOG(ERROR) << "The table " + table_name_ +
                       " has existed during creating table!" << std::endl;
+    sem_cntx->error_msg_ =
+        "The table " + table_name_ + " has existed during creating table!";
     return rTableAlreadyExist;
   }
   return ret;
@@ -194,8 +197,7 @@ AstCreateProjection::AstCreateProjection(AstNodeType ast_node_type,
 
 AstCreateProjection::~AstCreateProjection() { delete column_list_; }
 
-RetCode AstCreateProjection::SemanticAnalisys(SemanticContext* sem_cnxt,
-                                              vector<ColumnOffset>& index) {
+RetCode AstCreateProjection::SemanticAnalisys(SemanticContext* sem_cnxt) {
   RetCode ret = rSuccess;
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
   TableDescriptor* table = local_catalog->getTable(table_name_);
@@ -204,6 +206,8 @@ RetCode AstCreateProjection::SemanticAnalisys(SemanticContext* sem_cnxt,
     ret = rTableNotExist;
     LOG(ERROR) << "There is no table named " << table_name_
                << " during creating projection";
+    sem_cnxt->error_msg_ = "There is no table named " + table_name_ +
+                           " during creating projection";
     return ret;
   }
 
@@ -216,16 +220,19 @@ RetCode AstCreateProjection::SemanticAnalisys(SemanticContext* sem_cnxt,
       colname = col_list->relation_name_;
     } else {
       LOG(ERROR) << "No column name during creating projection.";
+      sem_cnxt->error_msg_ = "No column name during creating projection.";
       ret = rColumnNotExist;
       return ret;
       break;
     }
     cout << table_name_ + "." + colname << endl;
     if (table->isExist(table_name_ + "." + colname)) {
-      index.push_back(table->getAttribute(colname).index);
+      sem_cnxt->index_.push_back(table->getAttribute(colname).index);
     } else {
       LOG(ERROR) << "The column " + colname +
                         "is not existed during creating projection";
+      sem_cnxt->error_msg_ =
+          "The column " + colname + "is not existed during creating projection";
       ret = rColumnNotExist;
       return ret;
       break;

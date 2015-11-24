@@ -66,7 +66,8 @@ RetCode DeleteStmtExec::Execute(executed_result* exec_result) {
   SemanticContext sem_cnxt;
   ret = delete_stmt_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info = "semantic analysis error";
+    exec_result->error_info =
+        "Semantic analysis error.\n" + sem_cnxt.error_msg_;
     exec_result->status = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
@@ -74,7 +75,7 @@ RetCode DeleteStmtExec::Execute(executed_result* exec_result) {
   }
 
   /**
-   * step1 : create new sql query, for example:
+   * step1 : create new sql query including row_id, for example:
    * DELETE FROM tbA WHERE colA = 10;
    * =>
    * SELECT row_id FROM tbA WHERE colA = 10;
@@ -99,7 +100,9 @@ RetCode DeleteStmtExec::Execute(executed_result* exec_result) {
   exec_result->info = ostr.str();
 
   string del_table_name = tablename + "_DEL";
-
+  /**
+   * step2 : Insert delete data into _DEL table.
+   */
   InsertDeletedDataIntoTableDEL(del_table_name, exec_result->result);
 
   return ret;
@@ -122,8 +125,8 @@ void DeleteStmtExec::InsertDeletedDataIntoTableDEL(string tablename,
   }
 
   /**
-      prepare the data which will be insert into TABLE_DEL.
-  */
+   *    Prepare the data which will be insert into TABLE_DEL.
+   */
   ostringstream ostr;
   while (block = it.nextBlock()) {
     tuple_it = block->createIterator();

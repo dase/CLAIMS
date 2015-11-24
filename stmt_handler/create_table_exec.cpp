@@ -72,7 +72,8 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
   SemanticContext sem_cnxt;
   RetCode ret = createtable_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info = "semantic analysis error";
+    exec_result->error_info =
+        "Semantic analysis error.\n" + sem_cnxt.error_msg_;
     exec_result->status = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
@@ -357,6 +358,10 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
     }
 
 #if 1
+    /**
+     * At the same time,create a new table named "table_DEL" to store deleted
+     * data.
+     */
     TableDescriptor* new_table =
         Environment::getInstance()->getCatalog()->getTable(tablename_del);
     if (new_table == NULL) {

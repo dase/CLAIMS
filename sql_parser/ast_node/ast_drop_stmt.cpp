@@ -88,6 +88,8 @@ RetCode AstDropTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (NULL != table_list_) {
     ret = table_list_->SemanticAnalisys(sem_cnxt);
   } else {
+    LOG(ERROR) << "No table found or invalid table name.";
+    sem_cnxt->error_msg_ = "No table found or invalid table name.";
     ret = rNoTalbeFound;
   }
   return ret;
@@ -119,11 +121,14 @@ RetCode AstDropTableList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   TableDescriptor* table_desc = local_catalog->getTable(table_name_);
   if ("" == table_name_) {
     LOG(ERROR) << "No table name or invalid name during dropping table!";
+    sem_cnxt->error_msg_ =
+        "No table name or invalid name during dropping table!";
     ret = rTableillegal;
     return ret;
   }
   if (NULL == table_desc) {
     LOG(ERROR) << "Table [" + table_name_ + "] is not exist!";
+    sem_cnxt->error_msg_ = "Table [" + table_name_ + "] is not exist!";
     ret = rTableNotExist;
     return ret;
   }
