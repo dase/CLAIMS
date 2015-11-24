@@ -397,23 +397,23 @@ static const unsigned short int yyrline[] = {
     654,  655,  656,  658,  659,  660,  661,  662,  663,  665,  666,  668,
     669,  670,  672,  673,  674,  675,  676,  678,  679,  680,  681,  683,
     684,  685,  686,  689,  690,  691,  692,  695,  698,  699,  700,  703,
-    704,  707,  708,  709,  710,  711,  712,  713,  714,  716,  717,  727,
-    728,  729,  730,  731,  732,  736,  737,  738,  739,  740,  741,  742,
-    743,  744,  747,  748,  749,  752,  753,  754,  755,  756,  757,  760,
-    761,  765,  766,  767,  768,  769,  770,  771,  772,  773,  777,  778,
-    779,  780,  783,  784,  787,  788,  791,  792,  798,  802,  803,  806,
-    807,  812,  815,  819,  823,  828,  832,  837,  841,  845,  846,  847,
-    850,  851,  854,  855,  860,  861,  862,  863,  864,  865,  867,  868,
-    869,  870,  871,  872,  873,  874,  875,  876,  877,  878,  879,  883,
-    884,  885,  886,  887,  888,  889,  890,  891,  892,  893,  894,  895,
-    896,  897,  898,  899,  900,  901,  902,  904,  905,  906,  907,  908,
-    909,  910,  911,  912,  913,  915,  916,  919,  920,  921,  924,  925,
-    928,  929,  930,  933,  934,  936,  941,  944,  946,  954,  958,  962,
-    963,  964,  965,  968,  969,  972,  973,  976,  977,  981,  984,  989,
-    990,  991,  998,  1001, 1005, 1009, 1010, 1013, 1014, 1018, 1021, 1025,
-    1026, 1027, 1028, 1031, 1032, 1033, 1039, 1042, 1048, 1049, 1052, 1053,
-    1054, 1055, 1056, 1059, 1059, 1062, 1063, 1066, 1067, 1071, 1072, 1073,
-    1074, 1077, 1081, 1086, 1089, 1092, 1095};
+    704,  707,  708,  709,  711,  713,  714,  715,  716,  718,  719,  729,
+    730,  731,  732,  733,  734,  738,  739,  740,  741,  742,  743,  744,
+    745,  746,  749,  750,  751,  754,  755,  756,  757,  758,  759,  762,
+    763,  767,  768,  769,  770,  771,  772,  773,  774,  775,  779,  780,
+    781,  782,  785,  786,  789,  790,  793,  794,  800,  804,  805,  808,
+    809,  814,  817,  821,  825,  830,  834,  839,  843,  847,  848,  849,
+    852,  853,  856,  857,  862,  863,  864,  865,  866,  867,  869,  870,
+    871,  872,  873,  874,  875,  876,  877,  878,  879,  880,  881,  885,
+    886,  887,  888,  889,  890,  891,  892,  893,  894,  895,  896,  897,
+    898,  899,  900,  901,  902,  903,  904,  906,  907,  908,  909,  910,
+    911,  912,  913,  914,  915,  917,  918,  921,  922,  923,  926,  927,
+    930,  931,  932,  935,  936,  938,  943,  946,  948,  956,  960,  964,
+    965,  966,  967,  970,  971,  974,  975,  978,  979,  983,  986,  991,
+    992,  993,  1000, 1003, 1007, 1011, 1012, 1015, 1016, 1020, 1023, 1027,
+    1028, 1029, 1030, 1033, 1034, 1035, 1041, 1044, 1050, 1051, 1054, 1055,
+    1056, 1057, 1058, 1061, 1061, 1064, 1065, 1068, 1069, 1073, 1074, 1075,
+    1076, 1079, 1083, 1088, 1091, 1094, 1097};
 #endif
 
 #if YYDEBUG || YYERROR_VERBOSE || 0
@@ -3009,29 +3009,31 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 /* Line 868 of glr.c  */
 #line 709 "sql.ypp"
     {
-      ((*yyvalp).ast_node) = new AstExprCmpBinary(
-          AST_EXPR_CMP_BINARY, "EXPR_NOT_IN_LIST",
+      AstNode *tmp_node = new AstExprCmpBinary(
+          AST_EXPR_CMP_BINARY, "EXPR_IN_LIST",
           (((yyGLRStackItem const *)
             yyvsp)[YYFILL((1) - (6))].yystate.yysemantics.yysval.ast_node),
           (((yyGLRStackItem const *)
             yyvsp)[YYFILL((5) - (6))].yystate.yysemantics.yysval.ast_node));
+      ((*yyvalp).ast_node) = new AstExprUnary(AST_EXPR_UNARY, "NOT", tmp_node);
     } break;
 
     case 124:
 /* Line 868 of glr.c  */
-#line 710 "sql.ypp"
+#line 711 "sql.ypp"
     {
-      ((*yyvalp).ast_node) = new AstExprCmpBinary(
-          AST_EXPR_CMP_BINARY, "LIST_NOT_IN_LIST",
+      AstNode *tmp_node = new AstExprCmpBinary(
+          AST_EXPR_CMP_BINARY, "LIST_IN_LIST",
           (((yyGLRStackItem const *)
             yyvsp)[YYFILL((2) - (8))].yystate.yysemantics.yysval.ast_node),
           (((yyGLRStackItem const *)
             yyvsp)[YYFILL((7) - (8))].yystate.yysemantics.yysval.ast_node));
+      ((*yyvalp).ast_node) = new AstExprUnary(AST_EXPR_UNARY, "NOT", tmp_node);
     } break;
 
     case 125:
 /* Line 868 of glr.c  */
-#line 711 "sql.ypp"
+#line 713 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprCmpBinary(
           AST_EXPR_CMP_BINARY, "EXPR_IN_SELECT",
@@ -3043,7 +3045,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 126:
 /* Line 868 of glr.c  */
-#line 712 "sql.ypp"
+#line 714 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprCmpBinary(
           AST_EXPR_CMP_BINARY, "LIST_IN_SELECT",
@@ -3055,7 +3057,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 127:
 /* Line 868 of glr.c  */
-#line 713 "sql.ypp"
+#line 715 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprCmpBinary(
           AST_EXPR_CMP_BINARY, "EXPR_NOT_IN_SELECT",
@@ -3067,7 +3069,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 128:
 /* Line 868 of glr.c  */
-#line 714 "sql.ypp"
+#line 716 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprCmpBinary(
           AST_EXPR_CMP_BINARY, "LIST_NOT_IN_SELECT",
@@ -3079,7 +3081,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 129:
 /* Line 868 of glr.c  */
-#line 716 "sql.ypp"
+#line 718 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprUnary(
           AST_EXPR_UNARY, "EXSIST",
@@ -3089,7 +3091,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 130:
 /* Line 868 of glr.c  */
-#line 717 "sql.ypp"
+#line 719 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprUnary(
           AST_EXPR_UNARY, "NOT_EXSIST",
@@ -3099,7 +3101,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 131:
 /* Line 868 of glr.c  */
-#line 727 "sql.ypp"
+#line 729 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstExprUnary(AST_EXPR_UNARY, "COUNT_ALL", NULL);
@@ -3107,7 +3109,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 132:
 /* Line 868 of glr.c  */
-#line 728 "sql.ypp"
+#line 730 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprUnary(
           AST_EXPR_UNARY, "COUNT",
@@ -3117,7 +3119,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 133:
 /* Line 868 of glr.c  */
-#line 729 "sql.ypp"
+#line 731 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprUnary(
           AST_EXPR_UNARY, "SUM",
@@ -3127,7 +3129,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 134:
 /* Line 868 of glr.c  */
-#line 730 "sql.ypp"
+#line 732 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprUnary(
           AST_EXPR_UNARY, "AVG",
@@ -3137,7 +3139,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 135:
 /* Line 868 of glr.c  */
-#line 731 "sql.ypp"
+#line 733 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprUnary(
           AST_EXPR_UNARY, "MIN",
@@ -3147,7 +3149,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 136:
 /* Line 868 of glr.c  */
-#line 732 "sql.ypp"
+#line 734 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprUnary(
           AST_EXPR_UNARY, "MAX",
@@ -3157,7 +3159,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 137:
 /* Line 868 of glr.c  */
-#line 736 "sql.ypp"
+#line 738 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "SUBSTRING_EXPR_EXPR",
@@ -3170,7 +3172,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 138:
 /* Line 868 of glr.c  */
-#line 737 "sql.ypp"
+#line 739 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "SUBSTRING_EXPR_FROM_EXPR",
@@ -3183,7 +3185,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 139:
 /* Line 868 of glr.c  */
-#line 738 "sql.ypp"
+#line 740 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "SUBSTRING_EXPR_EXPR_EXPR",
@@ -3197,7 +3199,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 140:
 /* Line 868 of glr.c  */
-#line 739 "sql.ypp"
+#line 741 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "SUBSTRING_EXPR_FROM_EXPR_FOR_EXPR",
@@ -3211,18 +3213,18 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 141:
 /* Line 868 of glr.c  */
-#line 740 "sql.ypp"
+#line 742 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
-          AST_EXPR_FUNC, "TRIM_BOTH",
+          AST_EXPR_FUNC, "TRIM_BOTH", NULL,
           (((yyGLRStackItem const *)
             yyvsp)[YYFILL((3) - (4))].yystate.yysemantics.yysval.ast_node),
-          NULL, NULL);
+          NULL);
     } break;
 
     case 142:
 /* Line 868 of glr.c  */
-#line 741 "sql.ypp"
+#line 743 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, (((yyGLRStackItem const *)yyvsp)[YYFILL((3) - (7))]
@@ -3236,7 +3238,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 143:
 /* Line 868 of glr.c  */
-#line 742 "sql.ypp"
+#line 744 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "UPPER",
@@ -3247,7 +3249,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 144:
 /* Line 868 of glr.c  */
-#line 743 "sql.ypp"
+#line 745 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "CAST",
@@ -3260,7 +3262,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 145:
 /* Line 868 of glr.c  */
-#line 744 "sql.ypp"
+#line 746 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "COALESCE",
@@ -3271,70 +3273,70 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 146:
 /* Line 868 of glr.c  */
-#line 747 "sql.ypp"
+#line 749 "sql.ypp"
     {
       ((*yyvalp).strval) = "TRIM_LEADING";
     } break;
 
     case 147:
 /* Line 868 of glr.c  */
-#line 748 "sql.ypp"
+#line 750 "sql.ypp"
     {
       ((*yyvalp).strval) = "TRIM_TRAILING";
     } break;
 
     case 148:
 /* Line 868 of glr.c  */
-#line 749 "sql.ypp"
+#line 751 "sql.ypp"
     {
       ((*yyvalp).strval) = "TRIM_BOTH";
     } break;
 
     case 149:
 /* Line 868 of glr.c  */
-#line 752 "sql.ypp"
+#line 754 "sql.ypp"
     {
       ((*yyvalp).ast_node) = NULL;
     } break;
 
     case 150:
 /* Line 868 of glr.c  */
-#line 753 "sql.ypp"
+#line 755 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprConst(AST_EXPR_CONST, "INT", NULL);
     } break;
 
     case 151:
 /* Line 868 of glr.c  */
-#line 754 "sql.ypp"
+#line 756 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprConst(AST_EXPR_CONST, "STRING", NULL);
     } break;
 
     case 152:
 /* Line 868 of glr.c  */
-#line 755 "sql.ypp"
+#line 757 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprConst(AST_EXPR_CONST, "DOUBLE", NULL);
     } break;
 
     case 153:
 /* Line 868 of glr.c  */
-#line 756 "sql.ypp"
+#line 758 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprConst(AST_EXPR_CONST, "FLOAT", NULL);
     } break;
 
     case 154:
 /* Line 868 of glr.c  */
-#line 757 "sql.ypp"
+#line 759 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprConst(AST_EXPR_CONST, "CHAR", NULL);
     } break;
 
     case 155:
 /* Line 868 of glr.c  */
-#line 760 "sql.ypp"
+#line 762 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "DATE_ADD",
@@ -3347,7 +3349,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 156:
 /* Line 868 of glr.c  */
-#line 761 "sql.ypp"
+#line 763 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "DATE_SUB",
@@ -3360,7 +3362,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 157:
 /* Line 868 of glr.c  */
-#line 765 "sql.ypp"
+#line 767 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_HOUR",
@@ -3371,7 +3373,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 158:
 /* Line 868 of glr.c  */
-#line 766 "sql.ypp"
+#line 768 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_MICROSECOND",
@@ -3382,7 +3384,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 159:
 /* Line 868 of glr.c  */
-#line 767 "sql.ypp"
+#line 769 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_MINUTE",
@@ -3393,7 +3395,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 160:
 /* Line 868 of glr.c  */
-#line 768 "sql.ypp"
+#line 770 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_SECOND",
@@ -3404,7 +3406,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 161:
 /* Line 868 of glr.c  */
-#line 769 "sql.ypp"
+#line 771 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_DAY",
@@ -3415,7 +3417,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 162:
 /* Line 868 of glr.c  */
-#line 770 "sql.ypp"
+#line 772 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_MONTH",
@@ -3426,7 +3428,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 163:
 /* Line 868 of glr.c  */
-#line 771 "sql.ypp"
+#line 773 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_YEAR",
@@ -3437,7 +3439,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 164:
 /* Line 868 of glr.c  */
-#line 772 "sql.ypp"
+#line 774 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_WEEK",
@@ -3448,7 +3450,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 165:
 /* Line 868 of glr.c  */
-#line 773 "sql.ypp"
+#line 775 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "INTERVAL_QUARTER",
@@ -3459,7 +3461,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 166:
 /* Line 868 of glr.c  */
-#line 777 "sql.ypp"
+#line 779 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "CASE1",
@@ -3472,7 +3474,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 167:
 /* Line 868 of glr.c  */
-#line 778 "sql.ypp"
+#line 780 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "CASE1_ELSE",
@@ -3486,7 +3488,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 168:
 /* Line 868 of glr.c  */
-#line 779 "sql.ypp"
+#line 781 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "CASE2", NULL,
@@ -3497,7 +3499,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 169:
 /* Line 868 of glr.c  */
-#line 780 "sql.ypp"
+#line 782 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "CASE2_ELSE", NULL,
@@ -3509,7 +3511,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 170:
 /* Line 868 of glr.c  */
-#line 783 "sql.ypp"
+#line 785 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "WHEN",
@@ -3522,7 +3524,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 171:
 /* Line 868 of glr.c  */
-#line 784 "sql.ypp"
+#line 786 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprFunc(
           AST_EXPR_FUNC, "WHEN",
@@ -3536,7 +3538,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 172:
 /* Line 868 of glr.c  */
-#line 787 "sql.ypp"
+#line 789 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprCalBinary(
           AST_EXPR_CAL_BINARY, "LIKE",
@@ -3548,7 +3550,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 173:
 /* Line 868 of glr.c  */
-#line 788 "sql.ypp"
+#line 790 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprCalBinary(
           AST_EXPR_CAL_BINARY, "NOT_LIKE",
@@ -3560,7 +3562,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 174:
 /* Line 868 of glr.c  */
-#line 791 "sql.ypp"
+#line 793 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprCalBinary(
           AST_EXPR_CAL_BINARY, "REGEXP",
@@ -3572,7 +3574,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 175:
 /* Line 868 of glr.c  */
-#line 792 "sql.ypp"
+#line 794 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstExprCalBinary(
           AST_EXPR_CAL_BINARY, "NOT_REGEXP",
@@ -3584,7 +3586,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 176:
 /* Line 868 of glr.c  */
-#line 798 "sql.ypp"
+#line 800 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval.ast_node);
@@ -3592,7 +3594,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 177:
 /* Line 868 of glr.c  */
-#line 802 "sql.ypp"
+#line 804 "sql.ypp"
     {
       string temp =
           ((((yyGLRStackItem const *)yyvsp)[YYFILL((4) - (4))]
@@ -3609,7 +3611,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 178:
 /* Line 868 of glr.c  */
-#line 803 "sql.ypp"
+#line 805 "sql.ypp"
     {
       string temp =
           ((((yyGLRStackItem const *)yyvsp)[YYFILL((4) - (4))]
@@ -3626,21 +3628,21 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 179:
 /* Line 868 of glr.c  */
-#line 806 "sql.ypp"
+#line 808 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 180:
 /* Line 868 of glr.c  */
-#line 807 "sql.ypp"
+#line 809 "sql.ypp"
     {
       ((*yyvalp).intval) = 1;
     } break;
 
     case 181:
 /* Line 868 of glr.c  */
-#line 812 "sql.ypp"
+#line 814 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval.ast_node);
@@ -3648,7 +3650,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 182:
 /* Line 868 of glr.c  */
-#line 816 "sql.ypp"
+#line 818 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateTable(
           AST_CREATE_TABLE_LIST,
@@ -3665,7 +3667,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 183:
 /* Line 868 of glr.c  */
-#line 820 "sql.ypp"
+#line 822 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateTable(
           AST_CREATE_TABLE_LIST,
@@ -3684,7 +3686,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 184:
 /* Line 868 of glr.c  */
-#line 825 "sql.ypp"
+#line 827 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateTable(
           AST_CREATE_TABLE_LIST_SEL,
@@ -3702,7 +3704,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 185:
 /* Line 868 of glr.c  */
-#line 829 "sql.ypp"
+#line 831 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateTable(
           AST_CREATE_TABLE_SEL,
@@ -3718,7 +3720,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 186:
 /* Line 868 of glr.c  */
-#line 834 "sql.ypp"
+#line 836 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateTable(
           AST_CREATE_TABLE_LIST_SEL,
@@ -3738,7 +3740,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 187:
 /* Line 868 of glr.c  */
-#line 838 "sql.ypp"
+#line 840 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateTable(
           AST_CREATE_TABLE_SEL,
@@ -3756,7 +3758,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 188:
 /* Line 868 of glr.c  */
-#line 842 "sql.ypp"
+#line 844 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateSelect(
           AST_CREATE_SEL, (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (3))]
@@ -3767,42 +3769,42 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 189:
 /* Line 868 of glr.c  */
-#line 845 "sql.ypp"
+#line 847 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 190:
 /* Line 868 of glr.c  */
-#line 846 "sql.ypp"
+#line 848 "sql.ypp"
     {
       ((*yyvalp).intval) = 1;
     } break;
 
     case 191:
 /* Line 868 of glr.c  */
-#line 847 "sql.ypp"
+#line 849 "sql.ypp"
     {
       ((*yyvalp).intval) = 2;
     } break;
 
     case 192:
 /* Line 868 of glr.c  */
-#line 850 "sql.ypp"
+#line 852 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 193:
 /* Line 868 of glr.c  */
-#line 851 "sql.ypp"
+#line 853 "sql.ypp"
     {
       ((*yyvalp).intval) = 1;
     } break;
 
     case 194:
 /* Line 868 of glr.c  */
-#line 854 "sql.ypp"
+#line 856 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateColList(
           AST_CREATE_COL_LIST,
@@ -3813,7 +3815,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 195:
 /* Line 868 of glr.c  */
-#line 855 "sql.ypp"
+#line 857 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateColList(
           AST_CREATE_COL_LIST,
@@ -3825,7 +3827,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 196:
 /* Line 868 of glr.c  */
-#line 860 "sql.ypp"
+#line 862 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateDef(
           AST_CREATE_DEF_NAME, 1,
@@ -3840,7 +3842,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 197:
 /* Line 868 of glr.c  */
-#line 861 "sql.ypp"
+#line 863 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateDef(
           AST_CREATE_DEF_PR_KEY, 2, "", NULL, NULL,
@@ -3850,7 +3852,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 198:
 /* Line 868 of glr.c  */
-#line 862 "sql.ypp"
+#line 864 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateDef(
           AST_CREATE_DEF_KEY, 3, "", NULL, NULL,
@@ -3860,7 +3862,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 199:
 /* Line 868 of glr.c  */
-#line 863 "sql.ypp"
+#line 865 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateDef(
           AST_CREATE_DEF_INDEX, 4, "", NULL, NULL,
@@ -3870,7 +3872,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 200:
 /* Line 868 of glr.c  */
-#line 864 "sql.ypp"
+#line 866 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateDef(
           AST_CREATE_DEF_FTEXT_INDEX, 5, "", NULL, NULL,
@@ -3880,7 +3882,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 201:
 /* Line 868 of glr.c  */
-#line 865 "sql.ypp"
+#line 867 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateDef(
           AST_CREATE_DEF_FTEXT_KEY, 6, "", NULL, NULL,
@@ -3890,7 +3892,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 202:
 /* Line 868 of glr.c  */
-#line 867 "sql.ypp"
+#line 869 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstColumnAtts(AST_COLUMN_ATTS, 0, 0, 0, "", NULL);
@@ -3898,7 +3900,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 203:
 /* Line 868 of glr.c  */
-#line 868 "sql.ypp"
+#line 870 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -3909,7 +3911,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 204:
 /* Line 868 of glr.c  */
-#line 869 "sql.ypp"
+#line 871 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -3920,7 +3922,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 205:
 /* Line 868 of glr.c  */
-#line 870 "sql.ypp"
+#line 872 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -3937,7 +3939,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 206:
 /* Line 868 of glr.c  */
-#line 871 "sql.ypp"
+#line 873 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -3950,7 +3952,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 207:
 /* Line 868 of glr.c  */
-#line 872 "sql.ypp"
+#line 874 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -3964,7 +3966,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 208:
 /* Line 868 of glr.c  */
-#line 873 "sql.ypp"
+#line 875 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -3977,7 +3979,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 209:
 /* Line 868 of glr.c  */
-#line 874 "sql.ypp"
+#line 876 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -3988,7 +3990,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 210:
 /* Line 868 of glr.c  */
-#line 875 "sql.ypp"
+#line 877 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -3999,7 +4001,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 211:
 /* Line 868 of glr.c  */
-#line 876 "sql.ypp"
+#line 878 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -4010,7 +4012,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 212:
 /* Line 868 of glr.c  */
-#line 877 "sql.ypp"
+#line 879 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -4021,7 +4023,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 213:
 /* Line 868 of glr.c  */
-#line 878 "sql.ypp"
+#line 880 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -4032,7 +4034,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 214:
 /* Line 868 of glr.c  */
-#line 879 "sql.ypp"
+#line 881 "sql.ypp"
     {
       AstColumnAtts *temp = static_cast<AstColumnAtts *>(
           (((yyGLRStackItem const *)
@@ -4045,7 +4047,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 215:
 /* Line 868 of glr.c  */
-#line 883 "sql.ypp"
+#line 885 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 1, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (2))]
@@ -4055,7 +4057,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 216:
 /* Line 868 of glr.c  */
-#line 884 "sql.ypp"
+#line 886 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 2, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4067,7 +4069,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 217:
 /* Line 868 of glr.c  */
-#line 885 "sql.ypp"
+#line 887 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 3, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4079,7 +4081,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 218:
 /* Line 868 of glr.c  */
-#line 886 "sql.ypp"
+#line 888 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 4, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4091,7 +4093,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 219:
 /* Line 868 of glr.c  */
-#line 887 "sql.ypp"
+#line 889 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 5, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4103,7 +4105,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 220:
 /* Line 868 of glr.c  */
-#line 888 "sql.ypp"
+#line 890 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 6, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4115,7 +4117,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 221:
 /* Line 868 of glr.c  */
-#line 889 "sql.ypp"
+#line 891 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 7, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4127,7 +4129,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 222:
 /* Line 868 of glr.c  */
-#line 890 "sql.ypp"
+#line 892 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 8, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4139,7 +4141,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 223:
 /* Line 868 of glr.c  */
-#line 891 "sql.ypp"
+#line 893 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 9, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4151,7 +4153,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 224:
 /* Line 868 of glr.c  */
-#line 892 "sql.ypp"
+#line 894 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 10, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4163,7 +4165,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 225:
 /* Line 868 of glr.c  */
-#line 893 "sql.ypp"
+#line 895 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 11, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4175,7 +4177,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 226:
 /* Line 868 of glr.c  */
-#line 894 "sql.ypp"
+#line 896 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 12, NULL, 0, NULL, 0, NULL);
@@ -4183,7 +4185,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 227:
 /* Line 868 of glr.c  */
-#line 895 "sql.ypp"
+#line 897 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 13, NULL, 0, NULL, 0, NULL);
@@ -4191,7 +4193,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 228:
 /* Line 868 of glr.c  */
-#line 896 "sql.ypp"
+#line 898 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 14, NULL, 0, NULL, 0, NULL);
@@ -4199,7 +4201,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 229:
 /* Line 868 of glr.c  */
-#line 897 "sql.ypp"
+#line 899 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 15, NULL, 0, NULL, 0, NULL);
@@ -4207,7 +4209,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 230:
 /* Line 868 of glr.c  */
-#line 898 "sql.ypp"
+#line 900 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 16, NULL, 0, NULL, 0, NULL);
@@ -4215,7 +4217,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 231:
 /* Line 868 of glr.c  */
-#line 899 "sql.ypp"
+#line 901 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 17, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4227,7 +4229,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 232:
 /* Line 868 of glr.c  */
-#line 900 "sql.ypp"
+#line 902 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 18, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
@@ -4239,7 +4241,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 233:
 /* Line 868 of glr.c  */
-#line 901 "sql.ypp"
+#line 903 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 19, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (2))]
@@ -4249,7 +4251,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 234:
 /* Line 868 of glr.c  */
-#line 902 "sql.ypp"
+#line 904 "sql.ypp"
     {
       AstNode *temp = new AstOptLength(
           AST_OPT_LENGTH,
@@ -4262,7 +4264,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 235:
 /* Line 868 of glr.c  */
-#line 904 "sql.ypp"
+#line 906 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 21, NULL, 0, NULL, 0, NULL);
@@ -4270,7 +4272,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 236:
 /* Line 868 of glr.c  */
-#line 905 "sql.ypp"
+#line 907 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 22, NULL, 0, NULL, 0, NULL);
@@ -4278,7 +4280,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 237:
 /* Line 868 of glr.c  */
-#line 906 "sql.ypp"
+#line 908 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 23, NULL, 0, NULL, 0, NULL);
@@ -4286,7 +4288,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 238:
 /* Line 868 of glr.c  */
-#line 907 "sql.ypp"
+#line 909 "sql.ypp"
     {
       ((*yyvalp).ast_node) =
           new AstDataType(AST_DATA_TYPE, 24, NULL, 0, NULL, 0, NULL);
@@ -4294,7 +4296,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 239:
 /* Line 868 of glr.c  */
-#line 908 "sql.ypp"
+#line 910 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 25, NULL, 0,
@@ -4307,7 +4309,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 240:
 /* Line 868 of glr.c  */
-#line 909 "sql.ypp"
+#line 911 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 26, NULL, 0,
@@ -4320,7 +4322,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 241:
 /* Line 868 of glr.c  */
-#line 910 "sql.ypp"
+#line 912 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 27, NULL, 0,
@@ -4333,7 +4335,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 242:
 /* Line 868 of glr.c  */
-#line 911 "sql.ypp"
+#line 913 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 28, NULL, 0,
@@ -4346,7 +4348,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 243:
 /* Line 868 of glr.c  */
-#line 912 "sql.ypp"
+#line 914 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 29, NULL, 0,
@@ -4358,7 +4360,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 244:
 /* Line 868 of glr.c  */
-#line 913 "sql.ypp"
+#line 915 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDataType(
           AST_DATA_TYPE, 30, NULL, 0,
@@ -4370,7 +4372,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 245:
 /* Line 868 of glr.c  */
-#line 915 "sql.ypp"
+#line 917 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstEnumList(
           AST_ENUM, string((((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
@@ -4380,7 +4382,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 246:
 /* Line 868 of glr.c  */
-#line 916 "sql.ypp"
+#line 918 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstEnumList(
           AST_ENUM_LIST,
@@ -4392,14 +4394,14 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 247:
 /* Line 868 of glr.c  */
-#line 919 "sql.ypp"
+#line 921 "sql.ypp"
     {
       ((*yyvalp).ast_node) = NULL;
     } break;
 
     case 248:
 /* Line 868 of glr.c  */
-#line 920 "sql.ypp"
+#line 922 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstOptLength(
           AST_OPT_LENGTH,
@@ -4410,7 +4412,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 249:
 /* Line 868 of glr.c  */
-#line 921 "sql.ypp"
+#line 923 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstOptLength(
           AST_OPT_LENGTH,
@@ -4422,28 +4424,28 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 250:
 /* Line 868 of glr.c  */
-#line 924 "sql.ypp"
+#line 926 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 251:
 /* Line 868 of glr.c  */
-#line 925 "sql.ypp"
+#line 927 "sql.ypp"
     {
       ((*yyvalp).intval) = 1;
     } break;
 
     case 252:
 /* Line 868 of glr.c  */
-#line 928 "sql.ypp"
+#line 930 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 253:
 /* Line 868 of glr.c  */
-#line 929 "sql.ypp"
+#line 931 "sql.ypp"
     {
       ((*yyvalp).intval) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (2))]
                                 .yystate.yysemantics.yysval.intval) |
@@ -4452,7 +4454,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 254:
 /* Line 868 of glr.c  */
-#line 930 "sql.ypp"
+#line 932 "sql.ypp"
     {
       ((*yyvalp).intval) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (2))]
                                 .yystate.yysemantics.yysval.intval) |
@@ -4461,14 +4463,14 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 255:
 /* Line 868 of glr.c  */
-#line 933 "sql.ypp"
+#line 935 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstOptCsc(AST_OPT_CSC, 0, "", "");
     } break;
 
     case 256:
 /* Line 868 of glr.c  */
-#line 935 "sql.ypp"
+#line 937 "sql.ypp"
     {
       AstOptCsc *temp = static_cast<AstOptCsc *>(
           (((yyGLRStackItem const *)
@@ -4481,7 +4483,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 257:
 /* Line 868 of glr.c  */
-#line 937 "sql.ypp"
+#line 939 "sql.ypp"
     {
       AstOptCsc *temp = static_cast<AstOptCsc *>(
           (((yyGLRStackItem const *)
@@ -4494,7 +4496,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 258:
 /* Line 868 of glr.c  */
-#line 941 "sql.ypp"
+#line 943 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval
@@ -4505,7 +4507,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 259:
 /* Line 868 of glr.c  */
-#line 945 "sql.ypp"
+#line 947 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateProjection(
           AST_CREATE_PROJECTION,
@@ -4519,7 +4521,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 260:
 /* Line 868 of glr.c  */
-#line 947 "sql.ypp"
+#line 949 "sql.ypp"
     {
       if ((((yyGLRStackItem const *)yyvsp)[YYFILL((9) - (13))]
                .yystate.yysemantics.yysval.subtok) != 4) {
@@ -4540,7 +4542,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 261:
 /* Line 868 of glr.c  */
-#line 954 "sql.ypp"
+#line 956 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval.ast_node);
@@ -4548,7 +4550,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 262:
 /* Line 868 of glr.c  */
-#line 959 "sql.ypp"
+#line 961 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstCreateIndex(
           AST_CREATE_INDEX, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (10))]
@@ -4565,42 +4567,42 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 263:
 /* Line 868 of glr.c  */
-#line 962 "sql.ypp"
+#line 964 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 264:
 /* Line 868 of glr.c  */
-#line 963 "sql.ypp"
+#line 965 "sql.ypp"
     {
       ((*yyvalp).intval) = 1;
     } break;
 
     case 265:
 /* Line 868 of glr.c  */
-#line 964 "sql.ypp"
+#line 966 "sql.ypp"
     {
       ((*yyvalp).intval) = 2;
     } break;
 
     case 266:
 /* Line 868 of glr.c  */
-#line 965 "sql.ypp"
+#line 967 "sql.ypp"
     {
       ((*yyvalp).intval) = 3;
     } break;
 
     case 267:
 /* Line 868 of glr.c  */
-#line 968 "sql.ypp"
+#line 970 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 268:
 /* Line 868 of glr.c  */
-#line 969 "sql.ypp"
+#line 971 "sql.ypp"
     {
       ((*yyvalp).intval) = (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (2))]
                                 .yystate.yysemantics.yysval.intval);
@@ -4608,21 +4610,21 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 269:
 /* Line 868 of glr.c  */
-#line 972 "sql.ypp"
+#line 974 "sql.ypp"
     {
       ((*yyvalp).intval) = 1;
     } break;
 
     case 270:
 /* Line 868 of glr.c  */
-#line 973 "sql.ypp"
+#line 975 "sql.ypp"
     {
       ((*yyvalp).intval) = 2;
     } break;
 
     case 271:
 /* Line 868 of glr.c  */
-#line 976 "sql.ypp"
+#line 978 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstIndexColList(
           AST_INDEX_COL,
@@ -4637,7 +4639,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 272:
 /* Line 868 of glr.c  */
-#line 977 "sql.ypp"
+#line 979 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstIndexColList(
           AST_INDEX_COL_LIST,
@@ -4653,7 +4655,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 273:
 /* Line 868 of glr.c  */
-#line 981 "sql.ypp"
+#line 983 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval.ast_node);
@@ -4661,7 +4663,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 274:
 /* Line 868 of glr.c  */
-#line 985 "sql.ypp"
+#line 987 "sql.ypp"
     {
       if ((((yyGLRStackItem const *)yyvsp)[YYFILL((11) - (12))]
                .yystate.yysemantics.yysval.subtok) != 4) {
@@ -4685,7 +4687,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 275:
 /* Line 868 of glr.c  */
-#line 989 "sql.ypp"
+#line 991 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstLoadTable(
           AST_LOAD_TABLE,
@@ -4702,7 +4704,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 276:
 /* Line 868 of glr.c  */
-#line 990 "sql.ypp"
+#line 992 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstLoadTable(
           AST_LOAD_TABLE,
@@ -4719,7 +4721,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 277:
 /* Line 868 of glr.c  */
-#line 992 "sql.ypp"
+#line 994 "sql.ypp"
     {
       if ((((yyGLRStackItem const *)yyvsp)[YYFILL((11) - (12))]
                .yystate.yysemantics.yysval.subtok) != 4) {
@@ -4743,7 +4745,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 278:
 /* Line 868 of glr.c  */
-#line 998 "sql.ypp"
+#line 1000 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval
@@ -4754,7 +4756,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 279:
 /* Line 868 of glr.c  */
-#line 1001 "sql.ypp"
+#line 1003 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDropIndex(
           AST_DROP_INDEX,
@@ -4766,7 +4768,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 280:
 /* Line 868 of glr.c  */
-#line 1005 "sql.ypp"
+#line 1007 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval
@@ -4777,7 +4779,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 281:
 /* Line 868 of glr.c  */
-#line 1009 "sql.ypp"
+#line 1011 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDropDatabase(
           AST_DROP_DB, 1, (((yyGLRStackItem const *)yyvsp)[YYFILL((3) - (4))]
@@ -4788,7 +4790,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 282:
 /* Line 868 of glr.c  */
-#line 1010 "sql.ypp"
+#line 1012 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDropDatabase(
           AST_DROP_SCHEMA, 2,
@@ -4800,21 +4802,21 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 283:
 /* Line 868 of glr.c  */
-#line 1013 "sql.ypp"
+#line 1015 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 284:
 /* Line 868 of glr.c  */
-#line 1014 "sql.ypp"
+#line 1016 "sql.ypp"
     {
       ((*yyvalp).intval) = 1;
     } break;
 
     case 285:
 /* Line 868 of glr.c  */
-#line 1018 "sql.ypp"
+#line 1020 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval
@@ -4825,7 +4827,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 286:
 /* Line 868 of glr.c  */
-#line 1022 "sql.ypp"
+#line 1024 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDropTable(
           AST_DROP_TABLE, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (6))]
@@ -4839,7 +4841,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 287:
 /* Line 868 of glr.c  */
-#line 1025 "sql.ypp"
+#line 1027 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDropTableList(
           AST_DROP_TABLE_LIST, "",
@@ -4850,7 +4852,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 288:
 /* Line 868 of glr.c  */
-#line 1026 "sql.ypp"
+#line 1028 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDropTableList(
           AST_DROP_TABLE_LIST,
@@ -4863,7 +4865,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 289:
 /* Line 868 of glr.c  */
-#line 1027 "sql.ypp"
+#line 1029 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDropTableList(
           AST_DROP_TABLE_LIST, "",
@@ -4875,7 +4877,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 290:
 /* Line 868 of glr.c  */
-#line 1028 "sql.ypp"
+#line 1030 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstDropTableList(
           AST_DROP_TABLE_LIST,
@@ -4889,28 +4891,28 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 291:
 /* Line 868 of glr.c  */
-#line 1031 "sql.ypp"
+#line 1033 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 292:
 /* Line 868 of glr.c  */
-#line 1032 "sql.ypp"
+#line 1034 "sql.ypp"
     {
       ((*yyvalp).intval) = 1;
     } break;
 
     case 293:
 /* Line 868 of glr.c  */
-#line 1033 "sql.ypp"
+#line 1035 "sql.ypp"
     {
       ((*yyvalp).intval) = 2;
     } break;
 
     case 294:
 /* Line 868 of glr.c  */
-#line 1039 "sql.ypp"
+#line 1041 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (1))]
                                   .yystate.yysemantics.yysval.ast_node);
@@ -4918,7 +4920,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 295:
 /* Line 868 of glr.c  */
-#line 1045 "sql.ypp"
+#line 1047 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertStmt(
           AST_INSERT_STMT, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (8))]
@@ -4936,14 +4938,14 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 296:
 /* Line 868 of glr.c  */
-#line 1048 "sql.ypp"
+#line 1050 "sql.ypp"
     {
       ((*yyvalp).ast_node) = NULL;
     } break;
 
     case 297:
 /* Line 868 of glr.c  */
-#line 1049 "sql.ypp"
+#line 1051 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((5) - (5))]
                                   .yystate.yysemantics.yysval.ast_node);
@@ -4951,14 +4953,14 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 298:
 /* Line 868 of glr.c  */
-#line 1052 "sql.ypp"
+#line 1054 "sql.ypp"
     {
       ((*yyvalp).intval) = 0;
     } break;
 
     case 299:
 /* Line 868 of glr.c  */
-#line 1053 "sql.ypp"
+#line 1055 "sql.ypp"
     {
       ((*yyvalp).intval) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (2))]
                                 .yystate.yysemantics.yysval.intval) |
@@ -4967,7 +4969,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 300:
 /* Line 868 of glr.c  */
-#line 1054 "sql.ypp"
+#line 1056 "sql.ypp"
     {
       ((*yyvalp).intval) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (2))]
                                 .yystate.yysemantics.yysval.intval) |
@@ -4976,7 +4978,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 301:
 /* Line 868 of glr.c  */
-#line 1055 "sql.ypp"
+#line 1057 "sql.ypp"
     {
       ((*yyvalp).intval) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (2))]
                                 .yystate.yysemantics.yysval.intval) |
@@ -4985,7 +4987,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 302:
 /* Line 868 of glr.c  */
-#line 1056 "sql.ypp"
+#line 1058 "sql.ypp"
     {
       ((*yyvalp).intval) = (((yyGLRStackItem const *)yyvsp)[YYFILL((1) - (2))]
                                 .yystate.yysemantics.yysval.intval) |
@@ -4994,14 +4996,14 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 305:
 /* Line 868 of glr.c  */
-#line 1062 "sql.ypp"
+#line 1064 "sql.ypp"
     {
       ((*yyvalp).ast_node) = NULL;
     } break;
 
     case 306:
 /* Line 868 of glr.c  */
-#line 1063 "sql.ypp"
+#line 1065 "sql.ypp"
     {
       ((*yyvalp).ast_node) = (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (3))]
                                   .yystate.yysemantics.yysval.ast_node);
@@ -5009,7 +5011,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 307:
 /* Line 868 of glr.c  */
-#line 1066 "sql.ypp"
+#line 1068 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertValList(
           AST_INSERT_VALUE_LIST,
@@ -5020,7 +5022,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 308:
 /* Line 868 of glr.c  */
-#line 1067 "sql.ypp"
+#line 1069 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertValList(
           AST_INSERT_VALUE_LIST,
@@ -5032,7 +5034,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 309:
 /* Line 868 of glr.c  */
-#line 1071 "sql.ypp"
+#line 1073 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertVals(
           AST_INSERT_VALUE, 0,
@@ -5043,14 +5045,14 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 310:
 /* Line 868 of glr.c  */
-#line 1072 "sql.ypp"
+#line 1074 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertVals(AST_INSERT_VALUE, 1, NULL, NULL);
     } break;
 
     case 311:
 /* Line 868 of glr.c  */
-#line 1073 "sql.ypp"
+#line 1075 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertVals(
           AST_INSERT_VALUE, 0,
@@ -5062,7 +5064,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 312:
 /* Line 868 of glr.c  */
-#line 1074 "sql.ypp"
+#line 1076 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertVals(
           AST_INSERT_VALUE, 1, NULL,
@@ -5072,7 +5074,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 313:
 /* Line 868 of glr.c  */
-#line 1078 "sql.ypp"
+#line 1080 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertStmt(
           AST_INSERT_STMT, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (7))]
@@ -5088,7 +5090,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 314:
 /* Line 868 of glr.c  */
-#line 1082 "sql.ypp"
+#line 1084 "sql.ypp"
     {
       ((*yyvalp).ast_node) = new AstInsertStmt(
           AST_INSERT_STMT, (((yyGLRStackItem const *)yyvsp)[YYFILL((2) - (7))]
@@ -5105,7 +5107,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 315:
 /* Line 868 of glr.c  */
-#line 1086 "sql.ypp"
+#line 1088 "sql.ypp"
     {
       if ((((yyGLRStackItem const *)
             yyvsp)[YYFILL((2) - (3))].yystate.yysemantics.yysval.subtok) != 4)
@@ -5124,7 +5126,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 316:
 /* Line 868 of glr.c  */
-#line 1089 "sql.ypp"
+#line 1091 "sql.ypp"
     {
       if ((((yyGLRStackItem const *)
             yyvsp)[YYFILL((2) - (3))].yystate.yysemantics.yysval.subtok) != 4)
@@ -5141,7 +5143,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 317:
 /* Line 868 of glr.c  */
-#line 1092 "sql.ypp"
+#line 1094 "sql.ypp"
     {
       if ((((yyGLRStackItem const *)
             yyvsp)[YYFILL((4) - (5))].yystate.yysemantics.yysval.subtok) != 4)
@@ -5161,7 +5163,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
 
     case 318:
 /* Line 868 of glr.c  */
-#line 1095 "sql.ypp"
+#line 1097 "sql.ypp"
     {
       if ((((yyGLRStackItem const *)
             yyvsp)[YYFILL((4) - (5))].yystate.yysemantics.yysval.subtok) != 4)
@@ -5178,7 +5180,7 @@ static inline int yyfill(yyGLRStackItem *yyvsp, int *yylow, int yylow1,
     } break;
 
 /* Line 868 of glr.c  */
-#line 4053 "sql.tab.cpp"
+#line 4055 "sql.tab.cpp"
     default:
       break;
   }
@@ -6546,7 +6548,7 @@ static void yypdumpstack(yyGLRStack *yystackp) {
 }
 #endif
 /* Line 2575 of glr.c  */
-#line 1101 "sql.ypp"
+#line 1103 "sql.ypp"
 
 void emit(char *s, ...) {
   /*

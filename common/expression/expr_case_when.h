@@ -21,20 +21,22 @@ namespace claims {
 namespace common {
 class ExprCaseWhen : public ExprNode {
  public:
-  std::vector<ExprNode*> mywhen_;
-  std::vector<ExprNode*> mythen_;
-  ExprCaseWhen(ExprNodeType expr_node_type, data_type actual_type,
-               const char* alias, const std::vector<ExprNode*>& mycase,
+  std::vector<ExprNode*> case_when_;
+  std::vector<ExprNode*> case_then_;
+  ExprCaseWhen(ExprNodeType expr_node_type, data_type actual_type, string alias,
+               const std::vector<ExprNode*>& mycase,
                const std::vector<ExprNode*>& mywhen);
   explicit ExprCaseWhen(ExprCaseWhen* expr);
   ExprCaseWhen() {}
   ~ExprCaseWhen() {
-    for (int i = 0; i < mywhen_.size(); i++) {
-      delete mywhen_[i];
+    for (int i = 0; i < case_when_.size(); i++) {
+      delete case_when_[i];
     }
-    for (int i = 0; i < mythen_.size(); i++) {
-      delete mythen_[i];
+    for (int i = 0; i < case_then_.size(); i++) {
+      delete case_then_[i];
     }
+    case_when_.clear();
+    case_then_.clear();
   }
   void* ExprEvaluate(void* tuple, Schema* schema);
   void InitExprAtLogicalPlan(data_type return_type,
@@ -47,7 +49,8 @@ class ExprCaseWhen : public ExprNode {
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(const Archive& ar, const unsigned int version) {
-    ar& boost::serialization::base_object<ExprNode>(*this) & mywhen_ & mythen_;
+    ar& boost::serialization::base_object<ExprNode>(*this) & case_when_ &
+        case_then_;
   }
 };
 

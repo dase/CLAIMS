@@ -17,11 +17,11 @@
 #include <vector>
 namespace claims {
 namespace common {
-ExprIn::ExprIn(ExprNodeType expr_node_type, data_type actual_type,
-               const char* alias, const std::vector<ExprBinary*> in_left,
+ExprIn::ExprIn(ExprNodeType expr_node_type, data_type actual_type, string alias,
+               const std::vector<ExprBinary*> cmp_expr,
                const std::vector<vector<ExprNode*> > in_right)
     : ExprNode(expr_node_type, actual_type, alias),
-      cmp_expr_(in_left),
+      cmp_expr_(cmp_expr),
       right_node_(in_right) {}
 ExprIn::ExprIn(ExprIn* expr)
     : ExprNode(expr),
@@ -51,9 +51,9 @@ void* ExprIn::ExprItemEvaluate(void* tuple, Schema* schema,
 void* ExprIn::ExprEvaluate(void* tuple, Schema* schema) {
   bool result = false;
   bool tmp_result = true;
-  for (int i = 0; i < right_node_.size() && !result; i++) {
+  for (int i = 0; i < right_node_.size() && !result; ++i) {
     tmp_result = true;
-    for (int j = 0; j < right_node_[j].size() && tmp_result; j++) {
+    for (int j = 0; j < right_node_[i].size() && tmp_result; ++j) {
       tmp_result = *(static_cast<bool*>(
           ExprItemEvaluate(tuple, schema, cmp_expr_[j], right_node_[i][j])));
     }
@@ -73,9 +73,8 @@ void ExprIn::InitExprAtLogicalPlan(
   }
   for (int i = 0; i < right_node_.size(); i++) {
     for (int j = 0; j < right_node_[i].size(); j++) {
-      right_node_[i][j]->InitExprAtLogicalPlan(cmp_expr_[j]->actual_type_,
+      right_node_[i][j]->InitExprAtLogicalPlan(cmp_expr_[j]->get_type_,
                                                column_index, schema);
-      // should be get_type_?
     }
   }
 }
