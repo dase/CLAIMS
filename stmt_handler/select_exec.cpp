@@ -44,6 +44,7 @@ using std::cout;
 
 namespace claims {
 namespace stmt_handler {
+#define PRINTCONTEXT
 SelectExec::SelectExec(AstNode* stmt) : StmtExec(stmt) {
   select_ast_ = static_cast<AstSelectStmt*>(stmt_);
 }
