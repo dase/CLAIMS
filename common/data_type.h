@@ -25,13 +25,6 @@
 #include "./hash.h"
 #include "../utility/string_process.h"
 #include "./types/NValue.hpp"
-using claims::common::rSuccess;
-using claims::common::rTooSmallData;
-using claims::common::rTooLargeData;
-using claims::common::rTooLongData;
-using claims::common::rInterruptedData;
-using claims::common::rIncorrectData;
-using claims::common::rInvalidNullData;
 using boost::gregorian::date_duration;
 using boost::gregorian::from_undelimited_string;
 using boost::gregorian::from_string;
@@ -67,7 +60,7 @@ enum data_type {
   t_date_year,
   t_date_quarter
 };
-// enum TransformRet { kSuccess = 0, kWarning, kError };
+// enum TransformRet { rSuccess = 0, kWarning, kError };
 inline string GetPrecision(double d) {
   ostringstream ss;
   ss.precision(1000);
@@ -579,6 +572,10 @@ class OperateString : public Operate {
     this->size = size;
     this->nullable = nullable;
   }
+  OperateString(const OperateString& right) {
+    this->size = right.size;
+    this->nullable = right.nullable;
+  }
   ~OperateString() {}
   inline void assignment(const void* const& src, void* const& desc) const {
     assert(desc != 0 && src != 0);
@@ -639,7 +636,7 @@ class OperateString : public Operate {
     return boost::hash_value((std::string)((char*)key)) % mod;
   }
   Operate* duplicateOperator() const {
-    return new OperateString(this->nullable);
+    return new OperateString(this->size, this->nullable);
   }
 
   inline bool setNull(void* value) {
@@ -1284,48 +1281,7 @@ class column_type {
  public:
   column_type(data_type type, unsigned _size = 0, bool _nullable = true)
       : type(type), size(_size), nullable(_nullable) {
-    switch (type) {
-      case t_int:
-        operate = new OperateInt(_nullable);
-        break;
-      case t_float:
-        operate = new OperateFloat(_nullable);
-        break;
-      case t_string:
-        operate = new OperateString(_nullable);
-        break;
-      case t_double:
-        operate = new OperateDouble(_nullable);
-        break;
-      case t_u_long:
-        operate = new OperateULong(_nullable);
-        break;
-      case t_date:
-        operate = new OperateDate(_nullable);
-        break;
-      case t_time:
-        operate = new OperateTime(_nullable);
-        break;
-      case t_datetime:
-        operate = new OperateDatetime(_nullable);
-        break;
-
-      case t_decimal:
-        operate = new OperateDecimal(size, _nullable);
-        break;
-      case t_smallInt:
-        operate = new OperateSmallInt(_nullable);
-        break;
-      case t_u_smallInt:
-        operate = new OperateUSmallInt(_nullable);
-        break;
-      case t_boolean:
-        operate = new OperateBool(_nullable);
-        break;
-      default:
-        operate = 0;
-        break;
-    }
+    initialize();
   }
   column_type(const column_type& r) {
     this->type = r.type;
@@ -1413,7 +1369,7 @@ class column_type {
         operate = new OperateDouble(nullable);
         break;
       case t_string:
-        operate = new OperateString(nullable);
+        operate = new OperateString(size, nullable);
         break;
       case t_u_long:
         operate = new OperateULong(nullable);

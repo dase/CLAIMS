@@ -32,7 +32,7 @@
 #include "../../common/rename.h"
 #include "../../common/Logging.h"
 #include "../../common/ids.h"
-#include "../../common/log/logging.h"
+//#include "../../common/log/logging.h"
 #include "../../Environment.h"
 #include "../../utility/ThreadSafe.h"
 #include "../../utility/rdtsc.h"

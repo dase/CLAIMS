@@ -71,6 +71,7 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rAccessHdfsFileFail, "failed to access hdfs file");
 
   DefineErrorAndMessage(rNoMemory, "failed to allocate memory from system");
+  DefineErrorAndMessage(rNotSupport, "not supported yet");
 
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(rNoTableFound, "No such table found");

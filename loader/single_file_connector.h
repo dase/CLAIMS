@@ -68,7 +68,7 @@ class SingleFileConnector : public FileConnector {
    * @brief Method description: load total file into memory
    * @param buffer: set buffer point to a new memory allocated by this method,
    * @param length: set to the length of file, also the length of new memory
-   * @return  kSuccess if succeed.
+   * @return  rSuccess if succeed.
    * @details   (additional) this method will modify buffer, set to a new memory
    */
   virtual RetCode LoadTotalFile(void*& buffer, uint64_t* length) {
@@ -81,7 +81,7 @@ class SingleFileConnector : public FileConnector {
    * @param buffer: point to the memory where file is load
    * @param start: the position from which to read
    * @param length: the length of data need to read
-   * @return  kSuccess if OK
+   * @return  rSuccess if OK
    * @details   (additional)
    */
   virtual RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {

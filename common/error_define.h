@@ -21,11 +21,6 @@
  *  Created on: Aug 5, 2015
  *      Author: yukai
  *		 Email: yukai2014@gmail.com
-<<<<<<< HEAD
-=======
- *
- * Description:
->>>>>>> origin/checkset-lzf1116
  *
  *  ATTENTION: have to add Error Message in error_no.h and error_no.cpp,
  *  if new error no is add
@@ -38,13 +33,13 @@
 using claims::common::CStrError;
 
 typedef int RetCode;  // means return code
-#define ELOG(ret, err_info)                                                \
-  LOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " << err_info \
+#define ELOG(ret, err_info)                                              \
+  LOG(ERROR) << "[" << ret << ", " << CStrError(ret) << "] " << err_info \
              << std::endl;
 
-#define WLOG(ret, warning_info)                                  \
-  LOG(WARNING) << "[ " << ret << ", " << CStrError(ret) << " ] " \
-               << warning_info << std::endl;
+#define WLOG(ret, warning_info)                                                \
+  LOG(WARNING) << "[" << ret << ", " << CStrError(ret) << "] " << warning_info \
+               << std::endl;
 
 #define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info) \
   do {                                            \
@@ -82,8 +77,7 @@ const int rFailure = EXIT_FAILURE;
 /******************************************************************************
  * ATTENTION: have to add Error Message in error_no.h and error_no.cpp, if new
  * error no is add
- ******************************************************************************
- */
+ *****************************************************************************/
 /* errorno for common  -1 ~ -1000 */
 const int rTypeError = -1;
 const int rNotInit = -2;
@@ -103,6 +97,7 @@ const int rAccessDiskFileFail = -15;
 const int rAccessHdfsFileFail = -16;
 
 const int rNoMemory = -17;
+const int rNotSupport = -18;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int rNoTableFound = -1001;
@@ -136,7 +131,6 @@ const int rCodegenFailed = -5003;
 /* errorno for physical_query_plan -6001 ~ -7000 */
 const int rCatalogRestoreInvild = -6001;
 const int rCatalogNotFound = -6002;
-
 }  // end namespace common
 }  // end namespace claims
 

@@ -32,6 +32,7 @@
 #include <string>
 #include "../common/ids.h"
 #include "../common/data_type.h"
+#include "../common/memory_handle.h"
 using std::string;
 namespace claims {
 namespace catalog {
@@ -102,7 +103,7 @@ struct Attribute {
   }
   ~Attribute() {
     if (table_id_ < TableID(kAttributeAny)) {
-      attrType->~column_type();
+      DELETE_PTR(attrType);
     }
   }
   bool operator==(const Attribute& r) const {
