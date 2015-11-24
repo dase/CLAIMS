@@ -77,7 +77,6 @@ inline void *int_to_int(void *value, void *tovalue) {
   //    if (*(int *)value == NULL_INT)  // in order to judge the return result
   //    is
   //                                    // NULL,so void * is NULL will be simple
-  return NULL;
   *(int *)tovalue = *(int *)value;
   return tovalue;
 }
