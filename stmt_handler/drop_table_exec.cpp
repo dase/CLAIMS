@@ -51,7 +51,8 @@ RetCode DropTableExec::Execute(executed_result* exec_result) {
   SemanticContext sem_cnxt;
   ret = drop_table_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info = "semantic analysis error";
+    exec_result->error_info =
+        "Semantic analysis error.\n" + sem_cnxt.error_msg_;
     exec_result->status = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;

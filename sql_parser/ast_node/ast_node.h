@@ -181,6 +181,8 @@ class SemanticContext {
   bool have_agg;
   bool select_expr_have_agg;
   vector<AstNode*> select_expr_;
+  vector<ColumnOffset> index_;  //  for create projection execute function
+  string error_msg_;
 
  private:
   set<AstNode*> aggregation_;

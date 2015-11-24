@@ -49,19 +49,22 @@ CreateProjectionExec::~CreateProjectionExec() {}
 
 RetCode CreateProjectionExec::Execute(executed_result* exec_result) {
   RetCode ret = rSuccess;
-  vector<ColumnOffset> index;
-  index.push_back(0);
 
   SemanticContext sem_cnxt;
-  ret = create_projection_ast_->SemanticAnalisys(&sem_cnxt, index);
+  sem_cnxt.index_.push_back(0);
+  ret = create_projection_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info = "semantic analysis error";
+    exec_result->error_info =
+        "Semantic analysis error.\n" + sem_cnxt.error_msg_;
     exec_result->status = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
     return ret;
   }
 
+  /**
+   * Start Create projection for table.
+   */
   int partition_num = create_projection_ast_->partition_num_;
   string tablename = create_projection_ast_->table_name_;
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
@@ -73,7 +76,7 @@ RetCode CreateProjectionExec::Execute(executed_result* exec_result) {
       create_projection_ast_->partition_attribute_name_;
 
   local_catalog->getTable(table_id)->createHashPartitionedProjection(
-      index, partition_attribute_name, partition_num);
+      sem_cnxt.index_, partition_attribute_name, partition_num);
   int projection_index =
       local_catalog->getTable(table_id)->getNumberOfProjection() - 1;
   for (unsigned i = 0; i < local_catalog->getTable(table_id)
@@ -86,8 +89,9 @@ RetCode CreateProjectionExec::Execute(executed_result* exec_result) {
         ->getPartitioner()
         ->RegisterPartition(i, 0);
   }
-
-  // create projection start ( for table_del )
+  /**
+   *  Start create projection  for table_del.
+   */
   table = local_catalog->getTable((tablename + "_DEL"));
   if (NULL != table) {
     table_id = local_catalog->getTable(tablename + "_DEL")->get_table_id();

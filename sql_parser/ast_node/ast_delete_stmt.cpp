@@ -33,6 +33,8 @@
 #include <string>
 #include <iomanip>
 #include <bitset>
+
+#include "./ast_select_stmt.h"
 #include "../../common/error_define.h"
 #include "../../Catalog/table.h"
 #include "../../Environment.h"
@@ -84,6 +86,7 @@ RetCode AstDeleteStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
       Environment::getInstance()->getCatalog()->getTable(tablename);
   if (NULL == new_table) {
     LOG(ERROR) << "The table " + tablename + " is not existed.";
+    sem_cnxt->error_msg_ = "The table " + tablename + " is not existed.";
     ret = rTableNotExist;
     return ret;
   }
@@ -92,6 +95,8 @@ RetCode AstDeleteStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (NULL == new_table) {
     LOG(ERROR) << "The table DEL " + tabledel +
                       " is not existed during delete data." << std::endl;
+    sem_cnxt->error_msg_ =
+        "The table DEL " + tabledel + " is not existed during delete data.";
     ret = rTableNotExist;
     return ret;
   }
