@@ -18,6 +18,7 @@
 #include "./expr_type_cast.h"
 namespace claims {
 namespace common {
+// now ExprTernary just for substring
 class ExprTernary : public ExprNode {
  public:
   OperType oper_type_;

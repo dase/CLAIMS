@@ -239,10 +239,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         }
         QNode *cwnode = new QExpr_case_when(qual, ans, funcnode->str);
         return cwnode;
-      } else if (strcmp(funcnode->funname, "CASE4") == 0)  // now just support
-                                                           // |case [when expr
-                                                           // then expr]* [else
-                                                           // expr] end|
+      } else if (strcmp(funcnode->funname, "CASE4") == 0)
+      // now just support |case [when expr then expr]* [else expr] end|
       {
         vector<QNode *> qual;
         vector<QNode *> ans;

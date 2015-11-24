@@ -25,8 +25,8 @@ class ExprIn : public ExprNode {
  public:
   std::vector<ExprBinary*> cmp_expr_;
   std::vector<std::vector<ExprNode*> > right_node_;
-  ExprIn(ExprNodeType expr_node_type, data_type actual_type, const char* alias,
-         const std::vector<ExprBinary*> in_left,
+  ExprIn(ExprNodeType expr_node_type, data_type actual_type, string alias,
+         const std::vector<ExprBinary*> cmp_expr,
          const std::vector<vector<ExprNode*> > in_right);
   explicit ExprIn(ExprIn* expr_in);
   ExprIn() {}
@@ -39,6 +39,8 @@ class ExprIn : public ExprNode {
         delete right_node_[i][j];
       }
     }
+    cmp_expr_.clear();
+    right_node_.clear();
   }
   void* ExprItemEvaluate(void* tuple, Schema* schema, ExprBinary* cmp_expr,
                          ExprNode* right_node);

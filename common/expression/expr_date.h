@@ -27,8 +27,8 @@ class ExprDate : public ExprNode {
   data_type arg1_return_type_;
   DataTypeOperFunc DataTypeOperFunc_;
   ExprDate(ExprNodeType expr_node_type, data_type actual_type,
-           const char* alias, OperType oper_type, ExprNode* arg0,
-           ExprNode* arg1);
+           data_type arg1_return_type, string alias, OperType oper_type,
+           ExprNode* arg0, ExprNode* arg1);
   explicit ExprDate(ExprDate* expr_date);
   ExprDate() {}
   ~ExprDate() {
