@@ -77,6 +77,7 @@ using std::sort;
 using std::vector;
 // namespace claims {
 // namespace sql_parser {
+#define PRINTCONTEXT
 AstSelectList::AstSelectList(AstNodeType ast_node_type, bool is_all,
                              AstNode* args, AstNode* next)
     : AstNode(ast_node_type), is_all_(is_all), args_(args), next_(next) {
@@ -1552,14 +1553,14 @@ ErrorNo AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
       return ret;
     }
   }
-  if (NULL != select_list_) {
-    ret = GetLogicalPlanOfProject(logic_plan);
+  if (NULL != limit_clause_) {
+    ret = limit_clause_->GetLogicalPlan(logic_plan);
     if (eOK != ret) {
       return ret;
     }
   }
-  if (NULL != limit_clause_) {
-    ret = limit_clause_->GetLogicalPlan(logic_plan);
+  if (NULL != select_list_) {
+    ret = GetLogicalPlanOfProject(logic_plan);
     if (eOK != ret) {
       return ret;
     }
