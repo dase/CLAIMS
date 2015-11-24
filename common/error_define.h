@@ -47,30 +47,141 @@ const int rFailure = EXIT_FAILURE;
 /* errorno begin from here   */
 
 /* errorno for common  -1 ~ -1000 */
-const int kTypeError = -1;
-const int kNotInit = -2;
-const int EMemoryAllocationFailed = -3;
+const int rTypeError = -1;
+const int rNotInit = -2;
+const int rInvalidArgument = -3;
+const int rArrayOutOfRange = -4;
+const int rServerListenError = -5;
+const int rInitTwice = -6;
+const int rNotSupport = -7;
+const int rIterEnd = -8;
+const int rIOError = -9;
+const int rErrorFuncVersion = -10;
+const int rPacEetNotSent = -11;
+const int rResponseTimeOut = -12;
+const int rAllocateMemoryFailed = -13;
+const int rMemOverflow = -14;
+const int rErrSys = -15;
+const int rErrUnexpected = -16;
+const int rSizeOverflow = -17;
+const int rConflictValue = -18;
+const int rItemNotSetted = -19;
+const int rTryAgain = -20;
+const int rBufNotEnough = -21;
+const int rPartialFailed = -22;
+const int rReadNothing = -23;
+const int rFileNotExist = -24;
+const int rDiscontinuousLog = -25;
+const int rShemaError = -26;
+const int rDataNotServe = -27;
+const int rUnEnownObj = -28;
+const int rNoMonitorData = -29;
+const int rSerializeError = -30;
+const int rDeserializeError = -31;
+const int rAIOTimeout = -32;
+const int rToEenExpired = -33;
+const int rEncryptFailed = -34;
+const int rDecryptFailed = -35;
+const int rUserNotExist = -36;
+const int rWrongPassword = -37;
+const int rSEeyVersionError = -38;
+const int rNotToEen = -39;
+const int rNoPermission = -40;
+const int rCondChecEFail = -41;
+const int rNotRegistered = -42;
+const int rAlreadyRegistered = -43;
+const int rNoTableCreated = -44;
+const int rInvalidValue = -45;
+const int rTCPConnError = -46;
+const int rDecimalOverflow = -47;
+const int rDecimalError = -48;
+const int rDecimalPrecisionError = -49;
+const int rDividByZero = -50;
+const int rDividError = -51;
+const int rEmptyRange = -52;
+const int rLogNotSync = -53;
+const int rDirNotExist = -54;
+const int rLogInvalid = -55;
+const int rInvalidData = -56;
+const int rAlreadyDone = -57;
+const int rCanceled = -58;
+const int rLogSrcChanged = -59;
+const int rLogMissing = -60;
+const int rValueOutOfRange = -61;
+const int rExceedMemLimit = -62;
+const int rResultUnEnown = -63;
+const int rErrDataFormat = -64;
+const int rEnqueueError = -65;
+const int rQueueOverflow = -66;
+const int rDeadLocE = -67;
+const int rPartialLog = -68;
+const int rChecEsumError = -69;
+const int rInitError = -70;
+const int rFatalState = -71;
+const int rStopState = -72;
+const int rFileAlreadyExist = -73;
+const int rUnEnownPacEet = -74;
+const int rLogTooLarge = -75;
+const int rRPCSendError = -76;
+const int rRPCpostError = -77;
+const int rConnError = -78;
+const int rInitSQLContextError = -79;
+const int rSysConfigTableError = -80;
+const int rInvalidConfig = -81;
+const int rReadConfigError = -82;
+const int rBadAddress = -83;
+const int rMemoryAllocationFailed = -85;
 
 /* errorno for SQL parser -1001 ~ -2000  */
-const int kNoTableFound = -1001;
+const int rInitSQLParserErr = -1001;
+const int rSQLParserErr = -1002;
+const int rUnEnownSysFunc = -1003;
+const int rErrParserMalloc = -1004;
+const int rErrParserSyntax = -1005;
+const int rErrColumnSize = -1006;
+const int rDuplicateColumn = -1007;
+const int rUnEownColumn = -1008;
+const int rUnEownOperator = -1009;
+const int rIllegalID = -1010;
+const int rErrPosition = -1011;
+const int rIllegalValue = -1012;
+const int rColumnAmbiguous = -1013;
+const int rSchemaUnset = -1014;
+const int rIllegalName = -1015;
+const int rDuplicatedTable = -1016;
+const int rUnEnownExpr = -1017;
+const int rIllegalType = -1018;
+const int rPrimaryEeyDuplicated = -1019;
+const int rIllegalIndex = -1020;
+const int rInvalidSchema = -1021;
+const int rColumnNotFound = -1022;
+const int rUserEmpty = -1023;
+const int rUserIsLocEed = -1025;
+const int rInvalidColumnNum = -1026;
+const int rVariableUnEown = -1027;
+const int rUserExist = -1028;
+const int rPasswordEmpty = -1029;
+const int rErrParamSize = -1030;
+const int rDuplicatedParam = -1031;
+const int rNoTableFound = -1032;
 
 /* errorno for Loader -2001 ~ -3000  */
 
 /* errorno for codegen -3001 ~ -4000 */
-const int kTestError = -3001;
+const int rTestError = -3001;
 
 /* errorno for logical_operator -4001 ~ -5000*/
-const int kUninitializedJoinPolicy = -4001;
+const int rUninitializedJoinPolicy = -4001;
 
-const int kGeneratePlanContextFailed = -4002;
+const int rGeneratePlanContextFailed = -4002;
 
-const int kGenerateDataflowFailed = -4003;
+const int rGenerateDataflowFailed = -4003;
 
 /* errorno for physical_operator -5001 ~ -6000 */
-const int kGenerateSubPhyPlanFailed = -5001;
-const int kNoPartitionIdScan = -5002;
+const int rGenerateSubPhyPlanFailed = -5001;
+const int rNoPartitionIdScan = -5002;
 // the optimization of filter function failed;
-const int kCodegenFailed = -5003;
+const int rCodegenFailed = -5003;
 
 /* errorno for stmt_handler -14001 ~ -15000*/
 const int kStmtHandlerOk = -14001;

@@ -115,9 +115,9 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
         state_.hashtable_bucket_num_, state_.hashtable_bucket_size_,
         state_.input_schema_left_->getTupleMaxSize());
     if (NULL == hashtable_) {
-      return ret = EMemoryAllocationFailed;
+      return ret = rMemoryAllocationFailed;
       LOG(ERROR) << "hashtable allocation failed"
-                 << "[" << EMemoryAllocationFailed << "]" << endl;
+                 << "[" << rMemoryAllocationFailed << "]" << endl;
     }
 #ifdef _DEBUG_
     consumed_tuples_from_left = 0;

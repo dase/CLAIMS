@@ -44,7 +44,7 @@ class ErrorNoTest : public ::testing::Test {
 };
 
 TEST_F(ErrorNoTest, A) {
-  int errerno = kTypeError;
+  int errerno = rTypeError;
 
   //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
