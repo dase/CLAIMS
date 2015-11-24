@@ -24,18 +24,28 @@ struct remote_command {
   int socket_fd;
 };
 struct ExecutedResult {
+  enum { kWarningShowMaxCount = 64, kWarningShowMaxLength = 70000 };
   bool status_;  // ture is OK
   int fd_;
   ResultSet* result_;
   std::string error_info_;
   std::string info_;
   std::string warning_;
-  void SetError(string err_info, string warning_info = "") {
+  int warning_count_;
+
+  ExecutedResult()
+      : status_(0),
+        fd_(-1),
+        result_(NULL),
+        error_info_(""),
+        info_(""),
+        warning_(""),
+        warning_count_(0) {}
+  void SetError(string err_info) {
     status_ = false;
     result_ = NULL;
-    if ("" == err_info) error_info_ = err_info;
+    if ("" == error_info_) error_info_ = err_info;
     info_ = "";
-    warning_ = warning_info;
   }
 
   void SetResult(string info, ResultSet* result) {
@@ -43,7 +53,11 @@ struct ExecutedResult {
     result_ = result;
     info_ = info;
   }
-  void AppendWarning(string warning_info) { warning_ += warning_info; }
+  void AppendWarning(string warning_info) {
+    if (++warning_count_ < kWarningShowMaxCount &&
+        warning_.length() + warning_info.length() < kWarningShowMaxLength)
+      warning_ += warning_info;
+  }
 };
 class Daemon {
  public:

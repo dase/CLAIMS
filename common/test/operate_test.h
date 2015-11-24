@@ -66,10 +66,10 @@ TEST_F(OperateTest, Int) {
   OperateInt* opt = new OperateInt(true);
   OperateInt* opf = new OperateInt(false);
 
-  test(_big, int_min, rTooSmallData, opt);
-  test(int_max, int_max_1, rTooLargeData, opt);
-  test(int_max, int_max, rSuccess, opf);
-  test(big, int_max_1, rTooLargeData, opt);
+  test(_big, kIntMin, rTooSmallData, opt);
+  test(kIntMax, kIntMax_1, rTooLargeData, opt);
+  test(kIntMax, kIntMax, rSuccess, opf);
+  test(big, kIntMax_1, rTooLargeData, opt);
   test("123456.654321", "123456.654321", rSuccess, opt);
   test("12a12", "12", rInterruptedData, opt);
   test("a12", "a12", rIncorrectData, opt);

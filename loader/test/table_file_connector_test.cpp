@@ -49,6 +49,10 @@ using std::string;
 using std::endl;
 using std::ostringstream;
 using namespace claims::common;
+using claims::common::FileOpenFlag;
+using claims::common::FilePlatform;
+using claims::loader::FileConnector;
+using claims::loader::SingleFileConnector;
 
 TableFileConnectorTest::TableFileConnectorTest() {
   connector_ = NULL;
@@ -79,7 +83,7 @@ void TableFileConnectorTest::WriteOrAppendFile(
     char* expect, int expect_length) {
   connector_ = new TableFileConnector(file_platform, paths_);
 
-  if (common::rSuccess != connector_->Open(open_flag)) FAIL();
+  if (rSuccess != connector_->Open(open_flag)) FAIL();
   for (int i = 0; i < 3; ++i) {
     for (int j = 0; j < 3; ++j) {
       if (rSuccess != connector_->Flush(i, j, data_, data_length_)) {

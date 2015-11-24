@@ -12,12 +12,14 @@
 #include "../catalog/catalog.h"
 #include "../common/Block/ResultSet.h"
 #include "../common/data_type.h"
-#include "../catalog/table.h"
+//#include "../catalog/table.h"
+#include "../common/error_define.h"
 #include "../logical_operator/logical_operator.h"
 
 using claims::catalog::Catalog;
 using claims::catalog::TableDescriptor;
 using claims::logical_operator::LogicalOperator;
+class Catalog;
 
 struct query_result {
   query_result() : result_set(0) {}
@@ -60,8 +62,8 @@ void ShowTable(Catalog *catalog, Node *node);
 
 void DropTable(Catalog *catalog, Node *node, ExecutedResult *result);
 
-bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
-                         unsigned position, ostringstream &ostr);
+RetCode InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
+                            unsigned position, ostringstream &ostr);
 bool CheckType(const column_type *col_type, Expr *expr);
 
 LogicalOperator *convert_sql_to_logical_operator_tree(const char *sql);

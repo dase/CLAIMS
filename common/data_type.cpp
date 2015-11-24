@@ -116,7 +116,7 @@ RetCode OperateFloat::CheckSet(string& str) const {
     ELOG(ret, str)
     return ret;
   }
-  if (!isdigit(str[0]) && str[0] != '-') {
+  if (!isdigit(str[0]) && str[0] != '-' && str[0] != '.') {
     ret = rIncorrectData;
     ELOG(ret, str);
     return ret;
@@ -238,7 +238,8 @@ RetCode OperateString::CheckSet(string& str) const {
    */
   if (str.length() > size) {
     ret = rTooLongData;
-    WLOG(ret, str);
+    WLOG(ret, " length of str:" << str
+                                << " is longer than expected length:" << size);
     str = str.substr(0, size);
   }
   return ret;

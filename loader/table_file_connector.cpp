@@ -96,7 +96,7 @@ RetCode TableFileConnector::Close() {
       EXEC_AND_ONLY_LOG_ERROR(ret,file_handles_[i][j]->Close(),
                               "failed to close " << write_path_name_[i][j]
                                                  << ". ret:" << ret);
-  //      if (kSuccess != (ret = file_handles_[i][j]->Close()))
+  //      if (rSuccess != (ret = file_handles_[i][j]->Close()))
   //        LOG(ERROR) << "failed to close " << write_path_name_[i][j] <<
   //        std::endl;
 

@@ -35,13 +35,16 @@
 #include <string>
 
 #include "../../common/memory_handle.h"
+#include "../../common/file_handle/file_handle_imp_factory.h"
 #include "../file_connector.h"
 #include "../single_file_connector.h"
+
+using claims::common::FilePlatform;
+using namespace claims::common;
 
 namespace claims {
 
 namespace loader {
-using namespace claims::common;
 
 SingleFileConnectorTest::SingleFileConnectorTest() {
   connector_ = NULL;

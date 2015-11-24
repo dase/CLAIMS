@@ -16,6 +16,7 @@
 
 #include "../catalog/catalog.h"
 #include "../catalog/projection_binding.h"
+#include "../loader/data_injector.h"
 
 #include "../Parsetree/sql_node_struct.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
@@ -23,26 +24,27 @@
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
 
 #include "../catalog/stat/Analyzer.h"
+#include "../common/error_define.h"
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/memory_handle.h"
 #include "../logical_operator/logical_scan.h"
 #include "../logical_operator/logical_equal_join.h"
 #include "../logical_operator/logical_aggregation.h"
-
-#include "../logical_operator/logical_filter.h"
-#include "../utility/rdtsc.h"
-
-#include "../loader/data_injector.h"
-
-#include "../Client/ClaimsServer.h"
 #include "../logical_operator/logical_limit.h"
 #include "../logical_operator/logical_query_plan_root.h"
+#include "../logical_operator/logical_filter.h"
+
+#include "../utility/rdtsc.h"
+
+#include "../Client/ClaimsServer.h"
+
 #define SQL_Parser
 using namespace std;
 using claims::catalog::Catalog;
 using claims::common::rSuccess;
 using claims::common::FileOpenFlag;
 using claims::loader::DataInjector;
+using claims::common::rNotSupport;
 
 #define NEW_LOADER
 #define SQL_Parser
@@ -218,33 +220,51 @@ void ExecuteLogicalQueryPlan() {
 }
 */
 
-bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
-                         unsigned position, ostringstream &ostr) {
-  bool has_warning = false;
+RetCode InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
+                            unsigned position, ostringstream &ostr) {
+  RetCode ret = rSuccess;
   if (insert_value->value_type == 0) {  // 指定具体的值
     // check whether the column type match value type
     //    has_warning = CheckType(table->getAttribute(position).attrType,
     //                            (Expr *)insert_value->expr);
 
-    //    switch (insert_value->expr->type) {
-    //      // 2014-4-17---only these type are supported now---by Yu
-    //      case t_stringval:
-    //      case t_intnum:
-    //      case t_approxnum:
-    //      case t_bool: {
-    Expr *expr = (Expr *)insert_value->expr;
-    DLOG(INFO) << (expr->data == NULL ? "NULL" : expr->data) << endl;
-    ostr << expr->data;
-    //      } break;
-    //      default: {}
-    //    }
+    switch (insert_value->expr->type) {
+      // 2014-4-17---only these type are supported now---by Yu
+      case t_stringval:
+      case t_intnum:
+      case t_approxnum:
+      case t_bool: {
+        Expr *expr = (Expr *)insert_value->expr;
+        DLOG(INFO) << (expr->data == NULL ? "NULL" : expr->data) << endl;
+        ostr << expr->data;
+        break;
+      }
+      case t_expr_cal: {
+        // TODO(ANYONE): the value to insert may be a expr like
+        // "-234+56*82/2 > 23", which should be supported
+        ret = rNotSupport;
+        ELOG(ret, "Insert a expr as value is not supported, including '-1' ");
+        break;
+      }
+      case t_name: {
+        Columns *col = (Columns *)insert_value->expr;
+        DLOG(INFO) << (col->parameter2 == NULL ? "NULL" : col->parameter2)
+                   << endl;
+        ostr << col->parameter2;
+        break;
+      }
+      default: {
+        ret = rNotSupport;
+        ELOG(ret, "Not supported type:" << insert_value->expr->type);
+      }
+    }
   } else if (insert_value->type == 1) {
     string data;
     table->getAttribute(position).attrType->operate->SetDefault(data);
     ostr << data;
   }  // 设置为default, 暂不支持
 
-  return has_warning;
+  return ret;
 }
 /*
 bool query(const string& sql, query_result& result_set) {
@@ -525,11 +545,12 @@ void CreateTable(Catalog *catalog, Node *node, ExecutedResult *result) {
           if (datatype->length) {
             Length *l = (Length *)datatype->length;
 
-            if (column_atts && (column_atts->datatype & 01)) {
+            if (column_atts && (column_atts->datatype & 01)) {  // not nullx
               // the extra one char is prepared for '\0'
               new_table->addAttribute(colname, data_type(t_string),
                                       l->data1 + 1, true, false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
+            } else if (column_atts && (column_atts->datatype & 02) ||
+                       (00 == column_atts->datatype)) {  // can be nullx
               new_table->addAttribute(colname, data_type(t_string),
                                       l->data1 + 1, true, true);
             } else {
@@ -540,7 +561,8 @@ void CreateTable(Catalog *catalog, Node *node, ExecutedResult *result) {
             if (column_atts && (column_atts->datatype & 01)) {
               new_table->addAttribute(colname, data_type(t_string), 1, true,
                                       false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
+            } else if (column_atts && (column_atts->datatype & 02) ||
+                       (00 == column_atts->datatype)) {
               new_table->addAttribute(colname, data_type(t_string), 1, true,
                                       true);
             } else {
@@ -1290,8 +1312,6 @@ void LoadData(Catalog *catalog, Node *node, ExecutedResult *result) {
     path_node = (Expr_list *)path_node->next;
   }
 
-  // split sign should be considered carefully, in case of it may be "||" or
-  // "###"
   ASTParserLogging::log(
       "The separator are :%s,%s, The sample is %lf, mode is %d\n",
       column_separator.c_str(), tuple_separator.c_str(), new_node->sample,
@@ -1305,7 +1325,7 @@ void LoadData(Catalog *catalog, Node *node, ExecutedResult *result) {
                                    static_cast<FileOpenFlag>(new_node->mode),
                                    result, new_node->sample);
   LOG(INFO) << " load time: " << GetElapsedTime(start_time) / 1000.0 << endl;
-  if (ret != kSuccess) {
+  if (ret != rSuccess) {
     LOG(ERROR) << "failed to load files: ";
     for (auto it : path_names) {
       LOG(ERROR) << it << " ";
@@ -1385,6 +1405,7 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
   bool has_warning = false;
   bool is_correct = true;
   bool is_all_col = false;
+  int ret = rSuccess;
   Insert_stmt *insert_stmt = (Insert_stmt *)node;
 
   string table_name(insert_stmt->tablename);
@@ -1437,7 +1458,13 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
           break;
         }
         // insert value to ostringstream
-        InsertValueToStream(insert_value, table, position, ostr);
+        if (rSuccess !=
+            (ret = InsertValueToStream(insert_value, table, position, ostr))) {
+          ELOG(ret, "failed to insert value to stream");
+          is_correct = false;
+          result->SetError("Not supported type to insert");
+          break;
+        }
 
         // move back
         insert_value = (Insert_vals *)insert_value->next;
@@ -1490,10 +1517,14 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
         // so column exist, then insert_value exist
         if (col && insert_value) {
           ++used_col_count;
-
-          // insert value to ostringstream and if has warning return 1; look out
-          // the order!
-          InsertValueToStream(insert_value, table, position, ostr);
+          // insert value to ostringstream
+          if (rSuccess != (ret = InsertValueToStream(insert_value, table,
+                                                     position, ostr))) {
+            ELOG(ret, "failed to insert value to stream");
+            is_correct = false;
+            result->SetError("Not supported type to insert");
+            break;
+          }
         }
         ostr << "|";
       }  // end for
@@ -1515,29 +1546,21 @@ void InsertData(Catalog *catalog, Node *node, ExecutedResult *result) {
   }  // end while
 
   if (!is_correct) return;
-  //  if (has_warning)
-  //    ASTParserLogging::log("[WARNING]: The type is not matched!\n");
   ASTParserLogging::log("the insert content is \n%s\n", ostr.str().c_str());
 
 #ifdef NEW_LOADER
   DataInjector *injector = new DataInjector(table);
 
   // str() will copy string buffer without the last '\n'
-  int ret = injector->InsertFromString(ostr.str() + "\n", result);
-  if (kSuccess == ret) {
+  ret = injector->InsertFromString(ostr.str() + "\n", result);
+  if (rSuccess == ret) {
     ostr.clear();
     ostr.str("");
     ostr << "insert data successfully. " << changed_row_num << " rows changed.";
-    //    result_flag = true;
-    //    info = ostr.str();
-    //    result_set = NULL;
     result->SetResult(ostr.str(), NULL);
   } else {
     LOG(ERROR) << "failed to insert tuples into table:" << table->getTableName()
                << endl;
-    //    result_flag = false;
-    //    info = "failed to insert tuples into table ";
-    //    result_set = NULL;
 
     result->SetError("failed to insert tuples into table ");
   }

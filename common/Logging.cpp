@@ -6,7 +6,11 @@
  */
 #include "./Logging.h"
 #include <iostream>
+
+#include "../common/memory_handle.h"
 #include "log/logging.h"
+
+using claims::common::Malloc;
 
 #define likely(x) __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
@@ -68,13 +72,10 @@ void RawLog(const char* where, const char* format, va_list args) {
     LOG(ERROR) << "vsnprintf error. " << strerror(errno) << std::endl;
   } else if (likely(real_length < message_max_length)) {
     // if it worked, output the message
-    //    std::cout<<where<<p<<std::endl;
     LOG(INFO) << where << p << std::endl;
-  } else if (real_length < 0) {  // check error code and output
-    std::cerr << "vsnprintf error. " << strerror(errno) << std::endl;
   } else {  // try again with more space
     int new_message_length = real_length + 1;
-    char* temp = new char[new_message_length];
+    char* temp = Malloc(new_message_length);
     if (temp == NULL) {
       LOG(ERROR) << "new " << new_message_length << " bytes failed."
                  << strerror(errno) << std::endl;

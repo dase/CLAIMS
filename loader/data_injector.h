@@ -35,8 +35,12 @@
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/hash.h"
 #include "../catalog/table.h"
-#include "validity.h"
+#include "./validity.h"
 
+using claims::common::FileOpenFlag;
+using claims::catalog::TableDescriptor;
+using std::vector;
+using std::string;
 class SubTuple;
 class Block;
 class BlockStreamBase;
@@ -46,11 +50,6 @@ class ExecutedResult;
 
 namespace claims {
 namespace loader {
-
-using claims::common::FileOpenFlag;
-using claims::catalog::TableDescriptor;
-using std::vector;
-using std::string;
 
 class FileConnector;
 class DataInjector {
@@ -76,7 +75,7 @@ class DataInjector {
    *        kAppendFile(implies O_APPEND) /
    *        kReadFile( implies O_RDONLY)
    * @param sample_rate: the sample rate about write data into table
-   * @return kSuccess if success or other on error
+   * @return rSuccess if success or other on error
    */
   RetCode LoadFromFile(vector<string> input_file_names, FileOpenFlag open_flag,
                        ExecutedResult* result, double sample_rate = 1.0);
@@ -85,7 +84,7 @@ class DataInjector {
    * @brief Method description: insert tuples into table
    * @param tuples: the data to insert into tables, which may be a line or
    * multiple lines
-   * @return kSuccess if success or other on error
+   * @return rSuccess if success or other on error
    */
   RetCode InsertFromString(const string tuples, ExecutedResult* result);
 
@@ -93,7 +92,7 @@ class DataInjector {
   /**
    * @brief Method description: handle memory which store single line
    * @param tuple_buffer: single tuple memory
-   * @return  kSuccess if succeed
+   * @return  rSuccess if succeed
    */
   RetCode InsertSingleTuple(void* tuple_buffer);
 
@@ -136,7 +135,8 @@ class DataInjector {
                            string data_source, uint64_t row_id_in_raw_data,
                            ExecutedResult* result);
 
-  string GenerateDataValidityInfo(const Validity& vali, ostringstream& oss,
+  string GenerateDataValidityInfo(const Validity& vali,
+                                  // ostringstream& oss,
                                   TableDescriptor* table, int line,
                                   const string& file);
 

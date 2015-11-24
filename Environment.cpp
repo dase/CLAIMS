@@ -22,8 +22,7 @@
 #include "common/error_define.h"
 #include "codegen/CodeGenerator.h"
 #include "catalog/catalog.h"
-
-using namespace claims::common;
+using claims::common::rSuccess;
 
 Environment* Environment::_instance = 0;
 

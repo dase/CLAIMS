@@ -42,8 +42,10 @@
 #include "../Parsetree/sql_node_struct.h"
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
+
+using claims::common::rSuccess;
+using claims::common::rCodegenFailed;
 #define NEWCONDITION
-using namespace claims::common;
 namespace claims {
 namespace physical_operator {
 
@@ -113,16 +115,15 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
         generated_filter_function_ =
             getExprFunc(state_.qual_[0], state_.schema_);
 
-        if (kSuccess == DecideFilterFunction(generated_filter_function_)) {
+        if (rSuccess == DecideFilterFunction(generated_filter_function_)) {
           filter_function_ = ComputeFilterWithGeneratedCode;
           LOG(INFO) << "CodeGen (partial feature) succeeds!("
                     << getMilliSecond(start) << "ms)" << std::endl;
         } else {
           filter_function_ = ComputeFilter;
-          LOG(ERROR)
-              << "filter:"
-              << claims::common::kErrorMessage[claims::common::rCodegenFailed]
-              << std::endl;
+          LOG(ERROR) << "filter:"
+                     << claims::common::kErrorMessage[rCodegenFailed]
+                     << std::endl;
         }
       }
     } else {

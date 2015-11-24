@@ -757,7 +757,7 @@ void *ClientListener::sendHandler(void *para) {
         if ("" == result.warning_)
           cliRes.setChange(result.info_);
         else
-          cliRes.setChange(result.info_ + "\n\nWARNINGS:" + result.warning_ +
+          cliRes.setChange(result.info_ + "\n\nWARNINGS:\n" + result.warning_ +
                            "\n");
         ClientListenerLogging::log(
             "to send change response-- status:%d  length:%d  content:%s "
@@ -1044,8 +1044,8 @@ int ClientListener::write(const int fd, const ClientResponse &res) const {
 
   //	ret = ::write(fd, buffer, length);
   ret = send(fd, buffer, length, MSG_WAITALL);
-  ClientListenerLogging::log("Server: %d bytes:%d\t%d\t%s is send!\n", ret,
-                             res.status, res.length, res.content.c_str());
+  LOG(INFO) << "Server: " << res.status << " bytes:" << ret << "\t"
+            << res.length << "\t" << res.content.c_str() << " is send!" << endl;
   //	ret = ::write(fd,buffer,length);
   //	if (ret < 0) {
   //		ClientLogging::elog("when send to fd %d, send buffer failed.%s",

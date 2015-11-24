@@ -53,6 +53,7 @@ PhysicalProject::State::State(Schema* schema_input, Schema* schema_output,
  */
 
 bool PhysicalProject::Open(const PartitionOffset& kPartitionOffset) {
+  RegisterExpandedThreadToAllBarriers();
   ProjectThreadContext* ptc = reinterpret_cast<ProjectThreadContext*>(
       CreateOrReuseContext(crm_core_sensitive));
 

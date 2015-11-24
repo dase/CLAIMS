@@ -37,6 +37,8 @@
 #include <vector>
 
 #include "../common/error_define.h"
+#include "../common/file_handle/file_handle_imp.h"
+#include "../common/file_handle/file_handle_imp_factory.h"
 #include "../common/rename.h"
 #include "../Config.h"
 #include "../loader/file_connector.h"
@@ -44,7 +46,10 @@
 using std::vector;
 using std::string;
 using std::endl;
-using namespace claims::common;
+using claims::common::rSuccess;
+using claims::common::rCatalogNotFound;
+using claims::common::FileOpenFlag;
+using claims::common::FilePlatform;
 using claims::loader::FileConnector;
 using claims::loader::SingleFileConnector;
 
@@ -168,7 +173,8 @@ RetCode Catalog::saveCatalog() {
 
   int ret = rSuccess;
   FileConnector* connector = new SingleFileConnector(
-      Config::local_disk_mode ? kDisk : kHdfs, Config::catalog_file);
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+      Config::catalog_file);
 
   EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kCreateFile),
                           "catalog file name:" << Config::catalog_file);
@@ -245,7 +251,7 @@ RetCode Catalog::restoreCatalog() {
   } else {
     uint64_t file_length = 0;
     void* buffer;
-    EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(kReadFile),
+    EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kReadFile),
                             "catalog file name: " << catalog_file);
     EXEC_AND_ONLY_LOG_ERROR(ret, connector->LoadTotalFile(buffer, &file_length),
                             "catalog file name: " << catalog_file);
