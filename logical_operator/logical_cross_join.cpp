@@ -86,9 +86,9 @@ int LogicalCrossJoin::get_join_policy_() {
     return join_policy_;
   } else {
     LOG(WARNING) << "[CrossJoin]: "
-                 << "[" << kErrorMessage[kUninitializedJoinPolicy] << ","
+                 << "[" << kErrorMessage[rUninitializedJoinPolicy] << ","
                  << "]" << std::endl;
-    return kUninitializedJoinPolicy;
+    return rUninitializedJoinPolicy;
   }
 }
 /**
@@ -191,7 +191,7 @@ PlanContext LogicalCrossJoin::GetPlanContext() {
     *plan_context_ = ret;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
-                 << "[" << kErrorMessage[kGeneratePlanContextFailed] << "],"
+                 << "[" << kErrorMessage[rGeneratePlanContextFailed] << "],"
                  << std::endl;
   }
   lock_->release();
@@ -223,9 +223,9 @@ int LogicalCrossJoin::DecideJoinPolicy(const PlanContext& left_plan_context,
     return rSuccess;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
-                 << "[" << kErrorMessage[kUninitializedJoinPolicy] << ",]"
+                 << "[" << kErrorMessage[rUninitializedJoinPolicy] << ",]"
                  << std::endl;
-    return kUninitializedJoinPolicy;
+    return rUninitializedJoinPolicy;
   }
 }
 
@@ -329,16 +329,16 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
     }
     default: { assert(false); }
       if (NULL == left_child_iterator_tree) {
-        ret = kGenerateSubPhyPlanFailed;
+        ret = rGenerateSubPhyPlanFailed;
         LOG(WARNING) << "[CrossJoin]: "
-                     << "[" << kErrorMessage[kGenerateSubPhyPlanFailed] << ","
+                     << "[" << kErrorMessage[rGenerateSubPhyPlanFailed] << ","
                      << "left child sub physical plan"
                      << "]" << std::endl;
       }
       if (NULL == right_child_iterator_tree) {
-        ret = kGenerateSubPhyPlanFailed;
+        ret = rGenerateSubPhyPlanFailed;
         LOG(WARNING) << "[CrossJoin]: "
-                     << "[" << kErrorMessage[kGenerateSubPhyPlanFailed] << ","
+                     << "[" << kErrorMessage[rGenerateSubPhyPlanFailed] << ","
                      << "right child sub physical plan"
                      << "]" << std::endl;
       }

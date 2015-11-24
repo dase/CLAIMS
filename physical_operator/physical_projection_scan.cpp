@@ -91,7 +91,7 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
              PartitionID(state_.projection_id_, kPartitionOffset)))) {
       LOG(ERROR) << PartitionID(state_.projection_id_, kPartitionOffset)
                         .getName()
-                        .c_str() << kErrorMessage[kNoPartitionIdScan]
+                        .c_str() << kErrorMessage[rNoPartitionIdScan]
                  << std::endl;
       SetReturnStatus(false);
     } else {

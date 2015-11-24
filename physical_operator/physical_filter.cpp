@@ -120,7 +120,7 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
                     << getMilliSecond(start) << "ms)" << std::endl;
         } else {
           filter_function_ = ComputeFilter;
-          LOG(ERROR) << "filter:" << kErrorMessage[kCodegenFailed] << std::endl;
+          LOG(ERROR) << "filter:" << kErrorMessage[rCodegenFailed] << std::endl;
         }
       }
     } else {
@@ -334,7 +334,7 @@ int PhysicalFilter::DecideFilterFunction(
   if (generate_filter_function) {
     return rSuccess;
   } else {
-    return kCodegenFailed;
+    return rCodegenFailed;
   }
 }
 
