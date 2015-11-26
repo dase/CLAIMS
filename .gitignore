@@ -45,3 +45,7 @@ missing
 stamp-h1
 thirdparty/
 缺省值
+CLAIMS.config
+CLAIMS.creator.*
+CLAIMS.files
+CLAIMS.includes
