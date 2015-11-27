@@ -31,7 +31,6 @@
 #include <string>
 #include <vector>
 
-#include "../Catalog/Attribute.h"
 namespace claims {
 namespace logical_operator {
 LogicalSubquery::LogicalSubquery(LogicalOperator *child, string subquery_alias)

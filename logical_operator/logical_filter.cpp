@@ -30,9 +30,10 @@
 #include <string>
 #include <map>
 #include <vector>
+
+#include "../catalog/stat/Estimation.h"
+#include "../catalog/stat/StatManager.h"
 #include "../IDsGenerator.h"
-#include "../Catalog/stat/StatManager.h"
-#include "../Catalog/stat/Estimation.h"
 #include "../common/AttributeComparator.h"
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"

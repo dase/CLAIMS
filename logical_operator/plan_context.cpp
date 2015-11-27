@@ -81,7 +81,7 @@ Attribute PlanContext::GetAttribute(std::string name) const {
     }
   }
   LOG(WARNING) << "Failed to find attribute " << name.c_str() << std::endl;
-  return Attribute(ATTRIBUTE_NULL);
+  return Attribute(Attribute::AttributeType::kAttributeNull);
 }
 
 Attribute PlanContext::GetAttribute(std::string tbname,
@@ -93,7 +93,7 @@ Attribute PlanContext::GetAttribute(std::string tbname,
   }
   LOG(WARNING) << "Failed to find attribute " << colname << std::endl;
   assert(false);
-  return Attribute(ATTRIBUTE_NULL);
+  return Attribute(Attribute::AttributeType::kAttributeNull);
 }
 }  // namespace logical_operator
 }  // namespace claims

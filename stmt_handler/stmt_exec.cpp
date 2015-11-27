@@ -49,7 +49,7 @@ StmtExec::~StmtExec() {
   }
 }
 
-RetCode StmtExec::Execute(executed_result* exec_result) {
+RetCode StmtExec::Execute(ExecutedResult* exec_result) {
   std::cout << "this is stmt_exec!" << std::endl;
   return rSuccess;
 }

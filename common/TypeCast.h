@@ -7,14 +7,16 @@
 // TODO change TypeCast warning the temporary variable
 #ifndef TYPECAST_H_
 #define TYPECAST_H_
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
-#include <sstream>
 #include <stdlib.h>
-#include "data_type.h"
 #include <string.h>
+#include <sstream>
+#include "./data_type.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+
+using boost::gregorian::months;
+using boost::gregorian::weeks;
+using boost::gregorian::years;
 typedef void *(*TypeCastF)(void *value, void *tovalue);
 class TypeCast {
  public:
@@ -67,38 +69,38 @@ inline void *int_to_boolean(void *value, void *tovalue) {
 /***************string****************************/
 
 inline void *string_to_int(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(int *)tovalue = atoi((char *)value);
   return tovalue;
 }
 inline void *string_to_smallint(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(short int *)tovalue = atoi((char *)value);  //???
   return tovalue;
 }
 inline void *string_to_ulong(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(unsigned long *)tovalue = strtoul((char *)value, NULL, 10);
   return tovalue;
 }
 inline void *string_to_float(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(float *)tovalue = atof((char *)value);
   return tovalue;
 }
 inline void *string_to_double(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(double *)tovalue = strtod((char *)value, NULL);
   return tovalue;
 }
 inline void *string_to_string(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   strcpy((char *)tovalue, (char *)value);
   return tovalue;
 }

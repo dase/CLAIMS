@@ -10,8 +10,11 @@
 #include "../../logical_operator/logical_scan.h"
 #include "../../logical_operator/logical_equal_join.h"
 #include "../../logical_operator/logical_aggregation.h"
-#include "../../Catalog/ProjectionBinding.h"
-#include "../../Catalog/stat/Analyzer.h"
+
+#include "../../catalog/projection_binding.h"
+
+#include "../../catalog/stat/Analyzer.h"
+
 #include "../../utility/rdtsc.h"
 
 //#include "../../Parsetree/sql_node_struct.h"

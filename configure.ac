@@ -4,14 +4,14 @@ AM_PROG_AR
 AC_PROG_LIBTOOL
 CPPFLAGS="-w -O0 -DTHERON_XS -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS"
 AM_CONDITIONAL(OPT_TCMALLOC, true)
-CXXFLAGS=${CXXFLAGS="-g  -std=c++11"}
+CXXFLAGS=${CXXFLAGS="-g  -std=c++11 -fprofile-arcs -ftest-coverage"}
 AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
-  Catalog/Makefile
-  Catalog/Test/Makefile
-  Catalog/stat/Makefile 
+  catalog/Makefile
+  catalog/Test/Makefile
+  catalog/stat/Makefile 
   Client/Makefile 
   Client/Test/Makefile 
   Client/json/Makefile
@@ -19,6 +19,8 @@ AC_CONFIG_FILES([
   common/Block/Makefile 
   common/Expression/Makefile 
   common/expression/Makefile
+  common/file_handle/Makefile
+  common/file_handle/test/Makefile
   common/log/Makefile
   common/Schema/Makefile 
   common/Schema/Test/Makefile 
@@ -31,13 +33,11 @@ AC_CONFIG_FILES([
   Executor/Test/Makefile 
   IndexManager/Makefile
   IndexManager/Test/Makefile
-  Loader/Makefile
-  Loader/Test/Makefile
+  loader/Makefile
+  loader/test/Makefile
   common/serialization/Makefile 
   physical_operator/Makefile
   logical_operator/Makefile 
-  Parsetree/Makefile 
-  Parsetree/Test/Makefile 
   Resource/Makefile 
   storage/Makefile 
   sql_parser/Makefile
@@ -46,7 +46,6 @@ AC_CONFIG_FILES([
   sql_parser/Test/Makefile
   Test/Makefile
   Test/common/Makefile
-  Test/TestSuit/Makefile
   Test/utility/Makefile
   utility/Makefile
   codegen/Makefile 

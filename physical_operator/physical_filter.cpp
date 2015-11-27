@@ -38,16 +38,15 @@
 #include "../common/Expression/queryfunc.h"
 #include "../common/data_type.h"
 #include "../Config.h"
-#include "../Parsetree/sql_node_struct.h"
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
 #include "../common/expression/expr_node.h"
 
-using namespace claims::common;
-
+using claims::common::rSuccess;
+using claims::common::rCodegenFailed;
+#define NEWCONDITION
 namespace claims {
 namespace physical_operator {
-#define NEWCONDITION
 
 PhysicalFilter::PhysicalFilter(State state)
     : PhysicalOperator(1, 1),
@@ -114,13 +113,13 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
         generated_filter_function_ =
             getExprFunc(state_.qual_[0], state_.schema_);
 
-        if (kSuccess == DecideFilterFunction(generated_filter_function_)) {
+        if (rSuccess == DecideFilterFunction(generated_filter_function_)) {
           filter_function_ = ComputeFilterWithGeneratedCode;
           LOG(INFO) << "CodeGen (partial feature) succeeds!("
                     << getMilliSecond(start) << "ms)" << std::endl;
         } else {
           filter_function_ = ComputeFilter;
-          LOG(ERROR) << "filter:" << kErrorMessage[kCodegenFailed] << std::endl;
+          LOG(ERROR) << "filter:" << kErrorMessage[rCodegenFailed] << std::endl;
         }
       }
     } else {
@@ -332,9 +331,9 @@ ThreadContext* PhysicalFilter::CreateContext() {
 int PhysicalFilter::DecideFilterFunction(
     expr_func const& generate_filter_function) {
   if (generate_filter_function) {
-    return kSuccess;
+    return rSuccess;
   } else {
-    return kCodegenFailed;
+    return rCodegenFailed;
   }
 }
 

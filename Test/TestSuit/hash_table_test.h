@@ -13,7 +13,13 @@
 #include "../../common/ids.h"
 #include "../../common/hash.h"
 #include "../../common/Block/BlockStreamBuffer.h"
+<<<<<<< HEAD
 #include "../../Catalog/Column.h"
+=======
+
+#include "../../catalog/Column.h"
+
+>>>>>>> FETCH_HEAD
 #include "../../physical_operator/physical_operator_base.h"
 #include "../../storage/PartitionStorage.h"
 #include "../../storage/BlockManager.h"

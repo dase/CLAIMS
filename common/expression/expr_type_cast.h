@@ -14,6 +14,11 @@
 #include <sstream>
 #include "../data_type.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+
+using boost::gregorian::months;
+using boost::gregorian::weeks;
+using boost::gregorian::years;
 namespace claims {
 namespace common {
 

@@ -35,8 +35,8 @@
 #include <vector>
 
 #include "../common/expression/expr_node.h"
+#include "../catalog/catalog.h"
 #include "../common/ids.h"
-#include "../Catalog/Catalog.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../logical_operator/logical_operator.h"

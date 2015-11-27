@@ -148,7 +148,7 @@ bool ExchangeSenderMaterialized::Next(BlockStreamBase* no_block) {
           state_.schema_->copyTuple(tuple_from_child,
                                     tuple_in_cur_block_stream);
         }
-      } else if (state_.partition_schema_.isBoardcastPartition()) {
+      } else if (state_.partition_schema_.isBroadcastPartition()) {
         block_stream_for_asking_->serialize(*block_for_serialization_);
         for (unsigned i = 0; i < nuppers_; i++) {
           partitioned_data_buffer_->insertBlockToPartitionedList(

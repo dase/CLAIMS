@@ -61,6 +61,7 @@ class AstCreateTable : public AstNode {
   int create_type_;
   AstNode* col_list_;
   AstNode* select_stmt_;
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
 };
 /**
  * @brief The list of columns from creating new table.
@@ -129,6 +130,7 @@ class AstCreateProjection : public AstNode {
                       string partition_attribute_name);
   ~AstCreateProjection();
   void Print(int level = 0) const;
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   AstNodeType ast_node_type_;
   string table_name_;
   int partition_num_;

@@ -5,9 +5,9 @@
  *      Author: scdong
  */
 
-#include "LogicalIndexScan.h"
-#include "IndexManager.h"
-#include "../Catalog/Catalog.h"
+#include "./LogicalIndexScan.h"
+#include "./IndexManager.h"
+#include "../catalog/catalog.h"
 
 LogicalIndexScan::LogicalIndexScan() {
   // TODO Auto-generated constructor stub
@@ -43,6 +43,17 @@ PlanContext LogicalIndexScan::GetPlanContext() {
 
   return dataflow_;
 }
+// PhysicalOperatorBase* LogicalIndexScan::GetPhysicalPlan(
+//    const unsigned& blocksize) {
+//  IndexScanIterator::State state;
+//  state.schema_ = GetSchema(dataflow_.attribute_list_);
+//  state.projection_id_ = projection_id_;
+//  state.block_size_ = blocksize;
+//  state.query_range_ = query_range_;
+//  state.index_id_ = IndexManager::getInstance()->getIndexID(index_attr_);
+//
+//<<<<<<< HEAD
+//=======
 PhysicalOperatorBase* LogicalIndexScan::GetPhysicalPlan(
     const unsigned& blocksize) {
   IndexScanIterator::State state;
@@ -52,6 +63,7 @@ PhysicalOperatorBase* LogicalIndexScan::GetPhysicalPlan(
   state.query_range_ = query_range_;
   state.index_id_ = IndexManager::getInstance()->getIndexID(index_attr_);
 
+  //>>>>>>> FETCH_HEAD
   return new IndexScanIterator(state);
 }
 

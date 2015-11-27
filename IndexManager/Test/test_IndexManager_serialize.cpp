@@ -7,8 +7,8 @@
 
 #include "../../Environment.h"
 
-#include "../../Catalog/Catalog.h"
-#include "../../Catalog/table.h"
+#include "../../catalog/catalog.h"
+#include "../../catalog/table.h"
 
 #include "../../common/ids.h"
 #include "../../common/AttributeComparator.h"

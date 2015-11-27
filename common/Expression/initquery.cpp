@@ -8,8 +8,10 @@
 #include "../../common/TypeCast.h"
 #include "queryfunc.h"
 #include "qnode.h"
-#include "../../Parsetree/sql_node_struct.h"
 #include "../../logical_operator/logical_operator.h"
+#include "../error_define.h"
+
+using claims::common::rNoMemory;
 /*
  * the transformqual() transform the ast(the parsetree) to expression tree
  */
@@ -620,7 +622,7 @@ void InitExprAtLogicalPlan(QNode *node, data_type r_type,
         qcol->length = max(schema->getcolumn(qcol->id).get_length(),
                            (unsigned int)BASE_SIZE);
       else
-        qcol->length = schema->getcolumn(qcol->id).size;
+        qcol->length = schema->getcolumn(qcol->id).get_length();
       qcol->isnull = false;  // TODO
     } break;
     case t_qexpr: {
@@ -741,6 +743,10 @@ void InitExprAtPhysicalPlan(QNode *node) {
       qcol->type_cast_func =
           TypeCast::type_cast_func[qcol->actual_type][qcol->return_type];
       qcol->value = memalign(cacheline_size, qcol->length);
+      if (NULL == qcol->value) {
+        int ret = rNoMemory;
+        ELOG(ret, "memalign length is" << qcol->length);
+      }
     } break;
     case t_qexpr:  // copy the value from conststring to node->value,and the
                    // data type has casted

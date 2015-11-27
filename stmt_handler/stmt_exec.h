@@ -33,7 +33,7 @@
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
 #include "../common/Block/ResultSet.h"
-#include "../Catalog/table.h"
+#include "../catalog/table.h"
 #include "../common/data_type.h"
 #include "../common/error_define.h"
 
@@ -55,7 +55,7 @@ class StmtExec {
  public:
   StmtExec(AstNode* stmt);
   virtual ~StmtExec();
-  virtual int Execute(executed_result* exec_result);
+  virtual int Execute(ExecutedResult* exec_result);
 
  public:
   const ResultSet* getResultSet() const;

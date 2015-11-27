@@ -5,7 +5,7 @@
 %parse-param { struct ParseResult* result}
 %glr-parser
 %expect 4
-%expect-rr 58
+%expect-rr 61
 %defines
 %{
 #include <stdlib.h>
@@ -24,6 +24,8 @@ using namespace std;
 #include "../ast_node/ast_drop_stmt.h"
 #include "../ast_node/ast_insert_stmt.h"
 #include "../ast_node/ast_load_stmt.h"
+#include "../ast_node/ast_show_stmt.h"
+#include "../ast_node/ast_delete_stmt.h"
 
 void yyerror(struct ParseResult *pp,const char *s, ...);
 void emit(char *s, ...);
@@ -403,7 +405,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %type <ast_node> cast_data_type
 %type <ast_node> expr_list opt_expr_list  case_list  
 %type <strval>  opt_as_alias  trim_ltb
-
+%type <ast_node> show_stmt
 %type <ast_node> create_database_stmt create_table_stmt create_select_statement
 %type <ast_node> create_definition create_col_list  create_index_stmt
 %type <ast_node> create_projection_stmt  drop_index_stmt
@@ -414,12 +416,14 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %type <ast_node> opt_ondupupdate  opt_csc
 %type <ast_node> opt_col_names enum_list opt_length
 %type <ast_node> column_atts data_type load_table_stmt
+%type <ast_node> delete_opts delete_list delete_stmt
 
 
 %type <intval> opt_if_exists opt_if_not_exists opt_ignore_replace
 %type <intval> opt_rc opt_binary opt_uz index_att index_type
 %type <intval> opt_temporary insert_opts opt_using_type
-
+%type <intval> opt_full opt_from opt_trans_level
+%type <strval> opt_like_string
 
 /*		// 2014-3-7---don't use this way to recovery from error---byYU
 %destructor	{ if(result->error_number ) { puts("All node freed successfully!!"); FreeAllNode(result->node_pointerresult->node_pointer); } }<ast_node>
@@ -1021,7 +1025,7 @@ stmt: drop_table_stmt                       { $$ = $1; /*output($$, 1); puts("SQ
 
 drop_table_stmt:
 	DROP opt_temporary TABLE opt_if_exists table_list opt_rc	
-	                                        { $$ = new AstDropTable(AST_DROP_TABLE, $2, $4, $6, NULL); }
+	                                        { $$ = new AstDropTable(AST_DROP_TABLE, $2, $4, $6, $5); }
 	;
 	
 table_list: NAME 					        { $$ = new AstDropTableList(AST_DROP_TABLE_LIST, "", string($1), NULL); }
@@ -1099,7 +1103,92 @@ insert_asgn_list:
 		else $$ = new AstInsertAssignList(AST_INSERT_ASSIGN_LIST, string($3), 1, NULL, $1); }
    ;
 
+stmt: show_stmt { $$ = $1; /*output($$, 1); puts("SQL parser： This is a show statement");*/ }
+	;
+   
+show_stmt: SHOW opt_full TABLES opt_from opt_like_string	{ $$ = new AstShowStmt(AST_SHOW_STMT,1, $2, ($4==NULL)?"":string($4), ($5==NULL)?"":string($5)); }
+   | SHOW COLLATION opt_like_string								{ $$ = NULL; }
+   | SHOW opt_full COLUMNS FROM NAME opt_from opt_like_string 	{ $$ = NULL; }
+   | SHOW CREATE DATABASE NAME									{ $$ = NULL; }
+   | SHOW CREATE SCHEMA NAME									{ $$ = NULL; }
+   | SHOW CREATE TABLE NAME										{ $$ = NULL; }
+   | SHOW DATABASE NAME											{ $$ = NULL; }
+   | SHOW SCHEMA NAME 											{ $$ = NULL; }
+   | SHOW ENGINE NAME LOGS										{ $$ = NULL; }
+   | SHOW ENGINE NAME STATUS									{ $$ = NULL; }
+   | SHOW STORAGE ENGINES										{ $$ = NULL; }
+   | SHOW ERRORS opt_limit										{ $$ = NULL; }
+   | SHOW expr ERRORS  /* expr = COUNT(*) */					{ $$ = NULL; }
+   | SHOW GRANTS FOR USERVAR									{ $$ = NULL; }
+   | SHOW INDEX FROM NAME opt_from								{ $$ = NULL; }			
+   | SHOW INNODB STATUS											{ $$ = NULL; }
+   | SHOW opt_bdb LOGS											{ $$ = NULL; }
+   | SHOW OPEN TABLES opt_from opt_like_string					{ $$ = NULL; }
+   | SHOW PRIVILEGES											{ $$ = NULL; }
+   | SHOW opt_full PROCESSLIST									{ $$ = NULL; }
+   | SHOW opt_trans_level STATUS opt_like_string				{ $$ = NULL; }
+   | SHOW TABLE STATUS opt_from opt_like_string					{ $$ = NULL; }
+   | SHOW CHARACTER SET opt_like_string							{ $$ = NULL; }
+   | SHOW TRIGGERS opt_from opt_like_expr						{ $$ = NULL; }
+   | SHOW opt_trans_level VARIABLES opt_like_string				{ $$ = NULL; }
+   | SHOW WARNINGS opt_limit									{ $$ = NULL; }
+   | SHOW expr WARNINGS /* expr = COUNT(*) */					{ $$ = NULL; }
+   ;
+opt_full: /* nil */	{ $$ = 0; }
+   | FULL	{ $$ = 1; }
+   ;
+   
+opt_from: /* nil */	{ $$ = NULL; }
+   | FROM NAME	{ $$ = $2; }
+   ;
+   
+opt_like_string: /* nil */	{ $$ = NULL; }
+   | LIKE STRING	{ $$ = $2; }
+   ;
+   
+opt_like_expr: /* nil */
+   | LIKE expr
+   ;
+opt_bdb: /* nil */
+   | BDB
+   ;
+   
+opt_trans_level: /* nil */	{ $$ = 0; }
+   | GLOBAL					{ $$ = 1; }
+   | SESSION				{ $$ = 2; }
+   ;
+   
+stmt: delete_stmt { $$ = $1; }
+	;
+delete_stmt: DELETE delete_opts FROM table_references
+    opt_where opt_orderby opt_limit 
+        { $$ = new AstDeleteStmt(AST_DELETE_STMT,$4,$5,$2 );}
+	;
 
+delete_stmt: DELETE delete_opts FROM delete_list USING table_references opt_where
+        { emit("DELETEMULTI %d %d %d", $2, $4, $6); }
+    ;
+
+delete_stmt: DELETE delete_opts
+    delete_list
+    FROM table_references opt_where  {}
+	;
+
+delete_opts: delete_opts LOW_PRIORITY { $$ = $1 + 01; }
+   | delete_opts QUICK { $$ = $1 + 02; }
+   | delete_opts IGNORE { $$ = $1 + 04; }
+   | /* nil */ { $$ = 0; }
+   ;
+
+
+delete_list: NAME opt_dot_star {  }
+   | delete_list ',' NAME opt_dot_star {  }
+   ;
+
+opt_dot_star: /* nil */ 
+   | '.' '*' 
+   ;
+   
 %%
 
 void emit(char *s, ...)

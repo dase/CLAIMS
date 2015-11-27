@@ -879,20 +879,20 @@ inline void date_add_day(OperFuncInfo fcinfo) {
 }
 inline void date_add_week(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(date *)fcinfo->result_ =
-      (*(date *)fcinfo->args_[0]) + (*(weeks *)fcinfo->args_[1]);
+  // *(date *)fcinfo->result_ =
+  //    (*(date *)fcinfo->args_[0]) + (*(weeks *)fcinfo->args_[1]);
 }
 
 inline void date_add_month(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(date *)fcinfo->result_ =
-      (*(date *)fcinfo->args_[0]) + (*(months *)fcinfo->args_[1]);
+  // *(date *)fcinfo->result_ =
+  //    (*(date *)fcinfo->args_[0]) + (*(months *)fcinfo->args_[1]);
 }
 
 inline void date_add_year(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(date *)fcinfo->result_ =
-      (*(date *)fcinfo->args_[0]) + (*(years *)fcinfo->args_[1]);
+  // *(date *)fcinfo->result_ =
+  //    (*(date *)fcinfo->args_[0]) + (*(years *)fcinfo->args_[1]);
 }
 
 inline void date_sub_day(OperFuncInfo fcinfo) {
@@ -902,18 +902,18 @@ inline void date_sub_day(OperFuncInfo fcinfo) {
 }
 inline void date_sub_week(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(date *)fcinfo->result_ =
-      (*(date *)fcinfo->args_[0]) - (*(weeks *)fcinfo->args_[1]);
+  // *(date *)fcinfo->result_ =
+  //    (*(date *)fcinfo->args_[0]) - (*(weeks *)fcinfo->args_[1]);
 }
 inline void date_sub_month(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(date *)fcinfo->result_ =
-      (*(date *)fcinfo->args_[0]) - (*(months *)fcinfo->args_[1]);
+  // *(date *)fcinfo->result_ =
+  //    (*(date *)fcinfo->args_[0]) - (*(months *)fcinfo->args_[1]);
 }
 inline void date_sub_year(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(date *)fcinfo->result_ =
-      (*(date *)fcinfo->args_[0]) - (*(years *)fcinfo->args_[1]);
+  // *(date *)fcinfo->result_ =
+  //    (*(date *)fcinfo->args_[0]) - (*(years *)fcinfo->args_[1]);
 }
 inline void date_agg_max(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);

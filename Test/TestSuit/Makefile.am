@@ -15,8 +15,8 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../libtest.a \
-		../../Catalog/libcatalog.a \
-		../../Loader/libloader.a \
+		../../catalog/libcatalog.a \
+		../../loader/libloader.a \
 		../../logical_operator/liblogicalqueryplan.a \
 		../../BlockStreamIterator/libblockstreamiterator.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
@@ -33,4 +33,5 @@ LDADD = 	../libtest.a \
 		${GTEST_HOME}/libgtest.a
 
 noinst_LIBRARIES=libtestsuit.a
+
 libtestsuit_a_SOURCES = 
