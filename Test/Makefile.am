@@ -20,10 +20,12 @@ LDADD =	TestSuit/libtestsuit.a \
 		../Parsetree/Test/libtest.a \
 		../Daemon/Test/libtest.a \
 		../Client/Test/libtest.a \
-		../Loader/Test/libtest.a \
+		../loader/test/libtest.a \
 		../IndexManager/Test/libtest.a \
-		../Catalog/Test/libtest.a \
+		../catalog/Test/libtest.a \
 		../common/libcommon.a \
+		../common/file_handle/libfilehandle.a \
+		../common/file_handle/test/libtest.a \
 		../common/Schema/libschema.a \
 		../common/Block/libblock.a \
 		../common/types/libtypes.a \

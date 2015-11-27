@@ -10,11 +10,14 @@
 #include <stdio.h>
 #include "../../Environment.h"
 #include "../../Resource/ResourceManagerMaster.h"
-#include "../../Catalog/Catalog.h"
-#include "../../Catalog/table.h"
+#include "../../catalog/catalog.h"
+#include "../../catalog/table.h"
 #include "../../physical_operator/physical_projection_scan.h"
 #include "../CSBIndexBuilding.h"
 #include "test_index_manager.cpp"
+
+using claims::catalog::Catalog;
+using claims::catalog::TableDescriptor;
 
 using namespace std;
 
@@ -89,6 +92,7 @@ static int test_CSBIndexBuilding() {
     /*for testing the original data*/
     //			Schema* ps_schema = new SchemaFix(blc_column_list);
     //			ExpandableBlockStreamProjectionScan::State
+<<<<<<< HEAD
     //ps_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),
     //ps_schema, 64*1024);
     //			ExpandableBlockStreamIteratorBase* ps = new
@@ -102,6 +106,23 @@ static int test_CSBIndexBuilding() {
     //			{
     //				BlockStreamBase::BlockStreamTraverseIterator* iterator =
     //block->createIterator();
+=======
+    // ps_state(catalog->getTable(0)->getProjectoin(0)->getProjectionID(),
+    // ps_schema, 64*1024);
+    //			ExpandableBlockStreamIteratorBase* ps = new
+    // ExpandableBlockStreamProjectionScan(ps_state);
+    //			ps->open();
+    //			BlockStreamBase* block =
+    // BlockStreamBase::createBlockWithDesirableSerilaizedSize(ps_schema,
+    // 64*1024);
+    //			void* tuple;
+    //			while (ps->next(block))
+    //			{
+    //				BlockStreamBase::BlockStreamTraverseIterator*
+    // iterator
+    //=
+    // block->createIterator();
+>>>>>>> FETCH_HEAD
     //				while((tuple = iterator->nextTuple()) != 0)
     //				{
     //					ps_schema->displayTuple(tuple, " | ");
@@ -120,8 +141,13 @@ static int test_CSBIndexBuilding() {
     PhysicalOperatorBase* blc = new bottomLayerCollecting(blc_state);
 
     vector<column_type> bls_column_list;
+<<<<<<< HEAD
     bls_column_list.push_back(t_int);  // chunk offset
     bls_column_list.push_back(t_int);  // sec_code
+=======
+    bls_column_list.push_back(t_int);         // chunk offset
+    bls_column_list.push_back(t_int);         // sec_code
+>>>>>>> FETCH_HEAD
     bls_column_list.push_back(t_u_smallInt);  // chunk offset
     bls_column_list.push_back(t_u_smallInt);  // chunk offset
 

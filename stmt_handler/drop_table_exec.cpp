@@ -26,14 +26,22 @@
  *
  */
 
+#include "../stmt_handler/drop_table_exec.h"
 #include <string>
 #include <vector>
 #include <iostream>
 #include <assert.h>  // NOLINT
-#include "../stmt_handler/drop_table_exec.h"
-#include "../Environment.h"
-#include "../Loader/Hdfsloader.h"
 
+#include "../catalog/catalog.h"
+#include "../common/file_handle/file_handle_imp_factory.h"
+#include "../Config.h"
+#include "../Environment.h"
+#include "../loader/data_injector.h"
+#include "../loader/table_file_connector.h"
+
+using claims::common::FilePlatform;
+using claims::loader::TableFileConnector;
+using claims::catalog::Catalog;
 using std::vector;
 namespace claims {
 namespace stmt_handler {
@@ -45,15 +53,15 @@ DropTableExec::DropTableExec(AstNode* stmt) : StmtExec(stmt) {
 
 DropTableExec::~DropTableExec() {}
 
-RetCode DropTableExec::Execute(executed_result* exec_result) {
+RetCode DropTableExec::Execute(ExecutedResult* exec_result) {
   RetCode ret = rSuccess;
 
   SemanticContext sem_cnxt;
   ret = drop_table_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info =
+    exec_result->error_info_ =
         "Semantic analysis error.\n" + sem_cnxt.error_msg_;
-    exec_result->status = false;
+    exec_result->status_ = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
     return ret;
@@ -66,63 +74,61 @@ RetCode DropTableExec::Execute(executed_result* exec_result) {
     string tablename;
     if ("" != table_list->table_name_) {
       tablename = table_list->table_name_;
-#ifdef sem_cnxt
-    } else {
-      exec_result->error_info =
-          "No table name or invalid name during dropping table!";
-      exec_result->status = false;
-      exec_result->result = NULL;
-      return rParserError;
-      break;
     }
-#endif
     TableDescriptor* table_desc = local_catalog->getTable(tablename);
-#ifdef sem_cnxt
-    if (NULL == table_desc) {
-      exec_result->error_info = "table [" + tablename + "] is not exist!";
-      exec_result->status = false;
-      exec_result->result = NULL;
-      return rParserError;
-    } else {
-#endif
-      if (local_catalog->drop_table(tablename, table_desc->get_table_id())) {
-        HdfsLoader* Hl = new HdfsLoader(table_desc, (open_flag)(DELETE_FILE));
-        Hl->DeleteDataFilesForDropTable();
-
-        delete table_desc;
-        cout << tablename + " is dropped from this database!" << endl;
-        exec_result->info = "drop table successfully!";
-
-#if 1
-        // drop table_DEL couple with table.
-        {
-          TableDescriptor* table_desc_DEL =
-              Environment::getInstance()->getCatalog()->getTable(tablename +
-                                                                 "_DEL");
-          Environment::getInstance()->getCatalog()->drop_table(
-              tablename + "_DEL", table_desc_DEL->get_table_id());
-          HdfsLoader* Hl =
-              new HdfsLoader(table_desc_DEL, (open_flag)(DELETE_FILE));
-          Hl->DeleteDataFilesForDropTable();
-
-          delete table_desc_DEL;
-          cout << tablename + "_DEL" + " is dropped from this database!"
-               << endl;
+    if (local_catalog->DropTable(tablename, table_desc->get_table_id())) {
+      vector<vector<string>> write_path_;
+      for (int i = 0; i < table_desc->getNumberOfProjection(); i++) {
+        vector<string> prj_write_path;
+        prj_write_path.clear();
+        for (int j = 0; j < table_desc->getProjectoin(i)
+                                ->getPartitioner()
+                                ->getNumberOfPartitions();
+             ++j) {
+          string path =
+              PartitionID(table_desc->getProjectoin(i)->getProjectionID(), j)
+                  .getPathAndName();
+          prj_write_path.push_back(path);
         }
-#endif
-      } else {
-        cout << "drop table [" + tablename + "] failed" << endl;
-        exec_result->error_info = "drop table [" + tablename + "] failed.";
-        exec_result->status = false;
-        exec_result->result = NULL;
-      }
-    }
+        write_path_.push_back(prj_write_path);
 
+        TableFileConnector* connector = new TableFileConnector(
+            Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+            write_path_);
+
+        connector->DeleteFiles();
+      }
+
+      delete table_desc;
+      cout << tablename + " is dropped from this database!" << endl;
+      exec_result->info_ = "drop table successfully!";
+
+      // drop table_DEL couple with table.
+      TableDescriptor* table_desc_DEL =
+          Environment::getInstance()->getCatalog()->getTable(tablename +
+                                                             "_DEL");
+      Environment::getInstance()->getCatalog()->DropTable(
+          tablename + "_DEL", table_desc_DEL->get_table_id());
+
+      //          HdfsLoader* Hl =
+      //              new HdfsLoader(table_desc_DEL,
+      //              (open_flag)(DELETE_FILE));
+      //          Hl->DeleteDataFilesForDropTable();
+
+      delete table_desc_DEL;
+      cout << tablename + "_DEL" + " is dropped from this database!" << endl;
+
+    } else {
+      cout << "drop table [" + tablename + "] failed" << endl;
+      exec_result->error_info_ = "drop table [" + tablename + "] failed.";
+      exec_result->status_ = false;
+      exec_result->result_ = NULL;
+    }
     table_list = dynamic_cast<AstDropTableList*>(table_list->next_);
   }
   local_catalog->saveCatalog();
-  exec_result->status = true;
-  exec_result->result = NULL;
+  exec_result->status_ = true;
+  exec_result->result_ = NULL;
 
   return ret;
 }

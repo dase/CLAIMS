@@ -43,7 +43,7 @@ class SelectExec : public StmtExec {
  public:
   SelectExec(AstNode* stmt);  // NOLINT
   virtual ~SelectExec();
-  RetCode Execute(executed_result* exec_result);
+  RetCode Execute(ExecutedResult* exec_result);
 
  private:
   AstSelectStmt* select_ast_;

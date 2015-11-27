@@ -43,11 +43,11 @@
 #include "../common/error_no.h"
 #include "../common/expression/expr_node.h"
 
-using namespace claims::common;
-
+using claims::common::rSuccess;
+using claims::common::rCodegenFailed;
+#define NEWCONDITION
 namespace claims {
 namespace physical_operator {
-#define NEWCONDITION
 
 PhysicalFilter::PhysicalFilter(State state)
     : PhysicalOperator(1, 1),

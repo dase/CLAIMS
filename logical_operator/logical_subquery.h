@@ -33,7 +33,7 @@
 #include <string>
 #include <vector>
 
-#include "../Catalog/Attribute.h"
+#include "../catalog/attribute.h"
 using std::string;
 namespace claims {
 namespace logical_operator {

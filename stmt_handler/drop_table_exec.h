@@ -41,7 +41,7 @@ class DropTableExec : public StmtExec {
   DropTableExec(AstNode* stmt);  // NOLINT
   virtual ~DropTableExec();
 
-  RetCode Execute(executed_result* exec_result);
+  RetCode Execute(ExecutedResult* exec_result);
 
  private:
   AstDropTable* drop_table_ast_;

@@ -39,7 +39,7 @@ namespace stmt_handler {
 
 StmtHandler::StmtHandler(string sql_stmt)
     : sql_stmt_(sql_stmt), stmt_exec_(NULL), sql_parser_(NULL) {}
-StmtHandler::StmtHandler(string sql_stmt, executed_result* exec_result)
+StmtHandler::StmtHandler(string sql_stmt, ExecutedResult* exec_result)
     : sql_stmt_(sql_stmt), stmt_exec_(NULL), sql_parser_(NULL) {}
 StmtHandler::~StmtHandler() {
   if (NULL != stmt_exec_) {
@@ -103,14 +103,14 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
   }
   return rSuccess;
 }
-RetCode StmtHandler::Execute(executed_result* exec_result) {
+RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
   RetCode ret = rSuccess;
   sql_parser_ = new Parser(sql_stmt_);
   AstNode* raw_ast = sql_parser_->GetRawAST();
   if (NULL == raw_ast) {
-    exec_result->error_info = "Parser Error";
-    exec_result->status = false;
-    exec_result->result = NULL;
+    exec_result->error_info_ = "Parser Error";
+    exec_result->status_ = false;
+    exec_result->result_ = NULL;
     return rParserError;
   }
   raw_ast->Print();

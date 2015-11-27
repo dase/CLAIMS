@@ -28,8 +28,10 @@
 #ifndef LOGICAL_OPERATOR_PLAN_PARTITIONER_H_
 #define LOGICAL_OPERATOR_PLAN_PARTITIONER_H_
 #include <vector>
-#include "../Catalog/Partitioner.h"
+#include "../catalog/partitioner.h"
 #include "../logical_operator/plan_partition_info.h"
+
+using namespace claims::catalog;
 
 namespace claims {
 namespace logical_operator {
@@ -44,8 +46,8 @@ namespace logical_operator {
  */
 class PlanPartitioner {
  public:
-  PlanPartitioner() : partition_func_(0){};
-  PlanPartitioner(const Partitioner& partitoiner);
+  PlanPartitioner() : partition_func_(0) {}
+  explicit PlanPartitioner(const Partitioner& partitoiner);
   PlanPartitioner(const PlanPartitioner&);
   virtual ~PlanPartitioner();
   bool HasSamePartitionLocation(const PlanPartitioner& target) const;

@@ -8,10 +8,11 @@
 #ifndef TPC_H_TEST_CPP_
 #define TPC_H_TEST_CPP_
 #include "../../Environment.h"
-#include "../../Catalog/table.h"
-#include "../../Loader/Hdfsloader.h"
-//#include "../../physical_operator/physical_operator_base.h"
 #include "../../physical_operator/physical_operator.h"
+
+#include "../../catalog/table.h"
+
+#include "../../loader/Hdfsloader.h"
 
 #include "../../physical_operator/physical_aggregation.h"
 
@@ -332,9 +333,9 @@ static void load_tpc_h_4_partition() {
   ///////////////////////////////////////////////////////////////////////////////
   std::vector<std::string> partnames;
   partnames.push_back("/home/claims/data/tpc-h/source/SF-5/part.tbl");
-  HdfsLoader* Hl = new HdfsLoader('|', '\n', partnames, table_1);
+  Hdfsloader* Hl = new Hdfsloader('|', '\n', partnames, table_1);
   Hl->load();
-  Hl->~HdfsLoader();
+  Hl->~Hdfsloader();
   partnames.clear();
   printf("part load succeed!\n");
   sleep(5);
@@ -357,9 +358,9 @@ static void load_tpc_h_4_partition() {
   ///////////////////////////////////////////////////////////////////////////////
   std::vector<std::string> suppliernames;
   suppliernames.push_back("/home/claims/data/tpc-h/source/SF-5/supplier.tbl");
-  Hl = new HdfsLoader('|', '\n', suppliernames, table_2);
+  Hl = new Hdfsloader('|', '\n', suppliernames, table_2);
   Hl->load();
-  Hl->~HdfsLoader();
+  Hl->~Hdfsloader();
   suppliernames.clear();
   printf("supplier load succeed!\n");
   sleep(5);
@@ -380,9 +381,9 @@ static void load_tpc_h_4_partition() {
   ///////////////////////////////////////////////////////////////////////////////
   std::vector<std::string> partsuppnames;
   partsuppnames.push_back("/home/claims/data/tpc-h/source/SF-5/partsupp.tbl");
-  Hl = new HdfsLoader('|', '\n', partsuppnames, table_3);
+  Hl = new Hdfsloader('|', '\n', partsuppnames, table_3);
   Hl->load();
-  Hl->~HdfsLoader();
+  Hl->~Hdfsloader();
   partsuppnames.clear();
   printf("partsupp load succeed!\n");
   sleep(5);
@@ -405,9 +406,9 @@ static void load_tpc_h_4_partition() {
   ///////////////////////////////////////////////////////////////////////////////
   std::vector<std::string> customernames;
   customernames.push_back("/home/claims/data/tpc-h/source/SF-5/customer.tbl");
-  Hl = new HdfsLoader('|', '\n', customernames, table_4);
+  Hl = new Hdfsloader('|', '\n', customernames, table_4);
   Hl->load();
-  Hl->~HdfsLoader();
+  Hl->~Hdfsloader();
   customernames.clear();
   printf("custom load succeed!\n");
   sleep(5);
@@ -431,9 +432,9 @@ static void load_tpc_h_4_partition() {
   ///////////////////////////////////////////////////////////////////////////////
   std::vector<std::string> ordersnames;
   ordersnames.push_back("/home/claims/data/tpc-h/source/SF-5/orders.tbl");
-  Hl = new HdfsLoader('|', '\n', ordersnames, table_5);
+  Hl = new Hdfsloader('|', '\n', ordersnames, table_5);
   Hl->load();
-  Hl->~HdfsLoader();
+  Hl->~Hdfsloader();
   ordersnames.clear();
   printf("orders load succeed!\n");
   sleep(5);
@@ -452,9 +453,9 @@ static void load_tpc_h_4_partition() {
   ///////////////////////////////////////////////////////////////////////////////
   std::vector<std::string> nationnames;
   nationnames.push_back("/home/claims/data/tpc-h/source/SF-5/nation.tbl");
-  Hl = new HdfsLoader('|', '\n', nationnames, table_7);
+  Hl = new Hdfsloader('|', '\n', nationnames, table_7);
   Hl->load();
-  Hl->~HdfsLoader();
+  Hl->~Hdfsloader();
   nationnames.clear();
   printf("nation load succeed!\n");
   sleep(5);
@@ -472,9 +473,9 @@ static void load_tpc_h_4_partition() {
   ///////////////////////////////////////////////////////////////////////////////
   std::vector<std::string> regionnames;
   regionnames.push_back("/home/claims/data/tpc-h/source/SF-5/region.tbl");
-  Hl = new HdfsLoader('|', '\n', regionnames, table_8);
+  Hl = new Hdfsloader('|', '\n', regionnames, table_8);
   Hl->load();
-  Hl->~HdfsLoader();
+  Hl->~Hdfsloader();
   regionnames.clear();
   printf("region load succeed!\n");
   sleep(5);
@@ -505,9 +506,9 @@ static void load_tpc_h_4_partition() {
   ///////////////////////////////////////////////////////////////////////////////
   std::vector<std::string> lineitemnames;
   lineitemnames.push_back("/home/claims/data/tpc-h/source/SF-5/lineitem.tbl");
-  Hl = new HdfsLoader('|', '\n', lineitemnames, table_6);
+  Hl = new Hdfsloader('|', '\n', lineitemnames, table_6);
   Hl->load();
-  Hl->~HdfsLoader();
+  Hl->~Hdfsloader();
   lineitemnames.clear();
   printf("lineitem load succeed!\n");
   sleep(5);

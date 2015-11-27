@@ -1,3 +1,4 @@
+
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -40,10 +41,10 @@
 #include "../logical_operator/logical_aggregation.h"
 #include "../logical_operator/plan_context.h"
 #include "../IDsGenerator.h"
+#include "../Config.h"
+#include "../catalog/stat/StatManager.h"
 #include "../physical_operator/exchange_merger.h"
 #include "../physical_operator/expander.h"
-#include "../Catalog/stat/StatManager.h"
-#include "../Config.h"
 #include "../physical_operator/physical_aggregation.h"
 
 using claims::physical_operator::ExchangeMerger;
@@ -56,6 +57,7 @@ using claims::common::OperType;
 using claims::common::ExprConst;
 using claims::common::ExprColumn;
 
+using claims::physical_operator::PhysicalAggregation;
 namespace claims {
 namespace logical_operator {
 LogicalAggregation::LogicalAggregation(

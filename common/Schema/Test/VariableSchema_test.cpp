@@ -11,12 +11,21 @@
 #include "../../ids.h"
 #include "../../AttributeComparator.h"
 #include "../../../common/Block/BlockStream.h"
-#include "../../../Catalog/ProjectionBinding.h"
+#include "../../../physical_operator/physical_projection_scan.h"
+#include "../../../physical_operator/physical_filter.h"
+
+#include "../../../logical_operator/logical_query_plan_root.h"
+#include "../../../logical_operator/logical_filter.h"
+#include "../../../catalog/projection_binding.h"
+#include "../../../catalog/catalog.h"
+
 #include "../../../Environment.h"
 #include "../../../logical_operator/logical_aggregation.h"
 #include "../../../logical_operator/logical_equal_join.h"
 #include "../../../logical_operator/logical_scan.h"
 #include "../../../physical_operator/physical_operator_base.h"
+
+using claims::catalog::Catalog;
 
 using namespace std;
 

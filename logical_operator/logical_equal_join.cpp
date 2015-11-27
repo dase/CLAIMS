@@ -32,10 +32,11 @@
 #include <vector>
 #include <map>
 #include <string>
+
+#include "../catalog/stat/StatManager.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../common/Logging.h"
-#include "../Catalog/stat/StatManager.h"
 #include "../physical_operator/exchange_merger.h"
 #include "../physical_operator/expander.h"
 #include "../physical_operator/physical_hash_join.h"

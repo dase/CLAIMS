@@ -55,7 +55,7 @@ SelectExec::~SelectExec() {
   //  }
 }
 
-RetCode SelectExec::Execute(executed_result* exec_result) {
+RetCode SelectExec::Execute(ExecutedResult* exec_result) {
 #ifdef PRINTCONTEXT
   select_ast_->Print();
   cout << "--------------begin semantic analysis---------------" << endl;
@@ -63,8 +63,8 @@ RetCode SelectExec::Execute(executed_result* exec_result) {
   SemanticContext sem_cnxt;
   RetCode ret = select_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info = "semantic analysis error";
-    exec_result->status = false;
+    exec_result->error_info_ = "semantic analysis error";
+    exec_result->status_ = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
     return ret;
@@ -99,7 +99,7 @@ RetCode SelectExec::Execute(executed_result* exec_result) {
   physical_plan->Open();
   while (physical_plan->Next(NULL)) {
   }
-  exec_result->result = physical_plan->GetResultSet();
+  exec_result->result_ = physical_plan->GetResultSet();
   physical_plan->Close();
 
   delete logic_plan;

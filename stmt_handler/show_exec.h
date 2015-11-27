@@ -48,7 +48,7 @@ class ShowExec : public StmtExec {
   /**
    * @brief the concrete operation of show statement.
    */
-  RetCode Execute(executed_result *exec_result);
+  RetCode Execute(ExecutedResult *exec_result);
 
  private:
   AstShowStmt *show_stmt_ast_;

@@ -36,7 +36,7 @@
 
 #include "./ast_select_stmt.h"
 #include "../../common/error_define.h"
-#include "../../Catalog/table.h"
+#include "../../catalog/table.h"
 #include "../../Environment.h"
 using namespace claims::common;  // NOLINT
 using std::cout;

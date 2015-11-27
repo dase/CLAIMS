@@ -31,9 +31,10 @@
 #include <glog/logging.h>
 #include <iosfwd>
 #include <iostream>
+
 #include <vector>
 
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../IDsGenerator.h"
 #include "../logical_operator/plan_partition_info.h"
 #include "../physical_operator/exchange_merger.h"

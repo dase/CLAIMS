@@ -32,7 +32,7 @@
 #include "../Environment.h"
 #include "../stmt_handler/create_table_exec.h"
 #include "../common/error_define.h"
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 namespace claims {
 namespace stmt_handler {
 /**
@@ -68,13 +68,13 @@ CreateTableExec::~CreateTableExec() {}
  *  save it to catalog by the end.
  * @return a result code cooperate with the client.
  */
-RetCode CreateTableExec::Execute(executed_result* exec_result) {
+RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
   SemanticContext sem_cnxt;
   RetCode ret = createtable_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info =
+    exec_result->error_info_ =
         "Semantic analysis error.\n" + sem_cnxt.error_msg_;
-    exec_result->status = false;
+    exec_result->status_ = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
     return ret;
@@ -84,7 +84,7 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
   tablename_del = tablename_ + "_DEL";
 #ifdef sem_cnxt
   if (isTableExist()) {
-    exec_result->status = false;
+    exec_result->status_ = false;
     result_flag_ = false;
     exec_result->error_info =
         "The table " + tablename_ + " has existed during creating table!";
@@ -188,9 +188,9 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
               LOG(INFO) << colname + " is created" << std::endl;
             } else {
               // TODO(fzh): not supports
-              exec_result->error_info =
+              exec_result->error_info_ =
                   "This type is not supported during creating table!";
-              exec_result->status = false;
+              exec_result->status_ = false;
               // error_msg_ = "This type is not supported during creating
               // table!";
               LOG(ERROR) << "This type is not supported during creating table!"
@@ -332,13 +332,13 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
           }
           default: {
 #ifdef NEWRESULT
-            exec_result->error_info =
+            exec_result->error_info_ =
                 "This type is not supported now during creating table!";
             LOG(ERROR)
                 << "This type is not supported now during creating table!"
                 << std::endl;
-            exec_result->status = false;
-            exec_result->result = NULL;
+            exec_result->status_ = false;
+            exec_result->result_ = NULL;
             ret = common::kStmtHandlerTypeNotSupport;
 #else
             error_msg_ =
@@ -379,14 +379,14 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
     }
 #endif
 
-    if (exec_result->status) {
+    if (exec_result->status_) {
       Environment::getInstance()->getCatalog()->add_table(table_desc_);
       Environment::getInstance()->getCatalog()->add_table(new_table);
       Environment::getInstance()->getCatalog()->saveCatalog();
 #ifdef NEWRESULT
-      exec_result->info = "create table successfully";
+      exec_result->info_ = "create table successfully";
       LOG(INFO) << "create table successfully" << std::endl;
-      exec_result->result = NULL;
+      exec_result->result_ = NULL;
       result_flag_ = true;
       ret = common::kStmtHandlerCreateTableSuccess;
 #else

@@ -36,7 +36,7 @@
 #include "./Requirement.h"
 #include "./logical_operator.h"
 #include "./logical_delete_filter.h"
-#include "../Catalog/stat/StatManager.h"
+#include "../catalog/stat/StatManager.h"
 #include "../physical_operator/exchange_merger.h"
 #include "../physical_operator/expander.h"
 #include "../physical_operator/physical_delete_filter.h"

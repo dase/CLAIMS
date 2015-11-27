@@ -33,8 +33,8 @@
 #include <vector>
 #include "../ast_node/ast_create_stmt.h"
 #include "./ast_select_stmt.h"
-#include "../../Catalog/Catalog.h"
-#include "../../Catalog/table.h"
+#include "../../catalog/catalog.h"
+#include "../../catalog/table.h"
 #include "../../Environment.h"
 #include "../../common/error_define.h"
 using namespace claims::common;

@@ -7,6 +7,7 @@
 
 #ifndef __EXECLOGICALQUERYPLAN__
 #define __EXECLOGICALQUERYPLAN__
+#include <glog/logging.h>
 
 #include <iostream>
 #include <cstring>
@@ -14,21 +15,27 @@
 
 #include "../Environment.h"
 
-#include "../Catalog/stat/Analyzer.h"
-
-#include "../Catalog/ProjectionBinding.h"
+#include "../catalog/catalog.h"
+#include "../catalog/projection_binding.h"
+#include "../loader/data_injector.h"
 
 #include "../Parsetree/sql_node_struct.h"
 #include "../Parsetree/parsetree2logicalplan.cpp"
 #include "../Parsetree/runparsetree.h"
 #include "../Parsetree/ExecuteLogicalQueryPlan.h"
+
+#include "../catalog/stat/Analyzer.h"
+#include "../common/error_define.h"
+#include "../common/file_handle/file_handle_imp.h"
+#include "../common/memory_handle.h"
 #include "../logical_operator/logical_scan.h"
 #include "../logical_operator/logical_equal_join.h"
 #include "../logical_operator/logical_aggregation.h"
+#include "../logical_operator/logical_limit.h"
+#include "../logical_operator/logical_query_plan_root.h"
 #include "../logical_operator/logical_filter.h"
-#include "../utility/rdtsc.h"
 
-#include "../Loader/Hdfsloader.h"
+#include "../utility/rdtsc.h"
 
 #include "../Client/ClaimsServer.h"
 
@@ -38,33 +45,37 @@
 #include "../logical_operator/logical_limit.h"
 #include "../logical_operator/logical_query_plan_root.h"
 
-#define SQL_Parser using namespace std;
+#define SQL_Parser
+using namespace std;
+using claims::catalog::Catalog;
+using claims::common::rSuccess;
+using claims::common::FileOpenFlag;
+using claims::loader::DataInjector;
+using claims::common::rNotSupport;
+
+#define NEW_LOADER
 #define SQL_Parser
 
 const int INT_LENGTH = 10;
 const int FLOAT_LENGTH = 10;
 const int SMALLINT_LENGTH = 4;
-#define SQL_Parser
 timeval start_time;  // 2014-5-4---add---by Yu
 
-void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
-                             bool &result_flag, string &error_msg, string &info,
-                             int fd) {
+void ExecuteLogicalQueryPlan(const string &sql, ExecutedResult *result) {
   Environment::getInstance(true);
   ResourceManagerMaster *rmms =
       Environment::getInstance()->getResourceManagerMaster();
   Catalog *catalog = Environment::getInstance()->getCatalog();
   string tablename;
   vector<Node *> allnode;
-
-  struct ParserResult presult = {NULL, NULL, sql.c_str(), 0, &allnode};
-
+  struct ParseResult presult = {NULL, NULL, sql.c_str(), 0, &allnode};
   Node *oldnode = getparsetreeroot(&presult, sql.c_str());
   if (oldnode == NULL) {
     FreeAllNode(presult.node_pointer);
-    error_msg = "There are some errors during parsing time";
-    result_flag = false;
-    result_set = NULL;
+    //    error_msg = "There are some errors during parsing time";
+    //    result_flag = false;
+    //    result_set = NULL;
+    result->SetError("There are some errors during parsing time");
     return;
   }
   Stmt *stmtList = (Stmt *)oldnode;
@@ -72,58 +83,58 @@ void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
     Node *node = (Node *)stmtList->data;
     switch (node->type) {
       case t_create_table_stmt: {
-        CreateTable(catalog, node, result_set, result_flag, error_msg, info);
+        CreateTable(catalog, node, result);
         break;
       }
       case t_create_projection_stmt: {
-        CreateProjection(catalog, node, result_set, result_flag, error_msg,
-                         info);
+        CreateProjection(catalog, node, result);
         break;
       }
       case t_query_stmt: {
-        Query(catalog, node, result_set, result_flag, error_msg, info, false);
+        Query(catalog, node, result, false);
         break;
       }
       case t_load_table_stmt: {
-        LoadData(catalog, node, result_set, result_flag, error_msg, info);
+        LoadData(catalog, node, result);
         break;
       }
-      case t_insert_stmt:  // 2014-4-19---add---by Yu	//
-                           // 2014-5-1---modify---by
-                           // Yu
-        {
-          InsertData(catalog, node, result_set, result_flag, error_msg, info);
-          break;
-        }
+      case t_insert_stmt: {
+        InsertData(catalog, node, result);
+        break;
+      }
       case t_show_stmt: {
-        ShowTable(catalog, node, result_set, result_flag, error_msg, info);
+        ShowTable(catalog, node, result);
         break;
       }
-      case t_drop_stmt:
-      case t_drop_table_stmt: {
-        DropTable(catalog, node, result_set, result_flag, error_msg, info);
+      case t_drop_stmt: {
+        DropTable(catalog, node, result);
         break;
       }
-#ifdef _DELETE_DATA_SUPPORT_
       case t_delete_stmt: {
         DeleteData(catalog, node, result_set, result_flag, error_msg, info);
         break;
       }
-#endif
       default: {
         cout << node->type << endl;
         puts("nothing matched!\n");
-        error_msg = "no sentence matched";
-        result_flag = false;
-        result_set = NULL;
+        //        error_msg = "no sentence matched";
+        //        result_flag = false;
+        //        result_set = NULL;
+        result->SetError("no sentence matched");
       }
     }
-    if (result_flag == false) {
+    if (result->status_ == false) {
+>>>>>>> FETCH_HEAD
       FreeAllNode(&allnode);  // -Yu 2015-3-2
     }
     stmtList = (Stmt *)stmtList->next;
   }
+<<<<<<< HEAD
+=======
+  FreeAllNode(&allnode);
+>>>>>>> FETCH_HEAD
 }
+/*
 
 void ExecuteLogicalQueryPlan() {
   Environment::getInstance(true);
@@ -136,9 +147,15 @@ void ExecuteLogicalQueryPlan() {
     // begginning~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;;
     string tablename;
     vector<Node *> allnode;
+<<<<<<< HEAD
     struct ParserResult presult = {NULL, NULL, NULL, 0, &allnode};
     Node *oldnode = getparsetreeroot(&presult);
     // get parser time	//2014-5-4---add---by Yu
+=======
+    struct ParseResult presult = {NULL, NULL, NULL, 0, &allnode};
+    Node *oldnode = getparsetreeroot(&presult);
+    // get parser time  // 2014-5-4---add---by Yu
+>>>>>>> FETCH_HEAD
     timeval finish_parser_time;
     gettimeofday(&finish_parser_time, NULL);
     cout << "parser use "
@@ -146,8 +163,12 @@ void ExecuteLogicalQueryPlan() {
                 (finish_parser_time.tv_sec - start_time.tv_sec) * 1000 << " ms"
          << endl;
 
+<<<<<<< HEAD
     if (oldnode == NULL)  // 2014-2-24---增加node为空的判断---by余楷
     {
+=======
+    if (oldnode == NULL) {  // 2014-2-24---增加node为空的判断---by余楷
+>>>>>>> FETCH_HEAD
       printf("[ERROR]there are some wrong in statement! please try again!!\n");
       FreeAllNode(presult.node_pointer);  //释放SQL解析过程忠所有申请的内存
                                           ////
@@ -181,7 +202,13 @@ void ExecuteLogicalQueryPlan() {
           CreateProjection(catalog, node, result_set, result_flag, error_msg,
                            info);
         } break;
-        case t_query_stmt:  // 2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
+<<<<<<< HEAD
+        case t_query_stmt:  //
+2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
+=======
+        case t_query_stmt:  //
+2014-3-4---修改为t_query_stmt,添加对查询语句的处理---by余楷
+>>>>>>> FETCH_HEAD
         {
           Query(catalog, node, result_set, result_flag, error_msg, info, true);
         } break;
@@ -222,33 +249,54 @@ void ExecuteLogicalQueryPlan() {
     //		getchar();	// 2014-3-4---屏蔽换行符对后面的影响---by余楷
   }
 }
+*/
 
-bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
-                         unsigned position, ostringstream &ostr) {
-  bool has_warning = true;
-  if (insert_value->value_type == 0)  // 指定具体的值
-  {
+
+RetCode InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
+                            unsigned position, ostringstream &ostr) {
+  RetCode ret = rSuccess;
+  if (insert_value->value_type == 0) {  // 指定具体的值
     // check whether the column type match value type
-    has_warning = CheckType(table->getAttribute(position).attrType,
-                            (Expr *)insert_value->expr);
+    //    has_warning = CheckType(table->getAttribute(position).attrType,
+    //                            (Expr *)insert_value->expr);
 
-    switch (
-        insert_value->expr
-            ->type)  // 2014-4-17---only these type are supported now---by Yu
-    {
+    switch (insert_value->expr->type) {
+      // 2014-4-17---only these type are supported now---by Yu
       case t_stringval:
       case t_intnum:
       case t_approxnum:
       case t_bool: {
         Expr *expr = (Expr *)insert_value->expr;
+        DLOG(INFO) << (expr->data == NULL ? "NULL" : expr->data) << endl;
         ostr << expr->data;
-      } break;
-      default: {}
+        break;
+      }
+      case t_expr_cal: {
+        // TODO(ANYONE): the value to insert may be a expr like
+        // "-234+56*82/2 > 23", which should be supported
+        ret = rNotSupport;
+        ELOG(ret, "Insert a expr as value is not supported, including '-1' ");
+        break;
+      }
+      case t_name: {
+        Columns *col = (Columns *)insert_value->expr;
+        DLOG(INFO) << (col->parameter2 == NULL ? "NULL" : col->parameter2)
+                   << endl;
+        ostr << col->parameter2;
+        break;
+      }
+      default: {
+        ret = rNotSupport;
+        ELOG(ret, "Not supported type:" << insert_value->expr->type);
+      }
     }
   } else if (insert_value->type == 1) {
+    string data;
+    table->getAttribute(position).attrType->operate->SetDefault(data);
+    ostr << data;
   }  // 设置为default, 暂不支持
 
-  return has_warning;
+  return ret;
 }
 /*
 bool query(const string& sql, query_result& result_set) {
@@ -267,10 +315,9 @@ bool query(const string& sql, query_result& result_set) {
 */
 bool CheckType(
     const column_type *col_type,
-    Expr *expr)  // check whether the string is digit, can use strtol()
-{
+    Expr *expr) {  // check whether the string is digit, can use strtol()
   nodetype insert_value_type = expr->type;
-  // TODO	对类型为int的列不能插入字符串等。。。
+  // TODO(ANYONE): 对类型为int的列不能插入字符串等。。。
   switch (col_type->type) {
     case t_int:
       return (insert_value_type != t_intnum) || strlen(expr->data) > INT_LENGTH;
@@ -281,9 +328,9 @@ bool CheckType(
       return (insert_value_type != t_approxnum);
     case t_string:
       return (insert_value_type != t_stringval) ||
-             strlen(expr->data) > col_type->get_length();  //---5.27fzh---
+             strlen(expr->data) > col_type->get_length() - 1;  // ---5.27fzh---
     // case t_u_long: return (insert_value_type != t_intnum) ||
-    // strlen(expr->data) > INT_LENGTH || (expr->data[0] == '-');	// =='-'
+    // strlen(expr->data) > INT_LENGTH || (expr->data[0] == '-'); // =='-'
     // 实际不可行，‘-’不会被识别进expr中
     case t_date:
       return false;
@@ -304,9 +351,11 @@ bool CheckType(
   }
 }
 
-#ifdef _DELETE_DATA_SUPPORT_
-void DeleteData(Catalog *catalog, Node *node, ResultSet *&result_set,
-                bool &result_flag, string &error_msg, string &info) {
+<<<<<<< HEAD
+#ifdef _DELETE_DATA_SUPPORT_ void DeleteData(Catalog *catalog, Node *node,
+                                             ResultSet *&result_set,
+                                             bool &result_flag,
+                                             string &error_msg, string &info) {
   result_set = NULL;
   result_flag = true;
   error_msg = "";
@@ -440,267 +489,352 @@ void InsertDeletedDataIntoTableDEL(string tablename, ResultSet *result_set) {
 
 void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
                  bool &result_flag, string &error_msg, string &info) {
-  /* nodetype type, int create_type, int check, char * name1, char * name2, Node
-   * * list, Node * select_stmt */
-  Create_table_stmt *ctnode = (Create_table_stmt *)node;
-  string tablename;
-  string tablename_del;
-  if (ctnode->name2 != NULL) {
-    tablename = ctnode->name2;
-  } else if (ctnode->name1 != NULL) {
-    tablename = ctnode->name1;
-  } else {
-    error_msg = "No table name during creating table!";
-    result_flag = false;
-    result_set = NULL;
-    return;
-  }
+    /* nodetype type, int create_type, int check, char * name1, char * name2,
+     * Node
+     * * list, Node * select_stmt */
+    Create_table_stmt *ctnode = (Create_table_stmt *)node;
+    string tablename;
+    string tablename_del;
+    if (ctnode->name2 != NULL) {
+      tablename = ctnode->name2;
+    } else if (ctnode->name1 != NULL) {
+      tablename = ctnode->name1;
+    } else {
+<<<<<<< HEAD
+      error_msg = "No table name during creating table!";
+      result_flag = false;
+      result_set = NULL;
+=======
+      //    error_msg = "No table name during creating table!";
+      //    result_flag = false;
+      //    result_set = NULL;
+      result->SetError("No table name during creating table!");
+>>>>>>> FETCH_HEAD
+      return;
+    }
 
-  TableDescriptor *new_table =
-      Environment::getInstance()->getCatalog()->getTable(tablename);
-  if (new_table != NULL) {
-    error_msg =
-        "The table " + tablename + " has existed during creating table!";
-    result_flag = false;
-    result_set = NULL;
-    return;
-  }
+    TableDescriptor *new_table =
+        Environment::getInstance()->getCatalog()->getTable(tablename);
+    if (new_table != NULL) {
+<<<<<<< HEAD
+      error_msg =
+          "The table " + tablename + " has existed during creating table!";
+      result_flag = false;
+      result_set = NULL;
+      return;
+    }
 
-  tablename_del = tablename + "_DEL";
+    tablename_del = tablename + "_DEL";
 
-  new_table = new TableDescriptor(
-      tablename,
-      Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-  new_table->addAttribute("row_id", data_type(t_u_long), 0, true);
+=======
+      //    error_msg =
+      //        "The table " + tablename + " has existed during creating
+      //        table!";
+      //    result_flag = false;
+      //    result_set = NULL;
+      result->SetError("The table " + tablename +
+                       " has existed during creating table!");
+      return;
+    }
 
-  Create_col_list *list = (Create_col_list *)ctnode->list;
-  string primaryname;
-  int colNum = 0;
-  while (list) {
-    Create_def *data = (Create_def *)list->data;
-    if (data->deftype == 1) {
-      ++colNum;
-      string colname = data->name;
-      primaryname = colname;
-      Column_atts *column_atts = (Column_atts *)data->col_atts;
+>>>>>>> FETCH_HEAD
+    new_table = new TableDescriptor(
+        tablename,
+        Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+    new_table->addAttribute("row_id", data_type(t_u_long), 0, true);
 
-      /* TODO: Whether column is unique or has default value is not finished,
-       *  because there are no supports
-       */
-      Datatype *datatype = (Datatype *)data->datatype;
-      switch (datatype->datatype)  // add more type --- 2014-4-2
-      {
-        case 1: {
-          if (column_atts && (column_atts->datatype & 01)) {  // not null
-            new_table->addAttribute(colname, data_type(t_boolean), 0, true,
-                                    false);
-          } else if (column_atts &&
-                     (column_atts->datatype & 02)) {  // can be null
-            new_table->addAttribute(colname, data_type(t_boolean), 0, true,
-                                    true);
-          } else {
-            new_table->addAttribute(colname, data_type(t_boolean), 0, true);
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-        case 3: {
-          if (datatype->opt_uz & 01 != 0) {
-            if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true,
+    Create_col_list *list = (Create_col_list *)ctnode->list;
+    string primaryname;
+    int colNum = 0;
+    while (list) {
+      Create_def *data = (Create_def *)list->data;
+      if (data->deftype == 1) {
+        ++colNum;
+        string colname = data->name;
+        primaryname = colname;
+        Column_atts *column_atts = (Column_atts *)data->col_atts;
+
+        /* TODO: Whether column is unique or has default value is not finished,
+         *  because there are no supports
+         */
+        Datatype *datatype = (Datatype *)data->datatype;
+        switch (datatype->datatype)  // add more type --- 2014-4-2
+        {
+          case 1: {
+            if (column_atts && (column_atts->datatype & 01)) {  // not null
+              new_table->addAttribute(colname, data_type(t_boolean), 0, true,
                                       false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_u_smallInt), 0, true,
+            } else if (column_atts &&
+                       (column_atts->datatype & 02)) {  // can be null
+              new_table->addAttribute(colname, data_type(t_boolean), 0, true,
                                       true);
             } else {
-              new_table->addAttribute(colname, data_type(t_u_smallInt), 0,
-                                      true);
-            }
-          } else {
-            if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_smallInt), 0, true,
-                                      false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_smallInt), 0, true,
-                                      true);
-            } else {
-              new_table->addAttribute(colname, data_type(t_smallInt), 0, true);
-            }
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-        case 5:
-        case 6: {
-          if (column_atts && (column_atts->datatype & 01)) {
-            new_table->addAttribute(colname, data_type(t_int), 0, true, false);
-          } else if (column_atts && (column_atts->datatype & 02)) {
-            new_table->addAttribute(colname, data_type(t_int), 0, true, true);
-          } else {
-            new_table->addAttribute(colname, data_type(t_int), 0, true);
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-        case 7: {
-          if (datatype->opt_uz & 01 != 0) {
-            if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_u_long), 0, true,
-                                      false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_u_long), 0, true,
-                                      true);
-            } else {
-              new_table->addAttribute(colname, data_type(t_u_long), 0, true);
+              new_table->addAttribute(colname, data_type(t_boolean), 0, true);
             }
             cout << colname << " is created" << endl;
-          } else {
-            // TODO:no supports
-            error_msg = "This type is not supported during creating table!";
+            break;
+          }
+          case 3: {
+            if (datatype->opt_uz & 01 != 0) {
+              if (column_atts && (column_atts->datatype & 01)) {
+                new_table->addAttribute(colname, data_type(t_u_smallInt), 0,
+                                        true, false);
+              } else if (column_atts && (column_atts->datatype & 02)) {
+                new_table->addAttribute(colname, data_type(t_u_smallInt), 0,
+                                        true, true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_u_smallInt), 0,
+                                        true);
+              }
+            } else {
+              if (column_atts && (column_atts->datatype & 01)) {
+                new_table->addAttribute(colname, data_type(t_smallInt), 0, true,
+                                        false);
+              } else if (column_atts && (column_atts->datatype & 02)) {
+                new_table->addAttribute(colname, data_type(t_smallInt), 0, true,
+                                        true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_smallInt), 0,
+                                        true);
+              }
+            }
+            cout << colname << " is created" << endl;
+            break;
+          }
+          case 5:
+          case 6: {
+            if (column_atts && (column_atts->datatype & 01)) {
+              new_table->addAttribute(colname, data_type(t_int), 0, true,
+                                      false);
+            } else if (column_atts && (column_atts->datatype & 02)) {
+              new_table->addAttribute(colname, data_type(t_int), 0, true, true);
+            } else {
+              new_table->addAttribute(colname, data_type(t_int), 0, true);
+            }
+            cout << colname << " is created" << endl;
+            break;
+          }
+          case 7: {
+            if (datatype->opt_uz & 01 != 0) {
+              if (column_atts && (column_atts->datatype & 01)) {
+                new_table->addAttribute(colname, data_type(t_u_long), 0, true,
+                                        false);
+              } else if (column_atts && (column_atts->datatype & 02)) {
+                new_table->addAttribute(colname, data_type(t_u_long), 0, true,
+                                        true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_u_long), 0, true);
+              }
+              cout << colname << " is created" << endl;
+            } else {
+              // TODO:no supports
+<<<<<<< HEAD
+              error_msg = "This type is not supported during creating table!";
+              result_flag = false;
+              result_set = NULL;
+=======
+              //            error_msg = "This type is not supported during
+              //            creating table!";
+              //            result_flag = false;
+              //            result_set = NULL;
+              result->SetError(
+                  "This type is not supported during creating table!");
+>>>>>>> FETCH_HEAD
+            }
+            break;
+          }
+          case 9: {
+            if (column_atts && (column_atts->datatype & 01)) {
+              new_table->addAttribute(colname, data_type(t_double), 0, true,
+                                      false);
+            } else if (column_atts && (column_atts->datatype & 02)) {
+              new_table->addAttribute(colname, data_type(t_double), 0, true,
+                                      true);
+            } else {
+              new_table->addAttribute(colname, data_type(t_double), 0, true);
+            }
+            cout << colname << " is created" << endl;
+            break;
+          }
+          case 10: {
+            if (column_atts && (column_atts->datatype & 01)) {
+              new_table->addAttribute(colname, data_type(t_float), 0, true,
+                                      false);
+            } else if (column_atts && (column_atts->datatype & 02)) {
+              new_table->addAttribute(colname, data_type(t_float), 0, true,
+                                      true);
+            } else {
+              new_table->addAttribute(colname, data_type(t_float), 0, true);
+            }
+            cout << colname << " is created" << endl;
+            break;
+          }
+          case 11: {
+            if (datatype->length) {
+              Length *l = (Length *)datatype->length;
+<<<<<<< HEAD
+
+              if (column_atts && (column_atts->datatype & 01)) {
+                new_table->addAttribute(colname, data_type(t_decimal), l->data1,
+                                        true, false);
+              } else if (column_atts && (column_atts->datatype & 02)) {
+                new_table->addAttribute(colname, data_type(t_decimal), l->data1,
+                                        true, true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_decimal), l->data1,
+                                        true);
+=======yyyyyyyyyyyyyyyyyyykkkkkkkkkkkkkkkk
+              unsigned data_length = 8;
+              if (NULL != l) data_length = l->data1;
+
+              if (column_atts && (column_atts->datatype & 01)) {
+                new_table->addAttribute(colname, data_type(t_decimal),
+                                        data_length, true, false);
+              } else if (column_atts && (column_atts->datatype & 02)) {
+                new_table->addAttribute(colname, data_type(t_decimal),
+                                        data_length, true, true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_decimal),
+                                        data_length, true);
+>>>>>>> FETCH_HEAD
+              }
+              cout << colname << " is created" << endl;
+            } else {
+              if (column_atts && (column_atts->datatype & 01)) {
+                new_table->addAttribute(colname, data_type(t_decimal), 0, true,
+                                        false);
+              } else if (column_atts && (column_atts->datatype & 02)) {
+                new_table->addAttribute(colname, data_type(t_decimal), 0, true,
+                                        true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_decimal), 0, true);
+              }
+              cout << colname << " is created" << endl;
+            }
+            break;
+          }
+          case 12:  // DATE --- 2014-4-1
+          {
+            if (column_atts && (column_atts->datatype & 01)) {
+              new_table->addAttribute(colname, data_type(t_date), 0, true,
+                                      false);
+            } else if (column_atts && (column_atts->datatype & 02)) {
+              new_table->addAttribute(colname, data_type(t_date), 0, true,
+                                      true);
+            } else {
+              new_table->addAttribute(colname, data_type(t_date), 0, true);
+            }
+            cout << colname << " is created" << endl;
+            break;
+          }
+          case 13:  // TIME --- 2014-4-1
+          {
+            if (column_atts && (column_atts->datatype & 01)) {
+              new_table->addAttribute(colname, data_type(t_time), 0, true,
+                                      false);
+            } else if (column_atts && (column_atts->datatype & 02)) {
+              new_table->addAttribute(colname, data_type(t_time), 0, true,
+                                      true);
+            } else {
+              new_table->addAttribute(colname, data_type(t_time), 0, true);
+            }
+            cout << colname << " is created" << endl;
+            break;
+          }
+          case 15:  // DATETIME --- 2014-4-1
+          {
+            if (column_atts && (column_atts->datatype & 01)) {
+              new_table->addAttribute(colname, data_type(t_datetime), 0, true,
+                                      false);
+            } else if (column_atts && (column_atts->datatype & 02)) {
+              new_table->addAttribute(colname, data_type(t_datetime), 0, true,
+                                      true);
+            } else {
+              new_table->addAttribute(colname, data_type(t_datetime), 0, true);
+            }
+            cout << colname << " is created" << endl;
+            break;
+          }
+
+          case 17:
+          case 18: {
+            if (datatype->length) {
+              Length *l = (Length *)datatype->length;
+
+<<<<<<< HEAD
+              if (column_atts && (column_atts->datatype & 01)) {
+                new_table->addAttribute(colname, data_type(t_string), l->data1,
+                                        true, false);
+              } else if (column_atts && (column_atts->datatype & 02)) {
+                new_table->addAttribute(colname, data_type(t_string), l->data1,
+                                        true, true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_string), l->data1,
+                                        true);
+=======yyyyyyyyyyyyyyyyyyyyyyykkkkkkkkkkkkkkkkkkkkkkk
+              if (column_atts && (column_atts->datatype & 01)) {  // not nullx
+                // the extra one char is prepared for '\0'
+                new_table->addAttribute(colname, data_type(t_string),
+                                        l->data1 + 1, true, false);
+              } else if (column_atts && (column_atts->datatype & 02) ||
+                         (00 == column_atts->datatype)) {  // can be nullx
+                new_table->addAttribute(colname, data_type(t_string),
+                                        l->data1 + 1, true, true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_string),
+                                        l->data1 + 1, true);
+>>>>>>> FETCH_HEAD
+              }
+            } else {
+              if (column_atts && (column_atts->datatype & 01)) {
+                new_table->addAttribute(colname, data_type(t_string), 1, true,
+                                        false);
+<<<<<<< HEAD
+              } else if (column_atts && (column_atts->datatype & 02)) {
+=======yyyyyyyyyyyyyyyyyyyyykkkkkkkkkkkkkkkkkkkk
+              } else if (column_atts && (column_atts->datatype & 02) ||
+                         (00 == column_atts->datatype)) {
+>>>>>>> FETCH_HEAD
+                new_table->addAttribute(colname, data_type(t_string), 1, true,
+                                        true);
+              } else {
+                new_table->addAttribute(colname, data_type(t_string), 1, true);
+              }
+            }
+            cout << colname << " is created" << endl;
+            break;
+          }
+          default: {
+<<<<<<< HEAD
+            error_msg = "This type is not supported now during creating table!";
             result_flag = false;
             result_set = NULL;
+=======
+            //          error_msg = "This type is not supported now during
+            //          creating table!";
+            //          result_flag = false;
+            //          result_set = NULL;
+            result->SetError(
+                "This type is not supported now during creating table!");
+>>>>>>> FETCH_HEAD
           }
-          break;
-        }
-        case 9: {
-          if (column_atts && (column_atts->datatype & 01)) {
-            new_table->addAttribute(colname, data_type(t_double), 0, true,
-                                    false);
-          } else if (column_atts && (column_atts->datatype & 02)) {
-            new_table->addAttribute(colname, data_type(t_double), 0, true,
-                                    true);
-          } else {
-            new_table->addAttribute(colname, data_type(t_double), 0, true);
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-        case 10: {
-          if (column_atts && (column_atts->datatype & 01)) {
-            new_table->addAttribute(colname, data_type(t_float), 0, true,
-                                    false);
-          } else if (column_atts && (column_atts->datatype & 02)) {
-            new_table->addAttribute(colname, data_type(t_float), 0, true, true);
-          } else {
-            new_table->addAttribute(colname, data_type(t_float), 0, true);
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-        case 11: {
-          if (datatype->length) {
-            Length *l = (Length *)datatype->length;
-
-            if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_decimal), l->data1,
-                                      true, false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_decimal), l->data1,
-                                      true, true);
-            } else {
-              new_table->addAttribute(colname, data_type(t_decimal), l->data1,
-                                      true);
-            }
-            cout << colname << " is created" << endl;
-          } else {
-            if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_decimal), 0, true,
-                                      false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_decimal), 0, true,
-                                      true);
-            } else {
-              new_table->addAttribute(colname, data_type(t_decimal), 0, true);
-            }
-            cout << colname << " is created" << endl;
-          }
-          break;
-        }
-        case 12:  // DATE --- 2014-4-1
-        {
-          if (column_atts && (column_atts->datatype & 01)) {
-            new_table->addAttribute(colname, data_type(t_date), 0, true, false);
-          } else if (column_atts && (column_atts->datatype & 02)) {
-            new_table->addAttribute(colname, data_type(t_date), 0, true, true);
-          } else {
-            new_table->addAttribute(colname, data_type(t_date), 0, true);
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-        case 13:  // TIME --- 2014-4-1
-        {
-          if (column_atts && (column_atts->datatype & 01)) {
-            new_table->addAttribute(colname, data_type(t_time), 0, true, false);
-          } else if (column_atts && (column_atts->datatype & 02)) {
-            new_table->addAttribute(colname, data_type(t_time), 0, true, true);
-          } else {
-            new_table->addAttribute(colname, data_type(t_time), 0, true);
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-        case 15:  // DATETIME --- 2014-4-1
-        {
-          if (column_atts && (column_atts->datatype & 01)) {
-            new_table->addAttribute(colname, data_type(t_datetime), 0, true,
-                                    false);
-          } else if (column_atts && (column_atts->datatype & 02)) {
-            new_table->addAttribute(colname, data_type(t_datetime), 0, true,
-                                    true);
-          } else {
-            new_table->addAttribute(colname, data_type(t_datetime), 0, true);
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-
-        case 17:
-        case 18: {
-          if (datatype->length) {
-            Length *l = (Length *)datatype->length;
-
-            if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_string), l->data1,
-                                      true, false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_string), l->data1,
-                                      true, true);
-            } else {
-              new_table->addAttribute(colname, data_type(t_string), l->data1,
-                                      true);
-            }
-          } else {
-            if (column_atts && (column_atts->datatype & 01)) {
-              new_table->addAttribute(colname, data_type(t_string), 1, true,
-                                      false);
-            } else if (column_atts && (column_atts->datatype & 02)) {
-              new_table->addAttribute(colname, data_type(t_string), 1, true,
-                                      true);
-            } else {
-              new_table->addAttribute(colname, data_type(t_string), 1, true);
-            }
-          }
-          cout << colname << " is created" << endl;
-          break;
-        }
-        default: {
-          error_msg = "This type is not supported now during creating table!";
-          result_flag = false;
-          result_set = NULL;
         }
       }
+      list = (Create_col_list *)list->next;
     }
-    list = (Create_col_list *)list->next;
-  }
-  if (result_flag == false) return;
+<<<<<<< HEAD
+    if (result_flag == false) return;
+=======
+    if (result->status_ == false) return;
+>>>>>>> FETCH_HEAD
 
-  //	cout<<"the first attribute
-  // Name:"<<new_table->getAttribute(0).getName()<<endl;
+    //	cout<<"the first attribute
+    // Name:"<<new_table->getAttribute(0).getName()<<endl;
 
-  //	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(),
-  // 18);
-  catalog->add_table(new_table);
+    //	new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(),
+    // 18);
+    catalog->add_table(new_table);
+<<<<<<< HEAD
 
 //				TableID
 // table_id=catalog->getTable(tablename)->get_table_id();
@@ -711,477 +845,512 @@ void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
 //					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
 //				}
 #ifdef _DELETE_DATA_SUPPORT_
-  /**
-      Create a table to store the deleted data's row_id whose table name is
-     tablename_DEL with two attrbutes, one is "row_id" and the other one is
-     "row_id_DEL".
-  */
-  // create table delete begin.
-  new_table = Environment::getInstance()->getCatalog()->getTable(tablename_del);
-  if (new_table == NULL) {
-    new_table = new TableDescriptor(
-        tablename_del,
-        Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-    new_table->addAttribute("row_id", data_type(t_u_long), 0, true);
-    new_table->addAttribute("row_id_DEL", data_type(t_u_long), 0, true);
+    /**
+        Create a table to store the deleted data's row_id whose table name is
+       tablename_DEL with two attrbutes, one is "row_id" and the other one is
+       "row_id_DEL".
+    */
+    // create table delete begin.
+    new_table =
+        Environment::getInstance()->getCatalog()->getTable(tablename_del);
+    if (new_table == NULL) {
+      new_table = new TableDescriptor(
+          tablename_del,
+          Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+      new_table->addAttribute("row_id", data_type(t_u_long), 0, true);
+      new_table->addAttribute("row_id_DEL", data_type(t_u_long), 0, true);
 
-    catalog->add_table(new_table);
-  } else {
-    LOG(ERROR) << "The table " + tablename +
-                      " has existed during creating table_DEL!" << std::endl;
-  }
+      catalog->add_table(new_table);
+    } else {
+      LOG(ERROR) << "The table " + tablename +
+                        " has existed during creating table_DEL!" << std::endl;
+    }
 // create table delete end.
 #endif
 
-  catalog->saveCatalog();
-  //			catalog->restoreCatalog();// commented by li to solve
-  // the
-  // dirty
-  // read after insert
-  result_flag = true;
-  info = "create table successfully";
-  result_set = NULL;
-  return;
-}
-/*
-
-void CreateTable(Catalog *catalog, Node *node) {
-        string tablename;
-         nodetype type, int create_type, int check, char * name1, char * name2,
-Node * list, Node * select_stmt
-        Create_table_stmt * ctnode = (Create_table_stmt *)node;
-        if(ctnode->name2 != NULL) {
-                tablename = ctnode->name2;
-        }
-        else if(ctnode->name1 != NULL) {
-                tablename = ctnode->name1;
-        }
-        else {
-                ASTParserLogging::elog("No table name!");
-                return;
-        }
-
-        TableDescriptor *new_table =
-Environment::getInstance()->getCatalog()->getTable(tablename);
-        if (new_table != NULL) {
-                ASTParserLogging::elog("The table %s has existed!",
-tablename.c_str());
-                return;
-        }
-        new_table = new
-TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-
-        new_table->addAttribute("row_id",data_type(t_u_long),0,true);
-
-        Create_col_list *list = (Create_col_list*)ctnode->list;
-        string primaryname;
-        int colNum = 0;
-        while (list)
-        {
-                Create_def *data = (Create_def*) list->data;
-                if (data->deftype == 1)
-                {
-                        ++colNum;
-                        string colname = data->name;
-                        primaryname = colname;
-                        Column_atts *column_atts = (Column_atts*)data->col_atts;
-
-                         TODO: Whether column is unique or has default value is
-not finished,
-                         *  because there are no supports
-
-                        Datatype * datatype = (Datatype *)data->datatype;
-                        switch (datatype->datatype)	// add more type ---
-2014-4-2
-                        {
-                        case 1:
-                        {
-                                if (column_atts && (column_atts->datatype &&
-01)){	// not null
-                                        new_table->addAttribute(colname,
-data_type(t_boolean), 0, true, false);
-                                }
-                                else if (column_atts && (column_atts->datatype
-&& 02)){	// can be null
-                                        new_table->addAttribute(colname,
-data_type(t_boolean), 0, true, true);
-                                }
-                                else{
-                                        new_table->addAttribute(colname,
-data_type(t_boolean), 0, true);
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-                        case 3:
-                        {
-                                if (datatype->opt_uz & 01 != 0){
-                                        if (column_atts &&
-(column_atts->datatype && 01)){
-                                                new_table->addAttribute(colname,
-data_type(t_u_smallInt), 0, true, false);
-                                        }
-                                        else if (column_atts &&
-(column_atts->datatype && 02)){
-                                                new_table->addAttribute(colname,
-data_type(t_u_smallInt), 0, true, true);
-                                        }
-                                        else{
-                                                new_table->addAttribute(colname,
-data_type(t_u_smallInt), 0, true);
-                                        }
-                                }
-                                else{
-                                        if (column_atts &&
-(column_atts->datatype && 01)){
-                                                new_table->addAttribute(colname,
-data_type(t_smallInt), 0, true, false);
-                                        }
-                                        else if (column_atts &&
-(column_atts->datatype && 02)){
-                                                new_table->addAttribute(colname,
-data_type(t_smallInt), 0, true, true);
-                                        }
-                                        else{
-                                                new_table->addAttribute(colname,
-data_type(t_smallInt), 0, true);
-                                        }
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-                        case 5: case 6:
-                        {
-                                if (column_atts && (column_atts->datatype &&
-01)){
-                                        new_table->addAttribute(colname,
-data_type(t_int), 0, true, false);
-                                }
-                                else if (column_atts && (column_atts->datatype
-&& 02)){
-                                        new_table->addAttribute(colname,
-data_type(t_int), 0, true, true);
-                                }
-                                else{
-                                        new_table->addAttribute(colname,
-data_type(t_int), 0, true);
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-                        case 7:
-                        {
-                                if (datatype->opt_uz & 01 != 0)
-                                {
-                                        if (column_atts &&
-(column_atts->datatype && 01)){
-                                                new_table->addAttribute(colname,
-data_type(t_u_long), 0, true, false);
-                                        }
-                                        else if (column_atts &&
-(column_atts->datatype && 02)){
-                                                new_table->addAttribute(colname,
-data_type(t_u_long), 0, true, true);
-                                        }
-                                        else{
-                                                new_table->addAttribute(colname,
-data_type(t_u_long), 0, true);
-                                        }
-                                        cout<<colname<<" is created"<<endl;
-                                }
-                                else
-                                {
-                                        //TODO:no supports
-                                        ASTParserLogging::log("This type is not
-supported!");
-                                }
-                                break;
-                        }
-                        case 9:
-                        {
-                                if (column_atts && (column_atts->datatype &&
-01)){
-                                        new_table->addAttribute(colname,
-data_type(t_double), 0, true, false);
-                                }
-                                else if (column_atts && (column_atts->datatype
-&& 02)){
-                                        new_table->addAttribute(colname,
-data_type(t_double), 0, true, true);
-                                }
-                                else{
-                                        new_table->addAttribute(colname,
-data_type(t_double), 0, true);
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-                        case 10:
-                        {
-                                if (column_atts && (column_atts->datatype &&
-01)){
-                                        new_table->addAttribute(colname,
-data_type(t_float), 0, true, false);
-                                }
-                                else if (column_atts && (column_atts->datatype
-&& 02)){
-                                        new_table->addAttribute(colname,
-data_type(t_float), 0, true, true);
-                                }
-                                else{
-                                        new_table->addAttribute(colname,
-data_type(t_float), 0, true);
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-                        case 11:
-                        {
-                                if (column_atts && (column_atts->datatype &&
-01)){
-                                        new_table->addAttribute(colname,
-data_type(t_decimal), 0, true, false);
-                                }
-                                else if (column_atts && (column_atts->datatype
-&& 02)){
-                                        new_table->addAttribute(colname,
-data_type(t_decimal), 0, true, true);
-                                }
-                                else{
-                                        new_table->addAttribute(colname,
-data_type(t_decimal), 0, true);
-                                }
-                                cout<<colname<<" is created"<<endl;
-                        }
-                        case 12:	// DATE --- 2014-4-1
-                        {
-                                if (column_atts && (column_atts->datatype &&
-01)){
-                                        new_table->addAttribute(colname,
-data_type(t_date), 0, true, false);
-                                }
-                                else if (column_atts && (column_atts->datatype
-&& 02)){
-                                        new_table->addAttribute(colname,
-data_type(t_date), 0, true, true);
-                                }
-                                else{
-                                        new_table->addAttribute(colname,
-data_type(t_date), 0, true);
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-                        case 13:	// TIME --- 2014-4-1
-                        {
-                                if (column_atts && (column_atts->datatype &&
-01)){
-                                        new_table->addAttribute(colname,
-data_type(t_time), 0, true, false);
-                                }
-                                else if (column_atts && (column_atts->datatype
-&& 02)){
-                                        new_table->addAttribute(colname,
-data_type(t_time), 0, true, true);
-                                }
-                                else{
-                                        new_table->addAttribute(colname,
-data_type(t_time), 0, true);
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-                        case 15:	// DATETIME --- 2014-4-1
-                        {
-                                if (column_atts && (column_atts->datatype &&
-01)){
-                                        new_table->addAttribute(colname,
-data_type(t_datetime), 0, true, false);
-                                }
-                                else if (column_atts && (column_atts->datatype
-&& 02)){
-                                        new_table->addAttribute(colname,
-data_type(t_datetime), 0, true, true);
-                                }
-                                else{
-                                        new_table->addAttribute(colname,
-data_type(t_datetime), 0, true);
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-
-                        case 17: case 18:
-                        {
-                                if (datatype->length)
-                                {
-                                        Length * l = (Length*)datatype->length;
-
-                                        if (column_atts &&
-(column_atts->datatype && 01)){
-                                                new_table->addAttribute(colname,
-data_type(t_string), l->data1, true, false);
-                                        }
-                                        else if (column_atts &&
-(column_atts->datatype && 02)){
-                                                new_table->addAttribute(colname,
-data_type(t_string), l->data1, true, true);
-                                        }
-                                        else{
-                                                new_table->addAttribute(colname,
-data_type(t_string), l->data1, true);
-                                        }
-                                }
-                                else
-                                {
-                                        if (column_atts &&
-(column_atts->datatype && 01)){
-                                                new_table->addAttribute(colname,
-data_type(t_string), 1, true, false);
-                                        }
-                                        else if (column_atts &&
-(column_atts->datatype && 02)){
-                                                new_table->addAttribute(colname,
-data_type(t_string), 1, true, true);
-                                        }
-                                        else{
-                                                new_table->addAttribute(colname,
-data_type(t_string), 1, true);
-                                        }
-                                }
-                                cout<<colname<<" is created"<<endl;
-                                break;
-                        }
-                        default:
-                        {
-                                ASTParserLogging::log("This type is not
-supported now!");
-                        }
-                        }
-                }
-                list = (Create_col_list* )list->next;
-        }
-
-        // add for  test, create projection default while creating table
-        cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
-
-        catalog->add_table(new_table);
-
-        TableID table_id=catalog->getTable(tablename)->get_table_id();
-
-
-         * note:
-         * after creating a new table,
-         * 	a projection with 18 partition number will be created
-         * 	--Yu,2015-2-9
-
-        new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(),
-18);
-        //				for(unsigned
-i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
-        ////
-catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
-        //
-catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
-        //				}
-
-        catalog->saveCatalog();
-}
-*/
-
-void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
-                      bool &result_flag, string &error_msg, string &info) {
-  bool is_correct = true;
-  Create_projection_stmt *newnode = (Create_projection_stmt *)node;
-  int partition_num = newnode->partition_num;
-  string tablename = newnode->tablename;
-  TableDescriptor *table = NULL;
-
-  if ((table = catalog->getTable(tablename)) ==
-      NULL)  // 2014-4-30---add check---by Yu
-  {
-    error_msg =
-        "There is no table named " + tablename + " during creating projection";
-    result_flag = false;
+    catalog->saveCatalog();
+    //			catalog->restoreCatalog();// commented by li to solve
+    // the
+    // dirty
+    // read after insert
+    result_flag = true;
+    info = "create table successfully";
     result_set = NULL;
+=======nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+    //				TableID
+    // table_id=catalog->getTable(tablename)->get_table_id();
+
+    //				for(unsigned
+    // i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+    //					catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
+    //					catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+    //				}
+
+    catalog->saveCatalog();
+    /*
+    // commented by li to solve the dirty read after insert
+    catalog->restoreCatalog();
+    */
+    //  result_flag = true;
+    //  info = "create table successfully";
+    //  result_set = NULL;
+    result->SetResult("create table successfully", NULL);
+
+>>>>>>> FETCH_HEAD
     return;
-    is_correct = false;
-    return;
   }
-  TableID table_id = catalog->getTable(tablename)->get_table_id();
-  string partition_attribute_name = newnode->partition_attribute_name;
+  /*
 
-  std::vector<ColumnOffset> index;
-  index.push_back(
-      0);  // add by scdong: add row_id column to each projection automatically
-  Columns *col_list = (Columns *)newnode->column_list;
-  string colname;
-  while (col_list) {
-    if (col_list->parameter2 != NULL) {
-      colname = col_list->parameter2;
-    } else if (col_list->parameter1 != NULL) {
-      colname = col_list->parameter1;
-    } else {
-      error_msg = "NO column name during creating projection!";
-      result_flag = false;
-      result_set = NULL;
-      return;
-      is_correct = false;
-      break;
-    }
-    cout << tablename + "." + colname << endl;
-    if (table->isExist(tablename + "." +
-                       colname))  // 2014-4-30---add check---by Yu
-      index.push_back(table->getAttribute(colname).index);
-    else {
-      error_msg = "The column " + colname +
-                  " is not existed! during creating projection";
-      result_flag = false;
-      result_set = NULL;
-      return;
-      is_correct = false;
-      break;
-    }
-    col_list = (Columns *)col_list->next;
+  void CreateTable(Catalog *catalog, Node *node) {
+          string tablename;
+           nodetype type, int create_type, int check, char * name1, char *
+  name2,
+  Node * list, Node * select_stmt
+          Create_table_stmt * ctnode = (Create_table_stmt *)node;
+          if(ctnode->name2 != NULL) {
+                  tablename = ctnode->name2;
+          }
+          else if(ctnode->name1 != NULL) {
+                  tablename = ctnode->name1;
+          }
+          else {
+                  ASTParserLogging::elog("No table name!");
+                  return;
+          }
+
+          TableDescriptor *new_table =
+  Environment::getInstance()->getCatalog()->getTable(tablename);
+          if (new_table != NULL) {
+                  ASTParserLogging::elog("The table %s has existed!",
+  tablename.c_str());
+                  return;
+          }
+          new_table = new
+  TableDescriptor(tablename,Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+
+          new_table->addAttribute("row_id",data_type(t_u_long),0,true);
+
+          Create_col_list *list = (Create_col_list*)ctnode->list;
+          string primaryname;
+          int colNum = 0;
+          while (list)
+          {
+                  Create_def *data = (Create_def*) list->data;
+                  if (data->deftype == 1)
+                  {
+                          ++colNum;
+                          string colname = data->name;
+                          primaryname = colname;
+                          Column_atts *column_atts =
+  (Column_atts*)data->col_atts;
+
+                           TODO: Whether column is unique or has default value
+  is
+  not finished,
+                           *  because there are no supports
+
+                          Datatype * datatype = (Datatype *)data->datatype;
+                          switch (datatype->datatype)	// add more type ---
+  2014-4-2
+                          {
+                          case 1:
+                          {
+                                  if (column_atts && (column_atts->datatype &&
+  01)){	// not null
+                                          new_table->addAttribute(colname,
+  data_type(t_boolean), 0, true, false);
+                                  }
+                                  else if (column_atts && (column_atts->datatype
+  && 02)){	// can be null
+                                          new_table->addAttribute(colname,
+  data_type(t_boolean), 0, true, true);
+                                  }
+                                  else{
+                                          new_table->addAttribute(colname,
+  data_type(t_boolean), 0, true);
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+                          case 3:
+                          {
+                                  if (datatype->opt_uz & 01 != 0){
+                                          if (column_atts &&
+  (column_atts->datatype && 01)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_u_smallInt), 0, true, false);
+                                          }
+                                          else if (column_atts &&
+  (column_atts->datatype && 02)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_u_smallInt), 0, true, true);
+                                          }
+                                          else{
+                                                  new_table->addAttribute(colname,
+  data_type(t_u_smallInt), 0, true);
+                                          }
+                                  }
+                                  else{
+                                          if (column_atts &&
+  (column_atts->datatype && 01)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_smallInt), 0, true, false);
+                                          }
+                                          else if (column_atts &&
+  (column_atts->datatype && 02)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_smallInt), 0, true, true);
+                                          }
+                                          else{
+                                                  new_table->addAttribute(colname,
+  data_type(t_smallInt), 0, true);
+                                          }
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+                          case 5: case 6:
+                          {
+                                  if (column_atts && (column_atts->datatype &&
+  01)){
+                                          new_table->addAttribute(colname,
+  data_type(t_int), 0, true, false);
+                                  }
+                                  else if (column_atts && (column_atts->datatype
+  && 02)){
+                                          new_table->addAttribute(colname,
+  data_type(t_int), 0, true, true);
+                                  }
+                                  else{
+                                          new_table->addAttribute(colname,
+  data_type(t_int), 0, true);
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+                          case 7:
+                          {
+                                  if (datatype->opt_uz & 01 != 0)
+                                  {
+                                          if (column_atts &&
+  (column_atts->datatype && 01)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_u_long), 0, true, false);
+                                          }
+                                          else if (column_atts &&
+  (column_atts->datatype && 02)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_u_long), 0, true, true);
+                                          }
+                                          else{
+                                                  new_table->addAttribute(colname,
+  data_type(t_u_long), 0, true);
+                                          }
+                                          cout<<colname<<" is created"<<endl;
+                                  }
+                                  else
+                                  {
+                                          //TODO:no supports
+                                          ASTParserLogging::log("This type is
+  not
+  supported!");
+                                  }
+                                  break;
+                          }
+                          case 9:
+                          {
+                                  if (column_atts && (column_atts->datatype &&
+  01)){
+                                          new_table->addAttribute(colname,
+  data_type(t_double), 0, true, false);
+                                  }
+                                  else if (column_atts && (column_atts->datatype
+  && 02)){
+                                          new_table->addAttribute(colname,
+  data_type(t_double), 0, true, true);
+                                  }
+                                  else{
+                                          new_table->addAttribute(colname,
+  data_type(t_double), 0, true);
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+                          case 10:
+                          {
+                                  if (column_atts && (column_atts->datatype &&
+  01)){
+                                          new_table->addAttribute(colname,
+  data_type(t_float), 0, true, false);
+                                  }
+                                  else if (column_atts && (column_atts->datatype
+  && 02)){
+                                          new_table->addAttribute(colname,
+  data_type(t_float), 0, true, true);
+                                  }
+                                  else{
+                                          new_table->addAttribute(colname,
+  data_type(t_float), 0, true);
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+                          case 11:
+                          {
+                                  if (column_atts && (column_atts->datatype &&
+  01)){
+                                          new_table->addAttribute(colname,
+  data_type(t_decimal), 0, true, false);
+                                  }
+                                  else if (column_atts && (column_atts->datatype
+  && 02)){
+                                          new_table->addAttribute(colname,
+  data_type(t_decimal), 0, true, true);
+                                  }
+                                  else{
+                                          new_table->addAttribute(colname,
+  data_type(t_decimal), 0, true);
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                          }
+                          case 12:	// DATE --- 2014-4-1
+                          {
+                                  if (column_atts && (column_atts->datatype &&
+  01)){
+                                          new_table->addAttribute(colname,
+  data_type(t_date), 0, true, false);
+                                  }
+                                  else if (column_atts && (column_atts->datatype
+  && 02)){
+                                          new_table->addAttribute(colname,
+  data_type(t_date), 0, true, true);
+                                  }
+                                  else{
+                                          new_table->addAttribute(colname,
+  data_type(t_date), 0, true);
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+                          case 13:	// TIME --- 2014-4-1
+                          {
+                                  if (column_atts && (column_atts->datatype &&
+  01)){
+                                          new_table->addAttribute(colname,
+  data_type(t_time), 0, true, false);
+                                  }
+                                  else if (column_atts && (column_atts->datatype
+  && 02)){
+                                          new_table->addAttribute(colname,
+  data_type(t_time), 0, true, true);
+                                  }
+                                  else{
+                                          new_table->addAttribute(colname,
+  data_type(t_time), 0, true);
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+                          case 15:	// DATETIME --- 2014-4-1
+                          {
+                                  if (column_atts && (column_atts->datatype &&
+  01)){
+                                          new_table->addAttribute(colname,
+  data_type(t_datetime), 0, true, false);
+                                  }
+                                  else if (column_atts && (column_atts->datatype
+  && 02)){
+                                          new_table->addAttribute(colname,
+  data_type(t_datetime), 0, true, true);
+                                  }
+                                  else{
+                                          new_table->addAttribute(colname,
+  data_type(t_datetime), 0, true);
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+
+                          case 17: case 18:
+                          {
+                                  if (datatype->length)
+                                  {
+                                          Length * l =
+  (Length*)datatype->length;
+
+                                          if (column_atts &&
+  (column_atts->datatype && 01)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_string), l->data1, true, false);
+                                          }
+                                          else if (column_atts &&
+  (column_atts->datatype && 02)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_string), l->data1, true, true);
+                                          }
+                                          else{
+                                                  new_table->addAttribute(colname,
+  data_type(t_string), l->data1, true);
+                                          }
+                                  }
+                                  else
+                                  {
+                                          if (column_atts &&
+  (column_atts->datatype && 01)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_string), 1, true, false);
+                                          }
+                                          else if (column_atts &&
+  (column_atts->datatype && 02)){
+                                                  new_table->addAttribute(colname,
+  data_type(t_string), 1, true, true);
+                                          }
+                                          else{
+                                                  new_table->addAttribute(colname,
+  data_type(t_string), 1, true);
+                                          }
+                                  }
+                                  cout<<colname<<" is created"<<endl;
+                                  break;
+                          }
+                          default:
+                          {
+                                  ASTParserLogging::log("This type is not
+  supported now!");
+                          }
+                          }
+                  }
+                  list = (Create_col_list* )list->next;
+          }
+
+          // add for  test, create projection default while creating table
+          cout<<"Name:"<<new_table->getAttribute(0).getName()<<endl;
+
+          catalog->add_table(new_table);
+
+          TableID table_id=catalog->getTable(tablename)->get_table_id();
+
+
+           * note:
+           * after creating a new table,
+           * 	a projection with 18 partition number will be created
+           * 	--Yu,2015-2-9
+
+          new_table->createHashPartitionedProjectionOnAllAttribute(new_table->getAttribute(0).getName(),
+  18);
+          //				for(unsigned
+  i=0;i<catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+          ////
+  catalog->getTable(table_id)->getProjectoin(catalog->getTable(table_id)->getNumberOfProjection()-1)->getPartitioner()->RegisterPartition(i,2);
+          //
+  catalog->getTable(table_id)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,2);
+          //				}
+
+          catalog->saveCatalog();
   }
-  if (result_flag == false) return;
-  if (!is_correct) return;
-
-  catalog->getTable(table_id)->createHashPartitionedProjection(
-      index, partition_attribute_name, partition_num);
-
-  int projection_index =
-      catalog->getTable(table_id)->getNumberOfProjection() - 1;
-  for (unsigned i = 0; i < catalog->getTable(table_id)
-                               ->getProjectoin(projection_index)
-                               ->getPartitioner()
-                               ->getNumberOfPartitions();
-       i++) {
-    catalog->getTable(table_id)
-        ->getProjectoin(projection_index)
-        ->getPartitioner()
-        ->RegisterPartition(i, 0);
-  }
-
-#ifdef _DELETE_DATA_SUPPORT_
-  /**
-      create projection for table_del
   */
-  // create projection start
-  table = catalog->getTable((tablename + "_DEL"));
-  if (table != NULL) {
-    table_id = catalog->getTable(tablename + "_DEL")->get_table_id();
-    std::vector<ColumnOffset> indexDEL;
-    indexDEL.push_back(0);
 
-    if (table->isExist(tablename + "_DEL." + "row_id_DEL"))
-      indexDEL.push_back(table->getAttribute("row_id_DEL").index);
+<<<<<<< HEAD
+  void CreateProjection(Catalog * catalog, Node * node, ResultSet * &result_set,
+                        bool &result_flag, string &error_msg, string &info) {
+=======
+  void CreateProjection(Catalog * catalog, Node * node,
+                        ExecutedResult * result) {
+>>>>>>> FETCH_HEAD
+    bool is_correct = true;
+    Create_projection_stmt *newnode = (Create_projection_stmt *)node;
+    int partition_num = newnode->partition_num;
+    string tablename = newnode->tablename;
+    TableDescriptor *table = NULL;
+
+    if ((table = catalog->getTable(tablename)) ==
+        NULL)  // 2014-4-30---add check---by Yu
+    {
+<<<<<<< HEAD
+      error_msg = "There is no table named " + tablename +
+                  " during creating projection";
+      result_flag = false;
+      result_set = NULL;
+=======
+      //    error_msg =
+      //        "There is no table named " + tablename + " during creating
+      //        projection";
+      //    result_flag = false;
+      //    result_set = NULL;
+
+      result->SetError("There is no table named " + tablename +
+                       " during creating projection");
+>>>>>>> FETCH_HEAD
+      return;
+      is_correct = false;
+      return;
+    }
+    TableID table_id = catalog->getTable(tablename)->get_table_id();
+    string partition_attribute_name = newnode->partition_attribute_name;
+
+    std::vector<ColumnOffset> index;
+    index.push_back(0);  // add by scdong: add row_id column to each projection
+                         // automatically
+    Columns *col_list = (Columns *)newnode->column_list;
+    string colname;
+    while (col_list) {
+      if (col_list->parameter2 != NULL) {
+        colname = col_list->parameter2;
+      } else if (col_list->parameter1 != NULL) {
+        colname = col_list->parameter1;
+      } else {
+<<<<<<< HEAD
+        error_msg = "NO column name during creating projection!";
+        result_flag = false;
+        result_set = NULL;
+=======
+        //      error_msg = "NO column name during creating projection!";
+        //      result_flag = false;
+        //      result_set = NULL;
+
+        result->SetError("NO column name during creating projection!");
+
+>>>>>>> FETCH_HEAD
+        return;
+        is_correct = false;
+        break;
+      }
+      cout << tablename + "." + colname << endl;
+      if (table->isExist(tablename + "." +
+                         colname))  // 2014-4-30---add check---by Yu
+        index.push_back(table->getAttribute(colname).index);
+      else {
+<<<<<<< HEAD
+        error_msg = "The column " + colname +
+                    " is not existed! during creating projection";
+        result_flag = false;
+        result_set = NULL;
+=======
+        //      error_msg = "The column " + colname +
+        //                  " is not existed! during creating projection";
+        //      result_flag = false;
+        //      result_set = NULL;
+        result->SetError("The column " + colname +
+                         " is not existed! during creating projection");
+>>>>>>> FETCH_HEAD
+        return;
+        is_correct = false;
+        break;
+      }
+      col_list = (Columns *)col_list->next;
+    }
+<<<<<<< HEAD
+    if (result_flag == false) return;
+=======
+    if (result->status_ == false) return;
+>>>>>>> FETCH_HEAD
+    if (!is_correct) return;
 
     catalog->getTable(table_id)->createHashPartitionedProjection(
-        indexDEL, "row_id_DEL", partition_num);
+        index, partition_attribute_name, partition_num);
 
-    projection_index = catalog->getTable(table_id)->getNumberOfProjection() - 1;
-
+    int projection_index =
+        catalog->getTable(table_id)->getNumberOfProjection() - 1;
     for (unsigned i = 0; i < catalog->getTable(table_id)
                                  ->getProjectoin(projection_index)
                                  ->getPartitioner()
@@ -1192,754 +1361,968 @@ void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
           ->getPartitioner()
           ->RegisterPartition(i, 0);
     }
-  }
+
+<<<<<<< HEAD
+    #ifdef _DELETE_DATA_SUPPORT_
+        /**
+            create projection for table_del
+        */
+        // create projection start
+        table = catalog->getTable((tablename + "_DEL"));
+    if (table != NULL) {
+      table_id = catalog->getTable(tablename + "_DEL")->get_table_id();
+      std::vector<ColumnOffset> indexDEL;
+      indexDEL.push_back(0);
+
+      if (table->isExist(tablename + "_DEL." + "row_id_DEL"))
+        indexDEL.push_back(table->getAttribute("row_id_DEL").index);
+
+      catalog->getTable(table_id)->createHashPartitionedProjection(
+          indexDEL, "row_id_DEL", partition_num);
+
+      projection_index =
+          catalog->getTable(table_id)->getNumberOfProjection() - 1;
+
+      for (unsigned i = 0; i < catalog->getTable(table_id)
+                                   ->getProjectoin(projection_index)
+                                   ->getPartitioner()
+                                   ->getNumberOfPartitions();
+           i++) {
+        catalog->getTable(table_id)
+            ->getProjectoin(projection_index)
+            ->getPartitioner()
+            ->RegisterPartition(i, 0);
+      }
+    }
 // create projection for table_delete end.
 #endif
 
-  catalog->saveCatalog();
-  //			catalog->restoreCatalog();// commented by li to solve
-  // the
-  // dirty
-  // read after insert
+=======
+>>>>>>> FETCH_HEAD
+    catalog->saveCatalog();
+    //			catalog->restoreCatalog();// commented by li to solve
+    // the
+    // dirty
+    // read after insert
 
-  result_flag = true;
-  result_set = NULL;
-  info = "create projection successfully";
-  result_set = NULL;
-  return;
-}
-/*
-
-void CreateProjection(Catalog *catalog, Node *node) {
-        ASTParserLogging::log("this is create projection");
-        Create_projection_stmt *newnode = (Create_projection_stmt *)node;
-        int partition_num = newnode->partition_num;
-        string tablename = newnode->tablename;
-        TableDescriptor *table = NULL;
-
-        if((table = catalog->getTable(tablename)) == NULL)	//
-2014-4-30---add check---by Yu
-        {
-                ASTParserLogging::elog("There is no table named %s",
-tablename.c_str());
-                return;
-        }
-        TableID table_id=catalog->getTable(tablename)->get_table_id();
-        string partition_attribute_name = newnode->partition_attribute_name;
-
-        std::vector<ColumnOffset> index;
-        index.push_back(0);		// add by scdong: add row_id column
-to each projection automatically
-        Columns *col_list = (Columns *)newnode->column_list;
-        string colname;
-        while(col_list)
-        {
-                if (col_list->parameter2 != NULL) {
-                        colname = col_list->parameter2;
-                }
-                else if (col_list->parameter1 != NULL) {
-                        colname = col_list->parameter1;
-                }
-                else {
-                        cout<<"[ERROR]NO column name!"<<endl;
-                        return;
-                }
-                cout<<colname<<endl;
-                if(table->isExist(tablename+"."+colname))	{//
-2014-4-30---add check---by Yu
-                        index.push_back(table->getAttribute(colname).index);
-                }
-                else {
-                        ASTParserLogging::elog("The column %s is not existed!",
-colname.c_str());
-                        return;
-                }
-                col_list = (Columns *)col_list->next;
-        }
-
-        catalog->getTable(table_id)->createHashPartitionedProjection(index,partition_attribute_name,partition_num);
-        int projection_index =
-catalog->getTable(table_id)->getNumberOfProjection()-1;
-        for(unsigned
-i=0;i<catalog->getTable(table_id)->getProjectoin(projection_index)->getPartitioner()->getNumberOfPartitions();i++){
-
-                catalog->getTable(table_id)->getProjectoin(projection_index)->getPartitioner()->RegisterPartition(i,0);
-        }
-
-        catalog->saveCatalog();
-}
-*/
-
-void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
-           bool &result_flag, string &error_msg, string &info,
-           const bool local_mode) {
-  if (!semantic_analysis(node, false)) {
-    error_msg = "semantic analysis error";
-    LOG(WARNING) << "semantic analysis error" << endl;
-    result_flag = false;
+<<<<<<< HEAD
+    result_flag = true;
     result_set = NULL;
+    info = "create projection successfully";
+    result_set = NULL;
+=======
+    //  result_flag = true;
+    //  result_set = NULL;
+    //  info = "create projection successfully";
+    //  result_set = NULL;
+
+    result->SetResult("create projection successfully", NULL);
+>>>>>>> FETCH_HEAD
     return;
   }
-  output(node, 0);
-  preprocess(node);
-  Query_stmt *querynode = (Query_stmt *)node;
-  if (querynode->from_list != NULL)
-    int fg = solve_join_condition(querynode->from_list);
-  if (querynode->where_list != NULL) {
-    struct Where_list *curt = (struct Where_list *)(querynode->where_list);
-    struct Node *cur = (struct Node *)(curt->next);
-    departwc(cur, querynode->from_list);
+  /*
+
+  void CreateProjection(Catalog *catalog, Node *node) {
+          ASTParserLogging::log("this is create projection");
+          Create_projection_stmt *newnode = (Create_projection_stmt *)node;
+          int partition_num = newnode->partition_num;
+          string tablename = newnode->tablename;
+          TableDescriptor *table = NULL;
+
+          if((table = catalog->getTable(tablename)) == NULL)	//
+  2014-4-30---add check---by Yu
+          {
+                  ASTParserLogging::elog("There is no table named %s",
+  tablename.c_str());
+                  return;
+          }
+          TableID table_id=catalog->getTable(tablename)->get_table_id();
+          string partition_attribute_name = newnode->partition_attribute_name;
+
+          std::vector<ColumnOffset> index;
+          index.push_back(0);		// add by scdong: add row_id column
+  to each projection automatically
+          Columns *col_list = (Columns *)newnode->column_list;
+          string colname;
+          while(col_list)
+          {
+                  if (col_list->parameter2 != NULL) {
+                          colname = col_list->parameter2;
+                  }
+                  else if (col_list->parameter1 != NULL) {
+                          colname = col_list->parameter1;
+                  }
+                  else {
+                          cout<<"[ERROR]NO column name!"<<endl;
+                          return;
+                  }
+                  cout<<colname<<endl;
+                  if(table->isExist(tablename+"."+colname))	{//
+  2014-4-30---add check---by Yu
+                          index.push_back(table->getAttribute(colname).index);
+                  }
+                  else {
+                          ASTParserLogging::elog("The column %s is not
+  existed!",
+  colname.c_str());
+                          return;
+                  }
+                  col_list = (Columns *)col_list->next;
+          }
+
+          catalog->getTable(table_id)->createHashPartitionedProjection(index,partition_attribute_name,partition_num);
+          int projection_index =
+  catalog->getTable(table_id)->getNumberOfProjection()-1;
+          for(unsigned
+  i=0;i<catalog->getTable(table_id)->getProjectoin(projection_index)->getPartitioner()->getNumberOfPartitions();i++){
+
+                  catalog->getTable(table_id)->getProjectoin(projection_index)->getPartitioner()->RegisterPartition(i,0);
+          }
+
+          catalog->saveCatalog();
   }
-#ifdef SQL_Parser
-  output(node, 0);
-#endif
+  */
 
-  LogicalOperator *plan = parsetree2logicalplan(node);
+<<<<<<< HEAD
+  void Query(Catalog * catalog, Node * node, ResultSet * &result_set,
+             bool &result_flag, string &error_msg, string &info,
+             const bool local_mode) {
+    if (!semantic_analysis(node, false)) {
+      error_msg = "semantic analysis error";
+      LOG(WARNING) << "semantic analysis error" << endl;
+      result_flag = false;
+      result_set = NULL;
+=======
+  void Query(Catalog * catalog, Node * node, ExecutedResult * result,
+             const bool local_mode) {
+    if (!semantic_analysis(node, false)) {
+      //    error_msg = "semantic analysis error";
+      //    result_flag = false;
+      //    result_set = NULL;
 
-  LogicalOperator *root = NULL;
-  if (querynode->limit_list != NULL) {
-    Limit_expr *lexpr = (Limit_expr *)querynode->limit_list;
-    if (lexpr->offset == NULL) {
-      root = new LogicalQueryPlanRoot(
-          0, plan, LogicalQueryPlanRoot::kResultCollector,
-          LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
-    } else {
-      root = new LogicalQueryPlanRoot(
-          0, plan, LogicalQueryPlanRoot::kResultCollector,
-          LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),
-                          atoi(((Expr *)lexpr->offset)->data)));
+      result->SetError("semantic analysis error");
+>>>>>>> FETCH_HEAD
+      return;
     }
-  } else {
-    root = new LogicalQueryPlanRoot(0, plan,
-                                    LogicalQueryPlanRoot::kResultCollector);
-  }
-
+    output(node, 0);
+    preprocess(node);
+    Query_stmt *querynode = (Query_stmt *)node;
+    if (querynode->from_list != NULL)
+      int fg = solve_join_condition(querynode->from_list);
+    if (querynode->where_list != NULL) {
+      struct Where_list *curt = (struct Where_list *)(querynode->where_list);
+      struct Node *cur = (struct Node *)(curt->next);
+      departwc(cur, querynode->from_list);
+    }
 #ifdef SQL_Parser
-  root->Print(0);
+    output(node, 0);
 #endif
 
-  PhysicalOperatorBase *physical_iterator_tree =
-      root->GetPhysicalPlan(64 * 1024);
-  //					puts("+++++++++++++++++++++begin
-  // time++++++++++++++++");
-  unsigned long long start = curtick();
-  physical_iterator_tree->Print();
+    LogicalOperator *plan = parsetree2logicalplan(node);
 
-  physical_iterator_tree->Open();
+    LogicalOperator *root = NULL;
+    if (querynode->limit_list != NULL) {
+      Limit_expr *lexpr = (Limit_expr *)querynode->limit_list;
+      if (lexpr->offset == NULL) {
+        root = new LogicalQueryPlanRoot(
+            0, plan, LogicalQueryPlanRoot::kResultCollector,
+            LimitConstraint(atoi(((Expr *)lexpr->row_count)->data)));
+      } else {
+        root = new LogicalQueryPlanRoot(
+            0, plan, LogicalQueryPlanRoot::kResultCollector,
+            LimitConstraint(atoi(((Expr *)lexpr->row_count)->data),
+                            atoi(((Expr *)lexpr->offset)->data)));
+      }
+    } else {
+      root = new LogicalQueryPlanRoot(0, plan,
+                                      LogicalQueryPlanRoot::kResultCollector);
+    }
 
-  while (physical_iterator_tree->Next(0))
-    ;
-  physical_iterator_tree->Close();
-  //					printf("++++++++++++++++Q1: execution
-  // time:
-  //%4.4f
-  // second.++++++++++++++\n",getSecond(start));
-  result_set = physical_iterator_tree->GetResultSet();
-  cout << "execute " << result_set->query_time_ << " s" << endl;
-  result_flag = true;
-
-  if (local_mode) {
-    result_set->print();
-    delete physical_iterator_tree;
-    delete root;
-    delete result_set;
-  }
-  return;
-}
-/*
-
-void Query(Catalog *catalog, Node *node) {
-        SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
-        if (!semantic_analysis(node,false))//---3.22fzh---
-        {
-                SQLParse_elog("semantic_analysis error");
-                //					assert(false);
-                return;
-        }
-        preprocess(node);
-        //#ifdef SQL_Parser
-        //				output(node,0);
-        //#endif
-        Query_stmt *querynode=(Query_stmt *)node;
-        if(querynode->from_list!=NULL)
-                int fg=solve_join_condition(querynode->from_list);
-        if(querynode->where_list!=NULL)
-        {
-                struct Where_list * curt=(struct Where_list
-*)(querynode->where_list);
-                struct Node *cur=(struct Node *)(curt->next);
-                departwc(cur,querynode->from_list);
-        }
 #ifdef SQL_Parser
-        output(node,0);
+    root->Print(0);
 #endif
-        LogicalOperator*
-plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
-        //进行判断，对于不同的语句，比如select,update等选择不同的操作。
 
-        LogicalOperator* root=NULL;
-        if(querynode->limit_list!=NULL)
-        {
-                Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
-                if(lexpr->offset==NULL)
-                {
-                        root=new
-LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr
-*)lexpr->row_count)->data)));
-                }
-                else
-                {
-                        root=new
-LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr
-*)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
-                }
-        }
-        else
-        {
-                root=new
-LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
-        }
-        #ifdef SQL_Parser
-        root->print(0);
-        cout<<"performance is ok!the data will come in,please enter any char to
-continue!!"<<endl;
-        getchar();
-        getchar();
-        #endif
+    PhysicalOperatorBase *physical_iterator_tree =
+        root->GetPhysicalPlan(64 * 1024);
+    //					puts("+++++++++++++++++++++begin
+    // time++++++++++++++++");
+    unsigned long long start = curtick();
+    physical_iterator_tree->Print();
 
-        BlockStreamIteratorBase*
-physical_iterator_tree=root->getIteratorTree(64*1024);
-        #ifdef SQL_Parser
-        cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-        physical_iterator_tree->print();
-        cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
-        puts("+++++++++++++++++++++begin time++++++++++++++++");
-        #endif
-        unsigned long long start=curtick();
-        physical_iterator_tree->open();
-        while(physical_iterator_tree->next(0));
-        physical_iterator_tree->close();
+    physical_iterator_tree->Open();
 
-        ResultSet* result_set=physical_iterator_tree->getResultSet();
-        result_set->print();
+<<<<<<< HEAD
+    while (physical_iterator_tree->Next(0))
+      ;
+    physical_iterator_tree->Close();
+    //					printf("++++++++++++++++Q1: execution
+    // time:
+    //%4.4f
+    // second.++++++++++++++\n",getSecond(start));
+    result_set = physical_iterator_tree->GetResultSet();
+    cout << "execute " << result_set->query_time_ << " s" << endl;
+    result_flag = true;
+=======
+    while (physical_iterator_tree->Next(0)) {
+    }
+    physical_iterator_tree->Close();
+    ResultSet *result_set = physical_iterator_tree->GetResultSet();
+    cout << "execute " << result_set->query_time_ << " s" << endl;
+    result->SetResult("", result_set);
+>>>>>>> FETCH_HEAD
 
-        delete physical_iterator_tree;
-        delete root;
-        delete result_set;
-        //				printf("++++++++++++++++Q1: execution
-time: %4.4f second.++++++++++++++\n",getSecond(start));
-}
-*/
-
-void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set,
-              bool &result_flag, string &error_msg, string &info) {
-  Loadtable_stmt *new_node = (Loadtable_stmt *)node;
-
-  string table_name(new_node->table_name);
-  TableDescriptor *table = catalog->getTable(table_name);
-
-  // 2014-4-17---check the exist of table---by Yu
-  if (table == NULL) {
-    error_msg = "the table " + table_name + " does not exist during loading!";
-    result_flag = false;
-    result_set = NULL;
+    if (local_mode) {
+      result_set->print();
+      delete physical_iterator_tree;
+      delete root;
+      delete result_set;
+    }
     return;
   }
-  string column_separator(new_node->column_separator);
-  string tuple_separator(new_node->tuple_separator);
-  //			printf("wef:%s\n",new_node->tuple_separator);
-  Expr_list *path_node = (Expr_list *)new_node->path;
+  /*
 
-  ASTParserLogging::log("load file\'s name:");
-  vector<string> path_names;  // save the name of files which should be loaded
-  // for test: the path name is:	/home/imdb/data/tpc-h/part.tbl
-  while (path_node) {
-    Expr *data = (Expr *)path_node->data;
-    ASTParserLogging::log("%s", data->data);
-    path_names.push_back(string(data->data));
-    path_node = (Expr_list *)path_node->next;
+  void Query(Catalog *catalog, Node *node) {
+          SQLParse_log("this is query stmt!!!!!!!!!!!!!!!!!!");
+          if (!semantic_analysis(node,false))//---3.22fzh---
+          {
+                  SQLParse_elog("semantic_analysis error");
+                  //					assert(false);
+                  return;
+          }
+          preprocess(node);
+          //#ifdef SQL_Parser
+          //				output(node,0);
+          //#endif
+          Query_stmt *querynode=(Query_stmt *)node;
+          if(querynode->from_list!=NULL)
+                  int fg=solve_join_condition(querynode->from_list);
+          if(querynode->where_list!=NULL)
+          {
+                  struct Where_list * curt=(struct Where_list
+  *)(querynode->where_list);
+                  struct Node *cur=(struct Node *)(curt->next);
+                  departwc(cur,querynode->from_list);
+          }
+  #ifdef SQL_Parser
+          output(node,0);
+  #endif
+          LogicalOperator*
+  plan=parsetree2logicalplan(node);//现在由于没有投影，所以只把from_list传输进去。因此在完善之后，需要在parsetree2logicalplan()中
+          //进行判断，对于不同的语句，比如select,update等选择不同的操作。
+
+          LogicalOperator* root=NULL;
+          if(querynode->limit_list!=NULL)
+          {
+                  Limit_expr *lexpr=(Limit_expr *)querynode->limit_list;
+                  if(lexpr->offset==NULL)
+                  {
+                          root=new
+  LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr
+  *)lexpr->row_count)->data)));
+                  }
+                  else
+                  {
+                          root=new
+  LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR,LimitConstraint(atoi(((Expr
+  *)lexpr->row_count)->data),atoi(((Expr *)lexpr->offset)->data)));
+                  }
+          }
+          else
+          {
+                  root=new
+  LogicalQueryPlanRoot(0,plan,LogicalQueryPlanRoot::RESULTCOLLECTOR);
+          }
+          #ifdef SQL_Parser
+          root->print(0);
+          cout<<"performance is ok!the data will come in,please enter any char
+  to
+  continue!!"<<endl;
+          getchar();
+          getchar();
+          #endif
+
+          BlockStreamIteratorBase*
+  physical_iterator_tree=root->getIteratorTree(64*1024);
+          #ifdef SQL_Parser
+          cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+          physical_iterator_tree->print();
+          cout<<"~~~~~~~~~physical plan~~~~~~~~~~~~~~"<<endl;
+          puts("+++++++++++++++++++++begin time++++++++++++++++");
+          #endif
+          unsigned long long start=curtick();
+          physical_iterator_tree->open();
+          while(physical_iterator_tree->next(0));
+          physical_iterator_tree->close();
+
+          ResultSet* result_set=physical_iterator_tree->getResultSet();
+          result_set->print();
+
+          delete physical_iterator_tree;
+          delete root;
+          delete result_set;
+          //				printf("++++++++++++++++Q1: execution
+  time: %4.4f second.++++++++++++++\n",getSecond(start));
   }
+  */
 
-  // split sign should be considered carefully, in case of it may be "||" or
-  // "###"
-  ASTParserLogging::log(
-      "The separator are :%c,%c, The sample is %lf, mode is %d\n",
-      column_separator[0], tuple_separator[0], new_node->sample,
-      new_node->mode);
-  HdfsLoader *loader =
-      new HdfsLoader(column_separator[0], tuple_separator[0], path_names, table,
-                     (open_flag)new_node->mode);
-  loader->load(new_node->sample);
-
-  result_flag = true;
-  result_set = NULL;
-  info = "load data successfully";
-  result_set = NULL;
-
-  catalog->saveCatalog();
-  //	catalog->restoreCatalog();// commented by li to solve the dirty read
-  // after insert
-}
-/*
-
-void LoadData(Catalog *catalog, Node *node) {
-        Loadtable_stmt *new_node = (Loadtable_stmt*)node;
-
-        string table_name(new_node->table_name);
-        TableDescriptor *table = catalog->getTable(table_name);
-
-        // 2014-4-17---check the exist of table---by Yu
-        if(table == NULL)
-        {
-                ASTParserLogging::elog("the table %s does not exist!",
-table_name.c_str());
-                return;
-        }
-        string column_separator(new_node->column_separator);
-        string tuple_separator(new_node->tuple_separator);
-        //
-printf("wef:%s\n",new_node->tuple_separator);
-        Expr_list *path_node = (Expr_list*)new_node->path;
-
-        ASTParserLogging::log("load file\'s name:");
-        vector<string> path_names;	// save the name of files which should
-be loaded
-        //for test: the path name is:	/home/claims/data/tpc-h/part.tbl
-        while(path_node)
-        {
-                Expr *data = (Expr*)path_node->data;
-                ASTParserLogging::log("%s",data->data);
-                path_names.push_back(string(data->data));
-                path_node = (Expr_list*)path_node->next;
-        }
-
-        // split sign should be considered carefully, in case of it may be "||"
-or "###"
-        ASTParserLogging::log("The separator are :%c,%c", column_separator[0],
-tuple_separator[0]);
-        HdfsLoader *loader = new HdfsLoader(column_separator[0],
-tuple_separator[0], path_names, table);
-        loader->load();
-        catalog->saveCatalog();
-}
-*/
-
-void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
+<<<<<<< HEAD
+  void LoadData(Catalog * catalog, Node * node, ResultSet * &result_set,
                 bool &result_flag, string &error_msg, string &info) {
-  bool has_warning = false;
-  bool is_correct = true;
-  bool is_all_col = false;
-  Insert_stmt *insert_stmt = (Insert_stmt *)node;
+=======
+  void LoadData(Catalog * catalog, Node * node, ExecutedResult * result) {
+>>>>>>> FETCH_HEAD
+    Loadtable_stmt *new_node = (Loadtable_stmt *)node;
 
-  string table_name(insert_stmt->tablename);
-  TableDescriptor *table =
-      Environment::getInstance()->getCatalog()->getTable(table_name);
-  if (table == NULL) {
-    //				ASTParserLogging::elog("The table %s does not
-    // exist!",
-    // table_name.c_str());
-    error_msg = "The table " + table_name + " does not exist!";
-    result_flag = false;
+    string table_name(new_node->table_name);
+    TableDescriptor *table = catalog->getTable(table_name);
+
+    // 2014-4-17---check the exist of table---by Yu
+    if (table == NULL) {
+<<<<<<< HEAD
+      error_msg = "the table " + table_name + " does not exist during loading!";
+      result_flag = false;
+      result_set = NULL;
+=======
+      //    error_msg = "the table " + table_name + " does not exist during
+      //    loading!";
+      //    result_flag = false;
+      //    result_set = NULL;
+      result->SetError("the table " + table_name +
+                       " does not exist during loading!");
+      return;
+    } else if (table->getNumberOfProjection() == 0) {
+      //    error_msg = "the table has not been created a projection!";
+      //    result_flag = false;
+      //    result_set = NULL;
+
+      result->SetError("the table has not been created a projection!");
+>>>>>>> FETCH_HEAD
+      return;
+    }
+    string column_separator(new_node->column_separator);
+    string tuple_separator(new_node->tuple_separator);
+<<<<<<< HEAD
+    //			printf("wef:%s\n",new_node->tuple_separator);
+=======
+    //  printf("wef:%s\n", new_node->tuple_separator);
+>>>>>>> FETCH_HEAD
+    Expr_list *path_node = (Expr_list *)new_node->path;
+
+    ASTParserLogging::log("load file\'s name:");
+    vector<string> path_names;  // save the name of files which should be loaded
+    // for test: the path name is:	/home/imdb/data/tpc-h/part.tbl
+    while (path_node) {
+      Expr *data = (Expr *)path_node->data;
+      ASTParserLogging::log("%s", data->data);
+      path_names.push_back(string(data->data));
+      path_node = (Expr_list *)path_node->next;
+    }
+
+<<<<<<< HEAD
+    // split sign should be considered carefully, in case of it may be "||" or
+    // "###"
+    ASTParserLogging::log(
+        "The separator are :%c,%c, The sample is %lf, mode is %d\n",
+        column_separator[0], tuple_separator[0], new_node->sample,
+        new_node->mode);
+    HdfsLoader *loader =
+        new HdfsLoader(column_separator[0], tuple_separator[0], path_names,
+                       table, (open_flag)new_node->mode);
+    loader->load(new_node->sample);
+
+    result_flag = true;
     result_set = NULL;
-    return;
-  }
-
-  unsigned col_count = 0;
-  Columns *col = (Columns *)insert_stmt->col_list;
-  if (col == NULL) {  // insert all columns
-    is_all_col = true;
-  } else {  // get insert column count
-    ++col_count;
-    while (col = (Columns *)col->next) ++col_count;
-  }
-
-  Insert_val_list *insert_value_list =
-      (Insert_val_list *)insert_stmt->insert_val_list;
-  if (insert_value_list == NULL) {
-    //				ASTParserLogging::elog("No value!");
-    error_msg = "No value!";
-    result_flag = false;
+    info = "load data successfully";
     result_set = NULL;
-    return;
+
+    catalog->saveCatalog();
+//	catalog->restoreCatalog();// commented by li to solve the dirty read
+// after insert
+=======
+    ASTParserLogging::log(
+        "The separator are :%s,%s, The sample is %lf, mode is %d\n",
+        column_separator.c_str(), tuple_separator.c_str(), new_node->sample,
+        new_node->mode);
+
+    GETCURRENTTIME(start_time);
+#ifdef NEW_LOADER
+    DataInjector *injector =
+        new DataInjector(table, column_separator, tuple_separator);
+    int ret = injector->LoadFromFile(path_names,
+                                     static_cast<FileOpenFlag>(new_node->mode),
+                                     result, new_node->sample);
+    LOG(INFO) << " load time: " << GetElapsedTime(start_time) / 1000.0 << endl;
+    if (ret != rSuccess) {
+      LOG(ERROR) << "failed to load files: ";
+      for (auto it : path_names) {
+        LOG(ERROR) << it << " ";
+      }
+      LOG(ERROR) << " into table " << table->getTableName() << endl;
+
+      if (result->error_info_ == "") result->SetError("failed to load data");
+    } else {
+      //    result_flag = true;
+      //    info = "load data successfully";
+      //    result_set = NULL;
+      result->SetResult("load data successfully", NULL);
+    }
+    DELETE_PTR(injector);
+#else
+    Hdfsloader *loader =
+        new Hdfsloader(column_separator[0], tuple_separator[0], path_names,
+                       table, (FileOpenFlag)new_node->mode);
+    loader->load(new_node->sample);
+
+    result->SetResult("load data successfully", NULL);
+#endif
+
+    GETCURRENTTIME(start_save_catalog_time);
+    catalog->saveCatalog();
+    LOG(INFO) << "save catalog time: "
+              << GetElapsedTime(start_save_catalog_time) / 1000.0 << std::endl;
+    double elapsed_time = GetElapsedTime(start_time);
+    cout << "execute " << elapsed_time / 1000 << " s" << endl;
+    LOG(INFO) << "execute " << elapsed_time / 1000 << " s" << endl;
+>>>>>>> FETCH_HEAD
   }
+  /*
 
-  ostringstream ostr;
-  int changed_row_num = 0;
-  while (insert_value_list)  // 循环获得 （……），（……），（……）中的每一个（……）
-  {
-    // make sure: the insert column count = insert value count = used column
-    // count = used value count
+  void LoadData(Catalog *catalog, Node *node) {
+          Loadtable_stmt *new_node = (Loadtable_stmt*)node;
 
-    // init
-    Insert_vals *insert_value = (Insert_vals *)insert_value_list->insert_vals;
-    col = (Columns *)insert_stmt->col_list;
+          string table_name(new_node->table_name);
+          TableDescriptor *table = catalog->getTable(table_name);
 
-    if (is_all_col)  // insert all columns
-    {
-      // by scdong: Claims adds a default row_id attribute for all tables which
-      // is attribute(0), when inserting tuples we should begin to construct the
-      // string_tuple from the second attribute.
-      for (unsigned int position = 1; position < table->getNumberOfAttribute();
-           position++) {
-        // check value count
-        if (insert_value == NULL) {
-          //							ASTParserLogging::elog("Value
-          // count
-          // is
-          // too few");
+          // 2014-4-17---check the exist of table---by Yu
+          if(table == NULL)
+          {
+                  ASTParserLogging::elog("the table %s does not exist!",
+  table_name.c_str());
+                  return;
+          }
+          string column_separator(new_node->column_separator);
+          string tuple_separator(new_node->tuple_separator);
+          //
+  printf("wef:%s\n",new_node->tuple_separator);
+          Expr_list *path_node = (Expr_list*)new_node->path;
+
+          ASTParserLogging::log("load file\'s name:");
+          vector<string> path_names;	// save the name of files which should
+  be loaded
+          //for test: the path name is:	/home/claims/data/tpc-h/part.tbl
+          while(path_node)
+          {
+                  Expr *data = (Expr*)path_node->data;
+                  ASTParserLogging::log("%s",data->data);
+                  path_names.push_back(string(data->data));
+                  path_node = (Expr_list*)path_node->next;
+          }
+
+          // split sign should be considered carefully, in case of it may be
+  "||"
+  or "###"
+          ASTParserLogging::log("The separator are :%c,%c", column_separator[0],
+  tuple_separator[0]);
+  <<<<<<< HEAD
+          HdfsLoader *loader = new HdfsLoader(column_separator[0],
+  =======
+          Hdfsloader *loader = new Hdfsloader(column_separator[0],
+  >>>>>>> FETCH_HEAD
+  tuple_separator[0], path_names, table);
+          loader->load();
+          catalog->saveCatalog();
+  }
+  */
+
+<<<<<<< HEAD
+  void InsertData(Catalog * catalog, Node * node, ResultSet * &result_set,
+                  bool &result_flag, string &error_msg, string &info) {
+    bool has_warning = false;
+    bool is_correct = true;
+    bool is_all_col = false;
+=======
+  void InsertData(Catalog * catalog, Node * node, ExecutedResult * result) {
+    bool has_warning = false;
+    bool is_correct = true;
+    bool is_all_col = false;
+    int ret = rSuccess;
+>>>>>>> FETCH_HEAD
+    Insert_stmt *insert_stmt = (Insert_stmt *)node;
+
+    string table_name(insert_stmt->tablename);
+    TableDescriptor *table =
+        Environment::getInstance()->getCatalog()->getTable(table_name);
+    if (table == NULL) {
+<<<<<<< HEAD
+      //				ASTParserLogging::elog("The table %s
+      //does not
+      // exist!",
+      // table_name.c_str());
+      error_msg = "The table " + table_name + " does not exist!";
+      result_flag = false;
+      result_set = NULL;
+=======
+      ASTParserLogging::elog("The table %s does not exist!",
+                             table_name.c_str());
+      result->SetError("The table " + table_name + " does not exist!");
+>>>>>>> FETCH_HEAD
+      return;
+    }
+
+    unsigned col_count = 0;
+    Columns *col = (Columns *)insert_stmt->col_list;
+    if (col == NULL) {  // insert all columns
+      is_all_col = true;
+    } else {  // get insert column count
+      ++col_count;
+      while (col = (Columns *)col->next) ++col_count;
+    }
+
+    Insert_val_list *insert_value_list =
+        (Insert_val_list *)insert_stmt->insert_val_list;
+    if (insert_value_list == NULL) {
+<<<<<<< HEAD
+      //				ASTParserLogging::elog("No value!");
+      error_msg = "No value!";
+      result_flag = false;
+      result_set = NULL;
+=======
+      LOG(ERROR) << "No value!" << endl;
+      result->SetError("No value!");
+>>>>>>> FETCH_HEAD
+      return;
+    }
+
+    ostringstream ostr;
+    int changed_row_num = 0;
+    // 循环获得 （……），（……），（……）中的每一个（……）
+    while (insert_value_list) {
+      // make sure: the insert column count = insert value count = used column
+      // count = used value count
+
+      Insert_vals *insert_value = (Insert_vals *)insert_value_list->insert_vals;
+      col = (Columns *)insert_stmt->col_list;
+
+      if (is_all_col) {  // insert all columns
+        // by scdong: Claims adds a default row_id attribute for all tables
+        // which
+        // is attribute(0), when inserting tuples we should begin to construct
+        // the
+        // string_tuple from the second attribute.
+        for (unsigned int position = 1;
+             position < table->getNumberOfAttribute(); position++) {
+          // check value count
+          if (insert_value == NULL) {
+            LOG(ERROR) << "Value count is too few" << endl;
+            is_correct = false;
+            result->SetError("Value count is too few");
+            break;
+          }
+          // insert value to ostringstream
+          if (rSuccess != (ret = InsertValueToStream(insert_value, table,
+                                                     position, ostr))) {
+            ELOG(ret, "failed to insert value to stream");
+            is_correct = false;
+            result->SetError("Not supported type to insert");
+            break;
+          }
+
+          // move back
+          insert_value = (Insert_vals *)insert_value->next;
+          ostr << "|";
+        }
+
+        if (!is_correct) break;
+
+        // check insert value count
+        if (insert_value) {
+          LOG(ERROR) << "Value count is too many " << endl;
+          result->SetError("Value count is too many");
           is_correct = false;
-          error_msg = "Value count is too few";
-          result_flag = false;
-          result_set = NULL;
           break;
         }
+      } else {  // insert part of columns
+        // get insert value count and check whether it match column count
+        unsigned insert_value_count = 0;
+        while (insert_value) {
+          ++insert_value_count;
+          insert_value = (Insert_vals *)insert_value->next;
+        }
+        if (insert_value_count != col_count) {
+          LOG(ERROR) << "Column count doesn't match value count" << endl;
+          result->SetError("Column count doesn't match value count");
+          is_correct = false;
+          break;
+        }
+        unsigned int used_col_count = 0;
 
-        // insert value to ostringstream and if has warning return 1;	look
-        // out the order!
-        has_warning =
-            InsertValueToStream(insert_value, table, position, ostr) ||
-            has_warning;
+        // by scdong: Claims adds a default row_id attribute for all tables
+        // which
+        // is attribute(0), when inserting tuples we should begin to construct
+        // the
+        // string_tuple from the second attribute.
+        for (unsigned int position = 1;
+             position < table->getNumberOfAttribute(); position++) {
+          // find the matched column and value by name
+          col = (Columns *)insert_stmt->col_list;
+          Insert_vals *insert_value =
+              (Insert_vals *)insert_value_list->insert_vals;
 
-        // move back
-        insert_value = (Insert_vals *)insert_value->next;
-        ostr << "|";
-      }
+          // take attention that attrName is tablename.colname
+          while (col &&
+                 (table->getAttribute(position).attrName)
+                     .compare(table->getTableName() + "." + col->parameter1)) {
+            col = (Columns *)col->next;
+            insert_value = (Insert_vals *)insert_value->next;
+          }
+
+          // if find the column count is proved to match the insert value count,
+          // so column exist, then insert_value exist
+          if (col && insert_value) {
+            ++used_col_count;
+            // insert value to ostringstream
+            if (rSuccess != (ret = InsertValueToStream(insert_value, table,
+                                                       position, ostr))) {
+              ELOG(ret, "failed to insert value to stream");
+              is_correct = false;
+              result->SetError("Not supported type to insert");
+              break;
+            }
+          }
+          ostr << "|";
+        }  // end for
+
+        // check if every insert column is existed
+        if (used_col_count != col_count) {
+          result->SetError("Some columns don't exist");
+          is_correct = false;
+          break;
+        }
+      }  // end else
 
       if (!is_correct) break;
 
-      // check insert value count
-      if (insert_value) {
-        //						ASTParserLogging::elog("Value
-        // count is too many");
-        error_msg = "Value count is too many";
-        result_flag = false;
-        result_set = NULL;
-        is_correct = false;
-        break;
-      }
-    } else  // insert part of columns
-    {
-      // get insert value count and check whether it match column count
-      unsigned insert_value_count = 0;
-      while (insert_value) {
-        ++insert_value_count;
-        insert_value = (Insert_vals *)insert_value->next;
-      }
-      if (insert_value_count != col_count) {
-        //						ASTParserLogging::elog("Column
-        // count doesn't match value count");
-        error_msg = "Column count doesn't match value count";
-        result_flag = false;
-        result_set = NULL;
-        is_correct = false;
-        break;
-      }
-      unsigned int used_col_count = 0;
+      insert_value_list = (Insert_val_list *)insert_value_list->next;
+      if (insert_value_list != NULL) ostr << "\n";
 
-      // by scdong: Claims adds a default row_id attribute for all tables which
-      // is attribute(0), when inserting tuples we should begin to construct the
-      // string_tuple from the second attribute.
-      for (unsigned int position = 1; position < table->getNumberOfAttribute();
-           position++) {
-        // find the matched column and value by name
-        col = (Columns *)insert_stmt->col_list;
-        Insert_vals *insert_value =
-            (Insert_vals *)insert_value_list->insert_vals;
+      ++changed_row_num;
+    }  // end while
 
-        // take attention that attrName is tablename.colname
-        while (col &&
-               (table->getAttribute(position).attrName)
-                   .compare(table->getTableName() + "." + col->parameter1)) {
-          col = (Columns *)col->next;
-          insert_value = (Insert_vals *)insert_value->next;
-        }
+    if (!is_correct) return;
+<<<<<<< HEAD
+    if (has_warning)
+      ASTParserLogging::log("[WARNING]: The type is not matched!\n");
+    ASTParserLogging::log("the insert content is \n%s\n", ostr.str().c_str());
 
-        // if find
-        // the column count is proved to match the insert value count, so column
-        // exist, then insert_value exist
-        if (col && insert_value) {
-          ++used_col_count;
+    HdfsLoader *Hl = new HdfsLoader(table);
+    string tmp = ostr.str();
+    Hl->append(ostr.str());
 
-          // insert value to ostringstream and if has warning return 1; look out
-          // the order!
-          has_warning =
-              InsertValueToStream(insert_value, table, position, ostr) ||
-              has_warning;
-        }
+    catalog->saveCatalog();
+    //			catalog->restoreCatalog(); // commented by li to solve
+    // the
+    // dirty
+    // read after insert
 
-        ostr << "|";
-      }  // end for
+    result_flag = true;
+    ostr.clear();
+    ostr.str("");
+    ostr << "insert data successfully. " << changed_row_num << " rows changed.";
+    info = ostr.str();
+    result_set = NULL;
+  }
+  /*
 
-      // check if every insert column is existed
-      if (used_col_count != col_count) {
-        //						ASTParserLogging::elog("Some
-        // columns don't exist");
-        error_msg = "Some columns don't exist";
-        result_flag = false;
-        result_set = NULL;
-        is_correct = false;
-        break;
-      }
-    }  // end else
+  void InsertData(Catalog *catalog, Node *node) {
 
-    if (!is_correct) break;
+          bool has_warning = false;
+          bool is_all_col = false;
+          Insert_stmt *insert_stmt = (Insert_stmt *)node;
 
-    insert_value_list = (Insert_val_list *)insert_value_list->next;
-    if (insert_value_list != NULL) ostr << "\n";
+          string table_name(insert_stmt->tablename);
+          TableDescriptor *table =
+  Environment::getInstance()->getCatalog()->getTable(table_name);
+          if(table == NULL)
+          {
+                  ASTParserLogging::elog("The table %s does not exist!",
+  table_name.c_str());
+                  return;
+          }
 
-    ++changed_row_num;
-  }  // end while
+          unsigned col_count = 0;
+          Columns *col = (Columns *)insert_stmt->col_list;
+          if (col == NULL) {	// insert all columns
+                  is_all_col = true;
+          }
+          else {	// get insert column count
+                  ++col_count;
+                  while(col = (Columns *)col->next) ++col_count;
+          }
 
-  if (!is_correct) return;
-  if (has_warning)
-    ASTParserLogging::log("[WARNING]: The type is not matched!\n");
-  ASTParserLogging::log("the insert content is \n%s\n", ostr.str().c_str());
+          Insert_val_list *insert_value_list =
+  (Insert_val_list*)insert_stmt->insert_val_list;
+          if (insert_value_list == NULL) {
+                  ASTParserLogging::elog("No value!");
+                  return;
+          }
 
-  HdfsLoader *Hl = new HdfsLoader(table);
-  string tmp = ostr.str();
-  Hl->append(ostr.str());
+          ostringstream ostr;
+          while(insert_value_list)	// 循环获得
+  （……），（……），（……）中的每一个（……）
+          {
+                  // make sure: the insert column count = insert value count =
+  used column count = used value count
 
-  catalog->saveCatalog();
-  //			catalog->restoreCatalog(); // commented by li to solve
-  // the
-  // dirty
-  // read after insert
+                  // init
+                  Insert_vals *insert_value = (Insert_vals
+  *)insert_value_list->insert_vals;
+                  col = (Columns *)insert_stmt->col_list;
 
-  result_flag = true;
-  ostr.clear();
-  ostr.str("");
-  ostr << "insert data successfully. " << changed_row_num << " rows changed.";
+                  if (is_all_col)	// insert all columns
+                  {
+                          // by scdong: Claims adds a default row_id attribute
+  for
+  all tables which is attribute(0), when inserting tuples we should begin to
+  construct the string_tuple from the second attribute.
+                          for(unsigned int position = 1; position <
+  table->getNumberOfAttribute(); position++)
+                          {
+                                  // check value count
+                                  if (insert_value == NULL)
+                                  {
+                                          ASTParserLogging::elog("Value count is
+  too few");
+                                          return;
+                                  }
+
+                                  // insert value to ostringstream and if has
+  warning return 1;	look out the order!
+                                  has_warning =
+  InsertValueToStream(insert_value,
+  table, position, ostr) || has_warning;
+
+                                  // move back
+                                  insert_value =
+  (Insert_vals*)insert_value->next;
+                                  ostr<<"|";
+                          }
+
+                          // check insert value count
+                          if (insert_value)
+                          {
+                                  ASTParserLogging::elog("Value count is too
+  many");
+                                  return;
+                          }
+                  }
+                  else	//insert part of columns
+                  {	//TODO:必须确认 不能为空的列有数据插入
+                          // get insert value count and check whether it match
+  column count
+                          unsigned insert_value_count = 0;
+                          while (insert_value)
+                          {
+                                  ++insert_value_count;
+                                  insert_value =
+  (Insert_vals*)insert_value->next;
+                          }
+                          if (insert_value_count != col_count)
+                          {
+                                  ASTParserLogging::elog("Column count doesn't
+  match value count");
+                                  return;
+                          }
+
+                          unsigned int used_col_count = 0;
+
+                          // by scdong: Claims adds a default row_id attribute
+  for
+  all tables which is attribute(0), when inserting tuples we should begin to
+  construct the string_tuple from the second attribute.
+                          for(unsigned int position = 1; position <
+  table->getNumberOfAttribute(); position++)
+                          {
+                                  // find the matched column and value by name
+                                  col = (Columns*)insert_stmt->col_list;
+                                  Insert_vals *insert_value = (Insert_vals
+  *)insert_value_list->insert_vals;
+
+                                  // take attention that attrName is
+  tablename.colname
+                                  while (col &&
+  (table->getAttribute(position).attrName).compare(table->getTableName() +"."+
+  col->parameter1))
+                                  {
+                                          col = (Columns*)col->next;
+                                          insert_value =
+  (Insert_vals*)insert_value->next;
+                                  }
+
+                                  // if find
+                                  // the column count is proved to match the
+  insert value count, so column exist, then insert_value exist
+                                  if (col && insert_value)
+                                  {
+                                          ++used_col_count;
+                                          // insert value to ostringstream and
+  if
+  has warning return 1; look out the order!
+                                          has_warning =
+  InsertValueToStream(insert_value, table, position, ostr) || has_warning;
+                                  }
+
+                                  ostr<<"|";
+                          }//end for
+
+                          // check if every insert column is existed
+                          if (used_col_count != col_count)
+                          {
+                                  ASTParserLogging::elog("Some columns don't
+  exist");
+                                  return;
+                          }
+                  }//end else
+
+                  insert_value_list = (Insert_val_list*)insert_value_list->next;
+                  if(insert_value_list != NULL)
+                          ostr<<"\n";
+          }// end while
+
+          if (has_warning)
+                  ASTParserLogging::log("[WARNING]: The type is not
+  matched!\n");
+          ASTParserLogging::log("the insert content is
+  \n%s\n",ostr.str().c_str());
+
+          HdfsLoader* Hl = new HdfsLoader(table);
+          string tmp = ostr.str().c_str();
+          Hl->append(ostr.str().c_str());
+
+          catalog->saveCatalog();
+  =======
+    ASTParserLogging::log("the insert content is \n%s\n", ostr.str().c_str());
+
+  #ifdef NEW_LOADER
+    DataInjector *injector = new DataInjector(table);
+
+    // str() will copy string buffer without the last '\n'
+    ret = injector->InsertFromString(ostr.str() + "\n", result);
+    if (rSuccess == ret) {
+      ostr.clear();
+      ostr.str("");
+      ostr << "insert data successfully. " << changed_row_num << " rows
+  changed.";
+      result->SetResult(ostr.str(), NULL);
+    } else {
+      LOG(ERROR) << "failed to insert tuples into table:" <<
+  table->getTableName()
+                 << endl;
+
+      result->SetError("failed to insert tuples into table ");
+    }
+    DELETE_PTR(injector);
+  #else
+    Hdfsloader *Hl = new Hdfsloader(table);
+    Hl->append(ostr.str());
+    delete Hl;
+  #endif
+
+    catalog->saveCatalog();
+  >>>>>>> FETCH_HEAD
+  }
+
+  <<<<<<< HEAD
+  void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set,
+                 bool &result_flag, string &error_msg, string &info) {
+  =======
+  void ShowTable(Catalog *catalog, Node *node, ExecutedResult *result) {
+  >>>>>>> FETCH_HEAD
+    Show_stmt *show_stmt = (Show_stmt *)node;
+    ostringstream ostr;
+    switch (show_stmt->show_type) {
+      case 1: {
+        ostr << "TABLES:" << endl;
+  <<<<<<< HEAD
+        /*
+           for (unsigned i = 0; i < catalog->getTableSize(); ++i) {
+             ostr<<catalog->getTable(i)->getTableName()<<endl;
+           }
+        */
+  catalog->getTables(ostr);
   info = ostr.str();
+  result_flag = true;
   result_set = NULL;
 }
-/*
-
-void InsertData(Catalog *catalog, Node *node) {
-
-        bool has_warning = false;
-        bool is_all_col = false;
-        Insert_stmt *insert_stmt = (Insert_stmt *)node;
-
-        string table_name(insert_stmt->tablename);
-        TableDescriptor *table =
-Environment::getInstance()->getCatalog()->getTable(table_name);
-        if(table == NULL)
-        {
-                ASTParserLogging::elog("The table %s does not exist!",
-table_name.c_str());
-                return;
-        }
-
-        unsigned col_count = 0;
-        Columns *col = (Columns *)insert_stmt->col_list;
-        if (col == NULL) {	// insert all columns
-                is_all_col = true;
-        }
-        else {	// get insert column count
-                ++col_count;
-                while(col = (Columns *)col->next) ++col_count;
-        }
-
-        Insert_val_list *insert_value_list =
-(Insert_val_list*)insert_stmt->insert_val_list;
-        if (insert_value_list == NULL) {
-                ASTParserLogging::elog("No value!");
-                return;
-        }
-
-        ostringstream ostr;
-        while(insert_value_list)	// 循环获得
-（……），（……），（……）中的每一个（……）
-        {
-                // make sure: the insert column count = insert value count =
-used column count = used value count
-
-                // init
-                Insert_vals *insert_value = (Insert_vals
-*)insert_value_list->insert_vals;
-                col = (Columns *)insert_stmt->col_list;
-
-                if (is_all_col)	// insert all columns
-                {
-                        // by scdong: Claims adds a default row_id attribute for
-all tables which is attribute(0), when inserting tuples we should begin to
-construct the string_tuple from the second attribute.
-                        for(unsigned int position = 1; position <
-table->getNumberOfAttribute(); position++)
-                        {
-                                // check value count
-                                if (insert_value == NULL)
-                                {
-                                        ASTParserLogging::elog("Value count is
-too few");
-                                        return;
-                                }
-
-                                // insert value to ostringstream and if has
-warning return 1;	look out the order!
-                                has_warning = InsertValueToStream(insert_value,
-table, position, ostr) || has_warning;
-
-                                // move back
-                                insert_value = (Insert_vals*)insert_value->next;
-                                ostr<<"|";
-                        }
-
-                        // check insert value count
-                        if (insert_value)
-                        {
-                                ASTParserLogging::elog("Value count is too
-many");
-                                return;
-                        }
-                }
-                else	//insert part of columns
-                {	//TODO:必须确认 不能为空的列有数据插入
-                        // get insert value count and check whether it match
-column count
-                        unsigned insert_value_count = 0;
-                        while (insert_value)
-                        {
-                                ++insert_value_count;
-                                insert_value = (Insert_vals*)insert_value->next;
-                        }
-                        if (insert_value_count != col_count)
-                        {
-                                ASTParserLogging::elog("Column count doesn't
-match value count");
-                                return;
-                        }
-
-                        unsigned int used_col_count = 0;
-
-                        // by scdong: Claims adds a default row_id attribute for
-all tables which is attribute(0), when inserting tuples we should begin to
-construct the string_tuple from the second attribute.
-                        for(unsigned int position = 1; position <
-table->getNumberOfAttribute(); position++)
-                        {
-                                // find the matched column and value by name
-                                col = (Columns*)insert_stmt->col_list;
-                                Insert_vals *insert_value = (Insert_vals
-*)insert_value_list->insert_vals;
-
-                                // take attention that attrName is
-tablename.colname
-                                while (col &&
-(table->getAttribute(position).attrName).compare(table->getTableName() +"."+
-col->parameter1))
-                                {
-                                        col = (Columns*)col->next;
-                                        insert_value =
-(Insert_vals*)insert_value->next;
-                                }
-
-                                // if find
-                                // the column count is proved to match the
-insert value count, so column exist, then insert_value exist
-                                if (col && insert_value)
-                                {
-                                        ++used_col_count;
-                                        // insert value to ostringstream and if
-has warning return 1; look out the order!
-                                        has_warning =
-InsertValueToStream(insert_value, table, position, ostr) || has_warning;
-                                }
-
-                                ostr<<"|";
-                        }//end for
-
-                        // check if every insert column is existed
-                        if (used_col_count != col_count)
-                        {
-                                ASTParserLogging::elog("Some columns don't
-exist");
-                                return;
-                        }
-                }//end else
-
-                insert_value_list = (Insert_val_list*)insert_value_list->next;
-                if(insert_value_list != NULL)
-                        ostr<<"\n";
-        }// end while
-
-        if (has_warning)
-                ASTParserLogging::log("[WARNING]: The type is not matched!\n");
-        ASTParserLogging::log("the insert content is
-\n%s\n",ostr.str().c_str());
-
-        HdfsLoader* Hl = new HdfsLoader(table);
-        string tmp = ostr.str().c_str();
-        Hl->append(ostr.str().c_str());
-
-        catalog->saveCatalog();
-}
-*/
-
-void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set,
-               bool &result_flag, string &error_msg, string &info) {
-  Show_stmt *show_stmt = (Show_stmt *)node;
-  ostringstream ostr;
-  switch (show_stmt->show_type) {
-    case 1: {
-      ostr << "TABLES:" << endl;
-      /*
-         for (unsigned i = 0; i < catalog->getTableSize(); ++i) {
-           ostr<<catalog->getTable(i)->getTableName()<<endl;
-         }
-      */
-      catalog->getTables(ostr);
-      info = ostr.str();
-      result_flag = true;
-      result_set = NULL;
-    } break;
-    default: {
-      ASTParserLogging::elog("Sorry, not supported now!");
-      error_msg = "not supported now!";
-      result_flag = false;
-      result_set = NULL;
+break;
+default: {
+  ASTParserLogging::elog("Sorry, not supported now!");
+  error_msg = "not supported now!";
+  result_flag = false;
+  result_set = NULL;
+=======
+    for (unsigned i = 0; i < catalog->getTableCount(); ++i) {
+      ostr << catalog->getTable(i)->getTableName() << endl;
     }
+    //      info = ostr.str();
+    //      result_flag = true;
+    //      result_set = NULL;
+    result->SetResult(ostr.str(), NULL);
   }
+  break;
+  default: {
+    ASTParserLogging::elog("Sorry, not supported now!");
+    //      error_msg = "not supported now!";
+    //      result_flag = false;
+    //      result_set = NULL;
+    result->SetError("not supported now!");
+>>>>>>> FETCH_HEAD
 }
-/*
+  }
+  }
+  /*
 
-void ShowTable(Catalog *catalog, Node *node) {
-        Show_stmt *show_stmt = (Show_stmt *)node;
-        switch(show_stmt->show_type)
-        {
-        case 1:
-        {
-                cout<<"Tables:"<<endl;
-                for (unsigned i = 0; i < catalog->getTableCount(); ++i) {
-                        cout<<catalog->getTable(i)->getTableName()<<endl;
-                }
-        }
+  void ShowTable(Catalog *catalog, Node *node) {
+          Show_stmt *show_stmt = (Show_stmt *)node;
+          switch(show_stmt->show_type)
+          {
+          case 1:
+          {
+                  cout<<"Tables:"<<endl;
+                  for (unsigned i = 0; i < catalog->getTableCount(); ++i) {
+                          cout<<catalog->getTable(i)->getTableName()<<endl;
+                  }
+          }
+          break;
+          default:{
+                  ASTParserLogging::elog("Sorry, not supported now!");
+          }
+          }
+  }
+  */
+
+<<<<<<< HEAD
+  void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set,
+                 bool &result_flag, string &error_msg, string &info) {
+=======
+void DropTable(Catalog *catalog, Node *node, ExecutedResult *result) {
+>>>>>>> FETCH_HEAD
+    assert(node != NULL);
+    Droptable_stmt *drop_stmt = (Droptable_stmt *)node;
+    Tablelist *table_list = (Tablelist *)(drop_stmt->table_list);
+    // TODO
+<<<<<<< HEAD
+    while (NULL != table_list) {
+      string tablename;
+      if (NULL != table_list->name2) {
+        tablename = table_list->name2;
+      } else if (NULL != table_list->name1) {
+        tablename = table_list->name1;
+      } else {
+        error_msg = "No table name during creating table!";
+        result_flag = false;
+        result_set = NULL;
         break;
-        default:{
-                ASTParserLogging::elog("Sorry, not supported now!");
-        }
-        }
-}
-*/
-
-void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set,
-               bool &result_flag, string &error_msg, string &info) {
-  assert(node != NULL);
-  Droptable_stmt *drop_stmt = (Droptable_stmt *)node;
-  Tablelist *table_list = (Tablelist *)(drop_stmt->table_list);
-  // TODO
-  while (NULL != table_list) {
-    string tablename;
-    if (NULL != table_list->name2) {
-      tablename = table_list->name2;
-    } else if (NULL != table_list->name1) {
-      tablename = table_list->name1;
-    } else {
-      error_msg = "No table name during creating table!";
-      result_flag = false;
-      result_set = NULL;
-      break;
-    }
+      }
 
 #if 0    
         cout << "===========================" << endl;
@@ -1947,52 +2330,54 @@ void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set,
         cout << "tablename : " <<tablename << endl;
 #endif
 
-    TableDescriptor *table_desc =
-        Environment::getInstance()->getCatalog()->getTable(tablename);
-    if (NULL == table_desc) {
-      info = "table [" + tablename + "] is not exist!";
-      error_msg = "";
-      result_flag = true;
-      result_set = NULL;
-    } else {
-      if (Environment::getInstance()->getCatalog()->drop_table(
-              tablename, table_desc->get_table_id())) {
-        HdfsLoader *Hl = new HdfsLoader(table_desc, (open_flag)(DELETE_FILE));
-        Hl->DeleteDataFilesForDropTable();
-
-        delete table_desc;
-        cout << tablename + " is dropped from this database!" << endl;
-        info = "drop table successfully!";
-#if 1
-        // drop table_DEL couple with table.
-        {
-          TableDescriptor *table_desc_DEL =
-              Environment::getInstance()->getCatalog()->getTable(tablename +
-                                                                 "_DEL");
-          Environment::getInstance()->getCatalog()->drop_table(
-              tablename + "_DEL", table_desc_DEL->get_table_id());
-          HdfsLoader *Hl =
-              new HdfsLoader(table_desc_DEL, (open_flag)(DELETE_FILE));
+      TableDescriptor *table_desc =
+          Environment::getInstance()->getCatalog()->getTable(tablename);
+      if (NULL == table_desc) {
+        info = "table [" + tablename + "] is not exist!";
+        error_msg = "";
+        result_flag = true;
+        result_set = NULL;
+      } else {
+        if (Environment::getInstance()->getCatalog()->drop_table(
+                tablename, table_desc->get_table_id())) {
+          HdfsLoader *Hl = new HdfsLoader(table_desc, (open_flag)(DELETE_FILE));
           Hl->DeleteDataFilesForDropTable();
 
-          delete table_desc_DEL;
-          cout << tablename + "_DEL" + " is dropped from this database!"
-               << endl;
-        }
+          delete table_desc;
+          cout << tablename + " is dropped from this database!" << endl;
+          info = "drop table successfully!";
+#if 1
+          // drop table_DEL couple with table.
+          {
+            TableDescriptor *table_desc_DEL =
+                Environment::getInstance()->getCatalog()->getTable(tablename +
+                                                                   "_DEL");
+            Environment::getInstance()->getCatalog()->drop_table(
+                tablename + "_DEL", table_desc_DEL->get_table_id());
+            HdfsLoader *Hl =
+                new HdfsLoader(table_desc_DEL, (open_flag)(DELETE_FILE));
+            Hl->DeleteDataFilesForDropTable();
+
+            delete table_desc_DEL;
+            cout << tablename + "_DEL" + " is dropped from this database!"
+                 << endl;
+          }
 #endif
-      } else {
-        cout << "drop table [" + tablename + "] failed" << endl;
-        info = "drop table [" + tablename + "] failed.";
+        } else {
+          cout << "drop table [" + tablename + "] failed" << endl;
+          info = "drop table [" + tablename + "] failed.";
+        }
       }
+
+      table_list = (Tablelist *)table_list->next;
     }
 
-    table_list = (Tablelist *)table_list->next;
+    catalog->saveCatalog();
+
+    result_flag = true;
+    result_set = NULL;
+=======
+>>>>>>> FETCH_HEAD
   }
-
-  catalog->saveCatalog();
-
-  result_flag = true;
-  result_set = NULL;
-}
 
 #endif

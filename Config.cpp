@@ -111,7 +111,7 @@ void Config::initialize() {
    * each parameter.
    */
 
-  data_dir = getString("data", "/home/claims/data/");
+  data_dir = getString("data", "/home/imdb/data/");
 
   max_degree_of_parallelism = getInt("max_degree_of_parallelism", 4);
 
@@ -124,7 +124,7 @@ void Config::initialize() {
 
   scan_batch = getInt("scan_batch", 10);
 
-  hdfs_master_ip = getString("hdfs_master_ip", "10.11.1.190");
+  hdfs_master_ip = getString("hdfs_master_ip", "10.11.1.192");
 
   hdfs_master_port = getInt("hdfs_master_port", 9000);
 
@@ -138,7 +138,7 @@ void Config::initialize() {
 
   client_listener_port = getInt("client_listener_port", 10001);
 
-  catalog_file = getString("catalog_file", "catalogData.dat");
+  catalog_file = getString("catalog_file", data_dir + "CATALOG");
 
   enable_codegen = getBoolean("enable_codegen", true);
 

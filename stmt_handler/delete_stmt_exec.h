@@ -51,9 +51,9 @@ class DeleteStmtExec : public StmtExec {
   /**
    * @brief the concrete operation of delete statement.
    */
-  RetCode Execute(executed_result *exec_result);
+  RetCode Execute(ExecutedResult *exec_result);
   void InsertDeletedDataIntoTableDEL(string del_table_name,
-                                     ResultSet *result_set);
+                                     ExecutedResult *exec_result);
 
  private:
   AstDeleteStmt *delete_stmt_ast_;

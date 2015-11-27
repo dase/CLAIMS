@@ -28,21 +28,20 @@
 
 #include <string.h>
 #include <iostream>
+#include <string>
 #include "./error_no.h"
-
+#include "./error_define.h"
 namespace claims {
 namespace common {
 
-const char* CStrError(int errorno) {
+static const char* CStrError(int errorno) {
 #define likely(x) __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
   const char* res = "Unknown Error";
-  if (likely(errorno <= 0 && errorno > -kErrorMaxNumber)) {
+  if (likely(errorno <= 0 && errorno > -kErrorMaxNumber &&
+             NULL != kErrorMessage[-errorno])) {
     res = kErrorMessage[-errorno];
-    if (unlikely(NULL == res)) {
-      res = "Unknown Error";
-    }
   }
   return res;
 }
@@ -54,7 +53,8 @@ ErrorInit::ErrorInit() {
   /* errorno for common  -1 ~ -1000 */
   DefineErrorAndMessage(rTypeError, "Type error");
   DefineErrorAndMessage(rNotInit, "Not initialize");
-  DefineErrorAndMessage(rTypeError, "Type Error");
+
+  DefineErrorAndMessage(rTypeError, "Type error");
   DefineErrorAndMessage(rNotInit, "Not initialize");
   DefineErrorAndMessage(rInvalidArgument, "Invalid argument");
   DefineErrorAndMessage(rArrayOutOfRange, "Array index out of range");
@@ -139,6 +139,25 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rBadAddress, "Bad address ");
   DefineErrorAndMessage(rDuplicateColumn, "Duplicated column");
 
+  DefineErrorAndMessage(rReadHdfsFileFail, "Read data from hdfs failed");
+  DefineErrorAndMessage(rOpenHdfsFileFail, "Open hdfs file failed");
+  DefineErrorAndMessage(rReadDiskFileFail, "Read data from disk failed");
+  DefineErrorAndMessage(rOpenDiskFileFail, "Open disk file failed");
+  DefineErrorAndMessage(rWriteDiskFileFail,
+                        "failed to write data into disk file");
+  DefineErrorAndMessage(rWriteHdfsFileFail,
+                        "failed to write data into hdfs file");
+  DefineErrorAndMessage(rLSeekDiskFileFail, "lseek a disk file failed");
+  DefineErrorAndMessage(rLSeekHdfsFileFail, "failed to seek hdfs file");
+  DefineErrorAndMessage(rParamInvalid, "parameter of function is invalid");
+  DefineErrorAndMessage(rCloseDiskFileFail, "failed to close disk file");
+  DefineErrorAndMessage(rCloseHdfsFileFail, "failed to close hdfs file");
+  DefineErrorAndMessage(rFileEOF, "reached the end of file");
+  DefineErrorAndMessage(rAccessDiskFileFail, "failed to access disk file");
+  DefineErrorAndMessage(rAccessHdfsFileFail, "failed to access hdfs file");
+
+  DefineErrorAndMessage(rNoMemory, "failed to allocate memory from system");
+
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(rNoTableFound, "No such table found");
   DefineErrorAndMessage(rInitSQLParserErr, "Failed to init SQL parser");
@@ -173,6 +192,18 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rErrParamSize, "Wrong number of parameters");
   DefineErrorAndMessage(rDuplicatedParam, "Duplicated parameters");
 
+  /* errorno for loader -2001 ~ -3000  */
+  DefineErrorAndMessage(rUnbindEntireProjectionFail,
+                        "failed to unbind entire projection");
+  DefineErrorAndMessage(rTooLargeData, "Load Too Large Data");
+  DefineErrorAndMessage(rTooSmallData, "Load Too Small Data");
+  DefineErrorAndMessage(rTooLongData, "Load Too Long Data");
+  DefineErrorAndMessage(rInterruptedData, "The Load data is interrupted");
+  DefineErrorAndMessage(rIncorrectData, "The Load data format is incorrect");
+  DefineErrorAndMessage(rInvalidNullData, "The null value is invalid");
+  DefineErrorAndMessage(rTooFewColumn, "too few column data");
+  DefineErrorAndMessage(rTooManyColumn, "too many column data");
+
   /* errorno for codegen -3001 ~ -4000 */
   DefineErrorAndMessage(rTestError, "test it is error ");
 
@@ -189,6 +220,10 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rNoPartitionIdScan,
                         "The partition id does not existed.");
   DefineErrorAndMessage(rCodegenFailed, "codegen failed.");
+
+  DefineErrorAndMessage(rCatalogRestoreInvild, "restore catalog failed");
+  DefineErrorAndMessage(rCatalogNotFound, "catalog file is not existed");
+  DefineErrorAndMessage(rNoProjection, "No Projection on this table.");
 
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }

@@ -34,7 +34,7 @@
 #include <vector>
 
 #include "../common/expression/expr_node.h"
-#include "../Catalog/Attribute.h"
+#include "../catalog/attribute.h"
 #include "../logical_operator/logical_operator.h"
 #include "../physical_operator/physical_aggregation.h"
 #include "../physical_operator/physical_operator_base.h"

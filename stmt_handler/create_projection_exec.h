@@ -47,9 +47,9 @@ class CreateProjectionExec : public StmtExec {
 
   /**
    * @brief the concrete operation of create projection statement.
-   * @param executed_result *exec_result
+   * @param ExecutedResult *exec_result
    */
-  RetCode Execute(executed_result* exec_result);
+  RetCode Execute(ExecutedResult* exec_result);
 
  private:
   AstCreateProjection* create_projection_ast_;

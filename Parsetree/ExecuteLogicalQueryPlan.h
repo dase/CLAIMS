@@ -9,12 +9,17 @@
 #define EXECUTELOGICALQUERYPLAN_H_
 #include <string>
 #include "./sql_node_struct.h"
+#include "../catalog/catalog.h"
 #include "../common/Block/ResultSet.h"
 #include "../common/data_type.h"
-#include "../Catalog/table.h"
+//#include "../catalog/table.h"
+#include "../common/error_define.h"
 #include "../logical_operator/logical_operator.h"
 
+using claims::catalog::Catalog;
+using claims::catalog::TableDescriptor;
 using claims::logical_operator::LogicalOperator;
+class Catalog;
 
 #define _DELETE_DATA_SUPPORT_
 
@@ -31,10 +36,6 @@ bool query(const string &sql, query_result &result_set);
 
 void ExecuteLogicalQueryPlan();
 
-void ExecuteLogicalQueryPlan(const string &sql, ResultSet *&result_set,
-                             bool &result_flag, string &error_msg, string &info,
-                             int fd = 0);
-
 #ifdef _DELETE_DATA_SUPPORT_
 void DeleteData(Catalog *catalog, Node *node, ResultSet *&result_set,
                 bool &result_flag, string &error_msg, string &info);
@@ -42,44 +43,38 @@ void DeleteData(Catalog *catalog, Node *node, ResultSet *&result_set,
 void InsertDeletedDataIntoTableDEL(string tablename, ResultSet *result_set);
 
 #endif
+void ExecuteLogicalQueryPlan(const string &sql, ExecutedResult *result);
 
-void CreateTable(Catalog *catalog, Node *node, ResultSet *&result_set,
-                 bool &result_flag, string &error_msg, string &info);
+void CreateTable(Catalog *catalog, Node *node, ExecutedResult *result);
 
 void CreateTable(Catalog *catalog, Node *node);
 
-void CreateProjection(Catalog *catalog, Node *node, ResultSet *&result_set,
-                      bool &result_flag, string &error_msg, string &info);
+void CreateProjection(Catalog *catalog, Node *node, ExecutedResult *result);
 
 void CreateProjection(Catalog *catalog, Node *node);
 
-void Query(Catalog *catalog, Node *node, ResultSet *&result_set,
-           bool &result_flag, string &error_msg, string &info,
+void Query(Catalog *catalog, Node *node, ExecutedResult *result,
            const bool local_mode  // true表示将结果输出到本机标准输出，非C/S模式
            );
 
 void Query(Catalog *catalog, Node *node);
 
-void LoadData(Catalog *catalog, Node *node, ResultSet *&result_set,
-              bool &result_flag, string &error_msg, string &info);
+void LoadData(Catalog *catalog, Node *node, ExecutedResult *result);
 
 void LoadData(Catalog *catalog, Node *node);
 
-void InsertData(Catalog *catalog, Node *node, ResultSet *&result_set,
-                bool &result_flag, string &error_msg, string &info);
+void InsertData(Catalog *catalog, Node *node, ExecutedResult *result);
 
 void InsertData(Catalog *catalog, Node *node);
 
-void ShowTable(Catalog *catalog, Node *node, ResultSet *&result_set,
-               bool &result_flag, string &error_msg, string &info);
+void ShowTable(Catalog *catalog, Node *node, ExecutedResult *result);
 
 void ShowTable(Catalog *catalog, Node *node);
 
-void DropTable(Catalog *catalog, Node *node, ResultSet *&result_set,
-               bool &result_flag, string &error_msg, string &info);
+void DropTable(Catalog *catalog, Node *node, ExecutedResult *result);
 
-bool InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
-                         unsigned position, ostringstream &ostr);
+RetCode InsertValueToStream(Insert_vals *insert_value, TableDescriptor *table,
+                            unsigned position, ostringstream &ostr);
 bool CheckType(const column_type *col_type, Expr *expr);
 
 LogicalOperator *convert_sql_to_logical_operator_tree(const char *sql);

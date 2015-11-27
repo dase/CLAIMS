@@ -56,7 +56,7 @@ class CreateTableExec : public StmtExec {
   /**
    * @brief the concrete operation of creating a table.
    */
-  RetCode Execute(executed_result* exec_result);
+  RetCode Execute(ExecutedResult* exec_result);
 
  private:
   /**

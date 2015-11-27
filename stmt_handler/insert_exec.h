@@ -51,14 +51,15 @@ class InsertExec : public StmtExec {
   /**
    * @brief the concrete operation of insert data to tables.
    */
-  RetCode Execute(executed_result *exec_result);
+  RetCode Execute(ExecutedResult *exec_result);
 
  private:
   /**
    * @brief insert value to stream
    */
-  bool InsertValueToStream(AstInsertVals *insert_value, TableDescriptor *table,
-                           unsigned position, std::ostringstream &ostr);
+  RetCode InsertValueToStream(AstInsertVals *insert_value,
+                              TableDescriptor *table, unsigned position,
+                              std::ostringstream &ostr);
   /**
    * @brief check value type
    */

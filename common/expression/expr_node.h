@@ -25,7 +25,8 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/utility.hpp>
 
-#include "../../Catalog/Attribute.h"
+#include "../../catalog/attribute.h"
+using claims::catalog::Attribute;
 namespace claims {
 namespace common {
 #define MAX_ARGS 10

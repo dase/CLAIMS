@@ -13,10 +13,10 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = ../Catalog/libcatalog.a \
-		../Catalog/stat/libstat.a \
+LDADD = ../catalog/libcatalog.a \
+		../catalog/stat/libstat.a \
+		../loader/libloader.a \
 		../logical_operator/liblogicalqueryplan.a \
-		../Loader/libloader.a \
 		../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../common/libcommon.a \
 		../common/Expression/libexpression.a \
@@ -37,5 +37,3 @@ libparsetree_a_SOURCES = \
 	runparsetree.h			runparsetree.cpp \
 	sql_node_struct.h 		wc2tb.cpp		
 
-SUBDIRS = Test
-DIST_SUBDIRS = Test

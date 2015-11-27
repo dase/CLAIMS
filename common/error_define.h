@@ -22,30 +22,62 @@
  *      Author: yukai
  *		 Email: yukai2014@gmail.com
  *
- * Description:
- *
+ *  ATTENTION: have to add Error Message in error_no.h and error_no.cpp,
+ *  if new error no is add
  */
 
 #ifndef COMMON_ERROR_DEFINE_H_
 #define COMMON_ERROR_DEFINE_H_
-
 #include <stdlib.h>
+#include "./error_no.h"
+using claims::common::CStrError;
 
-/*
- * have to add Error Message in error_no.h and error_no.cpp, if new error no is
- * add
- */
+typedef int RetCode;  // means return code
+#define ELOG(ret, err_info)                                              \
+  LOG(ERROR) << "[" << ret << ", " << CStrError(ret) << "] " << err_info \
+             << std::endl;
+
+#define WLOG(ret, warning_info)                                                \
+  LOG(WARNING) << "[" << ret << ", " << CStrError(ret) << "] " << warning_info \
+               << std::endl;
+
+#define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info) \
+  do {                                            \
+    if (rSuccess != (ret = f)) {                  \
+      ELOG(ret, err_info)                         \
+    }                                             \
+  } while (0)
+
+#define EXEC_AND_LOG(ret, f, info, err_info) \
+  do {                                       \
+    if (rSuccess == (ret = f)) {             \
+      LOG(INFO) << info << std::endl;        \
+    } else {                                 \
+      ELOG(ret, err_info)                    \
+    }                                        \
+  } while (0)
+
+#define EXEC_AND_PLOG(ret, f, info, err_info)                       \
+  do {                                                              \
+    if (rSuccess == (ret = f)) {                                    \
+      LOG(INFO) << info << std::endl;                               \
+    } else {                                                        \
+      PLOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ] " \
+                  << err_info << std::endl;                         \
+    }                                                               \
+  } while (0)
+
 namespace claims {
 namespace common {
-
-const int kErrorMaxNumber = 100000;
-static const char* kErrorMessage[kErrorMaxNumber];
 
 const int rSuccess = EXIT_SUCCESS;
 const int rFailure = EXIT_FAILURE;
 
 /* errorno begin from here   */
-
+/******************************************************************************
+ * ATTENTION: have to add Error Message in error_no.h and error_no.cpp, if new
+ * error no is add
+ *****************************************************************************/
 /* errorno for common  -1 ~ -1000 */
 const int rTypeError = -1;
 const int rNotInit = -2;
@@ -131,6 +163,21 @@ const int rInvalidConfig = -81;
 const int rReadConfigError = -82;
 const int rBadAddress = -83;
 const int rMemoryAllocationFailed = -85;
+const int rReadHdfsFileFail = -86;
+const int rOpenHdfsFileFail = -87;
+const int rReadDiskFileFail = -88;
+const int rOpenDiskFileFail = -89;
+const int rWriteDiskFileFail = -90;
+const int rWriteHdfsFileFail = -91;
+const int rLSeekDiskFileFail = -92;
+const int rLSeekHdfsFileFail = -93;
+const int rCloseDiskFileFail = -94;
+const int rCloseHdfsFileFail = -95;
+const int rFileEOF = -96;
+const int rParamInvalid = -97;
+const int rAccessDiskFileFail = -98;
+const int rAccessHdfsFileFail = -99;
+const int rNoMemory = -100;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int rInitSQLParserErr = -1001;
@@ -165,34 +212,43 @@ const int rErrParamSize = -1030;
 const int rDuplicatedParam = -1031;
 const int rNoTableFound = -1032;
 
-/* errorno for Loader -2001 ~ -3000  */
+/* errorno for loader -2001 ~ -3000  */
+const int rUnbindEntireProjectionFail = -2001;
+const int rInvalidInsertData = -2002;
+const int rTooLargeData = -2003;
+const int rTooSmallData = -2004;
+const int rTooLongData = -2005;
+const int rInterruptedData = -2006;  // 123a45 => 123
+const int rIncorrectData = -2007;    // a
+const int rInvalidNullData = -2008;
+const int rTooFewColumn = -2009;
+const int rTooManyColumn = -2010;
 
 /* errorno for codegen -3001 ~ -4000 */
 const int rTestError = -3001;
 
 /* errorno for logical_operator -4001 ~ -5000*/
 const int rUninitializedJoinPolicy = -4001;
-
 const int rGeneratePlanContextFailed = -4002;
-
 const int rGenerateDataflowFailed = -4003;
 
 /* errorno for physical_operator -5001 ~ -6000 */
 const int rGenerateSubPhyPlanFailed = -5001;
 const int rNoPartitionIdScan = -5002;
-// the optimization of filter function failed;
-const int rCodegenFailed = -5003;
+const int rCodegenFailed =
+    -5003;  // the optimization of filter function failed;
+const int rCatalogRestoreInvild = -5004;
+const int rCatalogNotFound = -5005;
 
 /* errorno for stmt_handler -14001 ~ -15000*/
-const int kStmtHandlerOk = -14001;
-const int kStmtHandlerTableExistDuringCreate = -14002;
+const int rStmtHandlerTableExistDuringCreate = -14002;
 const int kStmtHandlerTypeNotSupport = -14003;
 const int kStmtHandlerCreateTableSuccess = -14004;
 const int kStmtHandlerTableNotExistDuringLoad = -14005;
 const int kStmtHandlerLoadDataSuccess = -14006;
 const int kStmtHandlerTableNotExistDuringInsert = -14007;
 const int kStmtHandlerInsertDataSuccess = -14008;
-const int kStmtHandlerInsertNoValue = -14009;
+const int rStmtHandlerInsertNoValue = -14009;
 
 const int rTableNotExist = -14100;
 const int rTableillegal = -14101;
@@ -228,6 +284,8 @@ const int rEqualJoinCondiInATable = -14130;
 const int rEqualJoinCondiNotMatch = -14131;
 const int rTableAlreadyExist = -14132;
 const int rNoTalbeFound = -14133;
+const int rNoProjection = -14134;
+
 }  // end namespace common
 }  // end namespace claims
 

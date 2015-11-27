@@ -32,7 +32,7 @@
 
 #include "../physical_operator/physical_operator_base.h"
 #include "../common/Block/BlockStream.h"
-#include "../Catalog/Partitioner.h"
+#include "../catalog/partitioner.h"
 #include "../utility/lock.h"
 #include "../common/hashtable.h"
 
