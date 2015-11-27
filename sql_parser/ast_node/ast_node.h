@@ -31,12 +31,11 @@
 #include <set>
 #include <vector>
 #include <utility>
-
-//#include "./ast_select_stmt.h"
 #include "../../common/Expression/qnode.h"
 #include "../../logical_operator/logical_operator.h"
 #include "../../common/expression/expr_node.h"
 #include "../../logical_operator/logical_equal_join.h"
+#include "../common/error_define.h"
 using claims::logical_operator::LogicalOperator;
 using claims::common::ExprNode;
 using claims::logical_operator::LogicalEqualJoin;
@@ -47,10 +46,11 @@ using std::multimap;
 using std::set;
 using std::string;
 
+using claims::common::rSuccess;
 // namespace claims {
 // namespace sql_parser {
 
-typedef int ErrorNo;
+typedef int RetCode;
 enum AstNodeType {
   AST_NODE,
   AST_STMT_LIST,
@@ -120,43 +120,8 @@ enum AstNodeType {
   AST_APPROXNUM,
   AST_STRINGVAL,
   AST_BOOL,
-};
-enum ErrorNoType {
-  eOK = 10000,
-  eTableNotExist,
-  eTableillegal,
-  eTableAliasEqualExistedTable,
-  eTableAliasEqualLowerAlias,
-  eColumnNotExist,
-  eColumnIsAmbiguous,
-  eTabelHaveNotColumn,
-  eColumnAliasIsAmbiguous,
-  eColumnIsAmbiguousAfterAlias,
-  eColumnIsAmbiguousToExistedColumn,
-  eUnaryArgNotExist,
-  eFromClauseIsNULL,
-  eSelectClauseIsNULL,
-  eGroupbyListIsNULL,
-  eGroupByNotSupportColumn,
-  eAggNodeExprStrIsNULL,
-  eGroupbyNodeExprStrIsNULL,
-  eSelectNodeExprStrIsNULL,
-  eAliasConfictInSelectNode,
-  eAggHaveAgg,
-  eAggCouldNotInWhereClause,
-  eAggCouldNotInGroupByClause,
-  eAggSelectExprHaveOtherColumn,
-  eHavingNotAgg,
-  eTableNotExistInTableColumnALL,
-  eColumnAllShouldNotInOtherClause,
-  eMoreColumnsInSelectHaveALLALL,
-  eRightTableIsNULLInJoin,
-  eLeftTableIsNULLInJoin,
-  eNoDataTypeInConst,
-  eEqualJoinCondiInATable,
-  eEqualJoinCondiNotMatch,
-  eLimitNotStandardized,  // a limit clause with offset_ but without row_count_
-  eLimitZero,  // this means the query should return an empty table...
+  AST_SHOW_STMT,
+  AST_DELETE_STMT
 };
 // the order should be keep
 enum SubExprType {
@@ -184,21 +149,21 @@ class SemanticContext {
   };
   SemanticContext();
   ~SemanticContext();
-  ErrorNo IsTableExist(const string table);
-  ErrorNo IsColumnExist(string& table, const string column);
-  ErrorNo AddTable(string table);
-  ErrorNo AddTable(set<string> table);
-  ErrorNo AddTableColumn(const string& table, const string& column);
-  ErrorNo AddTableColumn(const multimap<string, string>& column_to_table);
-  ErrorNo RebuildTableColumn(set<AstNode*>& aggregation);
-  ErrorNo RebuildTableColumn();
-  ErrorNo AddNewTableColumn(set<AstNode*>& new_set, bool need_clear);
-  ErrorNo GetAliasColumn(const string& alias,
+  RetCode IsTableExist(const string table);
+  RetCode IsColumnExist(string& table, const string column);
+  RetCode AddTable(string table);
+  RetCode AddTable(set<string> table);
+  RetCode AddTableColumn(const string& table, const string& column);
+  RetCode AddTableColumn(const multimap<string, string>& column_to_table);
+  RetCode RebuildTableColumn(set<AstNode*>& aggregation);
+  RetCode RebuildTableColumn();
+  RetCode AddNewTableColumn(set<AstNode*>& new_set, bool need_clear);
+  RetCode GetAliasColumn(const string& alias,
                          multimap<string, string>& column_to_table);
 
-  ErrorNo AddAggregation(AstNode* agg_node);
-  ErrorNo AddGroupByAttrs(AstNode* groupby_node);
-  ErrorNo AddSelectAttrs(AstNode* select_node);
+  RetCode AddAggregation(AstNode* agg_node);
+  RetCode AddGroupByAttrs(AstNode* groupby_node);
+  RetCode AddSelectAttrs(AstNode* select_node);
   void GetTableAllColumn(const string table,
                          multimap<string, string>& new_columns);
   void GetUniqueAggAttr(set<AstNode*>& new_set);
@@ -216,6 +181,8 @@ class SemanticContext {
   bool have_agg;
   bool select_expr_have_agg;
   vector<AstNode*> select_expr_;
+  vector<ColumnOffset> index_;  //  for create projection execute function
+  string error_msg_;
 
  private:
   set<AstNode*> aggregation_;
@@ -278,7 +245,7 @@ class AstNode {
   virtual ~AstNode();
   virtual void Print(int level = 0) const;
   virtual AstNode* AstNodeCopy() { return NULL; }
-  virtual ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
+  virtual RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   virtual void RecoverExprName(string& name);
   // replace aggregation expression with one single column, and collect it if
   // aggregation in select expression
@@ -288,24 +255,26 @@ class AstNode {
   virtual void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
   virtual void GetRefTable(set<string>& ref_table);
 
-  virtual ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt) {
-    return eOK;
+  virtual RetCode PushDownCondition(PushDownConditionContext* pdccnxt) {
+    return rSuccess;
   }
-  virtual ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan) { return eOK; }
-  virtual ErrorNo GetLogicalPlan(ExprNode*& logic_expr,
+  virtual RetCode GetLogicalPlan(LogicalOperator*& logic_plan) {
+    return rSuccess;
+  }
+  virtual RetCode GetLogicalPlan(ExprNode*& logic_expr,
                                  LogicalOperator* child_logic_plan) {
-    return eOK;
+    return rSuccess;
   }
-  ErrorNo GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
+  RetCode GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
                            LogicalOperator* args_lplan,
                            LogicalOperator* next_lplan,
                            const set<AstNode*>& equal_join_condition);
-  ErrorNo GetFilterCondition(vector<ExprNode*>& condition,
+  RetCode GetFilterCondition(vector<ExprNode*>& condition,
                              const set<AstNode*>& normal_condition,
                              LogicalOperator* logic_plan);
-  virtual ErrorNo SolveSelectAlias(
+  virtual RetCode SolveSelectAlias(
       SelectAliasSolver* const select_alias_solver) {
-    return eOK;
+    return rSuccess;
   }
   AstNode* GetAndExpr(const set<AstNode*>& expression);
   AstNodeType ast_node_type_;
@@ -328,9 +297,9 @@ class AstStmtList : public AstNode {
   AstStmtList(AstNodeType ast_node_type, AstNode* stmt, AstNode* next);
   ~AstStmtList();
   void Print(int level = 0) const;
-  ErrorNo SemanticAnalisys(SemanticContext* sem_cnxt);
-  ErrorNo PushDownCondition(PushDownConditionContext* pdccnxt);
-  ErrorNo GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
+  RetCode PushDownCondition(PushDownConditionContext* pdccnxt);
+  RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
   AstNode* stmt_;
   AstNode* next_;
 };

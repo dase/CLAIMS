@@ -37,6 +37,7 @@
 #include "../../physical_operator/result_printer.h"
 #include "../../physical_operator/physical_operator.h"
 #include "../../physical_operator/physical_sort.h"
+#include "../../physical_operator/physical_delete_filter.h"
 
 using claims::common::ExprBinary;
 using claims::common::ExprCaseWhen;
@@ -64,6 +65,7 @@ using claims::physical_operator::PhysicalProject;
 using claims::physical_operator::PhysicalProjectionScan;
 using claims::physical_operator::ResultPrinter;
 using claims::physical_operator::PhysicalSort;
+using claims::physical_operator::PhysicalDeleteFilter;
 
 #pragma auto_inline
 template <class Archive>
@@ -84,6 +86,7 @@ void Register_Block_Stream_Iterator(Archive& ar) {
   ar.register_type(static_cast<PhysicalLimit*>(NULL));
   ar.register_type(static_cast<PhysicalProject*>(NULL));
   ar.register_type(static_cast<PhysicalOperator*>(NULL));
+  ar.register_type(static_cast<PhysicalDeleteFilter*>(NULL));
   ar.register_type(static_cast<InOperator*>(NULL));
   ar.register_type(static_cast<bottomLayerCollecting*>(NULL));
   ar.register_type(static_cast<bottomLayerSorting*>(NULL));

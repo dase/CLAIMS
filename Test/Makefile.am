@@ -17,13 +17,14 @@ endif
 LDADD =	TestSuit/libtestsuit.a \
 		../Executor/libexecutor.a \
 		../Executor/Test/libtest.a \
-		../Parsetree/Test/libtest.a \
 		../Daemon/Test/libtest.a \
 		../Client/Test/libtest.a \
-		../Loader/Test/libtest.a \
+		../loader/test/libtest.a \
 		../IndexManager/Test/libtest.a \
-		../Catalog/Test/libtest.a \
+		../catalog/Test/libtest.a \
 		../common/libcommon.a \
+		../common/file_handle/libfilehandle.a \
+		../common/file_handle/test/libtest.a \
 		../common/Schema/libschema.a \
 		../common/Block/libblock.a \
 		../common/types/libtypes.a \
@@ -45,5 +46,5 @@ libtest_a_SOURCES =
 #	test_adaptiveendpoint.cpp 	test_coordinator.cpp \
 #	test_scdong.cpp
 
-SUBDIRS = TestSuit common utility
-DIST_SUBDIRS = TestSuit common utility
+SUBDIRS =  common utility
+DIST_SUBDIRS =  common utility

@@ -15,7 +15,7 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = 	../../Catalog/libcatalog.a \
+LDADD = 	../../catalog/libcatalog.a \
 		../../common/libcommon.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\

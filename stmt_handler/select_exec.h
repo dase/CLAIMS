@@ -29,6 +29,8 @@
 #ifndef STMT_HANDLER_SELECT_EXEC_H_
 #define STMT_HANDLER_SELECT_EXEC_H_
 #include <string>
+
+#include "../stmt_handler/delete_stmt_exec.h"
 #include "../stmt_handler/stmt_exec.h"
 #include "../stmt_handler/stmt_handler.h"
 
@@ -36,10 +38,12 @@ using std::string;
 namespace claims {
 namespace stmt_handler {
 class SelectExec : public StmtExec {
+  friend class DeleteStmtExec;
+
  public:
   SelectExec(AstNode* stmt);  // NOLINT
   virtual ~SelectExec();
-  RetCode Execute(executed_result* exec_result);
+  RetCode Execute(ExecutedResult* exec_result);
 
  private:
   AstSelectStmt* select_ast_;

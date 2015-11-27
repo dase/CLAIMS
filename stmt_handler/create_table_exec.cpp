@@ -28,8 +28,11 @@
  */
 
 #include <assert.h>
+#include <string>
 #include "../Environment.h"
-#include "create_table_exec.h"
+#include "../stmt_handler/create_table_exec.h"
+#include "../common/error_define.h"
+#include "../catalog/catalog.h"
 namespace claims {
 namespace stmt_handler {
 /**
@@ -38,20 +41,15 @@ namespace stmt_handler {
  * table name,
  *  firstly get the descriptor from catalog by table name.
  */
+#define NEWRESULT
 CreateTableExec::CreateTableExec(AstNode* stmt) : StmtExec(stmt) {
-  // TODO Auto-generated constructor stub
   assert(stmt_);
   result_flag_ = true;
   createtable_ast_ = dynamic_cast<AstCreateTable*>(stmt_);
   if (!createtable_ast_->additional_name_.empty()) {
     tablename_ = createtable_ast_->additional_name_;
-  } else if (!createtable_ast_->table_name_.empty()) {
-    tablename_ = createtable_ast_->table_name_;
   } else {
-    error_msg_ = "No table name during creating table!";
-    LOG(ERROR) << "No table name during creating table!" << std::endl;
-    result_flag_ = false;
-    result_set_ = NULL;
+    tablename_ = createtable_ast_->table_name_;
   }
   if (!tablename_.empty()) {
     table_desc_ =
@@ -59,9 +57,7 @@ CreateTableExec::CreateTableExec(AstNode* stmt) : StmtExec(stmt) {
   }
 }
 
-CreateTableExec::~CreateTableExec() {
-  // TODO Auto-generated destructor stub
-}
+CreateTableExec::~CreateTableExec() {}
 /**
  * @brief create a table by the AST.
  * @detail check whether the table we have created or not.
@@ -72,18 +68,31 @@ CreateTableExec::~CreateTableExec() {
  *  save it to catalog by the end.
  * @return a result code cooperate with the client.
  */
-RetCode CreateTableExec::Execute(executed_result* exec_result) {
-  int ret = common::kStmtHandlerOk;
+RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
+  SemanticContext sem_cnxt;
+  RetCode ret = createtable_ast_->SemanticAnalisys(&sem_cnxt);
+  if (rSuccess != ret) {
+    exec_result->error_info_ =
+        "Semantic analysis error.\n" + sem_cnxt.error_msg_;
+    exec_result->status_ = false;
+    LOG(ERROR) << "semantic analysis error result= : " << ret;
+    cout << "semantic analysis error result= : " << ret << endl;
+    return ret;
+  }
 
+  string tablename_del;
+  tablename_del = tablename_ + "_DEL";
+#ifdef sem_cnxt
   if (isTableExist()) {
+    exec_result->status_ = false;
     result_flag_ = false;
-    result_set_ = NULL;
-    error_msg_ =
+    exec_result->error_info =
         "The table " + tablename_ + " has existed during creating table!";
     LOG(ERROR) << "The table " + tablename_ +
                       " has existed during creating table!" << std::endl;
-    ret = common::kStmtHandlerTableExistDuringCreate;
+    ret = claims::common::kStmtHandlerTableExistDuringCreate;
   } else {
+#endif
     table_desc_ = new TableDescriptor(
         tablename_,
         Environment::getInstance()->getCatalog()->allocate_unique_table_id());
@@ -103,7 +112,8 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
         AstColumnAtts* column_atts =
             dynamic_cast<AstColumnAtts*>(data->col_atts_);
 
-        /* TODO: Whether column is unique or has default value is not finished,
+        /* TODO: Whether column is unique or has default value is not
+         * finished,
          *  because there are no supports
          */
         AstDataType* datatype = dynamic_cast<AstDataType*>(data->data_type_);
@@ -177,12 +187,16 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
               }
               LOG(INFO) << colname + " is created" << std::endl;
             } else {
-              // TODO:not supports
-              error_msg_ = "This type is not supported during creating table!";
+              // TODO(fzh): not supports
+              exec_result->error_info_ =
+                  "This type is not supported during creating table!";
+              exec_result->status_ = false;
+              // error_msg_ = "This type is not supported during creating
+              // table!";
               LOG(ERROR) << "This type is not supported during creating table!"
                          << std::endl;
               result_flag_ = false;
-              result_set_ = NULL;
+              // result_set_ = NULL;
               ret = common::kStmtHandlerTypeNotSupport;
             }
             break;
@@ -317,6 +331,16 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
             break;
           }
           default: {
+#ifdef NEWRESULT
+            exec_result->error_info_ =
+                "This type is not supported now during creating table!";
+            LOG(ERROR)
+                << "This type is not supported now during creating table!"
+                << std::endl;
+            exec_result->status_ = false;
+            exec_result->result_ = NULL;
+            ret = common::kStmtHandlerTypeNotSupport;
+#else
             error_msg_ =
                 "This type is not supported now during creating table!";
             LOG(ERROR)
@@ -325,6 +349,7 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
             result_flag_ = false;
             result_set_ = NULL;
             ret = common::kStmtHandlerTypeNotSupport;
+#endif
           }
         }
       }
@@ -332,15 +357,48 @@ RetCode CreateTableExec::Execute(executed_result* exec_result) {
       list = dynamic_cast<AstCreateColList*>(list->next_);
     }
 
-    if (result_flag_) {
+#if 1
+    /**
+     * At the same time,create a new table named "table_DEL" to store deleted
+     * data.
+     */
+    TableDescriptor* new_table =
+        Environment::getInstance()->getCatalog()->getTable(tablename_del);
+    if (new_table == NULL) {
+      new_table = new TableDescriptor(
+          tablename_del,
+          Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+      new_table->addAttribute("row_id", data_type(t_u_long), 0, true);
+      new_table->addAttribute("row_id_DEL", data_type(t_u_long), 0, true);
+      // new_table->createHashPartitionedProjectionOnAllAttribute(
+      //    new_table->getAttribute(0).getName(), 4);
+
+    } else {
+      LOG(ERROR) << "The table " + tablename_del +
+                        " has existed during creating table_DEL!" << std::endl;
+    }
+#endif
+
+    if (exec_result->status_) {
       Environment::getInstance()->getCatalog()->add_table(table_desc_);
+      Environment::getInstance()->getCatalog()->add_table(new_table);
       Environment::getInstance()->getCatalog()->saveCatalog();
+#ifdef NEWRESULT
+      exec_result->info_ = "create table successfully";
+      LOG(INFO) << "create table successfully" << std::endl;
+      exec_result->result_ = NULL;
+      result_flag_ = true;
+      ret = common::kStmtHandlerCreateTableSuccess;
+#else
       info_ = "create table successfully";
       LOG(INFO) << "create table successfully" << std::endl;
       result_set_ = NULL;
       ret = common::kStmtHandlerCreateTableSuccess;
+#endif
     }
+#ifdef sem_cnxt
   }
+#endif
   return ret;
 }
 

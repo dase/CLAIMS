@@ -29,9 +29,9 @@
 #ifndef LOGICAL_OPERATOR_LOGICAL_EQUAL_JOIN_H_
 #define LOGICAL_OPERATOR_LOGICAL_EQUAL_JOIN_H_
 #include <vector>
-
 #include "../common/expression/expr_node.h"
-#include "../Catalog/Attribute.h"
+#include "../catalog/attribute.h"
+#include "../catalog/partitioner.h"
 #include "../logical_operator/logical_operator.h"
 #include "../physical_operator/physical_sort.h"
 

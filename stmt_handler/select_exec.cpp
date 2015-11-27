@@ -44,7 +44,7 @@ using std::cout;
 
 namespace claims {
 namespace stmt_handler {
-#define PRINTCONTEXT
+//#define PRINTCONTEXT
 SelectExec::SelectExec(AstNode* stmt) : StmtExec(stmt) {
   select_ast_ = static_cast<AstSelectStmt*>(stmt_);
 }
@@ -56,16 +56,16 @@ SelectExec::~SelectExec() {
   //  }
 }
 
-RetCode SelectExec::Execute(executed_result* exec_result) {
+RetCode SelectExec::Execute(ExecutedResult* exec_result) {
 #ifdef PRINTCONTEXT
   select_ast_->Print();
   cout << "--------------begin semantic analysis---------------" << endl;
 #endif
   SemanticContext sem_cnxt;
   RetCode ret = select_ast_->SemanticAnalisys(&sem_cnxt);
-  if (eOK != ret) {
-    exec_result->error_info = "semantic analysis error";
-    exec_result->status = false;
+  if (rSuccess != ret) {
+    exec_result->error_info_ = "semantic analysis error";
+    exec_result->status_ = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
     return ret;
@@ -75,7 +75,7 @@ RetCode SelectExec::Execute(executed_result* exec_result) {
   cout << "--------------begin push down condition ------------" << endl;
 #endif
   select_ast_->PushDownCondition(NULL);
-#ifdef PRINTCONTEXT
+#ifndef PRINTCONTEXT
   select_ast_->Print();
   cout << "--------------begin logical plan -------------------" << endl;
 #endif
@@ -86,13 +86,13 @@ RetCode SelectExec::Execute(executed_result* exec_result) {
   logic_plan = new LogicalQueryPlanRoot(0, logic_plan,
                                         LogicalQueryPlanRoot::kResultCollector);
   logic_plan->GetPlanContext();
-#ifdef PRINTCONTEXT
+#ifndef PRINTCONTEXT
   logic_plan->Print();
   cout << "--------------begin physical plan -------------------" << endl;
 #endif
 
   PhysicalOperatorBase* physical_plan = logic_plan->GetPhysicalPlan(64 * 1024);
-#ifdef PRINTCONTEXT
+#ifndef PRINTCONTEXT
   physical_plan->Print();
   cout << "--------------begin output result -------------------" << endl;
 #endif
@@ -100,7 +100,7 @@ RetCode SelectExec::Execute(executed_result* exec_result) {
   physical_plan->Open();
   while (physical_plan->Next(NULL)) {
   }
-  exec_result->result = physical_plan->GetResultSet();
+  exec_result->result_ = physical_plan->GetResultSet();
   physical_plan->Close();
 
   delete logic_plan;

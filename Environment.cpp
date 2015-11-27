@@ -6,16 +6,20 @@
  */
 
 #include "Environment.h"
+
+#define GLOG_NO_ABBREVIATED_SEVERITIES
+#include <glog/logging.h>
 #include <libconfig.h++>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "Debug.h"
-#include "Config.h"
+#include "./Debug.h"
+#include "./Config.h"
 #include "common/Logging.h"
 #include "common/TypePromotionMap.h"
 #include "common/TypeCast.h"
 #include "common/Expression/queryfunc.h"
+#include "common/error_define.h"
 #include "codegen/CodeGenerator.h"
 #include "common/expression/data_type_oper.h"
 #include "common/expression/expr_type_cast.h"
@@ -26,7 +30,11 @@ using claims::common::InitOperatorFunc;
 using claims::common::InitTypeCastFunc;
 using claims::common::InitTypeConversionMatrix;
 //#define DEBUG_MODE
+#include "catalog/catalog.h"
+using claims::common::rSuccess;
+
 Environment* Environment::_instance = 0;
+
 Environment::Environment(bool ismaster) : ismaster_(ismaster) {
   _instance = this;
   Config::getInstance();
@@ -40,7 +48,10 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
     logging_->log("Initializing the Coordinator...");
     initializeCoordinator();
     catalog_ = Catalog::getInstance();
-    catalog_->restoreCatalog();
+    if (rSuccess != catalog_->restoreCatalog()) {
+      LOG(ERROR) << "failed to restore catalog" << std::endl;
+      cerr << "ERROR: restore catalog failed" << endl;
+    }
   }
 
   if (true == g_thread_pool_used) {
@@ -65,7 +76,6 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
    * decided.*/
 
   initializeResourceManager();
-  //		return;
 
   initializeStorage();
 

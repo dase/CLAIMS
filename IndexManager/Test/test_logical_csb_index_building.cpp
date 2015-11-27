@@ -13,7 +13,14 @@
 
 #include "../../Environment.h"
 #include "../../Resource/ResourceManagerMaster.h"
+<<<<<<< HEAD
 #include "../../Catalog/Catalog.h"
+=======
+#include "../../catalog/catalog.h"
+#include "../../logical_operator/logical_query_plan_root.h"
+
+using claims::catalog::Catalog;
+>>>>>>> FETCH_HEAD
 
 static int test_logical_csb_index_building() {
   int master;
@@ -78,7 +85,10 @@ static int test_logical_csb_index_building() {
     const NodeID collector_node_id = 0;
     LogicalOperator* root = new LogicalQueryPlanRoot(
         collector_node_id, csb_building, LogicalQueryPlanRoot::RESULTCOLLECTOR);
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD
     root->Print();
     PhysicalOperatorBase* executable_query_plan =
         root->GetPhysicalPlan(1024 * 64);
@@ -93,7 +103,11 @@ static int test_logical_csb_index_building() {
     cout << "close finished!\n";
 
     //			ResultSet* result_set =
+<<<<<<< HEAD
     //executable_query_plan->getResultSet();
+=======
+    // executable_query_plan->getResultSet();
+>>>>>>> FETCH_HEAD
 
     executable_query_plan->~PhysicalOperatorBase();
     root->~LogicalOperator();
@@ -134,8 +148,16 @@ static int test_logical_csb_index_building() {
                              table_1->getAttribute(3), q_range);
     root = new LogicalQueryPlanRoot(collector_node_id, index_scan,
                                     LogicalQueryPlanRoot::PRINT);
+<<<<<<< HEAD
 
     root->Print();
+=======
+<<<<<<< HEAD
+    root->Print();
+=======
+    root->Print();
+>>>>>>> master-yk-150927
+>>>>>>> FETCH_HEAD
     executable_query_plan = root->GetPhysicalPlan(1024 * 64);
     //			executable_query_plan->print();
     //			IteratorExecutorMaster::getInstance()->ExecuteBlockStreamIteratorsOnSite(executable_query_plan,"127.0.0.1");

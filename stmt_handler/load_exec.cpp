@@ -27,13 +27,17 @@
  */
 
 #include <assert.h>
+#include <vector>
+#include <string>
 #include "../stmt_handler/load_exec.h"
-
 #include "../Environment.h"
-#include "../Loader/Hdfsloader.h"
+#include "../loader/data_injector.h"
+using std::vector;
+using claims::loader::DataInjector;
 namespace claims {
 namespace stmt_handler {
-
+#define NEWRESULT
+#define NEW_LOADER
 LoadExec::LoadExec(AstNode *stmt) : StmtExec(stmt) {
   // TODO Auto-generated constructor stub
   assert(stmt_);
@@ -52,67 +56,98 @@ LoadExec::~LoadExec() {
  *  then add path names from path node to a vector path_names,
  *  create new HdfsLoader, load data.
  */
-RetCode LoadExec::Execute(executed_result *exec_result) {
-  int ret = common::kStmtHandlerOk;
+RetCode LoadExec::Execute(ExecutedResult *exec_result) {
+  RetCode ret = rSuccess;
 
-  if (!isTableExist()) {
-    error_msg_ = "the table " + tablename_ + " does not exist during loading!";
-    result_flag_ = false;
-    result_set_ = NULL;
-    ret = common::kStmtHandlerTableExistDuringCreate;
-  } else {
-    string column_separator = load_ast_->column_separator_;
-    string tuple_separator = load_ast_->tuple_separator_;
-    AstExprList *path_node = dynamic_cast<AstExprList *>(load_ast_->path_);
-
-    // ASTParserLogging::log("load file\'s name:");
-    LOG(INFO) << "load file's name:" << std::endl;
-    std::vector<string>
-        path_names;  // save the name of files which should be loaded
-    // for test: the path name is:   /home/imdb/data/tpc-h/part.tbl
-    while (path_node) {
-      AstExprConst *data = dynamic_cast<AstExprConst *>(path_node->expr_);
-      // ASTParserLogging::log("%s", data->data_.c_str());
-      LOG(INFO) << data->data_ << std::endl;
-      path_names.push_back(data->data_);
-      path_node = dynamic_cast<AstExprList *>(path_node->next_);
-    }
-
-    // split sign should be considered carefully, in case of it may be "||" or
-    // "###"
-    /*
-    ASTParserLogging::log(
-        "The separator are :%c,%c, The sample is %lf, mode is %d\n",
-        column_separator[0], tuple_separator[0], load_ast_->sample_,
-        load_ast_->mode_);
-    */
-
-    // string col_sep = column_separator[0];
-    // string tup_sep = tuple_separator[0];
-    char buf[100];
-    sprintf(buf, "The separator are :%c,%c, The sample is %lf, mode is %d\n",
-            column_separator[0], tuple_separator[0], load_ast_->sample_,
-            load_ast_->mode_);
-#if 0
-    LOG(INFO) << "The separator are :" + col_sep + "," + tup_sep +
-                     ", The sample is " + load_ast_->sample_ + "," +
-                    "mode is " + load_ast_->mode_ << std::endl;
-#endif
-
-    LOG(INFO) << buf << std::endl;
-
-    HdfsLoader *loader =
-        new HdfsLoader(column_separator[0], tuple_separator[0], path_names,
-                       table_desc_, (open_flag)load_ast_->mode_);
-    loader->load(load_ast_->sample_);
-
-    result_flag_ = true;
-    result_set_ = NULL;
-    info_ = "load data successfully";
-
-    Environment::getInstance()->getCatalog()->saveCatalog();
-    ret = common::kStmtHandlerCreateTableSuccess;
+  SemanticContext sem_cnxt;
+  ret = load_ast_->SemanticAnalisys(&sem_cnxt);
+  if (rSuccess != ret) {
+    exec_result->SetError("Semantic analysis error.\n" + sem_cnxt.error_msg_);
+    //    exec_result->error_info_ =
+    //        "Semantic analysis error.\n" + sem_cnxt.error_msg_;
+    //    exec_result->status_ = false;
+    LOG(ERROR) << "semantic analysis error result= : " << ret;
+    cout << "semantic analysis error result= : " << ret << endl;
+    return ret;
   }
+
+  TableDescriptor *table = Environment::getInstance()->getCatalog()->getTable(
+      load_ast_->table_name_);
+
+  //  if (!isTableExist()) {
+  //    exec_result->SetError("the table " + load_ast_->table_name_ +
+  //                          " does not exist during loading!");
+  //    ret = common::rStmtHandlerTableExistDuringCreate;
+  //    return ret;
+  //  } else if (table->getNumberOfProjection() == 0) {
+  //    exec_result->SetError("the table has not been created a projection!");
+  //    ret = common::rNoProjection;
+  //    return ret;
+  //  } else {
+  string column_separator = load_ast_->column_separator_;
+  string tuple_separator = load_ast_->tuple_separator_;
+  AstExprList *path_node = dynamic_cast<AstExprList *>(load_ast_->path_);
+
+  // ASTParserLogging::log("load file\'s name:");
+  LOG(INFO) << "load file's name:" << std::endl;
+  std::vector<string>
+      path_names;  // save the name of files which should be loaded
+  // for test: the path name is:   /home/imdb/data/tpc-h/part.tbl
+  while (path_node) {
+    AstExprConst *data = dynamic_cast<AstExprConst *>(path_node->expr_);
+    // ASTParserLogging::log("%s", data->data_.c_str());
+    LOG(INFO) << data->data_ << std::endl;
+    path_names.push_back(data->data_);
+    path_node = dynamic_cast<AstExprList *>(path_node->next_);
+  }
+
+// split sign should be considered carefully, in case of it may be "||" or
+// "###"
+
+// string col_sep = column_separator[0];
+// string tup_sep = tuple_separator[0];
+// char buf[100];
+
+/*    sprintf(buf, "The separator are :%c,%c, The sample is %lf, mode is %d\n",
+            column_separator[0], tuple_separator[0], load_ast_->sample_,
+            load_ast_->mode_);*/
+#if 1
+  LOG(INFO) << "The separator are :" + column_separator + "," +
+                   tuple_separator + ", The sample is " << load_ast_->sample_
+            << ", mode is " << load_ast_->mode_ << std::endl;
+#endif
+  GETCURRENTTIME(start_time);
+// LOG(INFO) << buf << std::endl;
+#ifdef NEW_LOADER
+  DataInjector *injector =
+      new DataInjector(table, column_separator, tuple_separator);
+  ret = injector->LoadFromFile(path_names,
+                               static_cast<FileOpenFlag>(load_ast_->mode_),
+                               exec_result, load_ast_->sample_);
+  LOG(INFO) << " load time: " << GetElapsedTime(start_time) / 1000.0 << endl;
+  if (ret != rSuccess) {
+    LOG(ERROR) << "failed to load files: ";
+    for (auto it : path_names) {
+      LOG(ERROR) << it << " ";
+    }
+    LOG(ERROR) << " into table " << table->getTableName() << endl;
+
+    if (exec_result->error_info_ == "")
+      exec_result->SetError("failed to load data");
+  } else {
+    exec_result->SetResult("load data successfully", NULL);
+  }
+  DELETE_PTR(injector);
+#else
+  Hdfsloader *loader =
+      new Hdfsloader(column_separator[0], tuple_separator[0], path_names, table,
+                     (FileOpenFlag)new_node->mode);
+  loader->load(new_node->sample);
+
+  result->SetResult("load data successfully", NULL);
+#endif
+  Environment::getInstance()->getCatalog()->saveCatalog();
+  //  }
 
   return ret;
 }

@@ -16,7 +16,6 @@
 #include <map>
 #include "execfunc.h"
 #include "queryfunc.h"
-#include "../../Parsetree/sql_node_struct.h"
 #include "../../common/data_type.h"
 #include "../../common/TypePromotionMap.h"
 #include "../../common/Logging.h"

@@ -29,6 +29,10 @@ LDADD = ../Catalog/libcatalog.a \
 noinst_LIBRARIES=libstmthandler.a
 
 libstmthandler_a_SOURCES = \
+    delete_stmt_exec.cpp      delete_stmt_exec.h \
+    drop_table_exec.cpp         drop_table_exec.h \
+	create_projection_exec.cpp   create_projection_exec.h\
+    show_exec.cpp       show_exec.h \
 	stmt_handler.cpp	stmt_handler.h	\
 	stmt_exec.cpp	stmt_exec.h \
 	select_exec.cpp	select_exec.h \

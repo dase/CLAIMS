@@ -8,15 +8,14 @@
 #ifndef EXECFUNC_H_
 #define EXECFUNC_H_
 
-#include<stdio.h>
-#include<iostream>
-#include<malloc.h>
-#include<string.h>
-#include<string>
-#include<vector>
-#include<stdlib.h>
-#include "../../Parsetree/sql_node_struct.h"
-#include "../../Catalog/Attribute.h"
+#include <stdio.h>
+#include <iostream>
+#include <malloc.h>
+#include <string.h>
+#include <string>
+#include <vector>
+#include <stdlib.h>
+#include "../../catalog/attribute.h"
 #include "../../common/Schema/Schema.h"
 #include "qnode.h"
 using namespace std;

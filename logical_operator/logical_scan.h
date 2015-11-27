@@ -32,8 +32,8 @@
 #include <iosfwd>
 #include <vector>
 #include "../common/ids.h"
-#include "../Catalog/Attribute.h"
-#include "../Catalog/table.h"
+#include "../catalog/attribute.h"
+#include "../catalog/table.h"
 #include "../logical_operator/logical_operator.h"
 #include "../physical_operator/physical_operator_base.h"
 

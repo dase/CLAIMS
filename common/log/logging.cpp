@@ -17,7 +17,8 @@ namespace claims {
 namespace common {
 
 #define LOGDIR "claims_log"  // set output log directory
-#define MKDIR "mkdir -p " LOGDIR
+
+#define MKDIR "mkdir -p claims_log"
 void GlogSignalHandle(const char* data, int size) {
   std::string str = std::string(data, size);
   /*
@@ -50,7 +51,7 @@ Logging::Logging(char* program) {
   FLAGS_stderrthreshold = google::FATAL;
 
   // set every time output cache, default = 30, now to 0
-  FLAGS_logbufsecs = 5;
+  FLAGS_logbufsecs = 0;
   FLAGS_max_log_size = 100;
   FLAGS_stop_logging_if_full_disk = true;
 

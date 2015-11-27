@@ -2,7 +2,6 @@
 #include <startup.h>
 #include <getopt.h>
 #include <string>
-#include "Parsetree/ExecuteLogicalQueryPlan.h"
 // #include "Test/set_up_environment.h"
 #include "./Test/TestMain.cpp"
 #include "common/log/logging.h"

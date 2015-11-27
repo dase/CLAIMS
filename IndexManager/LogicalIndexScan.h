@@ -8,9 +8,9 @@
 #ifndef LOGICALINDEXSCAN_H_
 #define LOGICALINDEXSCAN_H_
 
+#include "../catalog/table.h"
 #include "../common/ids.h"
 #include "IndexScanIterator.h"
-#include "../Catalog/table.h"
 #include "../logical_operator/logical_operator.h"
 using namespace claims::logical_operator;
 

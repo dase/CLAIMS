@@ -19,8 +19,8 @@ endif
 LDADD = 	../libschema.a \
 		../../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
 		../../../BlockStreamIterator/libblockstreamiterator.a \
+		../../../catalog/libcatalog.a \
 		../../../logical_operator/liblogicalqueryplan.a \
-		../../../Catalog/libcatalog.a \
 		../../../common/Block/libblock.a \
 		../../libcommon.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
