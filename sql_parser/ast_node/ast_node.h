@@ -31,7 +31,6 @@
 #include <set>
 #include <vector>
 #include <utility>
-#include "../../common/Expression/qnode.h"
 #include "../../logical_operator/logical_operator.h"
 #include "../../common/expression/expr_node.h"
 #include "../../logical_operator/logical_equal_join.h"
