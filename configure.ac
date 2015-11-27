@@ -1,5 +1,5 @@
 AC_INIT([Claims], [0.3], [imdb@ecnu])
-AM_INIT_AUTOMAKE([-Wall foreign])
+AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AM_PROG_AR
 AC_PROG_LIBTOOL
 CPPFLAGS="-w -O0 -DTHERON_XS -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS"
@@ -28,7 +28,6 @@ AC_CONFIG_FILES([
   common/types/Test/Makefile 
   common/types/ttmath/Makefile 
   Daemon/Makefile 
-  Daemon/Test/Makefile 
   Executor/Makefile 
   Executor/Test/Makefile 
   IndexManager/Makefile

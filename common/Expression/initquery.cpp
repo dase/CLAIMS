@@ -10,6 +10,7 @@
 #include "qnode.h"
 #include "../../logical_operator/logical_operator.h"
 #include "../error_define.h"
+#include "sql_node_struct.h"
 
 using claims::common::rNoMemory;
 /*

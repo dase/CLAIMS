@@ -11,6 +11,8 @@
 #include <iostream>
 #include <malloc.h>
 #include <string.h>
+
+#include "sql_node_struct.h"
 using namespace std;
 #define MAX_ARGS 10
 #include "../../common/data_type.h"
@@ -19,7 +21,7 @@ using namespace std;
 #include "qnode.h"
 #include "../../common/TypeCast.h"
 #define BASE_SIZE 128
-struct Node {};
+
 typedef struct FuncCallInfoData {
   int nargs;
   void *args[MAX_ARGS];

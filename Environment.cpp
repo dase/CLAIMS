@@ -5,9 +5,8 @@
  *      Author: wangli
  */
 
-#include "Environment.h"
-
 #define GLOG_NO_ABBREVIATED_SEVERITIES
+#include "Environment.h"
 #include <glog/logging.h>
 #include <libconfig.h++>
 #include <iostream>
@@ -18,7 +17,6 @@
 #include "common/Logging.h"
 #include "common/TypePromotionMap.h"
 #include "common/TypeCast.h"
-#include "common/Expression/queryfunc.h"
 #include "common/error_define.h"
 #include "codegen/CodeGenerator.h"
 #include "common/expression/data_type_oper.h"
@@ -205,9 +203,6 @@ void Environment::initializeClientListener() {
 }
 
 void Environment::initializeExpressionSystem() {
-  initialize_arithmetic_type_promotion_matrix();
-  initialize_type_cast_functions();
-  initialize_operator_function();
   InitTypeConversionMatrix();
   InitOperatorFunc();
   InitAggAvgDivide();

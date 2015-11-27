@@ -26,5 +26,10 @@ LDADD = 	../../catalog/libcatalog.a \
 
 noinst_LIBRARIES=libexpression.a
 
-libexpression_a_SOURCES = 	
+libexpression_a_SOURCES = 	\
+	execfunc.cpp 		execfunc.h \
+	expression_test.h 	initquery.cpp \
+	initquery.h 		qnode.cpp \
+	qnode.h 			queryfunc.cpp \
+	queryfunc.h			sql_node_struct.h
 	

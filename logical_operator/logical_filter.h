@@ -34,9 +34,9 @@
 #include <map>
 #include <string>
 #include "../common/AttributeComparator.h"
-#include "../common/Expression/qnode.h"
 #include "../logical_operator/logical_operator.h"
 #include "../common/expression/expr_node.h"
+#include "../common/Expression/qnode.h"
 
 using claims::common::ExprNode;
 namespace claims {

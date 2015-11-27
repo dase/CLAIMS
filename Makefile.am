@@ -25,7 +25,6 @@ LDADD =  \
 	Client/libclient.a \
 	Client/Test/libtest.a \
 	Daemon/libdaemon.a \
-	Daemon/Test/libtest.a \
 	Executor/libexecutor.a \
 	Executor/Test/libtest.a \
 	IndexManager/libindexmanager.a \

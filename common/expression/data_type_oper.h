@@ -14,7 +14,6 @@
 #include <iosfwd>
 #include "./expr_node.h"
 #include "../../common/data_type.h"
-#include "../../common/Expression/qnode.h"
 #include "../../common/Logging.h"
 #include "../../common/types/NValue.hpp"
 #include "boost/date_time/gregorian/parsers.hpp"
