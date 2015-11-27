@@ -15,7 +15,7 @@ using namespace std;
 #define MAX_ARGS 10
 #include "../../Parsetree/sql_node_struct.h"
 #include "../../common/data_type.h"
-#include "../../Catalog/Attribute.h"
+#include "../../catalog/attribute.h"
 #include "../../common/Schema/Schema.h"
 #include "qnode.h"
 #include "../../common/TypeCast.h"

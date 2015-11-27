@@ -42,9 +42,9 @@ namespace stmt_handler {
 class StmtHandler {
  public:
   explicit StmtHandler(string sql_stmt);
-  StmtHandler(string sql_stmt, executed_result* exec_result);
+  StmtHandler(string sql_stmt, ExecutedResult* exec_result);
   virtual ~StmtHandler();
-  RetCode Execute(executed_result* exec_result);
+  RetCode Execute(ExecutedResult* exec_result);
 
  private:
   RetCode GenerateStmtExec(AstNode* stmt_ast);

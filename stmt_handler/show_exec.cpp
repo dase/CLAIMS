@@ -30,15 +30,14 @@
 #include <vector>
 #include <iostream>
 #include "../stmt_handler/show_exec.h"
+#include "../catalog/catalog.h"
 #include "../Environment.h"
-
-#include "../Catalog/stat/Analyzer.h"
-
-#include "../Catalog/ProjectionBinding.h"
+#include "../catalog/stat/Analyzer.h"
+#include "../catalog/projection_binding.h"
 using std::endl;
 using std::string;
 using std::vector;
-
+using claims::catalog::Catalog;
 namespace claims {
 namespace stmt_handler {
 
@@ -49,7 +48,7 @@ ShowExec::ShowExec(AstNode* stmt) : StmtExec(stmt) {
 
 ShowExec::~ShowExec() {}
 
-RetCode ShowExec::Execute(executed_result* exec_result) {
+RetCode ShowExec::Execute(ExecutedResult* exec_result) {
   int ret = rSuccess;
   ostringstream ostr;
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
@@ -57,20 +56,20 @@ RetCode ShowExec::Execute(executed_result* exec_result) {
   switch (show_stmt_ast_->show_type_) {
     case 1: {
       ostr << "TABLES: " << endl;  //   Num = " << table_count << endl;
-      local_catalog->getTables(ostr);
+      local_catalog->GetAllTables(ostr);
       // for (unsigned i = 0; i < table_count; ++i) {
       //   ostr << "    " << local_catalog->getTable(i)->getTableName() << endl;
       // }
-      exec_result->info = ostr.str();
-      exec_result->status = true;
-      exec_result->result = NULL;
+      exec_result->info_ = ostr.str();
+      exec_result->status_ = true;
+      exec_result->result_ = NULL;
       break;
     }
     default: {
-      exec_result->error_info = "Ooooops, not Supported now!";
+      exec_result->error_info_ = "Ooooops, not Supported now!";
       LOG(ERROR) << "Not Supported now.";
-      exec_result->status = false;
-      exec_result->result = NULL;
+      exec_result->status_ = false;
+      exec_result->result_ = NULL;
     }
   }
 }

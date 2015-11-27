@@ -29,7 +29,7 @@
 #ifndef LOGICAL_OPERATOR_LOGICAL_DELETE_FILTER_H_
 #define LOGICAL_OPERATOR_LOGICAL_DELETE_FILTER_H_
 #include <vector>
-#include "../Catalog/Attribute.h"
+#include "../catalog/attribute.h"
 #include "../logical_operator/logical_operator.h"
 #include "../physical_operator/physical_sort.h"
 

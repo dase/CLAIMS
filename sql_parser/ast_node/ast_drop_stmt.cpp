@@ -31,8 +31,8 @@
 #include <string>
 #include <bitset>
 
-#include "../../Catalog/Catalog.h"
-#include "../../Catalog/table.h"
+#include "../../catalog/catalog.h"
+#include "../../catalog/table.h"
 #include "../../Environment.h"
 #include "../../common/error_define.h"
 using namespace claims::common;

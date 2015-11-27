@@ -10,8 +10,18 @@
 #ifndef ISSUE27_SORT_CPP_
 #define ISSUE27_SORT_CPP_
 #include "../../Environment.h"
-#include "../../Catalog/table.h"
-#include "../../Loader/Hdfsloader.h"
+
+#include "../../catalog/table.h"
+
+#include "../../loader/Hdfsloader.h"
+
+#include "../../logical_operator/Scan.h"
+#include "../../logical_operator/Filter.h"
+#include "../../logical_operator/Sort.h"
+#include "../../logical_operator/EqualJoin.h"
+#include "../../logical_operator/LogicalQueryPlanRoot.h"
+#include "../../logical_operator/Aggregation.h"
+
 #include "../../common/types/NValue.hpp"
 #include "../../utility/rdtsc.h"
 #include "../../common/ExpressionItem.h"
@@ -155,14 +165,14 @@ static void query_select_sort_string() {
   //	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
   //	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
   //	std::vector<BlockStreamAggregationIterator::State::aggregation>
-  //aggregation_function;
+  // aggregation_function;
 
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
   //	LogicalOperator* aggregation=new
-  //Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
+  // Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
   //==========================project=========================
   //	vector< vector<ExpressionItem> >expr_list2;
   //
@@ -209,7 +219,7 @@ static void query_select_sort_string() {
   getchar();
   getchar();
   //	BlockStreamIteratorBase*
-  //physical_iterator_tree=root->getIteratorTree(64*1024);
+  // physical_iterator_tree=root->getIteratorTree(64*1024);
   ////	physical_iterator_tree->print();
   //	physical_iterator_tree->open();
   //	while(physical_iterator_tree->next(0));

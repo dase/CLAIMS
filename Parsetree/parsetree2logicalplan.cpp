@@ -1,25 +1,29 @@
 #ifndef __PARSERTREE__
 #define __PARSERTREE__
 #include <string.h>
+#include <assert.h>
 #include <cstdio>
 #include <map>
 #include <new>
 #include <set>
 #include <string>
 #include <vector>
-#include "sql_node_struct.h"
+
+#include "./sql_node_struct.h"
+
 #include "../Environment.h"
-#include "../Catalog/Attribute.h"
-#include "../Catalog/Catalog.h"
-#include "../Catalog/table.h"
+
+#include "../catalog/attribute.h"
+#include "../catalog/catalog.h"
+#include "../catalog/table.h"
+
 #include "../common/Comparator.h"
-#include "../common/Logging.h"
-#include "../common/AttributeComparator.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
 #include "../common/TypePromotionMap.h"
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/qnode.h"
+
 #include "../logical_operator/logical_operator.h"
 #include "../common/Logging.h"
 #include "../common/AttributeComparator.h"
@@ -40,6 +44,8 @@
 
 using namespace claims::logical_operator;
 using claims::physical_operator::PhysicalAggregation;
+using namespace claims::catalog;
+
 static LogicalOperator *parsetree2logicalplan(Node *parsetree);
 
 // because Filter::Condition no longer exists
@@ -565,7 +571,8 @@ static void get_aggregation_args(
       Expr_func *funcnode = (Expr_func *)selectlist;
       if (strcmp(funcnode->funname, "FCOUNTALL") == 0) {
         aggregation_function.push_back(PhysicalAggregation::State::kCount);
-        aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+        aggregation_attributes.push_back(
+            Attribute(Attribute::AttributeType::kAttributeAny));
       } else if (strcmp(funcnode->funname, "FCOUNT") == 0) {
         aggregation_function.push_back(PhysicalAggregation::State::kCount);
         if (input == NULL) {

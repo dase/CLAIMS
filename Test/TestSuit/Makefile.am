@@ -15,8 +15,8 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../libtest.a \
-		../../Catalog/libcatalog.a \
-		../../Loader/libloader.a \
+		../../catalog/libcatalog.a \
+		../../loader/libloader.a \
 		../../logical_operator/liblogicalqueryplan.a \
 		../../BlockStreamIterator/libblockstreamiterator.a \
 		../../BlockStreamIterator/ParallelBlockStreamIterator/libparallelblockstreamiterator.a \
@@ -34,6 +34,4 @@ LDADD = 	../libtest.a \
 
 noinst_LIBRARIES=libtestsuit.a
 
-libtestsuit_a_SOURCES = \
-	ExpanderFrameTest.h 				hash_table_test.h \
-	in_segment_scalability_test.cpp 		
+libtestsuit_a_SOURCES = 

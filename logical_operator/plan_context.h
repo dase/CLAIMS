@@ -28,10 +28,16 @@
 #ifndef LOGICAL_OPERATOR_PLAN_CONTEXT_H_
 #define LOGICAL_OPERATOR_PLAN_CONTEXT_H_
 #include <vector>
-#include "../Catalog/Column.h"
-#include "../Catalog/Partitioner.h"
+#include <string>
+#include "../catalog/column.h"
+#include "../catalog/partitioner.h"
 #include "../common/Schema/Schema.h"
+#include "../catalog/attribute.h"
 #include "../logical_operator/plan_partitioner.h"
+
+using namespace claims::catalog;
+class Schema;
+
 namespace claims {
 namespace logical_operator {
 /**
@@ -41,6 +47,8 @@ namespace logical_operator {
  * operator), the PlanContext of current operator generates from it's children.
  */
 class PlanContext {
+  friend class LogcalOperator;
+
  public:
   PlanContext();
   PlanContext(const PlanContext& plan_context);

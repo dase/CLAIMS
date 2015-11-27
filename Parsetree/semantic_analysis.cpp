@@ -15,14 +15,15 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "../Catalog/Attribute.h"
-#include "../Catalog/Catalog.h"
-#include "../Catalog/table.h"
+#include "../catalog/table.h"
 #include "../common/Comparator.h"
-#include "sql_node_struct.h"
+#include "./sql_node_struct.h"
 #include "../Environment.h"
 #include "../common/Logging.h"
 #include <ostream>
+
+#include "../catalog/attribute.h"
+#include "../catalog/catalog.h"
 #include "../logical_operator/logical_aggregation.h"
 #include "../logical_operator/logical_equal_join.h"
 #include "../logical_operator/logical_filter.h"

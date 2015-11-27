@@ -41,6 +41,7 @@ class ErrorNoTest : public ::testing::Test {
  protected:
   static void SetUpTestCase() { cout << "start new test case" << endl; }
   static void TearDownTestCase() { cout << "finish new test case" << endl; }
+  static RetCode TestReturnErrorCode() { return rSuccess; }
 };
 
 TEST_F(ErrorNoTest, A) {
@@ -52,7 +53,7 @@ TEST_F(ErrorNoTest, A) {
 }
 
 TEST_F(ErrorNoTest, B) {
-  int errerno = -3;
+  int errerno = -300000;
 
   //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
@@ -60,11 +61,31 @@ TEST_F(ErrorNoTest, B) {
 }
 
 TEST_F(ErrorNoTest, C) {
-  int errerno = rSuccess;
+  int errerno = claims::common::rSuccess;
 
   //  cout<<errerno<<" , "<<CStrError(errerno)<<endl;
   const char *res = CStrError(errerno);
   EXPECT_STREQ("Success", res);
+}
+
+TEST_F(ErrorNoTest, D) { EXPECT_EQ(TestReturnErrorCode(), rSuccess); }
+
+TEST_F(ErrorNoTest, Performance) {
+  int e[3] = {rParamInvalid, rOpenHdfsFileFail, rUninitializedJoinPolicy};
+  EXPECT_STREQ("parameter of function is invalid", CStrError(e[0]));
+  EXPECT_STREQ("Open hdfs file failed", CStrError(e[1]));
+  EXPECT_STREQ(
+      "the dedicated join police is not initialized, e.g., "
+      "in corss join, equal join logical operator",
+      CStrError(e[2]));
+
+  GETCURRENTTIME(start);
+  for (int i = 0; i < 10000000; ++i) {
+    int error_no = i % 3;
+    const char *res = CStrError(error_no);
+  }
+  cout << "10,000,000 times calls use :" << GetElapsedTime(start) << " ms"
+       << endl;
 }
 
 #endif  // TEST_COMMON_ERRNO_TEST_H_

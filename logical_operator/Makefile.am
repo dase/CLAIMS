@@ -1,4 +1,3 @@
-
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
@@ -14,9 +13,9 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = 	../logical_operator/liblogicalqueryplan.a \
-		../Catalog/libcatalog.a \
-		../Catalog/stat/libstat.a \
+LDADD = ../logical_operator/liblogicalqueryplan.a \
+		../catalog/libcatalog.a \
+		../catalog/stat/libstat.a \
 		../Schema/libschema.a \
 		../Resource/libresource.a \
 		../common/libcommon.a \

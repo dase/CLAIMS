@@ -1,15 +1,7 @@
 ///*
 // * tpc_h_test.cpp
-// *
-// *  Created on: Apr 1, 2014
-// *      Author: wangli
-// */
-//
-//#ifndef TEST_NEW
-//#define TEST_NEW
-//#include "../../Environment.h"
-//#include "../../Catalog/table.h"
-//#include "../../Loader/Hdfsloader.h"
+//#include "../../catalog/table.h"
+//#include "../../loader/Hdfsloader.h"
 //#include "../../logical_operator/LogicalQueryPlanRoot.h"
 //#include "../../logical_operator/logical_aggregation.h"
 //#include

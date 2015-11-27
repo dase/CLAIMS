@@ -48,6 +48,7 @@ class AstLoadTable : public AstNode {
                int mode);
   ~AstLoadTable();
   void Print(int level = 0) const;
+  RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   AstNodeType ast_node_type_;
   string table_name_;
   AstNode* path_;

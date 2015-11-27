@@ -30,7 +30,10 @@
 #include <iomanip>
 #include <string>
 #include <bitset>
+
+#include "../../catalog/table.h"
 #include "../../common/error_define.h"
+#include "../../Environment.h"
 using namespace claims::common;  // NOLINT
 using std::cout;
 using std::endl;
@@ -62,6 +65,24 @@ void AstLoadTable::Print(int level) const {
        << " Path: " << endl;
   if (path_ != NULL) {
     path_->Print(++level);
+  }
+}
+
+RetCode AstLoadTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
+  RetCode ret = rSuccess;
+
+  TableDescriptor* table =
+      Environment::getInstance()->getCatalog()->getTable(table_name_);
+  if (NULL != table) {
+    sem_cnxt->error_msg_ =
+        "the table " + table_name_ + " does not exist during loading!";
+    ret = rTableNotExist;
+    return ret;
+  }
+  if (0 == table->getNumberOfProjection()) {
+    sem_cnxt->error_msg_ = "the table has not been created a projection!";
+    ret = rNoProjection;
+    return ret;
   }
 }
 //}  // namespace sql_parser

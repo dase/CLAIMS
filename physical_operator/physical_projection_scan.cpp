@@ -41,8 +41,9 @@
 #include "../storage/ChunkStorage.h"
 #include "../Executor/expander_tracker.h"
 #include "../storage/PartitionStorage.h"
-
-using namespace claims::common;
+using claims::common::rNoPartitionIdScan;
+using claims::common::rSuccess;
+using claims::common::rCodegenFailed;
 
 namespace claims {
 namespace physical_operator {
@@ -91,8 +92,7 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
              PartitionID(state_.projection_id_, kPartitionOffset)))) {
       LOG(ERROR) << PartitionID(state_.projection_id_, kPartitionOffset)
                         .getName()
-                        .c_str() << kErrorMessage[rNoPartitionIdScan]
-                 << std::endl;
+                        .c_str() << CStrError(rNoPartitionIdScan) << std::endl;
       SetReturnStatus(false);
     } else {
       partition_reader_iterator_ =

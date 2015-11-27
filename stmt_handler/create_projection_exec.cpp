@@ -47,16 +47,16 @@ CreateProjectionExec::CreateProjectionExec(AstNode* stmt) : StmtExec(stmt) {
 
 CreateProjectionExec::~CreateProjectionExec() {}
 
-RetCode CreateProjectionExec::Execute(executed_result* exec_result) {
+RetCode CreateProjectionExec::Execute(ExecutedResult* exec_result) {
   RetCode ret = rSuccess;
 
   SemanticContext sem_cnxt;
   sem_cnxt.index_.push_back(0);
   ret = create_projection_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info =
+    exec_result->error_info_ =
         "Semantic analysis error.\n" + sem_cnxt.error_msg_;
-    exec_result->status = false;
+    exec_result->status_ = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
     return ret;
@@ -122,9 +122,9 @@ RetCode CreateProjectionExec::Execute(executed_result* exec_result) {
 
   local_catalog->saveCatalog();
 
-  exec_result->status = true;
-  exec_result->result = NULL;
-  exec_result->info = "create projection successfully";
+  exec_result->status_ = true;
+  exec_result->result_ = NULL;
+  exec_result->info_ = "create projection successfully";
 
   return ret;
 }

@@ -34,12 +34,13 @@
 
 #include "../common/Block/BlockStream.h"
 #include "../common/Block/ResultSet.h"
-#include "../Catalog/table.h"
+#include "../catalog/table.h"
 #include "../Daemon/Daemon.h"
-#include "../Loader/Hdfsloader.h"
+#include "../loader/data_injector.h"
 #include "../sql_parser/ast_node/ast_select_stmt.h"
 #include "../stmt_handler/select_exec.h"
 #include "../common/error_define.h"
+using claims::loader::DataInjector;
 using std::endl;
 using std::string;
 using std::vector;
@@ -54,7 +55,7 @@ DeleteStmtExec::DeleteStmtExec(AstNode* stmt) : StmtExec(stmt) {
 
 DeleteStmtExec::~DeleteStmtExec() {}
 
-RetCode DeleteStmtExec::Execute(executed_result* exec_result) {
+RetCode DeleteStmtExec::Execute(ExecutedResult* exec_result) {
   RetCode ret = rSuccess;
   string tablename =
       dynamic_cast<AstTable*>(
@@ -66,9 +67,9 @@ RetCode DeleteStmtExec::Execute(executed_result* exec_result) {
   SemanticContext sem_cnxt;
   ret = delete_stmt_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info =
+    exec_result->error_info_ =
         "Semantic analysis error.\n" + sem_cnxt.error_msg_;
-    exec_result->status = false;
+    exec_result->status_ = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;
     return ret;
@@ -91,26 +92,26 @@ RetCode DeleteStmtExec::Execute(executed_result* exec_result) {
       AST_SELECT_STMT, 0, appended_query_sel_list, delete_stmt_ast_->from_list_,
       delete_stmt_ast_->where_list_, NULL, NULL, NULL, NULL, NULL);
 
-  // executed_result* appended_result = new executed_result();
+  // ExecutedResult* appended_result = new ExecutedResult();
   SelectExec* appended_query_exec = new SelectExec(appended_query_sel_stmt);
 
   appended_query_exec->Execute(exec_result);
   ostringstream ostr;
-  ostr << exec_result->result->getNumberOftuples() << " tuples deleted.";
-  exec_result->info = ostr.str();
+  ostr << exec_result->result_->getNumberOftuples() << " tuples deleted.";
+  exec_result->info_ = ostr.str();
 
   string del_table_name = tablename + "_DEL";
   /**
    * step2 : Insert delete data into _DEL table.
    */
-  InsertDeletedDataIntoTableDEL(del_table_name, exec_result->result);
+  InsertDeletedDataIntoTableDEL(del_table_name, exec_result);
 
   return ret;
 }
 
-void DeleteStmtExec::InsertDeletedDataIntoTableDEL(string tablename,
-                                                   ResultSet* result_set) {
-  DynamicBlockBuffer::Iterator it = result_set->createIterator();
+void DeleteStmtExec::InsertDeletedDataIntoTableDEL(
+    string tablename, ExecutedResult* exec_result) {
+  DynamicBlockBuffer::Iterator it = exec_result->result_->createIterator();
   BlockStreamBase* block;
   BlockStreamBase::BlockStreamTraverseIterator* tuple_it;
 
@@ -132,12 +133,13 @@ void DeleteStmtExec::InsertDeletedDataIntoTableDEL(string tablename,
     tuple_it = block->createIterator();
     void* tuple;
     while (tuple = tuple_it->nextTuple()) {
-      for (unsigned i = 0; i < result_set->column_header_list_.size(); i++) {
+      for (unsigned i = 0; i < exec_result->result_->column_header_list_.size();
+           i++) {
         // check whether the row has been deleted or not.
         if (true) {
-          ostr << result_set->schema_->getcolumn(i)
-                      .operate->toString(result_set->schema_->getColumnAddess(
-                          i, tuple))
+          ostr << exec_result->result_->schema_->getcolumn(i)
+                      .operate->toString(exec_result->result_->schema_
+                                             ->getColumnAddess(i, tuple))
                       .c_str();
           ostr << "|";
         } else {
@@ -149,10 +151,13 @@ void DeleteStmtExec::InsertDeletedDataIntoTableDEL(string tablename,
     delete tuple_it;
   }
 
-  HdfsLoader* Hl = new HdfsLoader(tabledel);
-  string tmp = ostr.str();
-  Hl->append(ostr.str());
-  cout << tmp << endl;
+  DataInjector* injector = new DataInjector(tabledel);
+  injector->InsertFromString(ostr.str(), exec_result);
+
+  //  HdfsLoader* Hl = new HdfsLoader(tabledel);
+  //  string tmp = ostr.str();
+  //  Hl->append(ostr.str());
+  //  cout << tmp << endl;
   Environment::getInstance()->getCatalog()->saveCatalog();
 }
 

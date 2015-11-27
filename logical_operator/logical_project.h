@@ -39,7 +39,7 @@
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
 #include "../common/Expression/qnode.h"
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../logical_operator/logical_operator.h"
 #include "../logical_operator/Requirement.h"
 #include "../physical_operator/physical_operator_base.h"

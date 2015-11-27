@@ -35,7 +35,7 @@
 #include <map>
 #include <utility>
 #include <string>
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../logical_operator/logical_operator.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "..//physical_operator/physical_sort.h"
