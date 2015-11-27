@@ -322,7 +322,7 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
     while (true) {
       pthread_testcancel();
       bool consumed = false;
-      BlockContainer* block_for_sending;
+      BlockContainer* block_for_sending = NULL;
       int partition_id =
           Pthis->sending_buffer_->getBlockForSending(block_for_sending);
       if (partition_id >= 0) {
@@ -372,30 +372,27 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
                     Pthis->state_.partition_offset_,
                     Pthis->sendedblocks_, recvbytes,
                     block_for_sending_->GetRestSize(),
-                    Pthis->state_.upper_id_list_[partition_id]);
-                LOG(INFO) << "[ExchangeEagerLower]: " << "["
-                    << Pthis->state_.exchange_id_ << ","
-                    << Pthis->state_.partition_offset_ << "]Send
-                    the "
-                    << Pthis->sendedblocks_ << " block(bytes=" <<
-                    recvbytes
-                    << ", rest size=" <<
-                    block_for_sending_->GetRestSize()
-                    << ") to [" <<
-                    Pthis->state_.upper_id_list_[partition_id]
-                    << "]" << std::endl;
-                cout << "[ExchangeEagerLower]: " << "["
-                    << Pthis->state_.exchange_id_ << ","
-                    << Pthis->state_.partition_offset_ << "]Send
-                    the "
-                    << Pthis->sendedblocks_ << " block(bytes=" <<
-                    recvbytes
-                    << ", rest size=" <<
-                    block_for_sending_->GetRestSize()
-                    << ") to [" <<
-                    Pthis->state_.upper_id_list_[partition_id]
-                    << "]" << std::endl;
-                */
+                    Pthis->state_.upper_id_list_[partition_id]);*/
+              LOG(INFO) << "[ExchangeEagerLower]: "
+                        << "[" << Pthis->state_.exchange_id_ << ","
+                        << Pthis->state_.partition_offset_ << "]Send the "
+                        << Pthis->sendedblocks_ << " block(bytes=" << recvbytes
+                        << ", rest size=" << block_for_sending->GetRestSize()
+                        << ") to ["
+                        << Pthis->state_.upper_id_list_[partition_id] << "]"
+                        << std::endl;
+              /*                cout << "[ExchangeEagerLower]: " << "["
+                                  << Pthis->state_.exchange_id_ << ","
+                                  << Pthis->state_.partition_offset_ << "]Send
+                                  the "
+                                  << Pthis->sendedblocks_ << " block(bytes=" <<
+                                  recvbytes
+                                  << ", rest size=" <<
+                                  block_for_sending_->GetRestSize()
+                                  << ") to [" <<
+                                  Pthis->state_.upper_id_list_[partition_id]
+                                  << "]" << std::endl;
+                              */
               consumed = true;
             }
           }
