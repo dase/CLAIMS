@@ -179,10 +179,9 @@ P_COMMENT varchar(23)\
   }
 }
 
-#if 0
-TEST_F(ElasticIteratorModelTest,createprojection){
-
-	string createprojectionsql="create projection on PART2(\
+TEST_F(ElasticIteratorModelTest, createprojection) {
+  string createprojectionsql =
+      "create projection on PART2(\
 P_PARTKEY,\
 P_NAME,\
 P_MFGR,\
@@ -193,16 +192,15 @@ P_CONTAINER,\
 P_RETAILPRICE,\
 P_COMMENT\
 ) number = 18 partitioned on P_PARTKEY;";
-	
-	ResultSet rs;
-	std::string message;
-	client_.submit(createprojectionsql.c_str(),message,rs);
-	EXPECT_STREQ("create projection successfully\n", message.c_str());
-	
-	cout << message << endl;
-	
-}
 
+  ResultSet rs;
+  std::string message;
+  client_.submit(createprojectionsql.c_str(), message, rs);
+  EXPECT_STREQ("create projection successfully\n", message.c_str());
+
+  cout << message << endl;
+}
+#if 0
 TEST_F(ElasticIteratorModelTest,loaddata){
 
 	string datapathfile = "/home/imdb/data/part.tbl";
@@ -252,22 +250,19 @@ TEST_F(ElasticIteratorModelTest,showdeleteddatafromtableDEL){
 	EXPECT_EQ(10,rs.getNumberOftuples());
 	cout << message << endl;
 }
-
-TEST_F(ElasticIteratorModelTest,droptestdata){
-
-
-	string droptablepart2sql="drop table PART2, PART2_DEL;";
-	
-	ResultSet rs;
-	std::string message;
-	client_.submit(droptablepart2sql.c_str(),message,rs);
-	DynamicBlockBuffer::Iterator it=rs.createIterator();
-	BlockStreamBase::BlockStreamTraverseIterator *b_it=it.nextBlock()->createIterator();
-	EXPECT_EQ("drop table successfully!\n",message);
-	cout << message << endl;
-}
-
 #endif
+TEST_F(ElasticIteratorModelTest, droptestdata) {
+  string droptablepart2sql = "drop table PART2;";
+
+  ResultSet rs;
+  std::string message;
+  client_.submit(droptablepart2sql.c_str(), message, rs);
+  DynamicBlockBuffer::Iterator it = rs.createIterator();
+  BlockStreamBase::BlockStreamTraverseIterator *b_it =
+      it.nextBlock()->createIterator();
+  EXPECT_EQ("drop table successfully!\n", message);
+  cout << message << endl;
+}
 
 // add by cswang 19 Oct, 2015
 

@@ -54,8 +54,6 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rTypeError, "Type error");
   DefineErrorAndMessage(rNotInit, "Not initialize");
 
-  DefineErrorAndMessage(rTypeError, "Type error");
-  DefineErrorAndMessage(rNotInit, "Not initialize");
   DefineErrorAndMessage(rInvalidArgument, "Invalid argument");
   DefineErrorAndMessage(rArrayOutOfRange, "Array index out of range");
   DefineErrorAndMessage(rServerListenError, "Failed to listen to the port");
@@ -224,6 +222,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rCatalogRestoreInvild, "restore catalog failed");
   DefineErrorAndMessage(rCatalogNotFound, "catalog file is not existed");
   DefineErrorAndMessage(rNoProjection, "No Projection on this table.");
+  DefineErrorAndMessage(rLimitNotStandardized, "limit not standard.");
+  DefineErrorAndMessage(rLimitZero, "limit zero.");
 
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
