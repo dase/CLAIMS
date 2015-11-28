@@ -90,7 +90,7 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
       SetReturnStatus(false);
     } else {
       partition_reader_iterator_ =
-          partition_handle_->createAtomicReaderIterator();
+          partition_handle_->CreateAtomicReaderIterator();
       SetReturnStatus(true);
     }
 
@@ -101,7 +101,7 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
     ChunkReaderIterator::block_accessor* ba;
     while (chunk_reader_it = partition_reader_iterator_->nextChunk()) {
       while (chunk_reader_it->getNextBlockAccessor(ba)) {
-        ba->getBlockSize();
+        ba->GetBlockSize();
         input_dataset_.input_data_blocks_.push_back(ba);
       }
     }
@@ -147,7 +147,7 @@ bool PhysicalProjectionScan::Next(BlockStreamBase* block) {
     ChunkReaderIterator::block_accessor* ba = stc->assigned_data_.front();
     stc->assigned_data_.pop_front();
 
-    ba->getBlock(block);
+    ba->GetBlock(block);
 
     // whether delete InMemeryBlockAccessor::target_block_start_address
     // is depend on whether use copy in ba->getBlock(block);

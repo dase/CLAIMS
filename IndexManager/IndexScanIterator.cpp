@@ -46,7 +46,7 @@ bool IndexScanIterator::Open(const PartitionOffset& partition_off)
 			SetReturnStatus(false);
 		}
 		else{
-			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
+			partition_reader_iterator_=partition_handle_->CreateAtomicReaderIterator();
 //			chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 		}
 		SetReturnStatus(true);
@@ -177,13 +177,13 @@ bool IndexScanIterator::atomicPopRemainingBlock(remaining_block& rb)
 
 bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 {
-	if (chunk_reader_iterator_ == 0 || chunk_reader_iterator_->nextBlock(rb.block) == false || rb.iter_result_map == rb.result_set->end())
+	if (chunk_reader_iterator_ == 0 || chunk_reader_iterator_->NextBlock(rb.block) == false || rb.iter_result_map == rb.result_set->end())
 	{
 		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 		if (chunk_reader_iterator_ == 0)
 			return false;
 
-		chunk_reader_iterator_->nextBlock(rb.block);
+		chunk_reader_iterator_->NextBlock(rb.block);
 		rb.block_off = 0;
 
 		//search the CSB+-Tree index to get the new chunk's search-result

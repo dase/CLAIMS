@@ -42,7 +42,7 @@ bool bottomLayerCollecting::Open(const PartitionOffset& partition_offset)
 			SetReturnStatus(false);
 		}
 		else{
-			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
+			partition_reader_iterator_=partition_handle_->CreateAtomicReaderIterator();
 		}
 		SetReturnStatus(true);
 	}
@@ -174,7 +174,7 @@ BlockStreamBase* bottomLayerCollecting::AtomicPopBlockStream()
 
 bool bottomLayerCollecting::askForNextBlock(BlockStreamBase* & block, remaining_block& rb)
 {
-	if (chunk_reader_iterator_==0||chunk_reader_iterator_->nextBlock(block) == false)
+	if (chunk_reader_iterator_==0||chunk_reader_iterator_->NextBlock(block) == false)
 	{
 		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
 
@@ -182,7 +182,7 @@ bool bottomLayerCollecting::askForNextBlock(BlockStreamBase* & block, remaining_
 			printf("Has been falsed!!!!!!!!!!!!!*&S*DF&(SD&F(S<><<<><><><><><>\n");
 			return false;
 		}
-		chunk_reader_iterator_->nextBlock(block);
+		chunk_reader_iterator_->NextBlock(block);
 		lock_.acquire();
 		rb.chunk_offset = ++chunk_offset_;
 		block_offset_ = 0;

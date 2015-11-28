@@ -7,54 +7,23 @@
 
 #ifndef PARTITIONSTORAGE_H_
 #define PARTITIONSTORAGE_H_
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
 #include "ChunkStorage.h"
 #include "StorageLevel.h"
 #include "PartitionReaderIterator.h"
 #include "../utility/lock.h"
 
 class PartitionStorage {
-#ifdef storage
- public:
-  class PartitionReaderIterator {
-   public:
-    //		PartitionReaderItetaor();
-    PartitionReaderIterator(PartitionStorage* partition_storage);
-    virtual ~PartitionReaderIterator();
-    virtual ChunkReaderIterator* nextChunk();
-    virtual bool nextBlock(BlockStreamBase*& block);
-
-   protected:
-    PartitionStorage* ps;
-    unsigned chunk_cur_;
-    ChunkReaderIterator* chunk_it_;
-  };
-  class AtomicPartitionReaderIterator : public PartitionReaderIterator {
-   public:
-    //		AtomicPartitionReaderIterator();
-    AtomicPartitionReaderIterator(PartitionStorage* partition_storage)
-        : PartitionReaderIterator(partition_storage){};
-    virtual ~AtomicPartitionReaderIterator() override;
-    ChunkReaderIterator* nextChunk();
-    virtual bool nextBlock(BlockStreamBase*& block);
-
-   private:
-    Lock lock_;
-  };
-#endif
   friend class PartitionReaderIterator;
   PartitionStorage(const PartitionID& partition_id,
                    const unsigned& number_of_chunks, const StorageLevel&);
   virtual ~PartitionStorage();
-  void addNewChunk();
-  void updateChunksWithInsertOrAppend(const PartitionID& partition_id,
+  void AddNewChunk();
+  void UpdateChunksWithInsertOrAppend(const PartitionID& partition_id,
                                       const unsigned& number_of_chunks,
                                       const StorageLevel& storage_level);
-  void removeAllChunks(const PartitionID& partition_id);
-  PartitionReaderIterator* createReaderIterator();  //迭代器模式的迭代器生成。
-  PartitionReaderIterator* createAtomicReaderIterator();
+  void RemoveAllChunks(const PartitionID& partition_id);
+  PartitionReaderIterator* CreateReaderIterator();  //迭代器模式的迭代器生成。
+  PartitionReaderIterator* CreateAtomicReaderIterator();
 
  protected:
   PartitionID partition_id_;

@@ -6,53 +6,53 @@
  */
 
 #include "BufferManager.h"
-BufferManager* BufferManager::instance_=0;
+BufferManager* BufferManager::instance_ = 0;
 BufferManager::BufferManager() {
-	totol_capacity_=(unsigned long )1024*1024*1024*80;
-	storage_budget_max_=(unsigned long )1024*1024*1024*60;
-	storage_budget_min_=(unsigned long )1024*1024*1024*60;
-	storage_used_=0;
-	intermediate_buffer_budget_max_=896*1024*1024;
-	intermediate_buffer_budget_min_=896*1024*1024;
-	intermediate_buffer_used_=0;
-	memory_storage_=MemoryChunkStore::getInstance();
-	logging_=new BufferManagerLogging();
-	logging_->log("Initialized!");
-
+  totol_capacity_ = (unsigned long)1024 * 1024 * 1024 * 80;
+  storage_budget_max_ = (unsigned long)1024 * 1024 * 1024 * 60;
+  storage_budget_min_ = (unsigned long)1024 * 1024 * 1024 * 60;
+  storage_used_ = 0;
+  intermediate_buffer_budget_max_ = 896 * 1024 * 1024;
+  intermediate_buffer_budget_min_ = 896 * 1024 * 1024;
+  intermediate_buffer_used_ = 0;
+  memory_storage_ = MemoryChunkStore::getInstance();
+  logging_ = new BufferManagerLogging();
+  logging_->log("Initialized!");
 }
 
 BufferManager::~BufferManager() {
-	// TODO Auto-generated destructor stub
-	instance_=0;
-	delete logging_;
+  // TODO Auto-generated destructor stub
+  instance_ = 0;
+  delete logging_;
 }
 
-BufferManager* BufferManager::getInstance(){
-	if(instance_==0){
-		instance_= new BufferManager();
-	}
-	return instance_;
+BufferManager* BufferManager::getInstance() {
+  if (instance_ == 0) {
+    instance_ = new BufferManager();
+  }
+  return instance_;
 }
-unsigned long int BufferManager::getTotalUsed()const{
-	return intermediate_buffer_used_+storage_used_;
+unsigned long int BufferManager::getTotalUsed() const {
+  return intermediate_buffer_used_ + storage_used_;
 }
-bool BufferManager::applyStorageDedget(unsigned long size){
-	bool ret;
-	lock_.acquire();
-	if(storage_used_+size<=storage_budget_max_){
-		storage_used_+=size;
-		ret=true;
-	}
-	logging_->log("%d MB applied, %d MB left!",size/1024/1024,(storage_budget_max_-storage_used_)/1024/1024);
-	lock_.release();
-	return ret;
+bool BufferManager::applyStorageDedget(unsigned long size) {
+  bool ret = false;
+  lock_.acquire();
+  if (storage_used_ + size <= storage_budget_max_) {
+    storage_used_ += size;
+    ret = true;
+  }
+  logging_->log("%d MB applied, %d MB left!", size / 1024 / 1024,
+                (storage_budget_max_ - storage_used_) / 1024 / 1024);
+  lock_.release();
+  return ret;
 }
-void BufferManager::returnStorageBudget(unsigned long size){
-	lock_.acquire();
-	storage_used_-=size;
-	lock_.release();
+void BufferManager::returnStorageBudget(unsigned long size) {
+  lock_.acquire();
+  storage_used_ -= size;
+  lock_.release();
 }
 
-unsigned BufferManager::getStorageMemoryBudegeInMilibyte()const{
-	return storage_budget_max_/1024/1024;
+unsigned BufferManager::getStorageMemoryBudegeInMilibyte() const {
+  return storage_budget_max_ / 1024 / 1024;
 }

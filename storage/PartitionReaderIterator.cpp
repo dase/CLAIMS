@@ -29,7 +29,7 @@
 
 PartitionReaderIterator::PartitionReaderIterator(
     PartitionStorage* partition_storage)
-    : ps(partition_storage), chunk_cur_(0), chunk_it_(0) {}
+    : ps(partition_storage), chunk_cur_(0), chunk_it_(NULL) {}
 
 PartitionReaderIterator::~PartitionReaderIterator() {}
 
@@ -37,25 +37,25 @@ ChunkReaderIterator* PartitionReaderIterator::nextChunk() {
   if (chunk_cur_ < ps->number_of_chunks_)
     return ps->chunk_list_[chunk_cur_++]->createChunkReaderIterator();
   else
-    return 0;
+    return NULL;
 }
 
 AtomicPartitionReaderIterator::~AtomicPartitionReaderIterator() {}
 
 ChunkReaderIterator* AtomicPartitionReaderIterator::nextChunk() {
   //  lock_.acquire();
-  ChunkReaderIterator* ret;
+  ChunkReaderIterator* ret = NULL;
   if (chunk_cur_ < ps->number_of_chunks_)
     ret = ps->chunk_list_[chunk_cur_++]->createChunkReaderIterator();
   else
-    ret = 0;
+    ret = NULL;
   //  lock_.release();
   return ret;
 }
 
 bool PartitionReaderIterator::nextBlock(BlockStreamBase*& block) {
   assert(false);
-  if (chunk_it_ > 0 && chunk_it_->nextBlock(block)) {
+  if (chunk_it_ > 0 && chunk_it_->NextBlock(block)) {
     return true;
   } else {
     if ((chunk_it_ = nextChunk()) > 0) {
@@ -71,7 +71,7 @@ bool AtomicPartitionReaderIterator::nextBlock(BlockStreamBase*& block) {
   ChunkReaderIterator::block_accessor* ba;
   if (chunk_it_ != 0 && chunk_it_->getNextBlockAccessor(ba)) {
     lock_.release();
-    ba->getBlock(block);
+    ba->GetBlock(block);
     return true;
   } else {
     if ((chunk_it_ = PartitionReaderIterator::nextChunk()) > 0) {
@@ -82,4 +82,4 @@ bool AtomicPartitionReaderIterator::nextBlock(BlockStreamBase*& block) {
       return false;
     }
   }
-}
+}  //这个函数是关键，我需要考虑清楚，在决定如何动，这块～～～ --han 1123

@@ -236,7 +236,7 @@ void* insert_into_hash_table_from_projection(void * argment){
 	unsigned nbuckets=arg.hash->getNumberOfPartitions();
 	unsigned long long int start=curtick();
 	printf("tuple length=%d\n",arg.schema->getTupleMaxSize());
-	while(arg.partition_reader->nextBlock(fetched_block)){
+	while(arg.partition_reader->NextBlock(fetched_block)){
 		void* tuple;
 		BlockStreamBase::BlockStreamTraverseIterator* it=fetched_block->createIterator();
 		while(tuple=it->nextTuple()){
@@ -301,7 +301,7 @@ static double projection_scan(unsigned degree_of_parallelism){
 	arg.hash=PartitionFunctionFactory::createBoostHashFunction(nbuckets);
 //	arg.hash_table=hashtable;
 	arg.schema=schema;
-	arg.partition_reader=BlockManager::getInstance()->getPartitionHandle(PartitionID(table->getProjectoin(1)->getProjectionID(),0))->createAtomicReaderIterator();
+	arg.partition_reader=BlockManager::getInstance()->getPartitionHandle(PartitionID(table->getProjectoin(1)->getProjectionID(),0))->CreateAtomicReaderIterator();
 	arg.barrier=new Barrier(nthreads);
 	pthread_t pid[1000];
 	unsigned long long int start=curtick();

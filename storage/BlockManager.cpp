@@ -254,7 +254,7 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const &desc,const 
 		hdfsDisconnect(fs);
 		lock.release();
 		return -1;
-	}
+	}//加错误码;
 	else{
 		logging_->log("file [%s] is opened for offset[%d]\n",chunk_id.partition_id.getPathAndName().c_str(),offset);
 	}
@@ -315,7 +315,7 @@ bool BlockManager::containsPartition(const PartitionID& part)const{
 bool BlockManager::addPartition(const PartitionID& partition_id, const unsigned & number_of_chunks,const StorageLevel& desirable_storage_level){
 	boost::unordered_map<PartitionID,PartitionStorage*>::const_iterator it=partition_id_to_storage_.find(partition_id);
 	if(it!=partition_id_to_storage_.cend()){
-		partition_id_to_storage_[partition_id]->updateChunksWithInsertOrAppend(partition_id, number_of_chunks, desirable_storage_level);
+		partition_id_to_storage_[partition_id]->UpdateChunksWithInsertOrAppend(partition_id, number_of_chunks, desirable_storage_level);
 		logging_->log("Successfully updated partition[%s](desriable_storage_level = %d)!", partition_id.getName().c_str(), desirable_storage_level);
 		return true;
 	}
@@ -332,7 +332,7 @@ bool BlockManager::removePartition(const PartitionID &partition_id)
 		logging_->elog("Fail to unbinding partition [%s].", partition_id.getName().c_str());
 		return false;
 	}
-	it->second->removeAllChunks(it->first);
+	it->second->RemoveAllChunks(it->first);
 	partition_id_to_storage_.erase(it);
 	return true;
 }

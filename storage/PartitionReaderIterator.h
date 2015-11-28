@@ -19,7 +19,7 @@
  * /Claims/storage/PartitionReaderIderator.h
  *
  *  Created on: Nov 19 ,2015
- *      Author: Han
+ *      Author: Han，wangli
  *		   Email:
  *
  * Description: It belongs to design patterns of iterator. This is a iterator of

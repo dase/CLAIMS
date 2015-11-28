@@ -28,73 +28,73 @@ class ChunkReaderIterator {
    public:
     block_accessor() {}
     ~block_accessor() {}
-    virtual void getBlock(BlockStreamBase*& block) const { assert(false); }
-    unsigned getBlockSize() const { return block_size; }
+    virtual void GetBlock(BlockStreamBase*& block) const { assert(false); }
+    unsigned GetBlockSize() const { return block_size_; }
 
-    void setBlockSize(unsigned blockSize) { block_size = blockSize; }
+    void SetBlockSize(unsigned blockSize) { block_size_ = blockSize; }
 
    protected:
-    unsigned block_size;
+    unsigned block_size_;
   };
   class InMemeryBlockAccessor : public block_accessor {
    public:
-    InMemeryBlockAccessor() { target_block_start_address = NULL; }
+    InMemeryBlockAccessor() : target_block_start_address_(NULL){};
     ~InMemeryBlockAccessor() {}
-    void getBlock(BlockStreamBase*& block) const;
+    void GetBlock(BlockStreamBase*& block) const;
     void* getTargetBlockStartAddress() const {
-      return target_block_start_address;
+      return target_block_start_address_;
     }
 
     void setTargetBlockStartAddress(void* targetBlockStartAddress) {
-      target_block_start_address = targetBlockStartAddress;
+      target_block_start_address_ = targetBlockStartAddress;
     }
 
    private:
-    void* target_block_start_address;
+    void* target_block_start_address_;
   };
 
   class InDiskBlockAccessor : public block_accessor {
    public:
-    void getBlock(BlockStreamBase*& block) const;
+    void GetBlock(BlockStreamBase*& block) const;
 
-    unsigned getBlockCur() const { return block_cur; }
+    unsigned getBlockCur() const { return block_cur_; }
 
-    void setBlockCur(unsigned blockCur) { block_cur = blockCur; }
+    void setBlockCur(unsigned blockCur) { block_cur_ = blockCur; }
 
-    const ChunkID& getChunkId() const { return chunk_id; }
+    const ChunkID& getChunkId() const { return chunk_id_; }
 
-    void setChunkId(const ChunkID& chunkId) { chunk_id = chunkId; }
+    void setChunkId(const ChunkID& chunkId) { chunk_id_ = chunkId; }
 
-    unsigned getChunkSize() const { return chunk_size; }
+    unsigned getChunkSize() const { return chunk_size_; }
 
-    void setChunkSize(unsigned chunkSize) { chunk_size = chunkSize; }
+    void setChunkSize(unsigned chunkSize) { chunk_size_ = chunkSize; }
 
    private:
-    unsigned chunk_size;
-    ChunkID chunk_id;
-    unsigned block_cur;
+    unsigned chunk_size_;
+    ChunkID chunk_id_;
+    unsigned block_cur_;
   };
 
   class InHDFSBlockAccessor : public block_accessor {
    public:
-    void getBlock(BlockStreamBase*& block) const;
+    void GetBlock(BlockStreamBase*& block) const;
 
-    unsigned getBlockCur() const { return block_cur; }
+    unsigned getBlockCur() const { return block_cur_; }
 
-    void setBlockCur(unsigned blockCur) { block_cur = blockCur; }
+    void setBlockCur(unsigned blockCur) { block_cur_ = blockCur; }
 
-    const ChunkID& getChunkId() const { return chunk_id; }
+    const ChunkID& getChunkId() const { return chunk_id_; }
 
-    void setChunkId(const ChunkID& chunkId) { chunk_id = chunkId; }
+    void setChunkId(const ChunkID& chunkId) { chunk_id_ = chunkId; }
 
-    unsigned getChunkSize() const { return chunk_size; }
+    unsigned getChunkSize() const { return chunk_size_; }
 
-    void setChunkSize(unsigned chunkSize) { chunk_size = chunkSize; }
+    void setChunkSize(unsigned chunkSize) { chunk_size_ = chunkSize; }
 
    private:
-    unsigned chunk_size;
-    ChunkID chunk_id;
-    unsigned block_cur;
+    unsigned chunk_size_;
+    ChunkID chunk_id_;
+    unsigned block_cur_;
   };
 
   ChunkReaderIterator(const ChunkID& chunk_id, unsigned block_size,
@@ -104,7 +104,7 @@ class ChunkReaderIterator {
         cur_block_(0),
         block_size_(block_size),
         chunk_size_(chunk_size){};
-  virtual bool nextBlock(BlockStreamBase*& block) = 0;
+  virtual bool NextBlock(BlockStreamBase*& block) = 0;
   virtual bool getNextBlockAccessor(block_accessor*& ba) = 0;
   bool nextBlock();
   virtual ~ChunkReaderIterator(){};
@@ -124,7 +124,7 @@ class InMemoryChunkReaderItetaor : public ChunkReaderIterator {
                              const unsigned& block_size,
                              const ChunkID& chunk_id);
   virtual ~InMemoryChunkReaderItetaor();
-  bool nextBlock(BlockStreamBase*& block);
+  bool NextBlock(BlockStreamBase*& block);  // 1126 工作点
   bool getNextBlockAccessor(block_accessor*& ba);
 
  private:
@@ -143,9 +143,8 @@ class DiskChunkReaderIteraror : public ChunkReaderIterator {
   //	unsigned number_of_blocks_;
   //	unsigned cur_block_;
   /*the iterator creates a buffer and allocates its memory such that the query
-   * processing
-   * can just use the Block without the concern the memory allocation and
-   * deallocation.
+   * processing can just use the Block without the concern the memory allocation
+   * and deallocation.
    */
   Block* block_buffer_;
   int fd_;
@@ -163,9 +162,8 @@ class HDFSChunkReaderIterator : public ChunkReaderIterator {
   //	unsigned number_of_blocks_;
   //	unsigned cur_block_;
   /*the iterator creates a buffer and allocates its memory such that the query
-   * processing
-   * can just use the Block without the concern the memory allocation and
-   * deallocation.
+   * processing can just use the Block without the concern the memory allocation
+   * and deallocation.
    */
   Block* block_buffer_;
   hdfsFS fs_;
