@@ -73,7 +73,7 @@ RetCode AstLoadTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
 
   TableDescriptor* table =
       Environment::getInstance()->getCatalog()->getTable(table_name_);
-  if (NULL != table) {
+  if (NULL == table) {
     sem_cnxt->error_msg_ =
         "the table " + table_name_ + " does not exist during loading!";
     ret = rTableNotExist;
@@ -84,6 +84,7 @@ RetCode AstLoadTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
     ret = rNoProjection;
     return ret;
   }
+  return ret;
 }
 //}  // namespace sql_parser
 //}  // namespace claims
