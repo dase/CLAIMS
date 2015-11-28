@@ -108,7 +108,8 @@ bool PhysicalLimit::Close() {
 }
 
 void PhysicalLimit::Print() {
-  printf("Limit %ld\n", state_.limit_tuples_);
+  printf("Limit:\n  offset: %ld, tuple_count: %ld\n", state_.start_position_,
+         state_.limit_tuples_);
   state_.child_->Print();
 }
 

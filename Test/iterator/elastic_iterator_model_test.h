@@ -134,6 +134,16 @@ TEST_F(ElasticIteratorModelTest, Join) {
   EXPECT_EQ(200000, *(long *)b_it->nextTuple());
   delete b_it;
 }
+TEST_F(ElasticIteratorModelTest, CrossJoin) {
+  ResultSet rs;
+  std::string message;
+  client_.submit("select count(*) from PART,REGION;", message, rs);
+  DynamicBlockBuffer::Iterator it = rs.createIterator();
+  BlockStreamBase::BlockStreamTraverseIterator *b_it =
+      it.nextBlock()->createIterator();
+  EXPECT_EQ(1000000, *(long *)b_it->nextTuple());
+  delete b_it;
+}
 TEST_F(ElasticIteratorModelTest, FilteredJoin) {
   ResultSet rs;
   std::string message;
