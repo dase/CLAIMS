@@ -25,14 +25,15 @@ client_listener_port = 10000
 #data="/home/imdb/data/wangli/"
 #data="/home/imdb/data/wangli/"
 #data="/home/imdb/data/POC/sample/"
-#data="/home/imdb/data/tpc-h/1-partition/sf-1/"
+data="/home/minqi/git/Data/data/tpc-h/1-partition/sf-1/"
+#data="/home/minqi/git/Data/data/tpc-h/18-partition/sf-1/"
 #data="/home/imdb/data/SF-1/"
 #data="/home/imdb/data/SF-1/"
 #data="/home/imdb/data/stock/"
 #data="/home/imdb/data/stock/"
  
  
-data="/home/fish/data/test/"
+#data="/home/fish/data/test/"
 #data="/home/imdb/data/POC/"
 #data="/home/imdb/data/POC/"
 #hdfs主节点
