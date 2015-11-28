@@ -404,9 +404,10 @@ RetCode AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
 
   //
   // TODO(xiaozhou): judge del is null or not
-  if (NULL !=
-      Environment::getInstance()->getCatalog()->getTable(table_name_ +
-                                                         "_DEL")) {
+  if (Environment::getInstance()
+          ->getCatalog()
+          ->getTable(table_name_)
+          ->HasDeletedTuples()) {
     LogicalOperator* base_table = new LogicalScan(Environment::getInstance()
                                                       ->getCatalog()
                                                       ->getTable(table_name_)
