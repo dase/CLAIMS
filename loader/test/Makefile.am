@@ -3,10 +3,10 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
 -I${HADOOP_HOME}/src/c++/libhdfs\
--I${JAVA_HOME}/include\
+-I${JAVA_HOME}/include \
 -I${JAVA_HOME}/include/linux \
--I${GTEST_HOME}/include
-
+-I${GTEST_HOME}/include	\
+-I${BOOST_HOME}
 AM_LDFLAGS=-lc -lm -lrt -lboost_serialization -lxs
 
 if OPT_TCMALLOC

@@ -29,6 +29,7 @@
 #ifndef LOGICAL_OPERATOR_LOGICAL_EQUAL_JOIN_H_
 #define LOGICAL_OPERATOR_LOGICAL_EQUAL_JOIN_H_
 #include <vector>
+#include "../common/expression/expr_node.h"
 #include "../catalog/attribute.h"
 #include "../catalog/partitioner.h"
 #include "../logical_operator/logical_operator.h"
@@ -119,7 +120,8 @@ class LogicalEqualJoin : public LogicalOperator {
   int GetIdInAttributeList(const std::vector<Attribute>& attributes,
                            const Attribute&) const;
   bool IsHashOnLeftKey(const Partitioner& part, const Attribute& key) const;
-
+  void DecideJoinPolicy(const PlanContext& left_context,
+                        const PlanContext& right_context);
   /**
    * @brief Method description:Check whether the partitioning is based on hash
    * and the hash key is a subset of the join keys such that hash join is

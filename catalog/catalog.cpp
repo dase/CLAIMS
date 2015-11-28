@@ -265,5 +265,68 @@ RetCode Catalog::restoreCatalog() {
   }
 }
 
+bool Catalog::DropTable(const std::string table_name, const TableID id) {
+  bool isdropped = false;
+  bool isnamedrop = false;
+  bool istableIDdrop = false;
+
+  TableDescriptor* table_desc = NULL;
+
+  if (table_name != "") {
+    table_desc = getTable(table_name);
+    if (1 == name_to_table.erase(table_name)) {
+      isnamedrop = true;
+    } else {
+      cout << "falied to drop table by name" << endl;
+    }
+  }
+  if (id != -1) {
+    table_desc = getTable(id);
+    if (1 == tableid_to_table.erase(id)) {
+      istableIDdrop = true;
+    } else {
+      cout << "falied to drop table by tableID" << endl;
+    }
+  }
+
+  if (isnamedrop && istableIDdrop) {
+    // table_id_allocator.decrease_table_id();
+    isdropped = true;
+  } else {
+    if (!isnamedrop) {
+      tableid_to_table[id] = table_desc;
+    }
+    if (!istableIDdrop) {
+      name_to_table[table_name] = table_desc;
+    }
+  }
+
+  return isdropped;
+}
+
+/*
+    Every table will follow one _DEL table strictly.
+    We just do show tables :
+        Get table name end with _DEL and check the name eliminate suffix _DEL in
+   map name_to_table
+        if it is, not shadow table confirmed.
+*/
+void Catalog::GetAllTables(ostringstream& ostr) const {
+  for (auto it = name_to_table.begin(); it != name_to_table.end(); ++it) {
+    string tbname = it->first;
+    int len = tbname.length();
+    // if (len <= 4) continue;
+    if (len >= 4 && tbname.substr(len - 4, len) == "_DEL") {
+      tbname = tbname.substr(0, len - 4);
+      if (name_to_table.find(tbname) != name_to_table.cend()) {
+      } else {
+        ostr << "  " << tbname << endl;
+      }
+    } else {
+      ostr << "  " << tbname << endl;
+    }
+  }
+}
+
 } /* namespace catalog */
 } /* namespace claims */

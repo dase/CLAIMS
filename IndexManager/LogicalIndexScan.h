@@ -22,6 +22,7 @@ class LogicalIndexScan : public LogicalOperator {
   virtual ~LogicalIndexScan();
 
   PlanContext GetPlanContext();
+
   PhysicalOperatorBase* GetPhysicalPlan(const unsigned& blocksize);
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,

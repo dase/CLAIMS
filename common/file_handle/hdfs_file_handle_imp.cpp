@@ -197,5 +197,20 @@ RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
   return rSuccess;
 }
 
+RetCode HdfsFileHandleImp::DeleteFile() {
+  int ret = rSuccess;
+  EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "file name: " << file_name_);
+  if (0 == hdfsExists(fs_, file_name_.c_str())) {
+    if (0 != hdfsDelete(fs_, file_name_.c_str())) {
+      LOG(ERROR) << "Failed to delete file : [" + file_name_ + "]."
+                 << std::endl;
+      return rFailure;
+    }
+  } else {
+    LOG(WARNING) << "The file " << file_name_ << "is not exits!\n" << std::endl;
+  }
+  return rSuccess;
+}
+
 }  // namespace common
 } /* namespace claims */

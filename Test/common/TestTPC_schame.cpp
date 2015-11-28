@@ -33,7 +33,7 @@
 //	 * */
 //	unsigned long long int start=curtick();
 //	TableDescriptor*
-//table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
+// table=Environment::getInstance()->getCatalog()->getTable("LINEITEM");
 //	//===========================scan===========================
 //	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 //
@@ -166,25 +166,25 @@
 //	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
 //	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
 //	std::vector<BlockStreamAggregationIterator::State::aggregation>
-//aggregation_function;
+// aggregation_function;
 //
 //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
 //	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
 //	LogicalOperator* aggregation=new
-//Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
+// Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
 //
 //	//==========================project=========================
 //	vector< vector<ExpressionItem> >expr_list2;
 //	LogicalOperator* project2=new LogicalProject(aggregation,expr_list2);
 //	//===========================root===========================
 //	LogicalOperator* root=new
-//LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PRINT);
+// LogicalQueryPlanRoot(0,project1,LogicalQueryPlanRoot::PRINT);
 //
 //	cout<<"performance is ok!"<<endl;
 //	BlockStreamIteratorBase*
-//physical_iterator_tree=root->getIteratorTree(64*1024);
+// physical_iterator_tree=root->getIteratorTree(64*1024);
 ////	physical_iterator_tree->print();
 //	physical_iterator_tree->open();
 //	while(physical_iterator_tree->next(0));
@@ -229,7 +229,7 @@
 //	catalog->add_table(table_1);
 //
 //	for(unsigned
-//i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+// i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 //
 //		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,5);
 //	}
@@ -271,7 +271,7 @@
 //	catalog->add_table(table_1);
 //
 //	for(unsigned
-//i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+// i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 //		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
 //	}
 //}

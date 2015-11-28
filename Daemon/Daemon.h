@@ -10,14 +10,12 @@
 #include <vector>
 #include <string>
 #include <list>
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
 #include "../common/Block/ResultSet.h"
 #include "../utility/lock.h"
 
 #define EXECUTED_RESULT_STATUS_OK 0
 #define EXECUTED_RESULT_STATUS_ERROR 1
+#define NEWSQLINTERFACE
 
 struct remote_command {
   std::string cmd;

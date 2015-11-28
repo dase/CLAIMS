@@ -29,6 +29,7 @@
 #ifndef LOGICAL_OPERATOR_LOGICAL_SCAN_H_
 #define LOGICAL_OPERATOR_LOGICAL_SCAN_H_
 
+#include <iosfwd>
 #include <vector>
 #include "../common/ids.h"
 #include "../catalog/attribute.h"
@@ -51,6 +52,9 @@ class LogicalScan : public LogicalOperator {
   LogicalScan(std::vector<Attribute> attribute_list);
   LogicalScan(const TableID&);
   LogicalScan(ProjectionDescriptor* projection, const float sample_rate_ = 1);
+  LogicalScan(ProjectionDescriptor* projection, const string table_alias,
+              const float sample_rate_ = 1);
+
   LogicalScan(const TableID&,
               const std::vector<unsigned>& selected_attribute_index_list);
   virtual ~LogicalScan();
@@ -59,6 +63,7 @@ class LogicalScan : public LogicalOperator {
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
                               const unsigned& kBlock_size = 4096 * 1024);
+  void ChangeAliasAttr();
 
  private:
   /**check whether all the involved attributes are in the same projection.*/
@@ -69,6 +74,7 @@ class LogicalScan : public LogicalOperator {
   std::vector<Attribute> scan_attribute_list_;
   ProjectionDescriptor* target_projection_;
   PlanContext* plan_context_;
+  string table_alias_;
   float sample_rate_;
 };
 

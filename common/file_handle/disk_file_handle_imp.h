@@ -59,6 +59,8 @@ class DiskFileHandleImp : public FileHandleImp {
   }
   virtual RetCode SetPosition(size_t pos);
 
+  virtual RetCode DeleteFile();
+
  private:
   int fd_;
 };

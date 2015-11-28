@@ -33,4 +33,5 @@ LDADD = 	../libtest.a \
 		${GTEST_HOME}/libgtest.a
 
 noinst_LIBRARIES=libtestsuit.a
+
 libtestsuit_a_SOURCES = 

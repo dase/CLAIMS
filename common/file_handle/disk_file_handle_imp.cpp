@@ -36,6 +36,7 @@
 #include <glog/logging.h>
 #include <fcntl.h>
 #include <string>
+#include <stdio.h>
 
 #include "./file_handle_imp.h"
 #include "../../common/rename.h"
@@ -188,5 +189,17 @@ RetCode DiskFileHandleImp::SetPosition(size_t pos) {
   }
   return rSuccess;
 }
+
+RetCode DiskFileHandleImp::DeleteFile() {
+  int ret = rSuccess;
+  EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "file name: " << file_name_);
+  if (0 != remove(file_name_.c_str())) {
+    LOG(ERROR) << "Cannot delete disk file : [" + file_name_ + "] ! Reason: " +
+                      strerror(errno) << std::endl;
+    return rFailure;
+  }
+  return rSuccess;
+}
+
 }  // namespace common
 } /* namespace claims */

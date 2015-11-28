@@ -29,11 +29,14 @@
 #include "./table_file_connector.h"
 #include <vector>
 #include <string>
+#include <hdfs.h>
 
 #include "./file_connector.h"
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
 #include "../common/memory_handle.h"
+
+using claims::common::FilePlatform;
 
 namespace claims {
 namespace loader {
@@ -93,7 +96,7 @@ RetCode TableFileConnector::Close() {
   int ret = rSuccess;
   for (int i = 0; i < file_handles_.size(); ++i)
     for (int j = 0; j < file_handles_[i].size(); ++j)
-      EXEC_AND_ONLY_LOG_ERROR(ret,file_handles_[i][j]->Close(),
+      EXEC_AND_ONLY_LOG_ERROR(ret, file_handles_[i][j]->Close(),
                               "failed to close " << write_path_name_[i][j]
                                                  << ". ret:" << ret);
   //      if (rSuccess != (ret = file_handles_[i][j]->Close()))
@@ -109,10 +112,28 @@ RetCode TableFileConnector::Flush(unsigned projection_offset,
                                   unsigned length) {
   assert(file_handles_.size() != 0 && "make sure file handles is not empty");
   int ret = rSuccess;
-  EXEC_AND_ONLY_LOG_ERROR(ret,
+  EXEC_AND_ONLY_LOG_ERROR(
+      ret,
       file_handles_[projection_offset][partition_offset]->Write(source, length),
       "failed to write file. ret:" << ret);
   return ret;
+}
+
+RetCode TableFileConnector::DeleteFiles() {
+  vector<vector<string>>::iterator prj_writepath;
+  vector<string>::iterator par_writepath;
+
+  for (prj_writepath = write_path_name_.begin();
+       prj_writepath != write_path_name_.end(); prj_writepath++) {
+    vector<int> partitions_file_handles;
+    for (par_writepath = (*prj_writepath).begin();
+         par_writepath != (*prj_writepath).end(); par_writepath++) {
+      imp_->Open((*par_writepath).c_str(), FileOpenFlag::kReadFile);
+      imp_->DeleteFile();
+    }
+  }
+
+  return rSuccess;
 }
 
 } /* namespace loader */

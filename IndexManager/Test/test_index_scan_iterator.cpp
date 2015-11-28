@@ -17,8 +17,11 @@
 #include "../../physical_operator/physical_projection_scan.h"
 #include "../../physical_operator/result_printer.h"
 
+<<<<<<< HEAD
+=======
 using claims::catalog::TableDescriptor;
 
+>>>>>>> FETCH_HEAD
 static int test_index_scan_iterator() {
   int master;
   printf("~!OKOKO!!!!!\n");
@@ -171,5 +174,8 @@ static int test_index_scan_iterator() {
     sleep(1);
   }
   return 0;
+<<<<<<< HEAD
+=======
 >>>>>>> origin/checkset-lzf1116
+>>>>>>> FETCH_HEAD
 }

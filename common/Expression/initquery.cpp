@@ -8,9 +8,9 @@
 #include "../../common/TypeCast.h"
 #include "queryfunc.h"
 #include "qnode.h"
-#include "../../Parsetree/sql_node_struct.h"
 #include "../../logical_operator/logical_operator.h"
 #include "../error_define.h"
+#include "sql_node_struct.h"
 
 using claims::common::rNoMemory;
 /*
@@ -44,6 +44,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "+") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
+
         data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
@@ -84,6 +85,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "LIKE") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
+
         data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *likenode = new QExpr_binary(
@@ -240,10 +242,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         }
         QNode *cwnode = new QExpr_case_when(qual, ans, funcnode->str);
         return cwnode;
-      } else if (strcmp(funcnode->funname, "CASE4") == 0)  // now just support
-                                                           // |case [when expr
-                                                           // then expr]* [else
-                                                           // expr] end|
+      } else if (strcmp(funcnode->funname, "CASE4") == 0)
+      // now just support |case [when expr then expr]* [else expr] end|
       {
         vector<QNode *> qual;
         vector<QNode *> ans;
@@ -661,7 +661,7 @@ void InitExprAtPhysicalPlan(QNode *node) {
     {
       QExpr_binary *cmpnode = (QExpr_binary *)(node);
       cmpnode->FuncId = Exec_cmp;
-      //			cmpnode->actual_type=t_boolean;//
+
       InitExprAtPhysicalPlan(cmpnode->lnext);
       InitExprAtPhysicalPlan(cmpnode->rnext);
       cmpnode->function_call = ExectorFunction::operator_function

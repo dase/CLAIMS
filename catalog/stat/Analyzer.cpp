@@ -67,7 +67,6 @@ void Analyzer::analyse(const AttributeID& attrID) {
 
   group_by_attributes.push_back(attr);
   aggregation_attributes.push_back(attr);
-
   std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
   aggregation_function.push_back(PhysicalAggregation::State::kCount);
 
@@ -80,13 +79,13 @@ void Analyzer::analyse(const AttributeID& attrID) {
 
   LogicalOperator* root = new LogicalQueryPlanRoot(
       collector_node_id, aggregation, LogicalQueryPlanRoot::kResultCollector);
-
   PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
 
   collector->Open();
   collector->Next(0);
   collector->Close();
+
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
 
@@ -271,6 +270,7 @@ void Analyzer::compute_table_stat(const TableID& tab_id) {
   collector->Open();
   collector->Next(0);
   collector->Close();
+
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
   BlockStreamBase::BlockStreamTraverseIterator* b_it =
@@ -316,7 +316,8 @@ void Analyzer::mcvAnalyse(void** list, const unsigned long size,
   }
 
   void** valueList = new void* [magicNumber];  // new
-  double* selList = new double[magicNumber];   // new
+
+  double* selList = new double[magicNumber];  // new
   for (i = 0; i < magicNumber; ++i) {
     valueList[i] = new char[attr.attrType->get_length()];  // new
     attr.attrType->operate->assign(mcvList[i], valueList[i]);

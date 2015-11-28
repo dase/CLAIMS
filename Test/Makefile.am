@@ -17,7 +17,6 @@ endif
 LDADD =	TestSuit/libtestsuit.a \
 		../Executor/libexecutor.a \
 		../Executor/Test/libtest.a \
-		../Parsetree/Test/libtest.a \
 		../Daemon/Test/libtest.a \
 		../Client/Test/libtest.a \
 		../loader/test/libtest.a \
@@ -29,6 +28,7 @@ LDADD =	TestSuit/libtestsuit.a \
 		../common/Schema/libschema.a \
 		../common/Block/libblock.a \
 		../common/types/libtypes.a \
+		../sql_parser/parser/libparser_test.a	\
 		../utility/libutility.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
@@ -39,7 +39,6 @@ LDADD =	TestSuit/libtestsuit.a \
 
 noinst_LIBRARIES=libtest.a
 libtest_a_SOURCES = 
-
 #	Environment_test.cpp 		MultiToMulti.cpp \
 #	TestMain.cpp 			block_stream_iterator_serilaization_test.cpp \
 #	block_stream_test.cpp 		gtest.h \
@@ -47,5 +46,5 @@ libtest_a_SOURCES =
 #	test_adaptiveendpoint.cpp 	test_coordinator.cpp \
 #	test_scdong.cpp
 
-SUBDIRS = TestSuit common utility
-DIST_SUBDIRS = TestSuit common utility
+SUBDIRS =  common utility
+DIST_SUBDIRS =  common utility

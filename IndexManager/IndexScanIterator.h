@@ -13,7 +13,6 @@
 #include "../physical_operator/physical_operator.h"
 #include "CSBPlusTree.h"
 #include "../storage/PartitionStorage.h"
-
 using claims::physical_operator::PhysicalOperator;
 
 class IndexScanIterator : public PhysicalOperator {
@@ -83,7 +82,7 @@ class IndexScanIterator : public PhysicalOperator {
       ar& valuebytes_low& comp_low& valuebytes_high& comp_high& c_type;
 
       if (value_low == 0 || value_high == 0) {
-        value_low = malloc(c_type.get_length());  // newmalloc
+        value_low = malloc(c_type.get_length());   // newmalloc
         value_high = malloc(c_type.get_length());  // newmalloc
         for (unsigned i = 0; i < c_type.get_length(); i++) {
           *((char*)value_low + i) = valuebytes_low[i];
@@ -99,7 +98,7 @@ class IndexScanIterator : public PhysicalOperator {
    public:
     State() {}
     //		State(ProjectionID projection_id, Schema* schema, unsigned long
-    //index_id, void* value_low, void* value_high, unsigned block_size);
+    // index_id, void* value_low, void* value_high, unsigned block_size);
     State(ProjectionID projection_id, Schema* schema, unsigned long index_id,
           vector<query_range> query_range__, unsigned block_size);
 
@@ -117,7 +116,7 @@ class IndexScanIterator : public PhysicalOperator {
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
       //			ar & projection_id_ & schema_ & index_id_ &
-      //value_low_ & value_high_ & block_size_;
+      // value_low_ & value_high_ & block_size_;
       ar& projection_id_& schema_& index_id_& query_range_& block_size_;
     }
   };
