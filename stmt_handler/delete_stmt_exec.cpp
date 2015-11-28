@@ -99,6 +99,11 @@ RetCode DeleteStmtExec::Execute(ExecutedResult* exec_result) {
   ostringstream ostr;
   ostr << exec_result->result_->getNumberOftuples() << " tuples deleted.";
   exec_result->info_ = ostr.str();
+  // set the flag weather it contains the deleted the tuples or not in the base
+  // table
+  TableDescriptor* table =
+      Environment::getInstance()->getCatalog()->getTable(tablename);
+  table->SetDeletedTuples(true);
 
   string del_table_name = tablename + "_DEL";
   /**
