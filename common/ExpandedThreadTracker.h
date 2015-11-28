@@ -16,56 +16,52 @@
 #include "../utility/ExpandabilityShrinkability.h"
 #include <vector>
 
-
-
 typedef unsigned long long int timestamp;
 
-struct PerformanceInfo{
-	struct entry{
-		entry():performance(0),last_update(0){};
-		float performance;
-		timestamp last_update;
-		bool isUpdateToDate();
-	};
-//	PerformanceInfo();
-	PerformanceInfo(ExpandabilityShrinkability* expand_shrink);
-	~PerformanceInfo();
-	void processed_one_block();
-	double report_instance_performance_in_millibytes();
-	ticks current_time_slice_start_;
-	unsigned long nblocks_in_current_slice_;
-	void initialize();
-	void eclipseTimeSlices(unsigned offset);
-	void hitCurrentSlice();
+struct PerformanceInfo {
+  struct entry {
+    entry() : performance(0), last_update(0){};
+    float performance;
+    timestamp last_update;
+    bool isUpdateToDate();
+  };
+  PerformanceInfo() {}
+  PerformanceInfo(ExpandabilityShrinkability* expand_shrink);
+  ~PerformanceInfo();
+  void processed_one_block();
+  double report_instance_performance_in_millibytes();
+  ticks current_time_slice_start_;
+  unsigned long nblocks_in_current_slice_;
+  void initialize();
+  void eclipseTimeSlices(unsigned offset);
+  void hitCurrentSlice();
 
-	/* eclipse the slices that are out of the scope and initialize the new entries*/
-	void updateTimeSlicesToCurrentTicks();
+  /* eclipse the slices that are out of the scope and initialize the new
+   * entries*/
+  void updateTimeSlicesToCurrentTicks();
 
-	unsigned long getBlockSumInAllSlices();
-	SpineLock lock_;
-	// store the number of processed block in nearly 10 time slices
-	// from	0 to NUMOFSLICES ---->  from old to new
-	unsigned *slices;
-	unsigned long long int init_ticks_;
-	// store entrys in different condition where degree of parallelism range from 0 to max_degree_of_parallelism
-	std::vector<entry> scalability_vector_;
-	ExpandabilityShrinkability* expand_shrink_;
-	/* the timestamp for the last update to the scalability vector */
-	timestamp last_update_;
-
+  unsigned long getBlockSumInAllSlices();
+  SpineLock lock_;
+  // store the number of processed block in nearly 10 time slices
+  // from	0 to NUMOFSLICES ---->  from old to new
+  unsigned* slices;
+  unsigned long long int init_ticks_;
+  // store entrys in different condition where degree of parallelism range from
+  // 0 to max_degree_of_parallelism
+  std::vector<entry> scalability_vector_;
+  ExpandabilityShrinkability* expand_shrink_;
+  /* the timestamp for the last update to the scalability vector */
+  timestamp last_update_;
 };
 
-
-
 class ExpandedThreadTracker {
-public:
-	ExpandedThreadTracker(ExpandabilityShrinkability* expand_shrink);
-	virtual ~ExpandedThreadTracker();
-	inline PerformanceInfo& getPerformanceInfo(){
-		return perf_info_;
-	}
-private:
-	PerformanceInfo perf_info_;
+ public:
+  ExpandedThreadTracker(ExpandabilityShrinkability* expand_shrink);
+  virtual ~ExpandedThreadTracker();
+  inline PerformanceInfo& getPerformanceInfo() { return perf_info_; }
+
+ private:
+  PerformanceInfo perf_info_;
 };
 
 #endif /* EXPANDEDTHREADTRACKER_H_ */

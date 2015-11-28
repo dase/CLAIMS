@@ -1,14 +1,16 @@
+!thirdparty/
 *.Po
 *.a
+*.doxyfile
 *.dat*
 *.doxyfile
 *.o
-*sql.output
 .cproject
 .gitignore.swp
 .history
 .project
 .settings
+/test
 Build
 Config.cpp
 Debug.h
@@ -40,8 +42,45 @@ include/
 install-sh
 install/
 libtool
+log
 ltmain.sh
 missing
 stamp-h1
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> FETCH_HEAD
+Makefile.in
+*.Po
+Debug.h
+install/
+*.a
+*.o
+Makefile
+config.h
+config.h.in
+config.log
+configure
+claims.log
+doc
+conf
+conf/config
+build
+Build
+*.dat*
+include/
+.history
+compile
+<<<<<<< HEAD
 thirdparty/
+ar-lib
+=======
+thirdparty/
+>>>>>>> master
+=======
+thirdparty/
+ar-lib
+>>>>>>> FETCH_HEAD
 缺省值
+*sql.output
+*.doxyfile

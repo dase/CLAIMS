@@ -32,45 +32,41 @@
 #include <limits>
 #include "../utility/warmup.h"
 #include "../utility/rdtsc.h"
-#include "../common/ExpressionCalculator.h"
 #include "../common/Expression/execfunc.h"
 #include "../common/Expression/qnode.h"
 #include "../common/Expression/initquery.h"
 #include "../common/Expression/queryfunc.h"
 #include "../common/data_type.h"
 #include "../Config.h"
-#include "../Parsetree/sql_node_struct.h"
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
+#include "../common/expression/expr_node.h"
 
-using namespace claims::common;
-
+using claims::common::rSuccess;
+using claims::common::rCodegenFailed;
+#define NEWCONDITION
 namespace claims {
 namespace physical_operator {
-#define NEWCONDITION
 
 PhysicalFilter::PhysicalFilter(State state)
-    : state_(state),
+    : PhysicalOperator(1, 1),
+      state_(state),
       generated_filter_function_(NULL),
       generated_filter_processing_fucntoin_(NULL) {
   InitExpandedStatus();
 }
 
 PhysicalFilter::PhysicalFilter()
-    : generated_filter_function_(NULL),
+    : PhysicalOperator(1, 1),
+      generated_filter_function_(NULL),
       generated_filter_processing_fucntoin_(NULL) {
   InitExpandedStatus();
 }
 
 PhysicalFilter::~PhysicalFilter() {}
 PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
-                             vector<QNode*> qual, map<string, int> column_id,
-                             unsigned block_size)
-    : schema_(schema),
-      child_(child),
-      qual_(qual),
-      column_id_(column_id),
-      block_size_(block_size) {}
+                             vector<QNode*> qual, unsigned block_size)
+    : schema_(schema), child_(child), qual_(qual), block_size_(block_size) {}
 PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
                              std::vector<AttributeComparator> comparator_list,
                              unsigned block_size)
@@ -97,7 +93,16 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
       CreateOrReuseContext(crm_core_sensitive));
 
   if (TryEntryIntoSerializedSection()) {
-    if (Config::enable_codegen) {
+#ifdef NEWCONDI
+
+    /*
+     * In current version, LLVM is used based on
+     * that all expression is merged into one expression.
+     * so make sure there is one expression
+     * TODO(yukai, fangzhuhe): expand LLVM to support multiple expressions
+     *  or merge multiple expressions into one
+     */
+    if (Config::enable_codegen && 1 == state_.qual_.size()) {
       ticks start = curtick();
       generated_filter_processing_fucntoin_ =
           getFilterProcessFunc(state_.qual_[0], state_.schema_);
@@ -108,19 +113,22 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
         generated_filter_function_ =
             getExprFunc(state_.qual_[0], state_.schema_);
 
-        if (kSuccess == DecideFilterFunction(generated_filter_function_)) {
+        if (rSuccess == DecideFilterFunction(generated_filter_function_)) {
           filter_function_ = ComputeFilterWithGeneratedCode;
           LOG(INFO) << "CodeGen (partial feature) succeeds!("
                     << getMilliSecond(start) << "ms)" << std::endl;
         } else {
           filter_function_ = ComputeFilter;
-          LOG(ERROR) << "filter:" << kErrorMessage[kCodegenFailed] << std::endl;
+          LOG(ERROR) << "filter:" << kErrorMessage[rCodegenFailed] << std::endl;
         }
       }
     } else {
       filter_function_ = ComputeFilter;
       LOG(INFO) << "CodeGen closed!" << std::endl;
     }
+#else
+// should null
+#endif
   }
   bool ret = state_.child_->Open(kPartitiontOffset);
   SetReturnStatus(ret);
@@ -186,6 +194,7 @@ void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
     while ((tuple_from_child = tc->block_stream_iterator_->currentTuple()) >
            0) {
       bool pass_filter = true;
+#ifdef NEWCONDI
 #ifdef NEWCONDITION
       filter_function_(pass_filter, tuple_from_child,
                        generated_filter_function_, state_.schema_,
@@ -199,6 +208,10 @@ void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
           break;
         }
       }
+#endif
+#else
+      pass_filter = tc->thread_condi_[0]->MoreExprEvaluate(
+          tc->thread_condi_, tuple_from_child, state_.schema_);
 #endif
       if (pass_filter) {
         const unsigned bytes =
@@ -228,9 +241,15 @@ bool PhysicalFilter::Close() {
 
 void PhysicalFilter::Print() {
   printf("filter: \n");
+#ifdef NEWCONDI
   for (int i = 0; i < state_.qual_.size(); i++) {
     printf("  %s\n", state_.qual_[i]->alias.c_str());
   }
+#else
+  for (int i = 0; i < state_.condition_.size(); ++i) {
+    cout << "    " << state_.condition_[i]->alias_ << endl;
+  }
+#endif
   state_.child_->Print();
 }
 
@@ -261,12 +280,21 @@ PhysicalFilter::FilterThreadContext::~FilterThreadContext() {
     delete block_stream_iterator_;
     block_stream_iterator_ = NULL;
   }
+#ifdef NEWCONDI
   for (int i = 0; i < thread_qual_.size(); i++) {
     if (NULL != thread_qual_[i]) {
       delete thread_qual_[i];
       thread_qual_[i] = NULL;
     }
   }
+#else
+  for (int i = 0; i < thread_condi_.size(); ++i) {
+    if (NULL != thread_condi_[i]) {
+      delete thread_condi_[i];
+      thread_condi_[i] = NULL;
+    }
+  }
+#endif
 }
 
 /**
@@ -280,11 +308,19 @@ ThreadContext* PhysicalFilter::CreateContext() {
   ftc->temp_block_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   ftc->block_stream_iterator_ = ftc->block_for_asking_->createIterator();
+#ifdef NEWCONDI
   ftc->thread_qual_ = state_.qual_;
   for (int i = 0; i < state_.qual_.size(); i++) {
     Expr_copy(state_.qual_[i], ftc->thread_qual_[i]);
     InitExprAtPhysicalPlan(ftc->thread_qual_[i]);
   }
+#else
+  ftc->thread_condi_ = state_.condition_;
+  for (int i = 0; i < state_.condition_.size(); ++i) {
+    ftc->thread_condi_[i] = state_.condition_[i]->ExprCopy();
+    ftc->thread_condi_[i]->InitExprAtPhysicalPlan();
+  }
+#endif
   return ftc;
 }
 
@@ -295,9 +331,9 @@ ThreadContext* PhysicalFilter::CreateContext() {
 int PhysicalFilter::DecideFilterFunction(
     expr_func const& generate_filter_function) {
   if (generate_filter_function) {
-    return kSuccess;
+    return rSuccess;
   } else {
-    return kCodegenFailed;
+    return rCodegenFailed;
   }
 }
 

@@ -40,6 +40,7 @@ ChunkStorage::~ChunkStorage() {
 ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
   //	printf("level value:%d\n",current_storage_level_);
   ChunkReaderIterator* ret = NULL;
+
   lock_.acquire();
   switch (current_storage_level_) {
     case MEMORY: {
@@ -51,7 +52,9 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
                                              chunk_info.length / block_size_,
                                              block_size_, chunk_id_);
       else
+
         ret = NULL;
+
       break;
     }
     case DISK: {
@@ -95,7 +98,9 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
           BlockManager::getInstance()->getMemoryChunkStore()->updateChunkInfo(
               chunk_id_, chunk_info);
           //					printf("%lx current is set to
+
           // memory!\n");
+
           ret = new InMemoryChunkReaderItetaor(
               chunk_info.hook, chunk_info.length,
               chunk_info.length / block_size_, block_size_, chunk_id_);
@@ -110,7 +115,9 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
         }
       }
       //			return new
+
       // HDFSChunkReaderIterator(chunk_id_,chunk_size_,block_size_);
+
       ret = new DiskChunkReaderIteraror(chunk_id_, chunk_size_, block_size_);
       break;
     }
@@ -126,6 +133,7 @@ InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor(
     const ChunkID& chunk_id)
     : start_(start),
       ChunkReaderIterator(chunk_id, block_size, chunk_size, number_of_blocks) {}
+
 bool InMemoryChunkReaderItetaor::NextBlock(BlockStreamBase*& block) {
   lock_.acquire();
   if (cur_block_ >= number_of_blocks_) {
@@ -204,7 +212,9 @@ bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block) {
   tSize bytes_num =
       read(fd_, block_buffer_->getBlock(), block_buffer_->getsize());
   //	printf("Tuple
+
   // count=%d\n",*(int*)((char*)block_buffer_->getBlock()+65532));
+
   if (bytes_num == block_size_) {
     cur_block_++;
     //		lseek(fd_,64*1024,SEEK_CUR);
@@ -298,7 +308,9 @@ bool InMemoryChunkReaderItetaor::getNextBlockAccessor(block_accessor*& ba) {
   lock_.release();
   ba = new InMemeryBlockAccessor();
   InMemeryBlockAccessor* imba = (InMemeryBlockAccessor*)ba;
+
   imba->SetBlockSize(block_size_);
+
   imba->setTargetBlockStartAddress((char*)start_ + cur_block * block_size_);
   return true;
 }
@@ -315,9 +327,11 @@ bool DiskChunkReaderIteraror::getNextBlockAccessor(block_accessor*& ba) {
   ba = new InDiskBlockAccessor();
   InDiskBlockAccessor* idba = (InDiskBlockAccessor*)ba;
   idba->setBlockCur(cur_block);
+
   idba->SetBlockSize(block_size_);
   idba->setChunkId(chunk_id_);
   idba->SetBlockSize(chunk_size_);
+
   return true;
 }
 
@@ -340,6 +354,7 @@ bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
 }
 
 void ChunkReaderIterator::InMemeryBlockAccessor::GetBlock(
+
     BlockStreamBase*& block) const {
 //#define MEMORY_COPY
 #ifdef MEMORY_COPY
@@ -372,6 +387,7 @@ void ChunkReaderIterator::InDiskBlockAccessor::GetBlock(
 }
 
 void ChunkReaderIterator::InHDFSBlockAccessor::GetBlock(
+
     BlockStreamBase*& block) const {
   printf("InHDFSBlockAccessor::getBlock() is not implemented!\n");
   assert(false);

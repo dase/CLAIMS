@@ -14,7 +14,9 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
+
 LDADD = ../../physical_operator/libphysicalqueryplan.a	\
+		../../common/expression/libexpression.a 	\
 		../../IndexManager/libindexmanager.a \
 		../../common/Schema/libschema.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a\

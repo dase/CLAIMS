@@ -19,7 +19,8 @@
  * ./LogicalPlan/plan_context.cpp
  *
  *  Created on: Nov 10, 2013
- *      Author: wangli, fangzhuhe
+ *  Modified on: Nov 16, 2015
+ *      Author: wangli, fangzhuhe, tonglanxuan
  *       Email: fzhedu@gmail.com
  *
  * Description:
@@ -29,9 +30,11 @@
 
 #include <glog/logging.h>
 #include <iosfwd>
+#include <string>
 #include <vector>
 #include <iostream>
 #include "../common/Schema/SchemaFix.h"
+
 namespace claims {
 namespace logical_operator {
 
@@ -43,11 +46,11 @@ PlanContext::PlanContext(const PlanContext& plan_context) {
   commu_cost_ = plan_context.commu_cost_;
   plan_partitioner_ = plan_context.plan_partitioner_;
 }
-unsigned long PlanContext::GetAggregatedDatasize() const {
+int64_t PlanContext::GetAggregatedDatasize() const {
   const unsigned tuple_size = GetTupleSize();
   return plan_partitioner_.GetAggregatedDataCardinality() * tuple_size;
 }
-unsigned long PlanContext::GetAggregatedDataCardinality() const {
+int64_t PlanContext::GetAggregatedDataCardinality() const {
   return plan_partitioner_.GetAggregatedDataCardinality();
 }
 bool PlanContext::IsHashPartitioned() const {
@@ -78,7 +81,7 @@ Attribute PlanContext::GetAttribute(std::string name) const {
     }
   }
   LOG(WARNING) << "Failed to find attribute " << name.c_str() << std::endl;
-  return Attribute(ATTRIBUTE_NULL);
+  return Attribute(Attribute::AttributeType::kAttributeNull);
 }
 
 Attribute PlanContext::GetAttribute(std::string tbname,
@@ -88,9 +91,9 @@ Attribute PlanContext::GetAttribute(std::string tbname,
       return attribute_list_[i];
     }
   }
-  LOG(WARNING) << "Failed to find attribute " << colname.c_str() << std::endl;
+  LOG(WARNING) << "Failed to find attribute " << colname << std::endl;
   assert(false);
-  return Attribute(ATTRIBUTE_NULL);
+  return Attribute(Attribute::AttributeType::kAttributeNull);
 }
 }  // namespace logical_operator
 }  // namespace claims

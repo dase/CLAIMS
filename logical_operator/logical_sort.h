@@ -32,10 +32,17 @@
 #include <string.h>
 #include <vector>
 #include <iostream>
-#include "../Catalog/Catalog.h"
+#include <map>
+#include <utility>
+#include <string>
+#include "../catalog/catalog.h"
 #include "../logical_operator/logical_operator.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "..//physical_operator/physical_sort.h"
+#include "../common/expression/expr_node.h"
+using std::vector;
+using std::pair;
+using claims::common::ExprNode;
 namespace claims {
 namespace logical_operator {
 /**
@@ -75,6 +82,8 @@ class LogicalSort : public LogicalOperator {
    */
   LogicalSort(LogicalOperator *child,
               vector<LogicalSort::OrderByAttr *> order_by_attr);
+  LogicalSort(LogicalOperator *child,
+              vector<pair<ExprNode *, int>> order_by_attrs);
   virtual ~LogicalSort();
   /**
    * @brief Method description: Get the schema and child information.
@@ -92,27 +101,21 @@ class LogicalSort : public LogicalOperator {
    * operator, so we need to get all data from other nodes.
    */
   PhysicalOperatorBase *GetPhysicalPlan(const unsigned &blocksize);
-  /**
-   * @brief Method description: Get the column number of the given table name
-   * and attributes name.
-   * @param const char*
-   * @param const char*
-   * @return  int
-   */
-  // TODO(yuyang): change const char* to string
-  int GetOrderByKey(const char *, const char *);
-  int GetOrderByKey(const char *);
 
-  void PrintOrderByAttr() const;
+  // TODO(yuyang): change const char* to string
+  int GetOrderByKey(const char *);
+  void SetColumnId(const PlanContext &plan_context);
+  void PrintOrderByAttr(int level = 0) const;
   void Print(int level = 0) const;
   virtual bool GetOptimalPhysicalPlan(
       Requirement requirement, PhysicalPlanDescriptor &physical_plan_descriptor,
       const unsigned &block_size = 4096 * 1024) {}
 
  private:
-  vector<OrderByAttr *> order_by_attr_;
-  PlanContext child_plan_context_;
+  vector<pair<ExprNode *, int>> order_by_attrs_;
+  PlanContext *plan_context_;
   LogicalOperator *child_;
+  map<string, int> column_to_id_;
 };
 }  // namespace logical_operator
 }  // namespace claims
