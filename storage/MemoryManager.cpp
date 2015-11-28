@@ -28,21 +28,24 @@
 
 #include <iostream>
 #include <memory.h>
-#include "MemoryManager.h"
 #include <glog/logging.h>
+#include "MemoryManager.h"
 #include "../configure.h"
 #include "../Resource/BufferManager.h"
+#include "../common/error_define.h"
+#include "../common/error_no.h"
 using namespace std;
+using claims::common::rSuccess;
+using claims::common::rNoEnoughMemory;
+using claims::common::rMemoryPoolMallocFail;
+using claims::common::rReturnFailFindTargetChunkId;
 
-typedef int RetCode;
 // namespace claims {
 // namespace stroage {
 
-MemoryChunkStore* MemoryChunkStore::instance_ = 0;
+MemoryChunkStore* MemoryChunkStore::instance_ = NULL;
 MemoryChunkStore::MemoryChunkStore()
-    : chunk_pool_(CHUNK_SIZE), block_pool_(BLOCK_SIZE) {
-  //  cout<<"in the memorystroage initialize"<<endl;
-}
+    : chunk_pool_(CHUNK_SIZE), block_pool_(BLOCK_SIZE) {}
 
 MemoryChunkStore::~MemoryChunkStore() {
   chunk_pool_.purge_memory();
@@ -74,8 +77,8 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
   //    return false;
   //  }
   if (IsExist(chunk_id) == false) {
-    if (!BufferManager::getInstance()->applyStorageDedget(CHUNK_SIZE)) {
-      printf("not enough memory!!\n");
+    if (rSuccess != HasEnoughMemory()) {
+      WLOG(HasEnoughMemory(), "not enough memory!!");  //错误码完成
       FreeChunk();
       lock_.release();
       return false;
@@ -87,9 +90,7 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
       return true;
     }  //通过pool获取系统内存，malloc（） --han
     else {
-      LOG(ERROR) << "Error occurs when memalign!"
-                 << endl;  //应该有错误码，现在暂时不管了。
-      // printf("Error occurs when memalign!\n");
+      ELOG(rMemoryPoolMallocFail, "Error occurs when memalign!");  // wancheng
       lock_.release();
       return false;
     }
@@ -101,8 +102,8 @@ void MemoryChunkStore::returnChunk(const ChunkID& chunk_id) {
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::const_iterator it =
       chunk_list_.find(chunk_id);
   if (it == chunk_list_.cend()) {
-    LOG(WARNING) << "return fail to the target chunk id !" << endl;
-    // printf("return fail to find the target chunk id !\n");
+    WLOG(rReturnFailFindTargetChunkId,
+         "return fail to find the target chunk id !");
     lock_.release();
     return;
   }
@@ -148,7 +149,6 @@ bool MemoryChunkStore::putChunk(const ChunkID& chunk_id,
       chunk_list_.find(chunk_id);
   if (it != chunk_list_.cend()) {
     LOG(INFO) << "The memory chunk is already existed!" << endl;
-    // printf("The memory chunk is already existed!\n");
     lock_.release();
     return false;
   }
@@ -179,6 +179,13 @@ MemoryChunkStore* MemoryChunkStore::getInstance() {
     instance_ = new MemoryChunkStore();
   }
   return instance_;
+}
+
+RetCode MemoryChunkStore::HasEnoughMemory() {
+  if (!BufferManager::getInstance()->applyStorageDedget(CHUNK_SIZE)) {
+    return rNoEnoughMemory;
+  } else
+    return rSuccess;
 }
 
 //}  // namespace stroage

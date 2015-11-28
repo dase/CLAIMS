@@ -41,7 +41,8 @@
 #include <boost/unordered_map.hpp>
 #include <boost/pool/pool.hpp>
 #include <iostream>
-
+#include "../common/error_define.h"
+#include "../common/error_no.h"
 #include "BlockStore.h"
 #include "../common/rename.h"
 #include "../Debug.h"
@@ -53,6 +54,7 @@ using std::map;
 using std::list;
 using std::endl;
 using boost::pool;
+using claims::common;
 
 /**
  * @brief Method description:
@@ -165,6 +167,8 @@ class MemoryChunkStore {
   //获得当前memory情况～～～  --han(做性能优化～～ )
   void GetAvailableMemory() {}
   void GetFreeMemory() {}
+
+  RetCode HasEnoughMemory();
 
  private:
   map<string, HdfsBlock> bufferpool_;
