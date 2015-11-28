@@ -1,14 +1,13 @@
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <startup.h>
 #include <getopt.h>
 #include <string>
-#include "Parsetree/ExecuteLogicalQueryPlan.h"
-//#include "Test/set_up_environment.h"
-//#include "Test/TestMain.cpp"
-#define GLOG_NO_ABBREVIATED_SEVERITIES
+// #include "Test/set_up_environment.h"
+#include "./Test/TestMain.cpp"
 #include "common/log/logging.h"
 #define AUTU_MASTER
 // #define FORK
-// #define DEBUG_MODE
+//#define DEBUG_MODE
 
 struct option long_options[] = {{"config-file", required_argument, 0, 'c'},
                                 {"help", no_argument, 0, 'h'},
@@ -84,6 +83,7 @@ int main(int argc, char** argv) {
   handle_parameters(argc, argv);
   Config::getInstance()->print_configure();
   Logging claims_logging(argv[0]);
+
 #ifndef DEBUG_MODE
   bool master;
 #ifndef AUTU_MASTER
@@ -142,8 +142,10 @@ int main(int argc, char** argv) {
   while (true) sleep(1);
 #endif
 #else
-  // add "#include <Test/TestMain.cpp>" before using maina(...)
-  maina(argc, argv);
+  Environment::getInstance(true);
+  MainDebug(argc, argv);
+  Environment::getInstance(1)->~Environment();
   return 0;
+
 #endif
 }

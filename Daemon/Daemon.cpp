@@ -11,7 +11,10 @@
 #include <glog/logging.h>
 
 #include "./Executing.h"
-#include "../Parsetree/runparsetree.h"
+#include "../Client/ClaimsServer.h"
+#include "../stmt_handler/stmt_handler.h"
+
+using claims::stmt_handler::StmtHandler;
 #define WORK_THREAD_COUNT 3
 
 Daemon* Daemon::instance_ = 0;
@@ -57,21 +60,22 @@ Daemon::~Daemon() {
  remote_command rc = Daemon::getInstance()->getRemoteCommand();
 
  //assume all commands are sql commands.
- executed_result result;
+ ExecutedResult result;
  std::string error_info;
  Node* node;
- ResultSet* result_set = Executing::run_sql(std::string(rc.cmd),error_info);
+ ResultSet* result_set = Executing::ru    delete
+ stmt_handler;n_sql(std::string(rc.cmd),error_info);
 
  if(result_set==0){
  printf("-Worker: add error result!\n");
  result.error_info = error_info;
  result.result = 0;
- result.status = EXECUTED_RESULT_STATUS_ERROR;
+ result.status_ = EXECUTED_RESULT_STATUS_ERROR;
  result.fd = rc.socket_fd;
  }
  else{
  printf("-Worker: add ok result!\n");
- result.status = EXECUTED_RESULT_STATUS_OK;
+ result.status_ = EXECUTED_RESULT_STATUS_OK;
  result.result = result_set;
  result.fd = rc.socket_fd;
  }
@@ -99,14 +103,25 @@ void* Daemon::worker(void* para) {
     // function.
 
     ClientListener::checkFdValid(result.fd_);
-
-    Executing::run_sql(rc.cmd, &result);
+#ifndef NEWSQLINTERFACE
+    Executing::run_sql(rc.cmd, result.result, result.status_, result.error_info,
+                       result.info_, result.fd);
     ClientLogging::log(
-        "after running sql, the result is : status-%d, err-%s, info-%s",
-        result.status_, result.error_info_.c_str(), result.info_.c_str());
+        "after running sql, the result is : status_-%d, err-%s, info-%s",
+        result.status_, result.error_info.c_str(), result.info_.c_str());
+#else
+    StmtHandler* stmt_handler = new StmtHandler(rc.cmd);
+    stmt_handler->Execute(&result);
+    LOG(INFO) << "the result of after running sql: " << rc.cmd
+              << " status_: " << result.status_
+              << "error info: " << result.error_info_
+              << " info: " << result.info_ << endl;
+
+#endif
     ClientListener::checkFdValid(result.fd_);
     printf("-Worker add result into the queue!\n");
     Daemon::getInstance()->addExecutedResult(result);
+    delete stmt_handler;
   }
   return NULL;
 }

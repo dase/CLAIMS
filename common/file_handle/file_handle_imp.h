@@ -73,6 +73,8 @@ class FileHandleImp {
   virtual bool CanAccess(std::string file_name) = 0;
   virtual RetCode SetPosition(size_t pos) = 0;
 
+  virtual RetCode DeleteFile() = 0;
+
  protected:
   std::string file_name_;
 };

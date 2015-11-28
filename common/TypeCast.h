@@ -7,101 +7,53 @@
 // TODO change TypeCast warning the temporary variable
 #ifndef TYPECAST_H_
 #define TYPECAST_H_
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
-#include "ExpressionItem.h"
-#include <sstream>
 #include <stdlib.h>
-#include "data_type.h"
 #include <string.h>
+#include <sstream>
+#include "./data_type.h"
 #include <boost/date_time/gregorian/greg_duration.hpp>
-typedef bool (*TypeCastFunction)(ExpressionItem &in);  //
+#include <boost/date_time/gregorian/gregorian.hpp>
+
+using boost::gregorian::months;
+using boost::gregorian::weeks;
+using boost::gregorian::years;
 typedef void *(*TypeCastF)(void *value, void *tovalue);
 class TypeCast {
  public:
   static TypeCastF type_cast_func[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
-  static TypeCastFunction
-      type_cast_functions[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];  //
 };
-///////////////////////////////////
-inline bool int_to_int(ExpressionItem &in) {
-  assert(in.return_type == t_int);
-  return true;
-}
 
-inline bool int_to_float(ExpressionItem &in) {
-  assert(in.return_type == t_int);
-  float new_value = (float)in.content.data.value._int;
-  in.return_type = t_float;
-  in.content.data.value._float = new_value;
-  return true;
-}
-
-inline bool int_to_double(ExpressionItem &in) {
-  assert(in.return_type == t_int);
-  float new_value = (double)in.content.data.value._int;
-  in.return_type = t_double;
-  in.content.data.value._double = new_value;
-  return true;
-}
-
-inline bool int_to_ulong(ExpressionItem &in) {
-  assert(in.return_type == t_int);
-  const unsigned long new_value = (unsigned long)in.content.data.value._int;
-  in.return_type = t_u_long;
-  in.content.data.value._ulong = new_value;
-  return true;
-}
-
-inline bool int_to_decimal(ExpressionItem &in) {
-  assert(in.return_type == t_int);
-  stringstream va;
-  va << in.content.data.value._int;
-  in.return_type = t_decimal;
-  in._decimal = NValue::getDecimalValueFromString(va.str());
-  return true;
-}
-
-inline bool string_to_int(ExpressionItem &in) {
-  assert(in.return_type == t_string);
-  int rt = atoi(in._string.c_str());
-  in.return_type = t_int;
-  in.content.data.value._int = rt;
-  return true;
-}
-////////////////////////////
 /***************int****************************/
 
 inline void *int_to_int(void *value, void *tovalue) {
-  //    if (*(int *)value == NULL_INT)  // in order to judge the return result
-  //    is
-  //                                    // NULL,so void * is NULL will be simple
+  if (*(int *)value == NULL_INT)  // in order to judge the return result is
+                                  // NULL,so void * is NULL will be simple
+    return NULL;
   *(int *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_smallint(void *value, void *tovalue) {
-  //    if (*(int *)value == NULL_INT) return NULL;
+  if (*(int *)value == NULL_INT) return NULL;
   *(short int *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_float(void *value, void *tovalue) {
-  //    if (*(int *)value == NULL_INT) return NULL;
+  if (*(int *)value == NULL_INT) return NULL;
   *(float *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_double(void *value, void *tovalue) {
-  //    if (*(int *)value == NULL_INT) return NULL;
+  if (*(int *)value == NULL_INT) return NULL;
   *(double *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_ulong(void *value, void *tovalue) {
-  //    if (*(int *)value == NULL_INT) return NULL;
+  if (*(int *)value == NULL_INT) return NULL;
   *(unsigned long *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_decimal(void *value, void *tovalue) {
-  //    if (*(int *)value == NULL_INT) return NULL;
+  if (*(int *)value == NULL_INT) return NULL;
   stringstream va;
   va << *(int *)value;
   *(NValue *)tovalue = NValue::getDecimalValueFromString(va.str());
@@ -117,38 +69,38 @@ inline void *int_to_boolean(void *value, void *tovalue) {
 /***************string****************************/
 
 inline void *string_to_int(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(int *)tovalue = atoi((char *)value);
   return tovalue;
 }
 inline void *string_to_smallint(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(short int *)tovalue = atoi((char *)value);  //???
   return tovalue;
 }
 inline void *string_to_ulong(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(unsigned long *)tovalue = strtoul((char *)value, NULL, 10);
   return tovalue;
 }
 inline void *string_to_float(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(float *)tovalue = atof((char *)value);
   return tovalue;
 }
 inline void *string_to_double(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   *(double *)tovalue = strtod((char *)value, NULL);
   return tovalue;
 }
 inline void *string_to_string(void *value, void *tovalue) {
-  //	if(*(string *)value==NULL_STRING)
-  //		return NULL;
+  //  if(*(string *)value==NULL_STRING)
+  //    return NULL;
   strcpy((char *)tovalue, (char *)value);
   return tovalue;
 }
@@ -414,14 +366,6 @@ inline void *errormsg(void *value, void *tovalue) {
   return NULL;
 }
 inline void initialize_type_cast_functions() {
-  /////////////////
-  TypeCast::type_cast_functions[t_int][t_int] = int_to_int;
-  TypeCast::type_cast_functions[t_int][t_float] = int_to_float;
-  TypeCast::type_cast_functions[t_int][t_double] = int_to_double;
-  TypeCast::type_cast_functions[t_int][t_u_long] = int_to_ulong;
-  TypeCast::type_cast_functions[t_int][t_decimal] = int_to_decimal;
-  ///////////////////////
-
   // t_smallInt
   TypeCast::type_cast_func[t_smallInt][t_smallInt] = smallInt_to_smallInt;
   TypeCast::type_cast_func[t_smallInt][t_int] = smallInt_to_int;

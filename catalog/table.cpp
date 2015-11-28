@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 #include "../common/Schema/SchemaFix.h"
-
 using claims::utility::LockGuard;
 namespace claims {
 namespace catalog {
@@ -164,8 +163,10 @@ ProjectionDescriptor* TableDescriptor::getProjectoin(
     ProjectionOffset pid) const {
   if (pid >= 0 && pid < projection_list_.size()) {
     return projection_list_.at(pid);
+  } else {
+    LOG(WARNING) << "no projection has been created on this table" << endl;
+    return NULL;
   }
-  return NULL;
 }
 unsigned TableDescriptor::getNumberOfProjection() const {
   return projection_list_.size();

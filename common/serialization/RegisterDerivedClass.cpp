@@ -3,9 +3,20 @@
  *
  *  Created on: Aug 7, 2013
  *      Author: wangli
+ * NOTE: every class registered should have empty constructor function
  */
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <boost/iostreams/stream.hpp>
+
+#include "../../common/expression/expr_binary.h"
+#include "../../common/expression/expr_column.h"
+#include "../../common/expression/expr_const.h"
+#include "../../common/expression/expr_node.h"
+#include "../../common/expression/expr_in.h"
+#include "../../common/expression/expr_case_when.h"
+#include "../../common/expression/expr_ternary.h"
+#include "../../common/expression/expr_date.h"
+#include "../../common/expression/expr_unary.h"
 #include "../../IndexManager/CSBIndexBuilding.h"
 #include "../../IndexManager/IndexScanIterator.h"
 #include "../../common/Expression/qnode.h"
@@ -26,7 +37,17 @@
 #include "../../physical_operator/result_printer.h"
 #include "../../physical_operator/physical_operator.h"
 #include "../../physical_operator/physical_sort.h"
+#include "../../physical_operator/physical_delete_filter.h"
 
+using claims::common::ExprBinary;
+using claims::common::ExprCaseWhen;
+using claims::common::ExprColumn;
+using claims::common::ExprConst;
+using claims::common::ExprDate;
+using claims::common::ExprIn;
+using claims::common::ExprNode;
+using claims::common::ExprTernary;
+using claims::common::ExprUnary;
 using claims::physical_operator::CombineTuple;
 using claims::physical_operator::ExchangeMerger;
 using claims::physical_operator::ExchangeSenderMaterialized;
@@ -44,6 +65,7 @@ using claims::physical_operator::PhysicalProject;
 using claims::physical_operator::PhysicalProjectionScan;
 using claims::physical_operator::ResultPrinter;
 using claims::physical_operator::PhysicalSort;
+using claims::physical_operator::PhysicalDeleteFilter;
 
 #pragma auto_inline
 template <class Archive>
@@ -64,6 +86,7 @@ void Register_Block_Stream_Iterator(Archive& ar) {
   ar.register_type(static_cast<PhysicalLimit*>(NULL));
   ar.register_type(static_cast<PhysicalProject*>(NULL));
   ar.register_type(static_cast<PhysicalOperator*>(NULL));
+  ar.register_type(static_cast<PhysicalDeleteFilter*>(NULL));
   ar.register_type(static_cast<InOperator*>(NULL));
   ar.register_type(static_cast<bottomLayerCollecting*>(NULL));
   ar.register_type(static_cast<bottomLayerSorting*>(NULL));
@@ -77,6 +100,16 @@ void Register_Block_Stream_Iterator(Archive& ar) {
   ar.register_type(static_cast<QExpr_case_when*>(NULL));
   ar.register_type(static_cast<QExpr_in*>(NULL));
   ar.register_type(static_cast<QExpr_date_add_sub*>(NULL));
+
+  ar.register_type(static_cast<ExprNode*>(NULL));
+  ar.register_type(static_cast<ExprBinary*>(NULL));
+  ar.register_type(static_cast<ExprConst*>(NULL));
+  ar.register_type(static_cast<ExprColumn*>(NULL));
+  ar.register_type(static_cast<ExprTernary*>(NULL));
+  ar.register_type(static_cast<ExprIn*>(NULL));
+  ar.register_type(static_cast<ExprDate*>(NULL));
+  ar.register_type(static_cast<ExprUnary*>(NULL));
+  ar.register_type(static_cast<ExprCaseWhen*>(NULL));
 }
 void cheat_the_compiler() {
   char buffer[4096 * 2 - sizeof(unsigned)];

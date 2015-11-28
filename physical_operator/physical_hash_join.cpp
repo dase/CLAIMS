@@ -31,12 +31,12 @@
  */
 
 #include "../physical_operator/physical_hash_join.h"
-
 #include <glog/logging.h>
 #include "../codegen/ExpressionGenerator.h"
 #include "../Config.h"
 #include "../Executor/expander_tracker.h"
 #include "../utility/rdtsc.h"
+
 // #define _DEBUG_
 
 namespace claims {
@@ -44,7 +44,7 @@ namespace physical_operator {
 
 PhysicalHashJoin::PhysicalHashJoin(State state)
     : state_(state),
-      hash_(0),
+      hash_func_(0),
       hashtable_(0),
       PhysicalOperator(barrier_number(2), serialized_section_number(1)),
       eftt_(0),
@@ -55,7 +55,7 @@ PhysicalHashJoin::PhysicalHashJoin(State state)
 }
 
 PhysicalHashJoin::PhysicalHashJoin()
-    : hash_(0),
+    : hash_func_(0),
       hashtable_(0),
       PhysicalOperator(barrier_number(2), serialized_section_number(1)),
       eftt_(0),
@@ -114,8 +114,7 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
       payload_right_to_output_[i] = output_index;
       output_index++;
     }
-
-    hash_ = PartitionFunctionFactory::createBoostHashFunction(
+    hash_func_ = PartitionFunctionFactory::createBoostHashFunction(
         state_.hashtable_bucket_num_);
     unsigned long long hash_table_build = curtick();
     hashtable_ = new BasicHashTable(
@@ -124,6 +123,7 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
 #ifdef _DEBUG_
     consumed_tuples_from_left = 0;
 #endif
+
     QNode* expr = createEqualJoinExpression(
         state_.hashtable_schema_, state_.input_schema_right_,
         state_.join_index_left_, state_.join_index_right_);
@@ -173,8 +173,8 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
   JoinThreadContext* jtc = CreateOrReuseContext(crm_numa_sensitive);
 
   const Schema* input_schema = state_.input_schema_left_->duplicateSchema();
-  const Operate* op = input_schema->getcolumn(state_.join_index_left_[0])
-                          .operate->duplicateOperator();
+  const Operate* oper = input_schema->getcolumn(state_.join_index_left_[0])
+                            .operate->duplicateOperator();
   const unsigned buckets = state_.hashtable_bucket_num_;
 
   unsigned long long int start = curtick();
@@ -193,20 +193,13 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
 #endif
       const void* key_addr =
           input_schema->getColumnAddess(state_.join_index_left_[0], cur);
-      bn = op->getPartitionValue(key_addr, buckets);
+      bn = oper->getPartitionValue(key_addr, buckets);
       tuple_in_hashtable = hashtable_->atomicAllocate(bn);
       /* copy join index columns*/
-      if (memcpy_)
-        memcpy_(tuple_in_hashtable, cur);
-      else
-        input_schema->copyTuple(cur, tuple_in_hashtable);
+      input_schema->copyTuple(cur, tuple_in_hashtable);
     }
     jtc->l_block_for_asking_->setEmpty();
   }
-
-  //   printf("%d cycles per
-  //   tuple!\n",(curtick()-start)/processed_tuple_count);
-  unsigned tmp = 0;
 #ifdef _DEBUG_
   tuples_in_hashtable = 0;
 
@@ -216,34 +209,24 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers(1);
-    // printf("<<<<<<<<<<<<<<<<<Join open detected call back
-    // signal!>>>>>>>>>>>>>>>>>\n");
     return true;
   }
 
   BarrierArrive(1);
-  //  if(winning_thread){
-  //  // hashtable->report_status();
-  //  // printf("Hash Table Build time: %4.4f\n",getMilliSecond(timer));
-  //  }
-  //
-  //  hashtable->report_status();
-  //
-  //  printf("join open consume %d tuples\n",consumed_tuples_from_left);
-
   state_.child_right_->Open(partition_offset);
   LOG(INFO) << "join operator finished opening right child" << endl;
   return true;
 }
 
 bool PhysicalHashJoin::Next(BlockStreamBase* block) {
-  void* result_tuple;
+  void* result_tuple = NULL;
   void* tuple_from_right_child;
   void* tuple_in_hashtable;
   void* key_in_input;
   void* key_in_hashtable;
   void* column_in_joined_tuple;
   bool key_exit;
+  int hash_tuple_size = state_.hashtable_schema_->getTupleMaxSize();
 
   JoinThreadContext* jtc = (JoinThreadContext*)GetContext();
 
@@ -275,6 +258,7 @@ bool PhysicalHashJoin::Next(BlockStreamBase* block) {
         cff_(tuple_in_hashtable, tuple_from_right_child, &key_exit,
              state_.join_index_left_, state_.join_index_right_,
              state_.hashtable_schema_, state_.input_schema_right_, eftt_);
+
         if (key_exit) {
           if (NULL != (result_tuple = block->allocateTuple(
                            state_.output_schema_->getTupleMaxSize()))) {
@@ -292,6 +276,7 @@ bool PhysicalHashJoin::Next(BlockStreamBase* block) {
             return true;
           }
         }
+
         jtc->hashtable_iterator_.increase_cur_();
       }
       jtc->r_block_stream_iterator_->increase_cur_();
@@ -350,19 +335,24 @@ bool PhysicalHashJoin::Close() {
 
 void PhysicalHashJoin::Print() {
   LOG(INFO) << "Join: buckets:" << state_.hashtable_bucket_num_ << endl;
+  cout << "Join: buckets:" << state_.hashtable_bucket_num_ << endl;
+
   LOG(INFO) << "------Join Left-------" << endl;
+  cout << "------Join Left-------" << endl;
+
   state_.child_left_->Print();
   LOG(INFO) << "------Join Right-------" << endl;
+  cout << "------Join Right-------" << endl;
 
   state_.child_right_->Print();
 }
 
 inline void PhysicalHashJoin::IsMatch(void* l_tuple_addr, void* r_tuple_addr,
-                                  void* return_addr,
-                                  vector<unsigned>& l_join_index,
-                                  vector<unsigned>& r_join_index,
-                                  Schema* l_schema, Schema* r_schema,
-                                  ExprFuncTwoTuples func) {
+                                      void* return_addr,
+                                      vector<unsigned>& l_join_index,
+                                      vector<unsigned>& r_join_index,
+                                      Schema* l_schema, Schema* r_schema,
+                                      ExprFuncTwoTuples func) {
   bool key_exit = true;
   for (unsigned i = 0; i < r_join_index.size(); i++) {
     void* key_in_input =
@@ -378,12 +368,10 @@ inline void PhysicalHashJoin::IsMatch(void* l_tuple_addr, void* r_tuple_addr,
   *(bool*)return_addr = key_exit;
 }
 
-inline void PhysicalHashJoin::IsMatchCodegen(void* l_tuple_addr, void* r_tuple_addr,
-                                         void* return_addr,
-                                         vector<unsigned>& l_join_index,
-                                         vector<unsigned>& r_join_index,
-                                         Schema* l_schema, Schema* r_schema,
-                                         ExprFuncTwoTuples func) {
+inline void PhysicalHashJoin::IsMatchCodegen(
+    void* l_tuple_addr, void* r_tuple_addr, void* return_addr,
+    vector<unsigned>& l_join_index, vector<unsigned>& r_join_index,
+    Schema* l_schema, Schema* r_schema, ExprFuncTwoTuples func) {
   func(l_tuple_addr, r_tuple_addr, return_addr);
 }
 
@@ -402,6 +390,7 @@ ThreadContext* PhysicalHashJoin::CreateContext() {
   jtc->r_block_for_asking_ = BlockStreamBase::createBlock(
       state_.input_schema_right_, state_.block_size_);
   jtc->r_block_stream_iterator_ = jtc->r_block_for_asking_->createIterator();
+
   return jtc;
 }
 

@@ -744,8 +744,8 @@ void *ClientListener::sendHandler(void *para) {
     usleep(1);
     ClientListenerLogging::log("-SendHandler: wait for result!\n");
     ExecutedResult result = Daemon::getInstance()->getExecutedResult();
-    printf("-SendHandler: get executed_result for %d\n", result.fd_);
-    ClientListenerLogging::log("-SendHandler: get executed_result for %d\n",
+    printf("-SendHandler: get ExecutedResult for %d\n", result.fd_);
+    ClientListenerLogging::log("-SendHandler: get ExecutedResult for %d\n",
                                result.fd_);
 
     checkFdValid(result.fd_);

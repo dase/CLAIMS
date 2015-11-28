@@ -7,12 +7,9 @@
 
 #include <vector>
 #include <iostream>
-
 #include "../SchemaVar.h"
-
 #include "../../ids.h"
 #include "../../AttributeComparator.h"
-
 #include "../../../common/Block/BlockStream.h"
 #include "../../../physical_operator/physical_projection_scan.h"
 #include "../../../physical_operator/physical_filter.h"

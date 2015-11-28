@@ -20,7 +20,6 @@
 //#include "../catalog/Test/statistic_manager_test.cpp"
 //
 //#include "../Executor/Test/Executor.cpp"
-//#include "../Parsetree/Test/parser_test.cpp"
 //#include "../common/Expression_item.cpp"
 //#include "../common/types/Test/data_type_test.h"
 //#include "../common/Schema/Test/SubTuple_test.cpp"
@@ -47,10 +46,12 @@
 //#include "../utility/data_distribution_generator.h"
 //#include "TestSuit/filter_test.h"
 //#include "Resource/CPUResourceManagerTest.h"
-//#include "../Parsetree/Test/execute_sql_test.cpp"
-//#include <stdio.h>
-//#include <string>
-int maina(int argc, char** argv) {
+#include <stdio.h>
+#include <string>
+#include "../sql_parser/Test/test_new_sql.cpp"
+int MainDebug(int argc, char** argv) {
+  //#include <stdio.h>
+  //#include <string>
   //	return testGenerateIteratorTree();
   //	return iterator_test();
   //	return testIteratorExecutor();
@@ -119,8 +120,8 @@ int maina(int argc, char** argv) {
 
   //	::testing::GTEST_FLAG(filter) =
   //"DATE_TYPE.DATE_COMPUTATION:DATA_TYPE.NULL_VALUE_TEST";
-
-  g_test_main(argc, argv);
+  return TestNewSql();
+  //	g_test_main(argc,argv);
 
   //	test_ExpandedThreadTracker();
 

@@ -32,160 +32,214 @@
 
 #include "../physical_operator/physical_sort.h"
 #include <glog/logging.h>
+#include <utility>
+#include <vector>
+
+#include "../common/expression/data_type_oper.h"
+#include "../common/expression/expr_node.h"
+
+using claims::common::DataTypeOper;
+using claims::common::ExprNode;
+using claims::common::OperFuncInfoData;
+using claims::common::OperType;
+using std::vector;
+using std::pair;
 namespace claims {
 namespace physical_operator {
-
-unsigned *PhysicalSort::sort_order_by_key_pos_ = NULL;
-PhysicalSort::State *PhysicalSort::sort_state_ = NULL;
-
-PhysicalSort::PhysicalSort() {
-  sema_open_.set_value(1);
-
-  sema_open_finished_.set_value(0);
-  order_by_key_pos_ = 0;
+unsigned PhysicalSort::order_by_pos_ = 0;
+PhysicalSort::State *PhysicalSort::cmp_state_ = NULL;
+OperFuncInfo PhysicalSort::fcinfo = NULL;
+PhysicalSort::PhysicalSort() : PhysicalOperator(3, 2) {
+  lock_ = new Lock();
+  InitExpandedStatus();
 }
 
 PhysicalSort::PhysicalSort(State state)
-    : finished_thread_count_(0), registered_thread_count_(0), state_(state) {
-  sema_open_.set_value(1);
-  sema_open_finished_.set_value(0);
-  order_by_key_pos_ = 0;
-  sort_state_ = &state_;
+    : PhysicalOperator(3, 2), state_(state) {
+  cmp_state_ = &state_;
+  lock_ = new Lock();
+  InitExpandedStatus();
 }
 
 PhysicalSort::~PhysicalSort() {}
 
 PhysicalSort::State::State()
-    : input_(0), child_(0), block_size_(0), partition_offset_(0) {}
+    : input_schema_(0), child_(0), block_size_(0), partition_offset_(0) {}
 
-PhysicalSort::State::State(Schema *input, vector<unsigned> orderbyKey,
-                           PhysicalOperatorBase *child,
-                           const unsigned block_size, vector<int> direction,
+PhysicalSort::State::State(Schema *input_schema, PhysicalOperatorBase *child,
+                           const unsigned block_size,
+                           vector<pair<ExprNode *, int>> order_by_attrs,
                            const PartitionOffset partition_offset)
-    : input_(input),
-      order_by_key_(orderbyKey),
+    : input_schema_(input_schema),
       child_(child),
       block_size_(block_size),
-      partition_offset_(partition_offset),
-      direction_(direction) {}
-
-void PhysicalSort::Swap(void *&desc, void *&src) {
-  swap_num_++;
-  void *temp = 0;
-  temp = desc;
-  desc = src;
-  src = temp;
-}
-
-bool PhysicalSort::Compare(const void *a, const void *b) {
-  const void *l = sort_state_->input_->getColumnAddess(
-      sort_state_->order_by_key_[*sort_order_by_key_pos_], a);
-  const void *r = sort_state_->input_->getColumnAddess(
-      sort_state_->order_by_key_[*sort_order_by_key_pos_], b);
-  if (sort_state_->direction_[*sort_order_by_key_pos_])
-    return sort_state_->input_
-        ->getcolumn(sort_state_->order_by_key_[*sort_order_by_key_pos_])
-        .operate->duplicateOperator()
-        ->greate(l, r);
-  else
-    return sort_state_->input_
-        ->getcolumn(sort_state_->order_by_key_[*sort_order_by_key_pos_])
-        .operate->duplicateOperator()
-        ->less(l, r);
-}
-
-void PhysicalSort::Order() {
-  sort_order_by_key_pos_ = &order_by_key_pos_;
-  while (order_by_key_pos_ < state_.order_by_key_.size()) {
-    stable_sort(tuple_vector_.begin(), tuple_vector_.end(), Compare);
-    order_by_key_pos_++;
-  }
-}
-
-bool PhysicalSort::Open(const PartitionOffset &part_off) {
-  /**
-   * TODO(anyone): multi threads can be used to pipeline!!!
-   */
-  swap_num_ = 0;
-  temp_cur_ = 0;
-  /**
-   *  first we can store all the data which will be bufferred
-   * 1, buffer is the first phase. multi-threads will be applyed to the data
-   *    in the buffer.
-   * 2, sort the data in the buffer, we choose quicksort to sort the records
-   *    by specifying the column to be sorted
-   * 3, whether to register the buffer into the blockmanager.
-   * */
-  BlockStreamBase *block_for_asking;
-
-  state_.partition_offset_ = part_off;
-
-  state_.child_->Open(state_.partition_offset_);
-
-  if (sema_open_.try_wait()) {
-    block_buffer_iterator_ = block_buffer_.createIterator();
-    open_finished_ = true;
+      order_by_attrs_(order_by_attrs),
+      order_by_attrs_copy_(order_by_attrs),
+      partition_offset_(partition_offset) {}
+// TODO(FZH): every time compare 2 tuples, it should be calculated, it may be
+// calculated before there and fetch the result straightly here.
+bool PhysicalSort::Compare(void *a_tuple, void *b_tuple) {
+  void *a_result =
+      cmp_state_->order_by_attrs_[order_by_pos_].first->ExprEvaluate(
+          a_tuple, cmp_state_->input_schema_);
+  void *b_result =
+      cmp_state_->order_by_attrs_copy_[order_by_pos_].first->ExprEvaluate(
+          b_tuple, cmp_state_->input_schema_);
+  fcinfo->args_[0] = a_result;
+  fcinfo->args_[1] = b_result;
+  fcinfo->args_num_ = 2;
+  bool cmp_result_ = false;
+  fcinfo->result_ = &cmp_result_;
+  if (cmp_state_->order_by_attrs_[order_by_pos_].second) {
+    // for descending order and preserving order, it should return false, so
+    // return a_result > b_result;
+    cmp_state_->compare_funcs_[order_by_pos_][1](fcinfo);
+    //    DataTypeOper::data_type_oper_func_
+    //        [cmp_state_->order_by_attrs_[order_by_pos_]
+    //             .first->get_type_][OperType::oper_great](fcinfo);
+    return cmp_result_;
   } else {
-    while (!open_finished_) {
-      usleep(1);
-    }
+    // for ascending order and preserving order, it should return false, so
+    // return a_result < b_result;
+    cmp_state_->compare_funcs_[order_by_pos_][0](fcinfo);
+    //    DataTypeOper::data_type_oper_func_
+    //        [cmp_state_->order_by_attrs_[order_by_pos_]
+    //             .first->get_type_][OperType::oper_less](fcinfo);
+    return cmp_result_;
   }
+}
+/*  Sorts the elements in the range @p [__first,__last) in ascending order,
+ *  such that for each iterator @p i in the range @p [__first,__last-1),
+ *  @p __comp(*(i+1),*i) is false.
+ *
+ *  The relative ordering of equivalent elements is preserved, so any two
+ *  elements @p x and @p y in the range @p [__first,__last) such that
+ *  @p __comp(x,y) is false and @p __comp(y,x) is false will have the same
+ *  relative ordering after calling @p stable_sort().
+ */
+void PhysicalSort::Order() {
+  for (order_by_pos_ = 0; order_by_pos_ < state_.order_by_attrs_.size();
+       ++order_by_pos_) {
+    stable_sort(all_tuples_.begin(), all_tuples_.end(), Compare);
+  }
+}
 
-  if (CreateBlockStream(block_for_asking) == false) {
+/**
+ *  first we can store all the data which will be bufferred
+ * 1, buffer is the first phase. multi-threads will be applyed to the data
+ *    in the buffer.
+ * 2, sort the data in the buffer, we choose stable_sort() to sort the records
+ *    by specifying the column to be sorted
+ * 3, whether to register the buffer into the blockmanager.
+ * */
+bool PhysicalSort::Open(const PartitionOffset &part_off) {
+  RegisterExpandedThreadToAllBarriers();
+  if (TryEntryIntoSerializedSection(0)) {
+    all_cur_ = 0;
+    thread_id_ = -1;
+    all_tuples_.clear();
+  }
+  BarrierArrive(0);
+  BlockStreamBase *block_for_asking = NULL;
+  if (CreateBlock(block_for_asking) == false) {
     LOG(ERROR) << "error in the create block stream!!!" << endl;
     return 0;
   }
+  //  state_.partition_offset_ = part_off;
+  state_.child_->Open(part_off);
+
   /**
    *  phase 1: store the data in the buffer!
    *          by using multi-threads to speed up
    */
-  unsigned block_offset = 0;
-  unsigned tuple_count_sum = 0;
-  BlockStreamBase::BlockStreamTraverseIterator *iterator_for_scan;
+  vector<void *> thread_tuple;
+  thread_tuple.clear();
+  void *tuple_ptr = NULL;
+  BlockStreamBase::BlockStreamTraverseIterator *block_it;
+
   while (state_.child_->Next(block_for_asking)) {
-    tuple_count_sum += block_for_asking->getTuplesInBlock();
     block_buffer_.atomicAppendNewBlock(block_for_asking);
-    iterator_for_scan = block_buffer_.getBlock(block_offset)->createIterator();
-    void *tuple_ptr = 0;
-    while ((tuple_ptr = iterator_for_scan->nextTuple()) != 0) {
-      tuple_vector_.push_back(tuple_ptr);
+    block_it = block_for_asking->createIterator();
+    while (NULL != (tuple_ptr = block_it->nextTuple())) {
+      thread_tuple.push_back(tuple_ptr);
     }
-    block_offset++;
-    if (CreateBlockStream(block_for_asking) == false) {
+    if (CreateBlock(block_for_asking) == false) {
       LOG(ERROR) << "error in the create block stream!!!" << endl;
       return 0;
     }
   }
 
-  /**
-   *  phase 2: sort the data in the buffer!
-   *          by using multi-threads to speed up?
-   * TODO(anyone): whether to store the sorted data into the blockmanager.
-   */
-  //    cout<<"check the memory usage!!!"<<endl;
-  unsigned long long int time = curtick();
-  //    order(state_.orderbyKey_,tuple_count_sum);
-  Order();
+  lock_->acquire();
+  all_tuples_.insert(all_tuples_.end(), thread_tuple.begin(),
+                     thread_tuple.end());
+  lock_->release();
+  thread_tuple.clear();
 
-  // cout<<"the tuple_count is: "<<tuple_count_sum<<"Total time:
-  // "<<getSecond(time)<<" seconds, the swap num is: "<<swap_num<<endl;
+  // guarantee the block_buffer get all data blocks completely
+  BarrierArrive(1);
+
+  // phase 2: sort the data in the buffer, only just one thread!
+  if (TryEntryIntoSerializedSection(1)) {
+    // reverse the order of order_by_attrs for preserve The relative ordering of
+    // equivalent elements
+    reverse(state_.order_by_attrs_.begin(), state_.order_by_attrs_.end());
+    // one expression for 2 tuples results in overwriting result, so copy the
+    // expression for 2 different tuples calculating
+    state_.order_by_attrs_copy_ = state_.order_by_attrs_;
+    OperFuncInfoData oper_info;
+    fcinfo = &oper_info;
+    state_.compare_funcs_ =
+        new DataTypeOperFunc[state_.order_by_attrs_.size()][2];
+    for (int i = 0; i < state_.order_by_attrs_.size(); ++i) {
+      state_.order_by_attrs_copy_[i].first =
+          state_.order_by_attrs_[i].first->ExprCopy();  // deep copy
+      state_.order_by_attrs_[i].first->InitExprAtPhysicalPlan();
+      state_.order_by_attrs_copy_[i].first->InitExprAtPhysicalPlan();
+
+      state_.compare_funcs_[i][0] = DataTypeOper::data_type_oper_func_
+          [state_.order_by_attrs_[i].first->get_type_][OperType::oper_less];
+      state_.compare_funcs_[i][1] = DataTypeOper::data_type_oper_func_
+          [state_.order_by_attrs_[i].first->get_type_][OperType::oper_great];
+    }
+    //    int64_t time = curtick();
+    Order();
+  }
+  BarrierArrive(2);
   return true;
 }
-
+// just only thread can fetch this result
 bool PhysicalSort::Next(BlockStreamBase *block) {
-  /* multi-threads to send the block out*/
-  unsigned tuple_size = state_.input_->getTupleMaxSize();
-  while (temp_cur_ < tuple_vector_.size()) {
-    void *desc = 0;
-    while ((desc = block->allocateTuple(tuple_size))) {
-      memcpy(desc, tuple_vector_[temp_cur_], tuple_size);
-      temp_cur_++;
-      if (temp_cur_ < tuple_vector_.size())
-        continue;
-      else
-        break;
+  lock_->acquire();
+  if (thread_id_ == -1) {
+    thread_id_ = pthread_self();
+    lock_->release();
+  } else {
+    if (thread_id_ != pthread_self()) {
+      lock_->release();
+      return false;
+    } else {
+      lock_->release();
     }
-    return true;
+  }
+
+  unsigned tuple_size = state_.input_schema_->getTupleMaxSize();
+  void *desc = NULL;
+  int tmp_tuple = -1;
+  while (true) {
+    if (all_cur_ < all_tuples_.size()) {
+      if (NULL != (desc = block->allocateTuple(tuple_size))) {
+        tmp_tuple = all_cur_++;
+        memcpy(desc, all_tuples_[tmp_tuple], tuple_size);
+      } else {  // block is full
+        return true;
+      }
+    } else {                  // all tuple are fetched
+      if (tmp_tuple == -1) {  // but this block is empty
+        return false;
+      } else {  // get several tuples
+        return true;
+      }
+    }
   }
   return false;
 }
@@ -196,26 +250,21 @@ bool PhysicalSort::Close() {
 }
 
 void PhysicalSort::Print() {
-  LOG(INFO) << "Sort" << endl;
-  for (int i = 0; i < state_.direction_.size(); i++) {
-    LOG(INFO) << "[" << state_.order_by_key_[i] << "]"
-              << (0 == state_.direction_[i])
-        ? "asc"
-        : "desc";
+  cout << "Sort: " << endl;
+  for (int i = 0; i < state_.order_by_attrs_.size(); ++i) {
+    cout << state_.order_by_attrs_[i].first->alias_ << "    "
+         << (state_.order_by_attrs_[i].second == 0 ? "ASC" : "DESC") << endl;
   }
-  LOG(INFO) << endl;
   state_.child_->Print();
 }
-
-bool PhysicalSort::CreateBlockStream(BlockStreamBase *&target) const {
+bool PhysicalSort::CreateBlock(BlockStreamBase *&target) const {
   /**
    * TODO: the block allocation should apply for the memory budget from the
    * buffer manager first.
    */
-  // cout<<"state_.block_size_: "<<state_.block_size_<<endl;
-  target = BlockStreamBase::createBlock(state_.input_, state_.block_size_);
+  target =
+      BlockStreamBase::createBlock(state_.input_schema_, state_.block_size_);
   return target != 0;
 }
-
 }  // namespace physical_operator
 }  // namespace claims

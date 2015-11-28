@@ -25,7 +25,7 @@
 #include <gtest/gtest.h>
 #include <string>
 #define GLOG_NO_ABBREVIATED_SEVERITIES
-#include "../codegen/codegen_test.h"
+//#include "../codegen/codegen_test.h"
 #include "../common/log/logging.h"
 #include "../loader/test/data_injector_test.h"
 //#include "../common/file_handle/test/disk_file_handle_imp_test.h"

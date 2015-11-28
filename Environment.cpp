@@ -5,9 +5,8 @@
  *      Author: wangli
  */
 
-#include "Environment.h"
-
 #define GLOG_NO_ABBREVIATED_SEVERITIES
+#include "Environment.h"
 #include <glog/logging.h>
 #include <libconfig.h++>
 #include <iostream>
@@ -18,9 +17,17 @@
 #include "common/Logging.h"
 #include "common/TypePromotionMap.h"
 #include "common/TypeCast.h"
-#include "common/Expression/queryfunc.h"
 #include "common/error_define.h"
 #include "codegen/CodeGenerator.h"
+#include "common/expression/data_type_oper.h"
+#include "common/expression/expr_type_cast.h"
+#include "common/expression/type_conversion_matrix.h"
+
+using claims::common::InitAggAvgDivide;
+using claims::common::InitOperatorFunc;
+using claims::common::InitTypeCastFunc;
+using claims::common::InitTypeConversionMatrix;
+//#define DEBUG_MODE
 #include "catalog/catalog.h"
 using claims::common::rSuccess;
 
@@ -80,9 +87,11 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
 
   exchangeTracker = new ExchangeTracker();
   expander_tracker_ = ExpanderTracker::getInstance();
+#ifndef DEBUG_MODE
   if (ismaster) {
     initializeClientListener();
   }
+#endif
 }
 
 Environment::~Environment() {
@@ -96,7 +105,9 @@ Environment::~Environment() {
     delete iteratorExecutorMaster;
     delete resourceManagerMaster_;
     delete blockManagerMaster_;
+#ifndef DEBUG_MODE
     destoryClientListener();
+#endif
   }
   delete iteratorExecutorSlave;
   delete exchangeTracker;
@@ -192,9 +203,10 @@ void Environment::initializeClientListener() {
 }
 
 void Environment::initializeExpressionSystem() {
-  initialize_arithmetic_type_promotion_matrix();
-  initialize_type_cast_functions();
-  initialize_operator_function();
+  InitTypeConversionMatrix();
+  InitOperatorFunc();
+  InitAggAvgDivide();
+  InitTypeCastFunc();
 }
 
 void Environment::destoryClientListener() {

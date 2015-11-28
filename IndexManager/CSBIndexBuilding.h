@@ -9,6 +9,7 @@
 #define CSBINDEXBUILDING_H_
 #include <boost/serialization/base_object.hpp>
 #include <map>
+
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #include "../common/Schema/Schema.h"

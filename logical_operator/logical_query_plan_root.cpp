@@ -19,7 +19,8 @@
  * /Claims/logical_operator/logical_query_plan_root.cpp
  *
  *  Created on: Sep 21, 2015
- *      Author: wangli, yukai
+ *  Modified on: Nov 16, 2015
+ *      Author: wangli, yukai, tonglanxuan
  *		 Email: yukai2014@gmail.com
  *
  * Description:
@@ -28,6 +29,7 @@
 
 #include "../logical_operator/logical_query_plan_root.h"
 
+#include <glog/logging.h>
 #include <vector>
 #include <string>
 
@@ -51,18 +53,14 @@ using claims::physical_operator::ResultPrinter;
 
 namespace claims {
 namespace logical_operator {
-
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
                                            LogicalOperator* child,
-                                           const OutputStyle& style,
-                                           LimitConstraint limit_constraint)
-    : collecter_node(collecter),
+                                           const OutputStyle& style)
+    : LogicalOperator(kLogicalQueryPlanRoot),
+      collecter_node(collecter),
       child_(child),
       style_(style),
-      limit_constraint_(limit_constraint) {
-  set_operator_type(kLogicalQueryPlanRoot);
-}
-
+      plan_context_(NULL) {}
 LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
   if (NULL != child_) {
     delete child_;
@@ -133,32 +131,18 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
   expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
   PhysicalOperatorBase* expander = new Expander(expander_state);
 
-  PhysicalOperatorBase* middle_tier;
-  if (!limit_constraint_.CanBeOmitted()) {
-    // we should add a limit operator
-    PhysicalLimit::State limit_state(
-        expander_state.schema_->duplicateSchema(), expander,
-        limit_constraint_.returned_tuples_, block_size,
-        limit_constraint_.start_position_);
-    PhysicalOperatorBase* limit = new PhysicalLimit(limit_state);
-    middle_tier = limit;
-  } else {
-    middle_tier = expander;
-  }
-
   PhysicalOperatorBase* ret;
   switch (style_) {
     case kPrint: {
       ResultPrinter::State print_state(
-          GetSchema(child_plan_context.attribute_list_), middle_tier,
-          block_size, GetAttributeName(child_plan_context));
+          GetSchema(child_plan_context.attribute_list_), expander, block_size,
+          GetAttributeName(child_plan_context));
       ret = new ResultPrinter(print_state);
       break;
     }
     case kPerformance: {
       PerformanceMonitor::State performance_state(
-          GetSchema(child_plan_context.attribute_list_), middle_tier,
-          block_size);
+          GetSchema(child_plan_context.attribute_list_), expander, block_size);
       ret = new PerformanceMonitor(performance_state);
       break;
     }
@@ -169,8 +153,8 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
             child_plan_context.attribute_list_[i].getName());
       }
       physical_operator::ResultCollector::State result_state(
-          GetSchema(child_plan_context.attribute_list_), middle_tier,
-          block_size, column_header);
+          GetSchema(child_plan_context.attribute_list_), expander, block_size,
+          column_header);
       ret = new physical_operator::ResultCollector(result_state);
       break;
     }
@@ -183,10 +167,18 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
  * get PlanContext from child and return
  */
 PlanContext LogicalQueryPlanRoot::GetPlanContext() {
+  lock_->acquire();
+  if (NULL != plan_context_) {
+    lock_->release();
+    return *plan_context_;
+  }
   PlanContext ret = child_->GetPlanContext();
-  QueryOptimizationLogging::log(
-      "Communication cost:%ld, predicted ouput size=%ld\n", ret.commu_cost_,
-      ret.plan_partitioner_.GetAggregatedDataCardinality());
+  LOG(INFO) << "Communication cost: " << ret.commu_cost_
+            << " predicted ouput size= "
+            << ret.plan_partitioner_.GetAggregatedDataCardinality() << endl;
+  plan_context_ = new PlanContext;
+  *plan_context_ = ret;
+  lock_->release();
   return ret;
 }
 
@@ -344,13 +336,9 @@ std::vector<std::string> LogicalQueryPlanRoot::GetAttributeName(
   return attribute_name_list;
 }
 void LogicalQueryPlanRoot::Print(int level) const {
-  printf("Root\n");
-  if (!limit_constraint_.CanBeOmitted()) {
-    printf("With limit constaint: %ld, %ld\n",
-           limit_constraint_.start_position_,
-           limit_constraint_.returned_tuples_);
-  }
-  child_->Print(level + 1);
+  cout << setw(level * kTabSize) << " "
+       << "Root" << endl;
+  child_->Print(level);
 }
 
 }  // namespace logical_operator

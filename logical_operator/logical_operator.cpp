@@ -27,8 +27,9 @@
  */
 #include "../logical_operator/logical_operator.h"
 #include <limits.h>
+#include <map>
 #include <vector>
-
+#include <string>
 #include "../Resource/NodeTracker.h"
 namespace claims {
 namespace logical_operator {
@@ -97,6 +98,11 @@ int LogicalOperator::GetIdInAttributeList(
   }
   return -1;
 }
-
+void LogicalOperator::GetColumnToId(const std::vector<Attribute>& attributes,
+                                    map<string, int>& column_to_id) {
+  for (int i = 0; i < attributes.size(); ++i) {
+    column_to_id[attributes[i].attrName] = i;
+  }
+}
 }  // namespace logical_operator
 }  // namespace claims

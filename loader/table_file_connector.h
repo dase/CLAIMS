@@ -68,6 +68,8 @@ class TableFileConnector : public FileConnector {
     return common::rFailure;
   }
 
+  RetCode DeleteFiles();
+
  private:
   std::vector<std::vector<common::FileHandleImp*>> file_handles_;
   std::vector<std::vector<std::string>> write_path_name_;

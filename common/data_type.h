@@ -60,6 +60,7 @@ enum data_type {
   t_date_year,
   t_date_quarter
 };
+
 // enum TransformRet { rSuccess = 0, kWarning, kError };
 inline string GetPrecision(double d) {
   ostringstream ss;
@@ -97,6 +98,7 @@ typedef void (*fun)(void*, void*);
 #define NULL_SMALL_INT SHRT_MAX
 #define NULL_INT INT_MAX
 #define NULL_U_LONG ULONG_LONG_MAX
+
 #define NULL_FLOAT FLT_MAX   // const transfor to int 2139095039
 #define NULL_DOUBLE DBL_MAX  // const transfor to int -1
 #define NULL_STRING '7'
@@ -106,6 +108,7 @@ typedef void (*fun)(void*, void*);
 #define NULL_DECIMAL nvalue_null
 #define NULL_U_SMALL_INT USHRT_MAX
 #define NULL_BOOLEAN 2
+
 static NValue nvalue_null = NValue::getDecimalValueFromString(
     "99999999999999999999999999.999999999999");
 const int max_double_length = 1 + 308;
@@ -828,6 +831,7 @@ class OperateTime : public Operate {
       return true;
     return false;
   }
+
   RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "00:00:00.000000"; }
 };
@@ -910,6 +914,7 @@ class OperateDatetime : public Operate {
       return true;
     return false;
   }
+
   RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "1400-01-01 00:00:00.000000"; }
 };
@@ -990,6 +995,7 @@ class OperateSmallInt : public Operate {
       return true;
     return false;
   }
+
   RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "0"; }
 };
@@ -1000,7 +1006,7 @@ class OperateUSmallInt : public Operate {
     this->nullable = _nullable;
     assign = assigns<unsigned short>;
   }
-  //	~OperateSmallInt(){};
+  //  ~OperateSmallInt(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(unsigned short*)desc = *(unsigned short*)src;
   }
@@ -1172,6 +1178,8 @@ class OperateDecimal : public Operate {
     return ul1 % mod;
   }
   Operate* duplicateOperator() const {
+    //    return new OperateDecimal(number_of_decimal_digits_, this->nullable);
+
     return new OperateDecimal(size, nullable);
   }
 
@@ -1189,6 +1197,7 @@ class OperateDecimal : public Operate {
   }
 
   unsigned number_of_decimal_digits_;
+
   /**
    * @TODO min and max check is not implemented yet ! *-_-*
    */
@@ -1273,6 +1282,7 @@ class OperateBool : public Operate {
     if (this->nullable == true && (*(int*)value) == NULL_SMALL_INT) return true;
     return false;
   }
+
   RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = "false"; }
 };

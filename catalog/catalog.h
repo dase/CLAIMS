@@ -75,6 +75,7 @@ class Catalog {
   bool add_table(TableDescriptor* const& table);
   TableDescriptor* getTable(const TableID&) const;
   TableDescriptor* getTable(const std::string& table_name) const;
+  void GetAllTables(ostringstream& ostr) const;
   ProjectionDescriptor* getProjection(const ProjectionID&) const;
   ProjectionBinding* getBindingModele() const;
 
@@ -90,6 +91,8 @@ class Catalog {
 
   vector<PartitionID> getPartitionIDList(const std::string& table_name,
                                          const std::string& attribute_name);
+
+  bool DropTable(const std::string table_name, const TableID id);
 
  private:
   Catalog();  // avoiding generate more instance

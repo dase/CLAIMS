@@ -1,4 +1,3 @@
-
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
@@ -14,7 +13,6 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-<<<<<<< HEAD:logical_query_plan/Makefile.am
 LDADD = ../logical_operator/liblogicalqueryplan.a \
 		../catalog/libcatalog.a \
 		../catalog/stat/libstat.a \
@@ -42,7 +40,10 @@ liblogicalqueryplan_a_SOURCES = \
 	logical_scan.cpp 					logical_scan.h \
 	logical_limit.cpp                   logical_limit.h \
 	logical_cross_join.cpp				logical_cross_join.h \
-	logical_sort.cpp 					logical_sort.h 
+	logical_subquery.cpp				logical_subquery.h	\
+	logical_sort.cpp 					logical_sort.h \
+	logical_delete_filter.cpp           logical_delete_filter.h
+
 
 SUBDIRS = 
 DIST_SUBDIRS = 

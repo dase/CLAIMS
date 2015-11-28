@@ -29,9 +29,6 @@ libcommon_a_SOURCES = \
 	AttributeComparator.cpp 		AttributeComparator.h \
 	Comparator.cpp 				Comparator.h \
 	ExpandedThreadTracker.cpp 		ExpandedThreadTracker.h \
-	ExpressionCalculator.cpp \
-	ExpressionCalculator.h 			ExpressionItem.cpp \
-	ExpressionItem.h 				Expression_item.cpp \
 	InsertOptimizedHashTable.cpp 		InsertOptimizedHashTable.h \
 	Logging.cpp 		Logging.h \
 	Mapping.cpp 		Mapping.h \
@@ -47,5 +44,5 @@ libcommon_a_SOURCES = \
 	error_no.h			error_no.cpp \
 	memory.h
 
-SUBDIRS = Block file_handle log Schema types Expression serialization
-DIST_SUBDIRS = Block file_handle log Schema types Expression serialization
+SUBDIRS = Block file_handle log Schema types Expression expression serialization
+DIST_SUBDIRS = Block file_handle log Schema types Expression expression serialization

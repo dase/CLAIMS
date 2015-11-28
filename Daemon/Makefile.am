@@ -13,8 +13,7 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = 	../Parsetree/libparsetree.a \
-		../logical_operator/liblogicalqueryplan.a \
+LDADD = 	../logical_operator/liblogicalqueryplan.a \
 		../common/Block/libblock.a \
 		../utility/libutility.a \
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a\
@@ -27,5 +26,5 @@ noinst_LIBRARIES=libdaemon.a
 libdaemon_a_SOURCES =	Daemon.cpp	Daemon.h \
 		Executing.cpp	Executing.h
 		
-SUBDIRS = Test
-DIST_SUBDIRS = Test
+SUBDIRS = 
+DIST_SUBDIRS = 

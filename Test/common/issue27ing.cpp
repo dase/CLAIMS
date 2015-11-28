@@ -20,10 +20,8 @@
 
 #include "../../logical_operator/logical_scan.h"
 #include "../../logical_operator/logical_equal_join.h"
-
 #include "../../common/ExpressionItem.h"
 #include "../../common/ExpressionCalculator.h"
-
 #include "../../common/types/NValue.hpp"
 #include "../../logical_operator/logical_project.h"
 #include "../../utility/rdtsc.h"
@@ -112,8 +110,8 @@ static void query_select_fzh() {
   aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
   aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
   aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-  std::vector<PhysicalAggregation::State::Aggregation>
-      aggregation_function;
+
+  std::vector<PhysicalAggregation::State::Aggregation> aggregation_function;
 
   aggregation_function.push_back(PhysicalAggregation::State::kSum);
   aggregation_function.push_back(PhysicalAggregation::State::kSum);
@@ -321,14 +319,15 @@ static void query_select_aggregation_ing() {
   //	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
   //	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
   //	std::vector<BlockStreamAggregationIterator::State::aggregation>
-  //aggregation_function;
+
+  // aggregation_function;
   //
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
   //	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
   //	LogicalOperator* aggregation=new
-  //Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
+  // Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,project1);
   //
   //	//==========================project=========================
   //	vector< vector<ExpressionItem> >expr_list2;
@@ -393,7 +392,6 @@ static void init_single_node_tpc_h_envoriment_ing(bool master = true) {
 
 static int issue27ing_single_node() {
   unsigned repeated_times = 300;
-
   init_single_node_tpc_h_envoriment_ing();
   for (unsigned i = 0; i < repeated_times; i++) {
     query_select_aggregation_ing();

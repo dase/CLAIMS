@@ -31,7 +31,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
-
+#include "../../utility/Timer.h"
 #include "../../common/error_no.h"
 using std::cout;
 using std::endl;
@@ -78,7 +78,6 @@ TEST_F(ErrorNoTest, Performance) {
       "the dedicated join police is not initialized, e.g., "
       "in corss join, equal join logical operator",
       CStrError(e[2]));
-
   GETCURRENTTIME(start);
   for (int i = 0; i < 10000000; ++i) {
     int error_no = i % 3;

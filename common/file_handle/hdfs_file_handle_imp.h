@@ -67,6 +67,8 @@ class HdfsFileHandleImp : public FileHandleImp {
   }
   virtual RetCode SetPosition(size_t pos);
 
+  virtual RetCode DeleteFile();
+
  private:
   hdfsFS fs_;
   hdfsFile file_;

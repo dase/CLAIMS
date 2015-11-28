@@ -19,7 +19,8 @@
  * ./LogicalPlan/plan_context.h
  *
  *  Created on: Nov 10, 2013
- *      Author: wangli, fangzhuhe
+ *  Modified on: Nov 16, 2015
+ *      Author: wangli, fangzhuhe, tonglanxuan
  *       Email: fzhedu@gmail.com
  *
  * Description:
@@ -27,7 +28,9 @@
 
 #ifndef LOGICAL_OPERATOR_PLAN_CONTEXT_H_
 #define LOGICAL_OPERATOR_PLAN_CONTEXT_H_
+#include <string>
 #include <vector>
+#include <string>
 #include "../catalog/column.h"
 #include "../catalog/partitioner.h"
 #include "../common/Schema/Schema.h"
@@ -56,9 +59,9 @@ class PlanContext {
    * after having executing current operator, the data size could be changed,
    * the data size = total tuples * tuple size.
    */
-  unsigned long GetAggregatedDatasize() const;
+  int64_t GetAggregatedDatasize() const;
   // cardinality = tuple number
-  unsigned long GetAggregatedDataCardinality() const;
+  int64_t GetAggregatedDataCardinality() const;
   bool IsHashPartitioned() const;
   Schema* GetSchema() const;
   unsigned GetTupleSize() const;
@@ -69,7 +72,7 @@ class PlanContext {
   std::vector<Attribute> attribute_list_;  // maintain the output attributes
                                            // after having completed current
                                            // operator.
-  unsigned long commu_cost_;               // communication cost
+  int64_t commu_cost_;                     // communication cost
   // describe the information of the data partition
   PlanPartitioner plan_partitioner_;
 };
