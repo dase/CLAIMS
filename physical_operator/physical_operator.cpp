@@ -77,6 +77,7 @@ void PhysicalOperator::RegisterExpandedThreadToAllBarriers() {
 
 void PhysicalOperator::UnregisterExpandedThreadToAllBarriers(
     unsigned barrier_index) {
+  lock_number_of_registered_expanded_threads_.acquire();
   number_of_registered_expanded_threads_--;
   lock_number_of_registered_expanded_threads_.release();
   for (unsigned i = barrier_index; i < number_of_barrier_; i++) {
