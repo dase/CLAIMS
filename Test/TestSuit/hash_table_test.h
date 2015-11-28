@@ -211,7 +211,7 @@ struct Arg{
 	Schema* schema;
 	PartitionFunction* hash;
 	PhysicalOperatorBase* iterator;
-	PartitionStorage::PartitionReaderItetaor* partition_reader;
+	PartitionStorage::PartitionReaderIterator* partition_reader;
 	Barrier* barrier;
 	unsigned tid;
 };

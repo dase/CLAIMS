@@ -31,11 +31,7 @@ class ChunkReaderIterator {
     virtual void getBlock(BlockStreamBase*& block) const { assert(false); }
     unsigned getBlockSize() const { return block_size; }
 
-    void setBlockSize(unsigned blockSize) {
-      block_size = blockSize;
-    }
-
-    ;
+    void setBlockSize(unsigned blockSize) { block_size = blockSize; }
 
    protected:
     unsigned block_size;

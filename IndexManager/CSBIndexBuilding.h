@@ -78,7 +78,7 @@ class bottomLayerCollecting : public PhysicalOperator {
 
  private:
   State state_;
-  PartitionStorage::PartitionReaderItetaor* partition_reader_iterator_;
+  PartitionStorage::PartitionReaderIterator* partition_reader_iterator_;
   ChunkReaderIterator* chunk_reader_iterator_;
   std::list<remaining_block> remaining_block_list_;
   std::list<BlockStreamBase*> block_stream_list_;
