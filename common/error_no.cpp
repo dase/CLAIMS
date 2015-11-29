@@ -224,6 +224,10 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rNoProjection, "No Projection on this table.");
   DefineErrorAndMessage(rLimitNotStandardized, "limit not standard.");
   DefineErrorAndMessage(rLimitZero, "limit zero.");
+  DefineErrorAndMessage(rLimitParaCouldnotLessZero,
+                        "limit parameter couldn't zero.");
+  DefineErrorAndMessage(rLimitParaShouldNaturalNumber,
+                        "limit parameter should be natural number.");
 
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }

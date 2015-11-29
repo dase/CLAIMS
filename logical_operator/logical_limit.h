@@ -81,6 +81,9 @@ class LogicalLimit : public LogicalOperator {
    *         pointing to the root node of limit's iterator tree.
    */
   PhysicalOperatorBase* GetPhysicalPlan(const unsigned& blocksize);
+  PhysicalOperatorBase* GetPhysicalPlan(const unsigned& blocksize,
+                                        PhysicalOperatorBase* child_iterator);
+
   /**
    * @brief Method description: To print information of returned_tuples_ and
    * start_position_.
@@ -88,10 +91,11 @@ class LogicalLimit : public LogicalOperator {
    */
   virtual void Print(int level = 0) const;
 
+  LogicalOperator* child_;
+
  private:
   const unsigned PredictCardinality(unsigned i,
                                     const PlanContext& plan_context);
-  LogicalOperator* child_;
   PlanContext* plan_context_;
   int64_t returned_tuples_;
   int64_t start_position_;
