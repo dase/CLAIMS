@@ -1118,6 +1118,10 @@ RetCode AstLimitClause::GetLogicalPlan(LogicalOperator*& logical_plan) {
     }
     return rLimitNotStandardized;
   }
+  if (row_count_->ast_node_type() != AST_EXPR_CONST ||
+      offset_->ast_node_type() != AST_EXPR_CONST) {
+    return rLimitParaShouldNaturalNumber;
+  }
   int64_t row_count =
       atol((dynamic_cast<AstExprConst*>(row_count_))->data_.c_str());
   if (0 == row_count) {
@@ -1127,6 +1131,9 @@ RetCode AstLimitClause::GetLogicalPlan(LogicalOperator*& logical_plan) {
       (NULL != offset_)
           ? atol((dynamic_cast<AstExprConst*>(offset_))->data_.c_str())
           : 0;
+  if (row_count < 0 || offset < 0) {
+    return rLimitParaCouldnotLessZero;
+  }
   logical_plan = new LogicalLimit(logical_plan, row_count, offset);
   return rSuccess;
 }
