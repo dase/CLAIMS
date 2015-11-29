@@ -92,6 +92,15 @@ PhysicalOperatorBase* LogicalLimit::GetPhysicalPlan(const unsigned& blocksize) {
   PhysicalOperatorBase* limit = new PhysicalLimit(state);
   return limit;
 }
+PhysicalOperatorBase* LogicalLimit::GetPhysicalPlan(
+    const unsigned& blocksize, PhysicalOperatorBase* child_iterator) {
+  PlanContext plan_context = GetPlanContext();
+  PhysicalLimit::State state(GetSchema(plan_context.attribute_list_),
+                             child_iterator, returned_tuples_, blocksize,
+                             start_position_);
+  PhysicalOperatorBase* limit = new PhysicalLimit(state);
+  return limit;
+}
 
 void LogicalLimit::Print(int level) const {
   if (!CanBeOmitted()) {

@@ -33,6 +33,7 @@
 #include <vector>
 #include <string>
 
+#include "./logical_limit.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../logical_operator/logical_operator.h"
@@ -79,7 +80,16 @@ LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
 PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     const unsigned& block_size) {
   PlanContext child_plan_context = GetPlanContext();
-  PhysicalOperatorBase* child_iterator = child_->GetPhysicalPlan(block_size);
+  ///////////
+  LogicalLimit* limit = NULL;
+  PhysicalOperatorBase* child_iterator = NULL;
+  if (child_->get_operator_type() == OperatorType::kLogicalLimit) {
+    limit = reinterpret_cast<LogicalLimit*>(child_);
+    child_iterator = limit->child_->GetPhysicalPlan(block_size);
+  } else {
+    child_iterator = child_->GetPhysicalPlan(block_size);
+  }
+  /////////////
   NodeTracker* node_tracker = NodeTracker::GetInstance();
 
   bool is_exchange_need = false;
@@ -130,7 +140,9 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
   expander_state.child_ = child_iterator;
   expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
   PhysicalOperatorBase* expander = new Expander(expander_state);
-
+  if (child_->get_operator_type() == OperatorType::kLogicalLimit) {
+    expander = limit->GetPhysicalPlan(block_size, expander);
+  }
   PhysicalOperatorBase* ret;
   switch (style_) {
     case kPrint: {

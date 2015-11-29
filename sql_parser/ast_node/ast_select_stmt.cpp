@@ -1592,14 +1592,17 @@ RetCode AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
       return ret;
     }
   }
-  if (NULL != limit_clause_) {
-    ret = limit_clause_->GetLogicalPlan(logic_plan);
+  if (NULL != select_list_) {
+    ret = GetLogicalPlanOfProject(logic_plan);
     if (rSuccess != ret) {
       return ret;
     }
   }
-  if (NULL != select_list_) {
-    ret = GetLogicalPlanOfProject(logic_plan);
+  // it's optimal to add limit operator before select operator, but because it's
+  // necessary add limit physical operator below LogicalQueryPlanRoot, so
+  // underlying limit should at the top of plan
+  if (NULL != limit_clause_) {
+    ret = limit_clause_->GetLogicalPlan(logic_plan);
     if (rSuccess != ret) {
       return ret;
     }
