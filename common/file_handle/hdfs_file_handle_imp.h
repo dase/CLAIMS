@@ -70,10 +70,10 @@ class HdfsFileHandleImp : public FileHandleImp {
   virtual RetCode DeleteFile();
 
  private:
-  hdfsFS fs_;
-  hdfsFile file_;
+  hdfsFS fs_ = NULL;
+  hdfsFile file_ = NULL;
   int64_t read_start_pos_;
-  FileOpenFlag open_flag_;
+  FileOpenFlag open_flag_ = -1;
 };
 }  // namespace common
 } /* namespace claims */
