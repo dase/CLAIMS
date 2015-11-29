@@ -364,9 +364,8 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
                   << "(exchange_id = " << Pthis->state_.exchange_id_
                   << " , partition_offset = " << Pthis->state_.partition_offset_
                   << " ) doesn't send a block completely, actual send bytes = "
-                  << recvbytes
-                  << " rest bytes = " << block_for_sending->GetRestSizeToHandle()
-                  << std::endl;
+                  << recvbytes << " rest bytes = "
+                  << block_for_sending->GetRestSizeToHandle() << std::endl;
               block_for_sending->IncreaseActualSize(recvbytes);
               continue;
             } else {
@@ -383,16 +382,17 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
                     Pthis->state_.partition_offset_,
                     Pthis->sendedblocks_, recvbytes,
                     block_for_sending_->GetRestSize(),
-                    Pthis->state_.upper_id_list_[partition_id]);*/
+                    Pthis->state_.upper_id_list_[partition_id]);
               LOG(INFO) << "[ExchangeEagerLower]: "
                         << "[" << Pthis->state_.exchange_id_ << ","
                         << Pthis->state_.partition_offset_ << "]Send the "
                         << Pthis->sendedblocks_ << " block(bytes=" << recvbytes
-                        << ", rest size=" << block_for_sending->GetRestSizeToHandle()
+                        << ", rest size=" <<
+              block_for_sending->GetRestSizeToHandle()
                         << ") to ["
                         << Pthis->state_.upper_id_list_[partition_id] << "]"
                         << std::endl;
-              /*                cout << "[ExchangeEagerLower]: " << "["
+                            cout << "[ExchangeEagerLower]: " << "["
                                   << Pthis->state_.exchange_id_ << ","
                                   << Pthis->state_.partition_offset_ << "]Send
                                   the "

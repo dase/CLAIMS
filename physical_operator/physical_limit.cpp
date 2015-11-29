@@ -94,7 +94,8 @@ bool PhysicalLimit::Next(BlockStreamBase* block) {
           continue;
         }
       } else {
-        break;  // to consume the next block;
+        break;  // maybe the below statement is right ---YuKai
+                //        return !block->Empty();  // to consume the next block;
       }
     }
   }
