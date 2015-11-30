@@ -63,13 +63,13 @@ PlanContext LogicalLimit::GetPlanContext() {
   }
   PlanContext plan_context = child_->GetPlanContext();
   if (plan_context.IsHashPartitioned()) {
-    if (!CanBeOmitted()) {  // Call predictSelectivity to alter cardinality
-                            // of each part
-                            /**
-                             * TODO(Anyone): A specified method to set each partition a proper
-                             * cardinality.
-                             * In this version, we maintain them unchanged.
-                             */
+    if (!CanBeOmitted()) {
+      // Call predictSelectivity to alter cardinality of each part
+      /**
+       * TODO(Anyone): A specified method to set each partition a proper
+       * cardinality.
+       * In this version, we maintain them unchanged.
+       */
       for (unsigned i = 0;
            i < plan_context.plan_partitioner_.GetNumberOfPartitions(); ++i) {
         plan_context.plan_partitioner_.GetPartition(i)
@@ -92,12 +92,27 @@ PhysicalOperatorBase* LogicalLimit::GetPhysicalPlan(const unsigned& blocksize) {
   PhysicalOperatorBase* limit = new PhysicalLimit(state);
   return limit;
 }
+PhysicalOperatorBase* LogicalLimit::GetPhysicalPlan(
+    const unsigned& blocksize, PhysicalOperatorBase* child_iterator) {
+  PlanContext plan_context = GetPlanContext();
+  PhysicalLimit::State state(GetSchema(plan_context.attribute_list_),
+                             child_iterator, returned_tuples_, blocksize,
+                             start_position_);
+  PhysicalOperatorBase* limit = new PhysicalLimit(state);
+  return limit;
+}
 
 void LogicalLimit::Print(int level) const {
   if (!CanBeOmitted()) {
-    printf("With limit constraint: %I64d, %I64d\n", returned_tuples_,
-           start_position_);
+    cout << setw(level * kTabSize) << " "
+         << "LIMIT:" << endl;
+    ++level;
+    cout << setw(level * kTabSize) << " "
+         << "offset: " << start_position_ << " tuples: " << returned_tuples_
+         << endl;
+    --level;
   }
+  child_->Print(level);
 }
 
 const unsigned LogicalLimit::PredictCardinality(

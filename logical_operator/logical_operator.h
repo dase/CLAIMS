@@ -108,6 +108,8 @@ class LogicalOperator {
 
   virtual void Print(int level = 0) const = 0;
 
+  OperatorType get_operator_type() { return operator_type_; }
+
  protected:
   Schema* GetSchema(const std::vector<Attribute>&) const;
   Schema* GetSchema(const std::vector<Attribute>&,
