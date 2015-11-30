@@ -32,6 +32,7 @@
 #include <vector>
 #include <string>
 
+#include "../common/error_define.h"
 #include "../logical_operator/logical_query_plan_root.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../stmt_handler/stmt_handler.h"
@@ -62,7 +63,8 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   cout << "--------------begin semantic analysis---------------" << endl;
 #endif
   SemanticContext sem_cnxt;
-  RetCode ret = select_ast_->SemanticAnalisys(&sem_cnxt);
+  RetCode ret = rSuccess;
+  ret = select_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
     exec_result->error_info_ = "semantic analysis error";
     exec_result->status_ = false;
@@ -74,15 +76,30 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   select_ast_->Print();
   cout << "--------------begin push down condition ------------" << endl;
 #endif
-  select_ast_->PushDownCondition(NULL);
+  ret = select_ast_->PushDownCondition(NULL);
+  if (rSuccess != ret) {
+    exec_result->error_info_ = "push down condition error";
+    exec_result->status_ = false;
+    exec_result->result_ = NULL;
+    ELOG(ret, exec_result->error_info_);
+    cout << exec_result->error_info_;
+    return ret;
+  }
 #ifndef PRINTCONTEXT
   select_ast_->Print();
   cout << "--------------begin logical plan -------------------" << endl;
 #endif
 
   LogicalOperator* logic_plan = NULL;
-  select_ast_->GetLogicalPlan(logic_plan);
-
+  ret = select_ast_->GetLogicalPlan(logic_plan);
+  if (rSuccess != ret) {
+    exec_result->error_info_ = "get logical plan error";
+    exec_result->status_ = false;
+    exec_result->result_ = NULL;
+    ELOG(ret, exec_result->error_info_);
+    cout << exec_result->error_info_;
+    return ret;
+  }
   logic_plan = new LogicalQueryPlanRoot(0, logic_plan,
                                         LogicalQueryPlanRoot::kResultCollector);
   logic_plan->GetPlanContext();

@@ -287,6 +287,8 @@ const int rNoTalbeFound = -14133;
 const int rNoProjection = -14134;
 const int rLimitNotStandardized = -14135;
 const int rLimitZero = -14136;
+const int rLimitParaCouldnotLessZero = -14137;
+const int rLimitParaShouldNaturalNumber = -14138;
 }  // end namespace common
 }  // end namespace claims
 

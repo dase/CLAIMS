@@ -61,7 +61,12 @@ PhysicalSort::PhysicalSort(State state)
   InitExpandedStatus();
 }
 
-PhysicalSort::~PhysicalSort() {}
+PhysicalSort::~PhysicalSort() {
+  if (NULL != lock_) {
+    delete lock_;
+    lock_ = NULL;
+  }
+}
 
 PhysicalSort::State::State()
     : input_schema_(0), child_(0), block_size_(0), partition_offset_(0) {}
