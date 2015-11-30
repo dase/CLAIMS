@@ -256,7 +256,11 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   double total_check_time = 0;
   double total_insert_time = 0;
   double total_add_time = 0;
-  string tuple_record;
+  string tuple_record = "";
+  static char* load_output_info[7] = {
+      "Loading         \r", "Loading.\r",     "Loading..\r",    "Loading...\r",
+      "Loading....\r",      "Loading.....\r", "Loading......\r"};
+  cout << endl;
 
   /* store the validity of every column data, the extra 2 validity is used for
    * too many columns and too few columns
@@ -279,6 +283,11 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
     // read every tuple
     while (GetTupleTerminatedBy(input_file, tuple_record, row_separator_) &&
            !input_file.eof()) {
+      // just to tell everyone "i am alive!!!"
+      if (0 == row_id_in_file % 10000) {
+        cout << load_output_info[(row_id_in_file / 10000) % 7] << std::flush;
+      }
+
       ++row_id_in_file;
       // sample
       if (GetRandomDecimal() >= sample_rate) continue;
