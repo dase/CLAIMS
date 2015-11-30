@@ -274,6 +274,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       result->SetError("Can't open file :" + file_name);
       return ret;
     }
+    //    DLOG(INFO) << "Now handle file :" << file_name << endl;
 
     // read every tuple
     while (GetTupleTerminatedBy(input_file, tuple_record, row_separator_) &&
