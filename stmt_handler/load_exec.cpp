@@ -121,10 +121,14 @@ RetCode LoadExec::Execute(ExecutedResult *exec_result) {
 #ifdef NEW_LOADER
   DataInjector *injector =
       new DataInjector(table, column_separator, tuple_separator);
+  static char *load_output_info[] = {"Loading", "Loading.", "Loading..",
+                                     "Loading..."};
+  cout << "Loading...";
   ret = injector->LoadFromFile(path_names,
                                static_cast<FileOpenFlag>(load_ast_->mode_),
                                exec_result, load_ast_->sample_);
-  LOG(INFO) << " load time: " << GetElapsedTime(start_time) / 1000.0 << endl;
+  double load_time_ms = GetElapsedTime(start_time);
+  LOG(INFO) << " load time: " << load_time_ms / 1000.0 << " sec" << endl;
   if (ret != rSuccess) {
     LOG(ERROR) << "failed to load files: ";
     for (auto it : path_names) {
@@ -135,7 +139,9 @@ RetCode LoadExec::Execute(ExecutedResult *exec_result) {
     if (exec_result->error_info_ == "")
       exec_result->SetError("failed to load data");
   } else {
-    exec_result->SetResult("load data successfully", NULL);
+    ostringstream oss;
+    oss << "load data successfully (" << load_time_ms / 1000.0 << " sec) ";
+    exec_result->SetResult(oss.str(), NULL);
   }
   DELETE_PTR(injector);
 #else
