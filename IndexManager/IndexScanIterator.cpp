@@ -179,7 +179,7 @@ bool IndexScanIterator::askForNextBlock(remaining_block& rb)
 {
 	if (chunk_reader_iterator_ == 0 || chunk_reader_iterator_->NextBlock(rb.block) == false || rb.iter_result_map == rb.result_set->end())
 	{
-		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
+		chunk_reader_iterator_ = partition_reader_iterator_->NextChunk();
 		if (chunk_reader_iterator_ == 0)
 			return false;
 

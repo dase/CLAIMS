@@ -57,14 +57,14 @@ using boost::pool;
 using claims::common;
 
 /**
- * @brief Method description:
+ * @brief Method description: HdfsBlock is a struct in
  * @param
  * @return
  * @details   (additional)
  */
 
 typedef struct HdfsBlock {
-  HdfsBlock() : hook(0), length(0), lifetime_(0) {}
+  HdfsBlock() : hook(NULL), length(0), lifetime_(0) {}
   HdfsBlock(void* add, int length) : hook(add), length(length), lifetime_(0) {}
   void* hook;
   /*记录每个block大小也就是文件长度*/

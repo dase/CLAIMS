@@ -19,7 +19,8 @@
  * /CLAIMS/storage/StorageLevel.h
  *
  *  Created on: Nov 16, 2013
- *      Author: Han, wangli
+ *  Modified on: Nov 13, 2015
+ *      Author: Hanzhang, wangli
  *		   Email:
  *
  * Description: The level of storage is divided into three level. Data is aimed

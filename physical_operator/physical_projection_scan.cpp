@@ -105,8 +105,8 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
 
     ChunkReaderIterator* chunk_reader_it;
     ChunkReaderIterator::block_accessor* ba;
-    while (chunk_reader_it = partition_reader_iterator_->nextChunk()) {
-      while (chunk_reader_it->getNextBlockAccessor(ba)) {
+    while (chunk_reader_it = partition_reader_iterator_->NextChunk()) {
+      while (chunk_reader_it->GetNextBlockAccessor(ba)) {
         ba->GetBlockSize();
         input_dataset_.input_data_blocks_.push_back(ba);
       }
@@ -179,7 +179,7 @@ bool PhysicalProjectionScan::Next(BlockStreamBase* block) {
   }
   perf_info_->processed_one_block();
   // case(2)
-  return partition_reader_iterator_->nextBlock(block);
+  return partition_reader_iterator_->NextBlock(block);
 
 #endif
 }

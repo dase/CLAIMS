@@ -16,70 +16,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * /Claims/storage/PartitionReaderIterator.cpp
+ * /CLAIMS/storage/PartitionReaderIterator.cpp
  *
- *  Created on: 2015年11月19日
- *      Author: Han
+ *  Created on: NOV 19, 2015
+ *      Author: Hanzhang,wangli
  *		   Email:
  *
  * Description:
  *
  */
 #include "./PartitionReaderIterator.h"
-
+// namespace claims {
+// namespace storage {
 PartitionReaderIterator::PartitionReaderIterator(
     PartitionStorage* partition_storage)
-    : ps(partition_storage), chunk_cur_(0), chunk_it_(NULL) {}
+    : ps_(partition_storage), chunk_cur_(0), chunk_it_(NULL) {}
 
 PartitionReaderIterator::~PartitionReaderIterator() {}
 
-ChunkReaderIterator* PartitionReaderIterator::nextChunk() {
-  if (chunk_cur_ < ps->number_of_chunks_)
-    return ps->chunk_list_[chunk_cur_++]->createChunkReaderIterator();
+ChunkReaderIterator* PartitionReaderIterator::NextChunk() {
+  if (chunk_cur_ < ps_->number_of_chunks_)
+    return ps_->chunk_list_[chunk_cur_++]->CreateChunkReaderIterator();
   else
     return NULL;
 }
 
 AtomicPartitionReaderIterator::~AtomicPartitionReaderIterator() {}
 
-ChunkReaderIterator* AtomicPartitionReaderIterator::nextChunk() {
-  //  lock_.acquire();
+ChunkReaderIterator* AtomicPartitionReaderIterator::NextChunk() {
   ChunkReaderIterator* ret = NULL;
-  if (chunk_cur_ < ps->number_of_chunks_)
-    ret = ps->chunk_list_[chunk_cur_++]->createChunkReaderIterator();
+  if (chunk_cur_ < ps_->number_of_chunks_)
+    ret = ps_->chunk_list_[chunk_cur_++]->CreateChunkReaderIterator();
   else
     ret = NULL;
-  //  lock_.release();
   return ret;
 }
 
-bool PartitionReaderIterator::nextBlock(BlockStreamBase*& block) {
+bool PartitionReaderIterator::NextBlock(BlockStreamBase*& block) {
   assert(false);
   if (chunk_it_ > 0 && chunk_it_->NextBlock(block)) {
     return true;
   } else {
-    if ((chunk_it_ = nextChunk()) > 0) {
-      return nextBlock(block);
+    if ((chunk_it_ = NextChunk()) > 0) {
+      return NextBlock(block);
     } else {
       return false;
     }
   }
 }
 
-bool AtomicPartitionReaderIterator::nextBlock(BlockStreamBase*& block) {
+bool AtomicPartitionReaderIterator::NextBlock(BlockStreamBase*& block) {
   lock_.acquire();
-  ChunkReaderIterator::block_accessor* ba;
-  if (chunk_it_ != 0 && chunk_it_->getNextBlockAccessor(ba)) {
+  ChunkReaderIterator::block_accessor* ba = NULL;
+  if (chunk_it_ != 0 && chunk_it_->GetNextBlockAccessor(ba)) {
     lock_.release();
     ba->GetBlock(block);
     return true;
   } else {
-    if ((chunk_it_ = PartitionReaderIterator::nextChunk()) > 0) {
+    if ((chunk_it_ = PartitionReaderIterator::NextChunk()) > 0) {
       lock_.release();
-      return nextBlock(block);
+      return NextBlock(block);
     } else {
       lock_.release();
       return false;
     }
   }
 }  //这个函数是关键，我需要考虑清楚，在决定如何动，这块～～～ --han 1123
+//}  // namespace storage
+//}  // namespace claims

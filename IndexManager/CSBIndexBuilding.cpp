@@ -176,7 +176,7 @@ bool bottomLayerCollecting::askForNextBlock(BlockStreamBase* & block, remaining_
 {
 	if (chunk_reader_iterator_==0||chunk_reader_iterator_->NextBlock(block) == false)
 	{
-		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
+		chunk_reader_iterator_ = partition_reader_iterator_->NextChunk();
 
 		if (chunk_reader_iterator_ == 0){
 			printf("Has been falsed!!!!!!!!!!!!!*&S*DF&(SD&F(S<><<<><><><><><>\n");
