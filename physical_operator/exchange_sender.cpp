@@ -102,6 +102,8 @@ void ExchangeSender::WaitingForCloseNotification(
   int recvbytes;
   if ((recvbytes = recv(target_socket_fd, &byte, sizeof(char), 0)) == -1) {
     LOG(ERROR) << "recv error!" << std::endl;
+  } else {
+    LOG(INFO) << " received close message from one merger" << endl;
   }
   FileClose(target_socket_fd);
 }
