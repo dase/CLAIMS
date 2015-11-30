@@ -9,6 +9,7 @@
 
 #include <malloc.h>
 #include <arpa/inet.h>
+#include <glog/logging.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/ioctl.h>
@@ -171,7 +172,7 @@ void *ClientListener::receiveHandler(void *para) {
   int &serverSockFd = server->m_fd;
   int clientSockFd;
 
-  const int buffer_size = 10240;
+  const int buffer_size = 102400;
 
   char *buf = new char[buffer_size];  // new
   memset(buf, 0, sizeof(buf));
@@ -270,26 +271,20 @@ void *ClientListener::receiveHandler(void *para) {
             memset(buf, 0, sizeof(buf));
             int read_count = read(server->m_clientFds[i], buf, nread);
             buf[read_count] = '\0';  // fix a bug
-            cout << "buf: " << buf << endl;
+            //            cout << "buf: " << buf << endl;
 
             int sql_type = buf[0] - 48;  // '1' - 48 = 1
             ClientLogging::log("sql_type is %d", sql_type);
             if (sql_type <= 9 && sql_type >= 0) {
               server->client_type_ = client_type::java;
-              ClientListenerLogging::log("this messege is from java client :%s",
-                                         buf);
+              LOG(INFO) << "this messege is from java client : " << buf;
+
               generateSqlStmt(sql_type, buf);
             } else if ('#' - 48 == sql_type) {
               buf += 1;  // ignore the number in the front of buf
               server->client_type_ = client_type::c;
-              ClientListenerLogging::log("this messege is from c client :%s",
-                                         buf);
+              LOG(INFO) << "this messege is from c client : " << buf;
             }
-
-            //					strcpy(buf, "select row_id from
-            // trade
-            // limit
-            // 100;\0");
 
             assert(buffer_size > nread);
 
