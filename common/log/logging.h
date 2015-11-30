@@ -15,17 +15,17 @@
 namespace claims {
 namespace common {
 
-#define LOG_INFO        LOG(INFO)
-#define LOG_WARNING     LOG(WARNING)
-#define LOG_ERROR       LOG(ERROR)
-#define LOG_FATAL       LOG(FATAL)
+#define LOG_INFO LOG(INFO)
+#define LOG_WARNING LOG(WARNING)
+#define LOG_ERROR LOG(ERROR)
+#define LOG_FATAL LOG(FATAL)
 
 void GlogSignalHandle(const char* data, int size);
 
 class Logging {
  public:
-    explicit Logging(char* program);
-    ~Logging();
+  explicit Logging(char* program);
+  ~Logging();
 };
 }  // namespace common
 }  // namespace claims

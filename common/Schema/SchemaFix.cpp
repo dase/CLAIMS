@@ -74,11 +74,10 @@ int SchemaFix::getColumnOffset(unsigned index) const {
 /*
  * 检查源数据是否合法,如果来自kSQL,
  * 若出现error则直接返回,
- * 若只有warning,放入warning_columns_index,
+ * 若只有warning,放入columns_validities,
  * 同时处理warning(字符串过长,截断;数字类型不在合法范围内设为默认值);
  * 如果来自kFile, 出现error将值设为默认值, 视为warning对待.
  */
-
 RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
                                    const string attr_separator,
                                    RawDataSource raw_data_source,
@@ -119,8 +118,8 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       } else {  // correct
         text_column = text_tuple.substr(prev_pos, pos - prev_pos);
         prev_pos = pos + attr_separator.length();
-        DLOG(INFO) << "after prev_pos adding, prev_pos :" << prev_pos
-                   << " pos:" << pos << endl;
+        //        DLOG(INFO) << "after prev_pos adding, prev_pos :" << prev_pos
+        //                   << " pos:" << pos << endl;
 
         GETCURRENTTIME(check_string_time);
         ret = columns[i].operate->CheckSet(text_column);
@@ -147,7 +146,8 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       }
     }
     DataInjector::total_get_substr_time_ += GetElapsedTime(get_substr_time);
-    DLOG(INFO) << "Before toValue, column data is " << text_column << endl;
+    //    DLOG(INFO) << "Before toValue, column data is " << text_column <<
+    //    endl;
 
     GETCURRENTTIME(to_value_time);
     columns[i].operate->toValue(
@@ -162,8 +162,6 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
     //               << endl;
     DataInjector::total_to_value_time_ += GetElapsedTime(to_value_time);
   }
-  DataInjector::total_to_value_func_time_ +=
-      GetElapsedTime(to_value_func_time_);
 
   //  DLOG(INFO) << "after all tovalue, prev_pos :" << (prev_pos ==
   //  string::npos)
@@ -180,6 +178,8 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       ret = rSuccess;
     }
   }
+  DataInjector::total_to_value_func_time_ +=
+      GetElapsedTime(to_value_func_time_);
   return ret;
 }
 

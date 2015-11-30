@@ -57,11 +57,12 @@ HdfsFileHandleImp::~HdfsFileHandleImp() {
   int ret = rSuccess;
   EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "failed to close ");
   ret = hdfsDisconnect(fs_);
+  fs_ = NULL;
   if (ret != 0) LOG(ERROR) << "failed to disconnect to hdfs" << endl;
 }
 
 RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
-  assert(fs_ != NULL && "failed to connect hdfs");
+  assert(NULL != fs_ && "failed to connect hdfs");
   int ret = rSuccess;
   open_flag_ = open_flag;
   file_name_ = file_name;
@@ -96,7 +97,8 @@ RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
 }
 
 RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
-  assert(fs_ != NULL && "failed to connect hdfs");
+  assert(NULL != fs_ && "failed to connect hdfs");
+  assert(NULL != file_ && "make sure file is opened");
   assert(open_flag_ != kReadFile &&
          "It's unavailable to write into a read-only file");
   size_t total_write_num = 0;
@@ -125,19 +127,27 @@ RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
 
 RetCode HdfsFileHandleImp::Close() {
   if (NULL == file_) {
+    LOG(INFO) << "hdfs file have been closed " << endl;
     return rSuccess;
   }
-  assert(fs_ != NULL && "failed to connect hdfs");
+  assert(NULL != fs_ && "failed to connect hdfs");
+
+  static char* hdfs_file_type[] = {"UNINITIALIZED", "INPUT", "OUTPUT"};
+  LOG(INFO) << "the type of file_ is" << hdfs_file_type[file_->type] << endl;
+
   if (0 != hdfsCloseFile(fs_, file_)) {
     LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
     return rCloseHdfsFileFail;
   }
   file_ = NULL;
+  LOG(INFO) << "hdfs file is been closed " << endl;
   return rSuccess;
 }
 
 RetCode HdfsFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
-  assert(fs_ != NULL && "failed to connect hdfs");
+  assert(NULL != fs_ && "failed to connect hdfs");
+  assert(NULL != file_ && "make sure file is opened");
+
   int ret = rSuccess;
   hdfsFileInfo* hdfsfile = hdfsGetPathInfo(fs_, file_name_.c_str());
   int file_length = hdfsfile->mSize;
@@ -164,7 +174,9 @@ RetCode HdfsFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
 }
 
 RetCode HdfsFileHandleImp::Read(void* buffer, size_t length) {
-  assert(fs_ != NULL && "failed to connect hdfs");
+  assert(NULL != fs_ && "failed to connect hdfs");
+  assert(NULL != file_ && "make sure file is opened");
+
   int total_read_num = 0;
   while (total_read_num < length) {
     int read_num =
@@ -183,7 +195,9 @@ RetCode HdfsFileHandleImp::Read(void* buffer, size_t length) {
 }
 
 RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
-  assert(fs_ != NULL && "failed to connect hdfs");
+  assert(NULL != fs_ && "failed to connect hdfs");
+  assert(NULL != file_ && "make sure file is opened");
+
   assert(kReadFile == open_flag_ &&
          "Seeking is only work for files opened in read-only mode");
   int ret = hdfsSeek(fs_, file_, pos);
