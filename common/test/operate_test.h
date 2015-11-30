@@ -227,9 +227,12 @@ TEST_F(OperateTest, Time) {
   OperateTime* opt = new OperateTime(true);
   OperateTime* opf = new OperateTime(false);
 
+  test("13:02:46", "13:02:46", rSuccess, opt);
   test("13:02:46.123456", "13:02:46.123456", rSuccess, opt);
+  test("a3:02:46", "a3:02:46", rIncorrectData, opt);
   test("a3:02:46.123456", "a3:02:46.123456", rIncorrectData, opt);
   test("34:23:34.123000", "23:59:59.999999", rTooLargeData, opt);
+  test("34:23:34", "23:59:59", rTooLargeData, opt);
   test("", "", rSuccess, opt);
   test("", "", rInvalidNullData, opf);
   delete opt;
@@ -240,8 +243,10 @@ TEST_F(OperateTest, DateTime) {
   OperateDatetime* opt = new OperateDatetime(true);
   OperateDatetime* opf = new OperateDatetime(false);
 
+  test("1000-01-01 00:00:00", "1400-01-01 00:00:00", rTooSmallData, opt);
   test("1000-01-01 00:00:00.000000", "1400-01-01 00:00:00.000000",
        rTooSmallData, opt);
+  test("9999-31-31 23:59:59", "9999-12-31 23:59:59", rTooLargeData, opt);
   test("9999-31-31 23:59:59.999999", "9999-12-31 23:59:59.999999",
        rTooLargeData, opt);
   test("", "", rSuccess, opt);

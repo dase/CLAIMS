@@ -17,7 +17,7 @@ public:
 	virtual ~BlockContainer();
 	unsigned GetMaxSize()const;
 	unsigned GetCurSize()const;
-	unsigned GetRestSize()const;
+	unsigned GetRestSizeToHandle()const;
 	void reset();
 	void IncreaseActualSize(unsigned size);
 	/**
