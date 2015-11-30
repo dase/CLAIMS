@@ -46,10 +46,6 @@ log
 ltmain.sh
 missing
 stamp-h1
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> FETCH_HEAD
 Makefile.in
 *.Po
 Debug.h
@@ -71,16 +67,12 @@ Build
 include/
 .history
 compile
-<<<<<<< HEAD
 thirdparty/
 ar-lib
-=======
-thirdparty/
->>>>>>> master
-=======
-thirdparty/
-ar-lib
->>>>>>> FETCH_HEAD
 缺省值
+CLAIMS.config
+CLAIMS.creator*
+CLAIMS.files
+CLAIMS.includes
 *sql.output
 *.doxyfile

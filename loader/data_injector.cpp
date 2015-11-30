@@ -26,10 +26,6 @@
  *
  */
 
-//// this macro decides whether write DLOG message into log file.
-//// Open means no DLOG message.
-// #define NDEBUG
-
 #include "./data_injector.h"
 
 #include <stdlib.h>
@@ -76,6 +72,9 @@ using namespace claims::common;
 // this macro decides whether really write data into data file.
 // Open means no write.
 #define DATA_DO_LOAD
+//// this macro decides whether write DLOG message into log file.
+//// Open means no DLOG message.
+// #define NDEBUG
 
 namespace claims {
 namespace loader {
@@ -257,7 +256,11 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   double total_check_time = 0;
   double total_insert_time = 0;
   double total_add_time = 0;
-  string tuple_record;
+  string tuple_record = "";
+  static char* load_output_info[7] = {
+      "Loading         \r", "Loading.\r",     "Loading..\r",    "Loading...\r",
+      "Loading....\r",      "Loading.....\r", "Loading......\r"};
+  cout << endl;
 
   /* store the validity of every column data, the extra 2 validity is used for
    * too many columns and too few columns
@@ -275,10 +278,16 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       result->SetError("Can't open file :" + file_name);
       return ret;
     }
+    //    DLOG(INFO) << "Now handle file :" << file_name << endl;
 
     // read every tuple
     while (GetTupleTerminatedBy(input_file, tuple_record, row_separator_) &&
            !input_file.eof()) {
+      // just to tell everyone "i am alive!!!"
+      if (0 == row_id_in_file % 10000) {
+        cout << load_output_info[(row_id_in_file / 10000) % 7] << std::flush;
+      }
+
       ++row_id_in_file;
       // sample
       if (GetRandomDecimal() >= sample_rate) continue;
@@ -292,7 +301,8 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       tuple_record += col_separator_;
       total_add_time += GetElapsedTime(add_time);
 
-      DLOG(INFO) << "after adding row id, tuple is:" << tuple_record << endl;
+      //      DLOG(INFO) << "after adding row id, tuple is:" << tuple_record <<
+      //      endl;
 
       GETCURRENTTIME(start_check_time);
       vector<Validity> columns_validities;
@@ -313,10 +323,8 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       ostringstream oss;
       for (auto it : columns_validities) {
         string validity_info =
-            GenerateDataValidityInfo(it,
-                                     // oss,
-                                     table_, row_id_in_file, file_name);
-        DLOG(INFO) << "append warning info:" << validity_info << endl;
+            GenerateDataValidityInfo(it, table_, row_id_in_file, file_name);
+        //        DLOG(INFO) << "append warning info:" << validity_info << endl;
         result->AppendWarning(validity_info);
       }
       total_check_time += GetElapsedTime(start_check_time);
@@ -372,9 +380,9 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
 }
 
 /**
- * check validity of all tuples, if all OK, then insert into file and update
- * catalog;
- * else return error to client
+ * check validity of all tuples,
+ * if all OK, then insert into file and update catalog;
+ * else return error to client without inserting any data
  */
 RetCode DataInjector::InsertFromString(const string tuples,
                                        ExecutedResult* result) {
@@ -430,19 +438,15 @@ RetCode DataInjector::InsertFromString(const string tuples,
       // handle error which stored in the end
       Validity err = columns_validities.back();
       columns_validities.pop_back();
-      string validity_info = GenerateDataValidityInfo(err,
-                                                      // oss,
-                                                      table_, line, "");
+      string validity_info = GenerateDataValidityInfo(err, table_, line, "");
       LOG(ERROR) << validity_info;
       result->SetError(validity_info);
     }
 
     // handle all warnings
     for (auto it : columns_validities) {
-      string validity_info = GenerateDataValidityInfo(it,
-                                                      // oss,
-                                                      table_, line, "");
-      DLOG(INFO) << "append warning info:" << validity_info << endl;
+      string validity_info = GenerateDataValidityInfo(it, table_, line, "");
+      //      DLOG(INFO) << "append warning info:" << validity_info << endl;
       result->AppendWarning(validity_info);
     }
 
@@ -550,7 +554,7 @@ inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
   return rSuccess;
 }
 
-// TODO(yukai): may be executed by multithreading
+// TODO(ANYONE): consider multi-thread
 RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
                                                 void* tuple_buffer) {
   int ret = rSuccess;
@@ -621,30 +625,18 @@ RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
   return ret;
 }
 
-/**
- * TODO(ANYONE):
- * if called by load/append from files, always return true and set all
- * value
- * that is invalid to default value
- * if called by insert from SQL, return true or false depending on
- * whether there
- * is invalid data value
- */
 inline RetCode DataInjector::CheckAndToValue(
     string tuple_string, void* tuple_buffer, RawDataSource raw_data_source,
     vector<Validity>& columns_validities) {
-  if (tuple_string.length() == 0) {
-    LOG(ERROR) << "The tuple record is null!\n";
-    return false;
-  }
-  RetCode success =
-      table_schema_->CheckAndToValue(tuple_string, tuple_buffer, col_separator_,
-                                     raw_data_source, columns_validities);
+  //  RetCode success =
+  return table_schema_->CheckAndToValue(tuple_string, tuple_buffer,
+                                        col_separator_, raw_data_source,
+                                        columns_validities);
 
   //  DLOG(INFO) << "text : " << tuple_string << endl;
   //  DLOG(INFO) << "tuple: ";
   //  table_->getSchema()->displayTuple(tuple_buffer, " | ");
-  return success;
+  //  return success;
 }
 
 istream& DataInjector::GetTupleTerminatedBy(ifstream& ifs, string& res,
@@ -675,6 +667,7 @@ istream& DataInjector::GetTupleTerminatedBy(ifstream& ifs, string& res,
   return ifs;
 }
 
+/*
 const char* validity_info[9][2] = {
     {"Data larger than range value for column '%s' at line: %d\n",
      "Data larger than range value for column '%s' at line: %d in file:%s\n"},
@@ -686,11 +679,10 @@ const char* validity_info[9][2] = {
     {},
     {},
     {}};
-
-string DataInjector::GenerateDataValidityInfo(
-    const Validity& vali,
-    //                                              ostringstream& oss,
-    TableDescriptor* table, int line, const string& file) {
+*/
+string DataInjector::GenerateDataValidityInfo(const Validity& vali,
+                                              TableDescriptor* table, int line,
+                                              const string& file) {
   ostringstream oss;
   oss.clear();
   switch (vali.check_res_) {
@@ -762,54 +754,6 @@ string DataInjector::GenerateDataValidityInfo(
   }
   return oss.str();
 }
-
-/*RetCode DataInjector::HandleSingleLine(string tuple_record, void*
-tuple_buffer,
-                                       string data_source,
-                                       uint64_t row_id_in_raw_data,
-                                       ExecutedResult* result) {
-  int ret = rSuccess;
-  if (NULL == tuple_buffer) {
-    LOG(ERROR) << "tuple_buffer point to NULL" << endl;
-    return (ret = EParamInvalid);
-  } else if (tuple_record == "") {
-    LOG(ERROR) << "tuple_record is NULL" << endl;
-    return (ret = EParamInvalid);
-  }
-  memset(tuple_buffer, 0, table_schema_->getTupleMaxSize());
-
-  EXEC_AND_ONLY_LOG_ERROR(ret,AddRowIdColumn(tuple_record),
-                          "failed to add row_id column for tuple");
-
-  GETCURRENTTIME(start_check_time);
-  vector<unsigned> warning_indexs;
-  if (!CheckTupleValidity(tuple_record, tuple_buffer, warning_indexs)) {
-    ostringstream oss;
-    oss << "The data in " << data_source << ":" << row_id_in_raw_data
-        << " line is invalid " << std::endl;
-    LOG(ERROR) << oss.str();
-    result->SetError(oss.str());
-    return EInvalidInsertData;
-  }
-  for (auto it : warning_indexs) {
-    ostringstream oss;
-    oss << "Data truncated from " << table_->getAttribute(it).attrName
-        << " at line: " << row_id_in_raw_data << " in : " << data_source
-        << "\n";
-    result->AppendWarning(oss.str());
-    LOG(WARNING) << oss.str();
-  }
-  ++row_id_;
-
-  GETCURRENTTIME(start_insert_time);
-  ret = InsertSingleTuple(tuple_buffer);
-
-  if (rSuccess != ret)
-    LOG(ERROR) << "failed to insert tuple in " << data_source << ": line
-"
-               << row_id_in_raw_data << "" << std::endl;
-  tuple_record.clear();
-}*/
 
 } /* namespace loader */
 } /* namespace claims */

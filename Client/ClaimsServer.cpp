@@ -266,19 +266,15 @@ void *ClientListener::receiveHandler(void *para) {
               server->removeClient(server->m_clientFds[i]);
               continue;
             }
-
-            //					cout<<"nread:"<<nread<<endl;
             memset(buf, 0, sizeof(buf));
             int read_count = read(server->m_clientFds[i], buf, nread);
             buf[read_count] = '\0';  // fix a bug
-            //            cout << "buf: " << buf << endl;
 
             int sql_type = buf[0] - 48;  // '1' - 48 = 1
             ClientLogging::log("sql_type is %d", sql_type);
             if (sql_type <= 9 && sql_type >= 0) {
               server->client_type_ = client_type::java;
               LOG(INFO) << "this messege is from java client : " << buf;
-
               generateSqlStmt(sql_type, buf);
             } else if ('#' - 48 == sql_type) {
               buf += 1;  // ignore the number in the front of buf

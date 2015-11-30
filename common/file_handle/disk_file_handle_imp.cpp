@@ -54,23 +54,25 @@ DiskFileHandleImp::~DiskFileHandleImp() {
 
 RetCode DiskFileHandleImp::Open(string file_name, FileOpenFlag open_flag) {
   file_name_ = file_name;
+  open_flag_ = open_flag;
+
   int ret = rSuccess;
-  if (kReadFile == open_flag && false == CanAccess(file_name_)) {
+  if (kReadFile == open_flag_ && false == CanAccess(file_name_)) {
     ret = rAccessDiskFileFail;
     ELOG(ret, "File name:" << file_name_
-                           << " open mode:" << file_open_flag_info[open_flag]);
+                           << " open mode:" << file_open_flag_info[open_flag_]);
     return ret;
   }
-  if (kCreateFile == open_flag) {
+  if (kCreateFile == open_flag_) {
     fd_ = FileOpen(file_name_.c_str(), O_RDWR | O_TRUNC | O_CREAT,
                    S_IWUSR | S_IRUSR);
-  } else if (kAppendFile == open_flag) {
+  } else if (kAppendFile == open_flag_) {
     fd_ = FileOpen(file_name_.c_str(), O_RDWR | O_CREAT | O_APPEND,
                    S_IWUSR | S_IRUSR);
-  } else if (kReadFile == open_flag) {
+  } else if (kReadFile == open_flag_) {
     fd_ = FileOpen(file_name_.c_str(), O_RDONLY, S_IWUSR | S_IRUSR);
   } else {
-    LOG(ERROR) << "parameter flag:" << open_flag << " is invalid" << endl;
+    LOG(ERROR) << "parameter flag:" << open_flag_ << " is invalid" << endl;
     return rParamInvalid;
   }
 
@@ -79,9 +81,9 @@ RetCode DiskFileHandleImp::Open(string file_name, FileOpenFlag open_flag) {
     return rOpenDiskFileFail;
   } else {
     LOG(INFO) << "opened disk file:" << file_name_ << "with "
-              << (kCreateFile == open_flag
+              << (kCreateFile == open_flag_
                       ? "kCreateFile"
-                      : kAppendFile == open_flag ? "kAppendFile" : "kReadFile")
+                      : kAppendFile == open_flag_ ? "kAppendFile" : "kReadFile")
               << endl;
     return rSuccess;
   }
@@ -89,6 +91,8 @@ RetCode DiskFileHandleImp::Open(string file_name, FileOpenFlag open_flag) {
 
 RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
   assert(fd_ >= 3);
+  assert(open_flag_ != kReadFile &&
+         "It's unavailable to write into a read-only file");
   size_t total_write_num = 0;
   while (total_write_num < length) {
     ssize_t write_num =
