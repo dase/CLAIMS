@@ -247,6 +247,7 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
           // insert value to ostringstream and if has warning return 1;   look
           // out   the order!
           ret = InsertValueToStream(insert_value, table_desc_, position, ostr);
+
           // move to next
           insert_value = dynamic_cast<AstInsertVals *>(insert_value->next_);
           ostr << "|";
@@ -254,7 +255,7 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
 
         if (rSuccess != ret) break;
         // check insert value count
-        if (NULL == insert_value) {
+        if (NULL != insert_value) {
 #ifdef NEWRESULT
           LOG(ERROR) << "Value count is too many";
           exec_result->SetError("Value count is too many");
@@ -351,37 +352,10 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
       insert_value_list =
           dynamic_cast<AstInsertValList *>(insert_value_list->next_);
       if (insert_value_list != NULL) ostr << "\n";
-
       ++changed_row_num;
 
     }  // while
 
-//    if (is_correct_) {
-//      if (has_warning_) {
-//// ASTParserLogging::log("[WARNING]: The type is not matched!\n");
-//        exec_result->info_ = "The type is not matched";
-//        LOG(WARNING) << "The type is not matched!" << std::endl;
-//      }
-//      // ASTParserLogging::log("the insert content is \n%s\n",
-//      // ostr.str().c_str());
-//      LOG(INFO) << "the insert content is " << std::endl << ostr.str()
-//                << std::endl;
-//
-//      HdfsLoader *Hl = new HdfsLoader(table_desc_);
-//      string tmp = ostr.str();
-//      Hl->append(ostr.str());
-//
-//      Environment::getInstance()->getCatalog()->saveCatalog();
-//      result_flag_ = true;
-//      ostr.clear();
-//      ostr.str("");
-//      ostr << "insert data successfully. " << changed_row_num
-//           << " rows changed.";
-//      exec_result->info_ = ostr.str();
-//      exec_result->result_ = NULL;
-//
-//      ret = common::kStmtHandlerInsertDataSuccess;
-//    }
 #ifdef NEW_LOADER
     DataInjector *injector = new DataInjector(table);
 
