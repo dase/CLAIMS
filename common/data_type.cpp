@@ -308,27 +308,46 @@ RetCode OperateTime::CheckSet(string& str) const {
     ELOG(ret, str);
     return ret;
   }
-  if (str.length() != 15) {
+  if (str.length() != 15 && str.length() != 8) {
     ret = rIncorrectData;
     ELOG(ret, str);
     return ret;
   }
-  for (auto i = 0; i < str.length(); i++)
-    if (!isdigit(str[i]) && i != 2 && i != 5 && i != 8) {
-      ret = rIncorrectData;
+  if (str.length() == 15) {
+    for (auto i = 0; i < str.length(); i++)
+      if (!isdigit(str[i]) && i != 2 && i != 5 && i != 8) {
+        ret = rIncorrectData;
+        ELOG(ret, str);
+        return ret;
+      }
+    if (str < "00:00:00.000000") {
+      ret = rTooSmallData;
       ELOG(ret, str);
-      return ret;
+      str = "00:00:00.000000";
+    } else if (str > "23:59:59.999999") {
+      ret = rTooLargeData;
+      ELOG(ret, str)
+      str = "23:59:59.999999";
     }
-  if (str < "00:00:00.000000") {
-    ret = rTooSmallData;
-    ELOG(ret, str);
-    str = "00:00:00.000000";
   }
-  if (str > "23:59:59.999999") {
-    ret = rTooLargeData;
-    ELOG(ret, str)
-    str = "23:59:59.999999";
+  if (str.length() == 8) {
+    for (auto i = 0; i < str.length(); i++)
+      if (!isdigit(str[i]) && i != 2 && i != 5) {
+        ret = rIncorrectData;
+        ELOG(ret, str);
+        return ret;
+      }
+    if (str < "00:00:00") {
+      ret = rTooSmallData;
+      ELOG(ret, str);
+      str = "00:00:00";
+    } else if (str > "23:59:59") {
+      ret = rTooLargeData;
+      ELOG(ret, str)
+      str = "23:59:59";
+    }
   }
+
   return ret;
 }
 
@@ -340,28 +359,50 @@ RetCode OperateDatetime::CheckSet(string& str) const {
     ELOG(ret, str);
     return ret;
   }
-  if (str.length() != 26) {
+  if (str.length() != 26 && str.length() != 19) {
     ret = rIncorrectData;
     ELOG(ret, str);
     return ret;
   }
-  for (auto i = 0; i < str.length(); i++)
-    if (!isdigit(str[i]) && i != 4 && i != 7 && i != 10 & i != 13 &&
-        i != 16 & i != 19) {
-      ret = rIncorrectData;
+  if (str.length() == 26) {
+    for (auto i = 0; i < str.length(); i++)
+      if (!isdigit(str[i]) && i != 4 && i != 7 && i != 10 & i != 13 &&
+          i != 16 & i != 19) {
+        ret = rIncorrectData;
+        ELOG(ret, str);
+        return ret;
+      }
+    if (str < "1400-01-01 00:00:00.000000") {
+      ret = rTooSmallData;
       ELOG(ret, str);
+      str = "1400-01-01 00:00:00.000000";
+      return ret;
+    } else if (str > "9999-12-31 23:59:59.999999") {
+      ret = rTooLargeData;
+      str = "9999-12-31 23:59:59.999999";
       return ret;
     }
-  if (str < "1400-01-01 00:00:00.000000") {
-    ret = rTooSmallData;
-    ELOG(ret, str);
-    str = "1400-01-01 00:00:00.000000";
-    return ret;
-  } else if (str > "9999-12-31 23:59:59.999999") {
-    ret = rTooLargeData;
-    str = "9999-12-31 23:59:59.999999";
-    return ret;
   }
+  if (str.length() == 19) {
+    for (auto i = 0; i < str.length(); i++)
+      if (!isdigit(str[i]) && i != 4 && i != 7 && i != 10 & i != 13 &&
+          i != 16) {
+        ret = rIncorrectData;
+        ELOG(ret, str);
+        return ret;
+      }
+    if (str < "1400-01-01 00:00:00") {
+      ret = rTooSmallData;
+      ELOG(ret, str);
+      str = "1400-01-01 00:00:00";
+      return ret;
+    } else if (str > "9999-12-31 23:59:59") {
+      ret = rTooLargeData;
+      str = "9999-12-31 23:59:59";
+      return ret;
+    }
+  }
+
   return ret;
 }
 

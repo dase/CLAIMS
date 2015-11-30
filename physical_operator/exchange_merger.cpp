@@ -541,7 +541,7 @@ void* ExchangeMerger::Receiver(void* arg) {
                    (reinterpret_cast<char*>(
                        Pthis->block_for_socket_[socket_fd_index]->getBlock())) +
                        Pthis->block_for_socket_[socket_fd_index]->GetCurSize(),
-                   Pthis->block_for_socket_[socket_fd_index]->GetRestSize());
+                   Pthis->block_for_socket_[socket_fd_index]->GetRestSizeToHandle());
           if (byte_received == -1) {
             if (errno == EAGAIN) {
               /*We have read all the data,so go back to the loop.*/
@@ -561,7 +561,7 @@ void* ExchangeMerger::Receiver(void* arg) {
 
           Pthis->block_for_socket_[socket_fd_index]->IncreaseActualSize(
               byte_received);
-          if (Pthis->block_for_socket_[socket_fd_index]->GetRestSize() > 0) {
+          if (Pthis->block_for_socket_[socket_fd_index]->GetRestSizeToHandle() > 0) {
             /** the current block is not read entirely from the Sender, so
              * continue the loop to read.**/
             continue;
