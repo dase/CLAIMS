@@ -1119,7 +1119,7 @@ RetCode AstLimitClause::GetLogicalPlan(LogicalOperator*& logical_plan) {
     return rLimitNotStandardized;
   }
   if (row_count_->ast_node_type() != AST_EXPR_CONST ||
-      offset_->ast_node_type() != AST_EXPR_CONST) {
+      (NULL != offset_ && offset_->ast_node_type() != AST_EXPR_CONST)) {
     return rLimitParaShouldNaturalNumber;
   }
   int64_t row_count =
