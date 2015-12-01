@@ -62,7 +62,7 @@ using claims::common::Malloc;
 //#endif  //CLAIMS_QUEIT
 
 void RawLog(const char* where, const char* format, va_list args) {
-  const int message_max_length = 1000;  // set initial message length
+  const int message_max_length = 10000;  // set initial message length
   char p[message_max_length];
   memset(p, 0, message_max_length * sizeof(char));
 
@@ -89,7 +89,7 @@ void RawLog(const char* where, const char* format, va_list args) {
 }
 
 void RawElog(const char* where, const char* format, va_list args) {
-  const int message_max_length = 1000;  // set initial message length
+  const int message_max_length = 10000;  // set initial message length
   char p[message_max_length];
   memset(p, 0, sizeof(p));
 
