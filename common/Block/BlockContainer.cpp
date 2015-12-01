@@ -23,7 +23,7 @@ unsigned BlockContainer::GetMaxSize()const{
 unsigned BlockContainer::GetCurSize()const{
 	return actual_size_;
 }
-unsigned BlockContainer::GetRestSize()const{
+unsigned BlockContainer::GetRestSizeToHandle()const{
 	return getsize()-actual_size_;
 }
 void BlockContainer::reset(){

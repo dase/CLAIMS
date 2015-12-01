@@ -59,10 +59,10 @@ TableFileConnector::~TableFileConnector() {
   Close();
   for (auto proj_iter : file_handles_) {
     for (auto part_iter : proj_iter) {
-      part_iter->Close();
       DELETE_PTR(part_iter);
     }
   }
+  LOG(INFO) << "closed all hdfs file of table" << std::endl;
   DELETE_PTR(imp_);
 }
 
@@ -99,10 +99,6 @@ RetCode TableFileConnector::Close() {
       EXEC_AND_ONLY_LOG_ERROR(ret, file_handles_[i][j]->Close(),
                               "failed to close " << write_path_name_[i][j]
                                                  << ". ret:" << ret);
-  //      if (rSuccess != (ret = file_handles_[i][j]->Close()))
-  //        LOG(ERROR) << "failed to close " << write_path_name_[i][j] <<
-  //        std::endl;
-
   if (rSuccess == ret) LOG(INFO) << "closed all file handles" << std::endl;
   return ret;
 }
