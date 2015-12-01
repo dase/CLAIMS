@@ -42,7 +42,7 @@ using claims::common::FileOpenFlag;
 using claims::loader::DataInjector;
 using claims::common::rNotSupport;
 using claims::catalog::TableDescriptor;
-using claims::common::rTableNotExist;
+using claims::common::rTableNotExisted;
 #define NEW_LOADER
 namespace claims {
 namespace stmt_handler {
@@ -182,7 +182,7 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
   TableDescriptor *table =
       Environment::getInstance()->getCatalog()->getTable(table_name);
   if (table == NULL) {
-    ret = rTableNotExist;
+    ret = rTableNotExisted;
     exec_result->SetError("The table " + table_name + " does not exist!");
     ELOG(ret, "table name: " << table_name);
     return ret;
