@@ -266,6 +266,7 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
       for (unsigned i = 0; i < upper_num_; i++) {
         WaitingForCloseNotification(socket_fd_upper_list_[i]);
       }
+      LOG(INFO) << " received all close notification, closing.. " << endl;
       return false;
     }
   }
@@ -332,19 +333,19 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
     while (true) {
       pthread_testcancel();
       bool consumed = false;
-      BlockContainer* block_for_sending;
+      BlockContainer* block_for_sending = NULL;
       int partition_id =
           Pthis->sending_buffer_->getBlockForSending(block_for_sending);
       if (partition_id >= 0) {
         // get one block from sending_buffer which isn't empty
         pthread_testcancel();
-        if (block_for_sending->GetRestSize() > 0) {
+        if (block_for_sending->GetRestSizeToHandle() > 0) {
           int recvbytes;
           recvbytes =
               send(Pthis->socket_fd_upper_list_[partition_id],
                    reinterpret_cast<char*>(block_for_sending->getBlock()) +
                        block_for_sending->GetCurSize(),
-                   block_for_sending->GetRestSize(), MSG_DONTWAIT);
+                   block_for_sending->GetRestSizeToHandle(), MSG_DONTWAIT);
           if (recvbytes == -1) {
             if (errno == EAGAIN) {
               continue;
@@ -357,15 +358,14 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
                        << std::endl;
             break;
           } else {
-            if (recvbytes < block_for_sending->GetRestSize()) {
+            if (recvbytes < block_for_sending->GetRestSizeToHandle()) {
               /* the block is not entirely sent. */
               LOG(INFO)
                   << "(exchange_id = " << Pthis->state_.exchange_id_
                   << " , partition_offset = " << Pthis->state_.partition_offset_
                   << " ) doesn't send a block completely, actual send bytes = "
-                  << recvbytes
-                  << " rest bytes = " << block_for_sending->GetRestSize()
-                  << std::endl;
+                  << recvbytes << " rest bytes = "
+                  << block_for_sending->GetRestSizeToHandle() << std::endl;
               block_for_sending->IncreaseActualSize(recvbytes);
               continue;
             } else {
@@ -383,29 +383,27 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
                     Pthis->sendedblocks_, recvbytes,
                     block_for_sending_->GetRestSize(),
                     Pthis->state_.upper_id_list_[partition_id]);
-                LOG(INFO) << "[ExchangeEagerLower]: " << "["
-                    << Pthis->state_.exchange_id_ << ","
-                    << Pthis->state_.partition_offset_ << "]Send
-                    the "
-                    << Pthis->sendedblocks_ << " block(bytes=" <<
-                    recvbytes
-                    << ", rest size=" <<
-                    block_for_sending_->GetRestSize()
-                    << ") to [" <<
-                    Pthis->state_.upper_id_list_[partition_id]
-                    << "]" << std::endl;
-                cout << "[ExchangeEagerLower]: " << "["
-                    << Pthis->state_.exchange_id_ << ","
-                    << Pthis->state_.partition_offset_ << "]Send
-                    the "
-                    << Pthis->sendedblocks_ << " block(bytes=" <<
-                    recvbytes
-                    << ", rest size=" <<
-                    block_for_sending_->GetRestSize()
-                    << ") to [" <<
-                    Pthis->state_.upper_id_list_[partition_id]
-                    << "]" << std::endl;
-                */
+              LOG(INFO) << "[ExchangeEagerLower]: "
+                        << "[" << Pthis->state_.exchange_id_ << ","
+                        << Pthis->state_.partition_offset_ << "]Send the "
+                        << Pthis->sendedblocks_ << " block(bytes=" << recvbytes
+                        << ", rest size=" <<
+              block_for_sending->GetRestSizeToHandle()
+                        << ") to ["
+                        << Pthis->state_.upper_id_list_[partition_id] << "]"
+                        << std::endl;
+                            cout << "[ExchangeEagerLower]: " << "["
+                                  << Pthis->state_.exchange_id_ << ","
+                                  << Pthis->state_.partition_offset_ << "]Send
+                                  the "
+                                  << Pthis->sendedblocks_ << " block(bytes=" <<
+                                  recvbytes
+                                  << ", rest size=" <<
+                                  block_for_sending_->GetRestSize()
+                                  << ") to [" <<
+                                  Pthis->state_.upper_id_list_[partition_id]
+                                  << "]" << std::endl;
+                              */
               consumed = true;
             }
           }
@@ -442,8 +440,8 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
         }
       }
     }
-  } catch (std::exception e) {
-    pthread_testcancel();
+  } catch (std::exception& e) {
+    pthread_cancel(pthread_self());
   }
 }
 
@@ -455,6 +453,9 @@ void ExchangeSenderPipeline::CancelSenderThread() {
     LOG(WARNING) << "(exchange_id = " << state_.exchange_id_
                  << " , partition_offset = " << state_.partition_offset_
                  << " ) thread is not canceled!" << std::endl;
+  LOG(INFO) << "(exchange_id = " << state_.exchange_id_
+            << " , partition_offset = " << state_.partition_offset_
+            << " ) thread is canceled!" << std::endl;
   sender_thread_id_ = 0;
 }
 }  // namespace physical_operator

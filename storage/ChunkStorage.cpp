@@ -61,7 +61,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
     }
     case HDFS: {
       //			printf("%lx current storage level for %d %d:
-      //HDFS\n",this,this->chunk_id_.partition_id.partition_off,this->chunk_id_.chunk_off);
+      // HDFS\n",this,this->chunk_id_.partition_id.partition_off,this->chunk_id_.chunk_off);
       if (desirable_storage_level_ == MEMORY) {
         HdfsInMemoryChunk chunk_info;
         chunk_info.length = CHUNK_SIZE;
@@ -95,7 +95,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
           BlockManager::getInstance()->getMemoryChunkStore()->updateChunkInfo(
               chunk_id_, chunk_info);
           //					printf("%lx current is set to
-          //memory!\n");
+          // memory!\n");
           ret = new InMemoryChunkReaderItetaor(
               chunk_info.hook, chunk_info.length,
               chunk_info.length / block_size_, block_size_, chunk_id_);
@@ -110,7 +110,7 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
         }
       }
       //			return new
-      //HDFSChunkReaderIterator(chunk_id_,chunk_size_,block_size_);
+      // HDFSChunkReaderIterator(chunk_id_,chunk_size_,block_size_);
       ret = new DiskChunkReaderIteraror(chunk_id_, chunk_size_, block_size_);
       break;
     }
@@ -204,7 +204,7 @@ bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block) {
   tSize bytes_num =
       read(fd_, block_buffer_->getBlock(), block_buffer_->getsize());
   //	printf("Tuple
-  //count=%d\n",*(int*)((char*)block_buffer_->getBlock()+65532));
+  // count=%d\n",*(int*)((char*)block_buffer_->getBlock()+65532));
   if (bytes_num == block_size_) {
     cur_block_++;
     //		lseek(fd_,64*1024,SEEK_CUR);
@@ -351,16 +351,17 @@ void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(
 #else
 
   /* According to my experiment, the performance can by improved by 2x by
-   * aoviding the memocy copy here */
+   * avoiding the memory copy here */
 
   block->setIsReference(true);
   block->setBlock(target_block_start_address);
   int tuple_count =
       *(unsigned*)((char*)target_block_start_address +
                    block->getSerializedBlockSize() - sizeof(unsigned));
-  ((BlockStreamFix*)block)->free_ =
-      (char*)block->getBlock() +
-      tuple_count * ((BlockStreamFix*)block)->tuple_size_;
+  dynamic_cast<BlockStreamFix*>(block)->setTuplesInBlock(tuple_count);
+//  ((BlockStreamFix*)block)->free_ =
+//      (char*)block->getBlock() +
+//      tuple_count * ((BlockStreamFix*)block)->tuple_size_;
 
 #endif
 }
