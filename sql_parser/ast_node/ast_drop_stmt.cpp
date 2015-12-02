@@ -129,7 +129,7 @@ RetCode AstDropTableList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (NULL == table_desc) {
     LOG(ERROR) << "Table [" + table_name_ + "] is not exist!";
     sem_cnxt->error_msg_ = "Table [" + table_name_ + "] is not exist!";
-    ret = rTableNotExist;
+    ret = rTableNotExisted;
     return ret;
   }
   if (NULL != next_) {
