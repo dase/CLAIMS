@@ -262,7 +262,6 @@ const int rTableAliasEqualLowerAlias = -14103;
 const int rColumnNotExist = -14104;
 const int rColumnIsAmbiguous = -14105;
 const int rTabelHaveNotColumn = -14106;
-const int rColumnAliasIsAmbiguous = -14107;
 const int rColumnIsAmbiguousAfterAlias = -14108;
 const int rColumnIsAmbiguousToExistedColumn = -14109;
 const int rUnaryArgNotExist = -14110;

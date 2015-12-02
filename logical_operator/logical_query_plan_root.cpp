@@ -354,6 +354,9 @@ void LogicalQueryPlanRoot::GetColumnHeader(
   for (int i = 0; i < str_upper.length(); i++) {
     if (isalpha(str_upper[i])) {
       str_upper[i] = toupper(str_upper[i]);
+    } else if (str_upper[i] == '\n' || str_upper[i] == '\t') {
+      raw_sql_[i] = ' ';
+      str_upper[i] = ' ';
     }
   }
   int end = str_upper.find(" FROM ");
