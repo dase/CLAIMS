@@ -341,10 +341,10 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
     }
     LOG(INFO) << "insert all " << row_id_in_file << " line from " << file_name
               << " into blocks" << endl;
-    DELETE_PTR(tuple_buffer);
     input_file.close();
     ++file_count;
   }
+  DELETE_PTR(tuple_buffer);
   LOG(INFO) << "used " << GetElapsedTime(start_read_time) / 1000
             << " time to handled " << file_count
             << " file, then flush unfilled block " << endl;
