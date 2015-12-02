@@ -156,6 +156,10 @@ ErrorInit::ErrorInit() {
 
   DefineErrorAndMessage(rNoMemory, "failed to allocate memory from system");
 
+  // schema assocated
+  DefineErrorAndMessage(rEmptyAttributeName,
+                        "the given attribute associated with empty name");
+
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(rNoTableFound, "No such table found");
   DefineErrorAndMessage(rInitSQLParserErr, "Failed to init SQL parser");
@@ -228,6 +232,14 @@ ErrorInit::ErrorInit() {
                         "limit parameter couldn't zero.");
   DefineErrorAndMessage(rLimitParaShouldNaturalNumber,
                         "limit parameter should be natural number.");
+
+  /* errorno for stmt_handler -14001 ~ -15000*/
+  DefineErrorAndMessage(rStmtHandlerCreateTableExisted,
+                        "the table to be created is already existed");
+  DefineErrorAndMessage(rStmtHandlerCreateTableFailed, "create table failed");
+  DefineErrorAndMessage(
+      rStmtHandlerCreateProjectionWithEmptyColumn,
+      "Creating projection on table given with empty columns");
 
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }

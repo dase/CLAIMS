@@ -59,6 +59,9 @@ class CreateTableExec : public StmtExec {
   RetCode Execute(ExecutedResult* exec_result);
 
  private:
+  RetCode CreateDelTable(const string& table_name, TableDescriptor*& Table_del);
+
+ private:
   /**
    * this pointer describes the abstract syntax tree about create a table.
    * It is converted from the member stmt_ of base class when we construct a new
