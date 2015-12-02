@@ -343,7 +343,6 @@ class AstSelectStmt : public AstNode {
   RetCode GetLogicalPlanOfAggeration(LogicalOperator*& logic_plan);
   RetCode GetLogicalPlanOfProject(LogicalOperator*& logic_plan);
 
-  string select_str_;
   SelectOpts select_opts_;
   AstNode* select_list_;
   AstNode* from_list_;

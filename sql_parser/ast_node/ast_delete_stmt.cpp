@@ -87,7 +87,7 @@ RetCode AstDeleteStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (NULL == new_table) {
     LOG(ERROR) << "The table " + tablename + " is not existed.";
     sem_cnxt->error_msg_ = "The table " + tablename + " is not existed.";
-    ret = rTableNotExist;
+    ret = rTableNotExisted;
     return ret;
   }
   string tabledel = tablename + "_DEL";
@@ -97,7 +97,7 @@ RetCode AstDeleteStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
                       " is not existed during delete data." << std::endl;
     sem_cnxt->error_msg_ =
         "The table DEL " + tabledel + " is not existed during delete data.";
-    ret = rTableNotExist;
+    ret = rTableNotExisted;
     return ret;
   }
   return ret;

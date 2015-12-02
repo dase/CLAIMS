@@ -79,6 +79,11 @@ class Catalog {
   ProjectionDescriptor* getProjection(const ProjectionID&) const;
   ProjectionBinding* getBindingModele() const;
 
+  /**
+   * ATTENTION: this method do not return the number of existing table,
+   *            other than the next table'id
+   * An example is: a table is dropped, but the return value don't change
+   */
   unsigned getTableCount() const { return table_id_allocator.table_id_curosr; }
 
   RetCode saveCatalog();     // 2014-3-20---save as a file---by Yu
