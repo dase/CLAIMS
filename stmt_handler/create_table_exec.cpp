@@ -33,6 +33,10 @@
 #include "../stmt_handler/create_table_exec.h"
 #include "../common/error_define.h"
 #include "../catalog/catalog.h"
+
+using claims::common::rStmtHandlerCreateTableExisted;
+using claims::common::rStmtHandlerCreateTableFailed;
+using claims::common::rSuccess;
 namespace claims {
 namespace stmt_handler {
 /**
@@ -42,6 +46,7 @@ namespace stmt_handler {
  *  firstly get the descriptor from catalog by table name.
  */
 #define NEWRESULT
+#define CREATE_DEL_TABLE
 CreateTableExec::CreateTableExec(AstNode* stmt) : StmtExec(stmt) {
   assert(stmt_);
   result_flag_ = true;
@@ -357,31 +362,26 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
       list = dynamic_cast<AstCreateColList*>(list->next_);
     }
 
-#if 1
+#ifdef CREATE_DEL_TABLE
     /**
      * At the same time,create a new table named "table_DEL" to store deleted
      * data.
      */
-    TableDescriptor* new_table =
-        Environment::getInstance()->getCatalog()->getTable(tablename_del);
-    if (new_table == NULL) {
-      new_table = new TableDescriptor(
-          tablename_del,
-          Environment::getInstance()->getCatalog()->allocate_unique_table_id());
-      new_table->addAttribute("row_id", data_type(t_u_long), 0, true);
-      new_table->addAttribute("row_id_DEL", data_type(t_u_long), 0, true);
-      // new_table->createHashPartitionedProjectionOnAllAttribute(
-      //    new_table->getAttribute(0).getName(), 4);
+    TableDescriptor* table_del = NULL;
+    ret = CreateDelTable(tablename_del, table_del);
 
+    if (rSuccess == ret) {
+    } else if (rStmtHandlerCreateTableExisted == ret) {
     } else {
-      LOG(ERROR) << "The table " + tablename_del +
-                        " has existed during creating table_DEL!" << std::endl;
+      exec_result->status_ = false;
+      exec_result->result_ = NULL;
+      ret = common::kStmtHandlerTypeNotSupport;
     }
 #endif
 
     if (exec_result->status_) {
       Environment::getInstance()->getCatalog()->add_table(table_desc_);
-      Environment::getInstance()->getCatalog()->add_table(new_table);
+      Environment::getInstance()->getCatalog()->add_table(table_del);
       Environment::getInstance()->getCatalog()->saveCatalog();
 #ifdef NEWRESULT
       exec_result->info_ = "create table successfully";
@@ -399,6 +399,39 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
 #ifdef sem_cnxt
   }
 #endif
+  return ret;
+}
+
+/**
+ * create the corresponding del table for the base table
+ * with the schema as follows:
+ * #################################################
+ * ##row_id (t_u_long)  |row_id_DEL  (t_u_long)| ###
+ * #################################################
+ */
+RetCode CreateTableExec::CreateDelTable(const string& table_name,
+                                        TableDescriptor*& table_del) {
+  RetCode ret = rSuccess;
+  // TableDescriptor* table_del =
+  //   Environment::getInstance()->getCatalog()->getTable(table_name);
+  if (table_del == NULL) {
+    table_del = new TableDescriptor(
+        table_name,
+        Environment::getInstance()->getCatalog()->allocate_unique_table_id());
+    table_del->addAttribute("row_id", data_type(t_u_long), 0, true);
+    table_del->addAttribute("row_id_DEL", data_type(t_u_long), 0, true);
+    // new_table->createHashPartitionedProjectionOnAllAttribute(
+    //    new_table->getAttribute(0).getName(), 4);
+    return ret;
+  } else {
+    ret = rStmtHandlerCreateTableExisted;
+    LOG(ERROR) << ret
+               << "The table " + table_name +
+                      " has existed during creating table_DEL!" << std::endl;
+    return ret;
+  }
+  ret = rStmtHandlerCreateTableFailed;
+  LOG(ERROR) << ret << "Create table" + table_name + " failed!" << std::endl;
   return ret;
 }
 

@@ -76,7 +76,7 @@ RetCode AstLoadTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (NULL == table) {
     sem_cnxt->error_msg_ =
         "the table " + table_name_ + " does not exist during loading!";
-    ret = rTableNotExist;
+    ret = rTableNotExisted;
     return ret;
   }
   if (0 == table->getNumberOfProjection()) {
