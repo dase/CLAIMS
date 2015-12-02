@@ -54,7 +54,7 @@ StmtHandler::~StmtHandler() {
 RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
   switch (stmt_ast->ast_node_type_) {
     case AST_SELECT_STMT: {
-      stmt_exec_ = new SelectExec(stmt_ast);
+      stmt_exec_ = new SelectExec(stmt_ast, sql_stmt_);
       break;
     }
     case AST_INSERT_STMT: {
