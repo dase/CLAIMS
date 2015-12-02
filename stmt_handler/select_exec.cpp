@@ -46,10 +46,13 @@ using std::cout;
 namespace claims {
 namespace stmt_handler {
 //#define PRINTCONTEXT
-SelectExec::SelectExec(AstNode* stmt) : StmtExec(stmt) {
-  select_ast_ = static_cast<AstSelectStmt*>(stmt_);
+SelectExec::SelectExec(AstNode* stmt, string raw_sql)
+    : StmtExec(stmt), raw_sql_(raw_sql) {
+  select_ast_ = reinterpret_cast<AstSelectStmt*>(stmt_);
 }
-
+SelectExec::SelectExec(AstNode* stmt) : StmtExec(stmt), raw_sql_("") {
+  select_ast_ = reinterpret_cast<AstSelectStmt*>(stmt_);
+}
 SelectExec::~SelectExec() {
   //  if (NULL != select_ast_) {
   //    delete select_ast_;
@@ -100,7 +103,7 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
     cout << exec_result->error_info_;
     return ret;
   }
-  logic_plan = new LogicalQueryPlanRoot(0, logic_plan,
+  logic_plan = new LogicalQueryPlanRoot(0, logic_plan, raw_sql_,
                                         LogicalQueryPlanRoot::kResultCollector);
   logic_plan->GetPlanContext();
 #ifndef PRINTCONTEXT
