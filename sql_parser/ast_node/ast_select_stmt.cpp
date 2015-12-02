@@ -376,7 +376,7 @@ RetCode AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
       Environment::getInstance()->getCatalog()->getTable(table_name_);
   if (NULL == tbl) {
     LOG(ERROR) << "table: " << table_name_ << " dosen't exist!" << endl;
-    return rTableNotExist;
+    return rTableNotExisted;
   }
   if (table_alias_ == "NULL") {
     table_alias_ = table_name_;
@@ -1119,7 +1119,7 @@ RetCode AstLimitClause::GetLogicalPlan(LogicalOperator*& logical_plan) {
     return rLimitNotStandardized;
   }
   if (row_count_->ast_node_type() != AST_EXPR_CONST ||
-      offset_->ast_node_type() != AST_EXPR_CONST) {
+      (NULL != offset_ && offset_->ast_node_type() != AST_EXPR_CONST)) {
     return rLimitParaShouldNaturalNumber;
   }
   int64_t row_count =

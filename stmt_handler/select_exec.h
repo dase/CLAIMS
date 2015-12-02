@@ -41,12 +41,14 @@ class SelectExec : public StmtExec {
   friend class DeleteStmtExec;
 
  public:
-  SelectExec(AstNode* stmt);  // NOLINT
+  SelectExec(AstNode* stmt, string raw_sql);  // NOLINT
+  SelectExec(AstNode* stmt);
   virtual ~SelectExec();
   RetCode Execute(ExecutedResult* exec_result);
 
  private:
   AstSelectStmt* select_ast_;
+  string raw_sql_;
 };
 }  // namespace stmt_handler
 }  // namespace claims

@@ -33,6 +33,11 @@
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #include "../common/memory_handle.h"
+#include "../common/error_define.h"
+
+using claims::common::rSuccess;
+using claims::common::rEmptyAttributeName;
+using claims::common::rColumnNotExist;
 using std::string;
 namespace claims {
 namespace catalog {
@@ -117,6 +122,45 @@ struct Attribute {
   bool isUnique() const { return unique; }
   string getName() const { return attrName; }
   AttributeID getID() const { return AttributeID(table_id_, index); }
+  unsigned GetAttributeIndex() const { return index; }
+
+  inline RetCode SetAttributeName(const string name) {
+    RetCode ret = rSuccess;
+    if (0 != name.size()) {
+      attrName = name;
+      return ret;
+    } else {
+      ret = rEmptyAttributeName;
+      LOG(WARNING) << "[" << ret << ", " << CStrError(ret) << "] "
+                   << "the attribute has empty name in table:" << table_id_
+                   << "with attribute index:" << index << std::endl;
+    }
+  }
+
+  inline RetCode SetAttributeIndex(const unsigned attribute_index) {
+    RetCode ret = rSuccess;
+    if (NULL != this) {
+      index = attribute_index;
+      return ret;
+    } else {
+      ret = rColumnNotExist;
+      WLOG(ret, "the attribute is not existed when setting its index");
+      return ret;
+    }
+  }
+  inline RetCode SetTableID(const unsigned table_id) {
+    RetCode ret = rSuccess;
+    if (NULL != this) {
+      table_id_ = table_id;
+      return ret;
+    } else {
+      ret = rColumnNotExist;
+      WLOG(ret, "the attribute is not existed when setting its table id");
+      return ret;
+    }
+  }
+
+ public:
   string attrName;
   column_type* attrType;
   /*the position in the table*/

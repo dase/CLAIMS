@@ -213,7 +213,7 @@ SemanticContext::SemanticContext() {
 SemanticContext::~SemanticContext() {}
 
 RetCode SemanticContext::IsTableExist(const string table) {
-  if (1 != tables_.count(table)) return rTableNotExist;
+  if (1 != tables_.count(table)) return rTableNotExisted;
   return rSuccess;
 }
 /**
