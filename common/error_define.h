@@ -179,6 +179,9 @@ const int rAccessDiskFileFail = -98;
 const int rAccessHdfsFileFail = -99;
 const int rNoMemory = -100;
 
+// schema associated
+const int rEmptyAttributeName = -501;
+
 /* errorno for SQL parser -1001 ~ -2000  */
 const int rInitSQLParserErr = -1001;
 const int rSQLParserErr = -1002;
@@ -241,7 +244,7 @@ const int rCatalogRestoreInvild = -5004;
 const int rCatalogNotFound = -5005;
 
 /* errorno for stmt_handler -14001 ~ -15000*/
-const int rStmtHandlerTableExistDuringCreate = -14002;
+const int rStmtHandlerCreateTableExisted = -14002;
 const int kStmtHandlerTypeNotSupport = -14003;
 const int kStmtHandlerCreateTableSuccess = -14004;
 const int kStmtHandlerTableNotExistDuringLoad = -14005;
@@ -249,8 +252,10 @@ const int kStmtHandlerLoadDataSuccess = -14006;
 const int kStmtHandlerTableNotExistDuringInsert = -14007;
 const int kStmtHandlerInsertDataSuccess = -14008;
 const int rStmtHandlerInsertNoValue = -14009;
+const int rStmtHandlerCreateTableFailed = -14010;
+const int rStmtHandlerCreateProjectionWithEmptyColumn = 14011;
 
-const int rTableNotExist = -14100;
+const int rTableNotExisted = -14100;
 const int rTableillegal = -14101;
 const int rTableAliasEqualExistedTable = -14102;
 const int rTableAliasEqualLowerAlias = -14103;
