@@ -81,15 +81,15 @@ AstCreateTable::~AstCreateTable() {
 RetCode AstCreateTable::SemanticAnalisys(SemanticContext* sem_cntx) {
   int ret = rSuccess;
   if ((!additional_name_.empty()) && !(table_name_.empty())) {
-    ret = rTableNotExist;
+    ret = rTableNotExisted;
     LOG(ERROR) << "No table name during creating table!" << std::endl;
     sem_cntx->error_msg_ = "No table name during creating table!";
-    return rTableNotExist;
+    return rTableNotExisted;
   }
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
   TableDescriptor* table = local_catalog->getTable(table_name_);
   if (table != NULL) {
-    ret = rTableNotExist;
+    ret = rTableNotExisted;
     LOG(ERROR) << "The table " + table_name_ +
                       " has existed during creating table!" << std::endl;
     sem_cntx->error_msg_ =
@@ -203,7 +203,7 @@ RetCode AstCreateProjection::SemanticAnalisys(SemanticContext* sem_cnxt) {
   TableDescriptor* table = local_catalog->getTable(table_name_);
 
   if (NULL == table) {
-    ret = rTableNotExist;
+    ret = rTableNotExisted;
     LOG(ERROR) << "There is no table named " << table_name_
                << " during creating projection";
     sem_cnxt->error_msg_ = "There is no table named " + table_name_ +

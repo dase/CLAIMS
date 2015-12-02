@@ -376,7 +376,7 @@ RetCode AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
       Environment::getInstance()->getCatalog()->getTable(table_name_);
   if (NULL == tbl) {
     LOG(ERROR) << "table: " << table_name_ << " dosen't exist!" << endl;
-    return rTableNotExist;
+    return rTableNotExisted;
   }
   if (table_alias_ == "NULL") {
     table_alias_ = table_name_;
