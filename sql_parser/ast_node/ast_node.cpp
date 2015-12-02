@@ -297,6 +297,7 @@ RetCode SemanticContext::AddTableColumn(
        it_column != column_to_table_.end(); ++it_column) {
     for (auto it = column_to_table.begin(); it != column_to_table.end(); ++it) {
       if (it_column->first == it->first && it_column->second == it->second) {
+        ELOG(rColumnIsAmbiguousToExistedColumn, "");
         return rColumnIsAmbiguousToExistedColumn;
       }
     }
@@ -395,6 +396,7 @@ RetCode SemanticContext::GetAliasColumn(
     const string& alias, multimap<string, string>& column_to_table) {
   for (auto it = column_to_table_.begin(); it != column_to_table_.end(); ++it) {
     if (column_to_table_.count(it->first) > 1) {
+      ELOG(rColumnIsAmbiguousAfterAlias, "");
       return rColumnIsAmbiguousAfterAlias;
     }
     column_to_table.insert(make_pair(it->first, alias));
@@ -408,6 +410,7 @@ RetCode SemanticContext::AddAggregation(AstNode* agg_node) {
   bool exist = false;
   for (auto it = aggregation_.begin(); it != aggregation_.end(); ++it) {
     if (agg_node->expr_str_ == "") {
+      ELOG(rAggNodeExprStrIsNULL, "");
       return rAggNodeExprStrIsNULL;
     }
     if (agg_node->expr_str_ == (*it)->expr_str_) {
@@ -429,6 +432,7 @@ RetCode SemanticContext::AddGroupByAttrs(AstNode* groupby_node) {
   bool exist = false;
   for (auto it = groupby_attrs_.begin(); it != groupby_attrs_.end(); ++it) {
     if (groupby_node->expr_str_ == "") {
+      ELOG(rGroupbyNodeExprStrIsNULL, "");
       return rGroupbyNodeExprStrIsNULL;
     }
     if (groupby_node->expr_str_ == (*it)->expr_str_) {
@@ -459,7 +463,7 @@ RetCode SemanticContext::AddSelectAttrs(AstNode* select_node) {
   //    }
   //  }
   if (exist) {
-    LOG(ERROR) << "alias confict in one select node" << endl;
+    ELOG(rAliasConfictInSelectNode, "");
     return rAliasConfictInSelectNode;
   } else {
     select_attrs_.insert(select_node);

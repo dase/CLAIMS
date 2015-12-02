@@ -871,6 +871,7 @@ RetCode AstGroupByClause::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
     return rSuccess;
   }
+  ELOG(rGroupbyListIsNULL, "");
   return rGroupbyListIsNULL;
 }
 void AstGroupByClause::RecoverExprName(string& name) {
@@ -1380,7 +1381,7 @@ RetCode AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
 
   } else {
-    LOG(ERROR) << "select list is NULL" << endl;
+    ELOG(rSelectClauseIsNULL, "");
     return rSelectClauseIsNULL;
   }
   // aggregation couldn't in group by clause
@@ -1470,6 +1471,7 @@ RetCode AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     sem_cnxt->ClearSelectAttrs();
     ret = select_list_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
+      ELOG(rAggSelectExprHaveOtherColumn, "");
       return rAggSelectExprHaveOtherColumn;
     }
   }
