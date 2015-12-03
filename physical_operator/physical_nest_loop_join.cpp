@@ -151,8 +151,10 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
                 tuple_from_right_child,
                 reinterpret_cast<char *>(result_tuple + copyed_bytes));
           } else {
-            LOG(INFO) << "[NestloopJoin]:  [a block of the result is full of "
-                         "the nest loop join result ]" << std::endl;
+            //            LOG(INFO) << "[NestloopJoin]:  [a block of the result
+            //            is full of "
+            //                         "the nest loop join result ]" <<
+            //                         std::endl;
             return true;
           }
           jtc->buffer_stream_iterator_->increase_cur_();
@@ -178,6 +180,8 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
                      << std::endl;
         return false;
       } else {
+        LOG(INFO) << "[NestloopJoin]: get a new block from right child "
+                  << std::endl;
         return true;
       }
     }
