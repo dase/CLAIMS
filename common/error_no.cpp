@@ -155,6 +155,7 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rAccessHdfsFileFail, "failed to access hdfs file");
 
   DefineErrorAndMessage(rNoMemory, "failed to allocate memory from system");
+  DefineErrorAndMessage(rDataPathError, "Data path not exist");
 
   // schema assocated
   DefineErrorAndMessage(rEmptyAttributeName,
