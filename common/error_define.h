@@ -178,6 +178,7 @@ const int rParamInvalid = -97;
 const int rAccessDiskFileFail = -98;
 const int rAccessHdfsFileFail = -99;
 const int rNoMemory = -100;
+const int rDataPathError = -101;
 
 // schema associated
 const int rEmptyAttributeName = -501;

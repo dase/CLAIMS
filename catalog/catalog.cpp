@@ -48,6 +48,7 @@ using std::string;
 using std::endl;
 using claims::common::rSuccess;
 using claims::common::rCatalogNotFound;
+using claims::common::rDataPathError;
 using claims::common::FileOpenFlag;
 using claims::common::FilePlatform;
 using claims::loader::FileConnector;
@@ -195,6 +196,11 @@ bool Catalog::IsDataFileExist() {
     struct dirent* file_ptr = NULL;
 
     dir = opendir(Config::data_dir.c_str());
+    if (NULL == dir) {
+      ELOG(rDataPathError, Config::data_dir << " not exist!");
+      cout << "Oooooops, we can't find data directory! Client will be closed."
+           << endl;
+    }
     while ((file_ptr = readdir(dir)) != NULL) {
       if ('T' == file_ptr->d_name[0]) {
         LOG(INFO) << "The data disk file started with 'T': "
