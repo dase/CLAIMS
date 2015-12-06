@@ -227,11 +227,6 @@ bool DiskChunkReaderIteraror::NextBlock(BlockStreamBase*& block) {
    */
   tSize bytes_num =
       read(fd_, block_buffer_->getBlock(), block_buffer_->getsize());
-<<<<<<< HEAD
-=======
-  //	printf("Tuple
-  // count=%d\n",*(int*)((char*)block_buffer_->getBlock()+65532));
->>>>>>> for_auto_test_1206
   if (bytes_num == block_size_) {
     cur_block_++;
     block->constructFromBlock(*block_buffer_);
