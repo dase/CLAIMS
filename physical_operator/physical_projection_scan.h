@@ -141,7 +141,7 @@ class PhysicalProjectionScan : public PhysicalOperator {
 
  private:
   State state_;
-  PartitionReaderIterator* partition_reader_iterator_;
+  PartitionStorage::PartitionReaderIterator* partition_reader_iterator_;
   std::list<ChunkReaderIterator*> remaining_chunk_iterator_list_;
   Lock chunk_reader_container_lock_;
   // like a buffer

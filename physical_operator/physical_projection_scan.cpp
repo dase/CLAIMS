@@ -88,7 +88,7 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
     /* this is the first expanded thread*/
     PartitionStorage* partition_handle_;
     if (NULL ==
-        (partition_handle_ = BlockManager::getInstance()->getPartitionHandle(
+        (partition_handle_ = BlockManager::getInstance()->GetPartitionHandle(
              PartitionID(state_.projection_id_, kPartitionOffset)))) {
       LOG(ERROR) << PartitionID(state_.projection_id_, kPartitionOffset)
                         .getName()

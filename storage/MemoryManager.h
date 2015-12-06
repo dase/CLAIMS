@@ -54,7 +54,6 @@ using std::map;
 using std::list;
 using std::endl;
 using boost::pool;
-using claims::common;
 
 /**
  * @brief Method description: HdfsBlock is a struct in
@@ -66,6 +65,7 @@ using claims::common;
 typedef struct HdfsBlock {
   HdfsBlock() : hook(NULL), length(0), lifetime_(0) {}
   HdfsBlock(void* add, int length) : hook(add), length(length), lifetime_(0) {}
+  void ClearTime() { lifetime_ = 0; }
   void* hook;
   /*记录每个block大小也就是文件长度*/
   int length;
@@ -153,7 +153,7 @@ class MemoryChunkStore {
     return true;
   }
 
-  void FreeChunk() {}  //选择内存池哪些应该被释放。基于LRU。 --han
+  void FreeChunk();  //选择内存池哪些应该被释放。基于LRU。 --han
 
   /* 有这个函数提供一个文件到block的映射,这个地方可以用iterator模式将其从
    * master端获取，因为做iterator的节zcl点肯定不是主节点，下面为调试用

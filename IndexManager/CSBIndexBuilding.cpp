@@ -37,7 +37,7 @@ bool bottomLayerCollecting::Open(const PartitionOffset& partition_offset)
 		computeOutputSchema();
 		/* this is the first expanded thread*/
 		PartitionStorage* partition_handle_;
-		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
+		if((partition_handle_=BlockManager::getInstance()->GetPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
 			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
 			SetReturnStatus(false);
 		}

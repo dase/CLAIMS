@@ -250,7 +250,7 @@ RetCode Catalog::restoreCatalog() {
     return rSuccess;
   } else {
     uint64_t file_length = 0;
-    void* buffer;
+    void* buffer=NULL;
     EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kReadFile),
                             "catalog file name: " << catalog_file);
     EXEC_AND_ONLY_LOG_ERROR(ret, connector->LoadTotalFile(buffer, &file_length),

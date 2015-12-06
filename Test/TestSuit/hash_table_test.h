@@ -313,7 +313,7 @@ static double projection_scan(unsigned degree_of_parallelism) {
   //	arg.hash_table=hashtable;
   arg.schema = schema;
   arg.partition_reader = BlockManager::getInstance()
-                             ->getPartitionHandle(PartitionID(
+                             ->GetPartitionHandle(PartitionID(
                                  table->getProjectoin(1)->getProjectionID(), 0))
                              ->CreateAtomicReaderIterator();
   arg.barrier = new Barrier(nthreads);

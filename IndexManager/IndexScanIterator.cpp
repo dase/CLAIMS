@@ -41,7 +41,7 @@ bool IndexScanIterator::Open(const PartitionOffset& partition_off)
 		/* this is the first expanded thread*/
 		csb_index_list_ = IndexManager::getInstance()->getAttrIndex(state_.index_id_);
 		PartitionStorage* partition_handle_;
-		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_off)))==0){
+		if((partition_handle_=BlockManager::getInstance()->GetPartitionHandle(PartitionID(state_.projection_id_,partition_off)))==0){
 			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_off).getName().c_str());
 			SetReturnStatus(false);
 		}

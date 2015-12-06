@@ -44,6 +44,63 @@
 class PartitionStorage {
   friend class PartitionReaderIterator;
 
+ public:
+  class PartitionReaderIterator {
+   public:
+    /**
+     * @brief Method description: construct the partition iterator.
+     * @param PartitionStorage: include the point of container, the cursor of
+     * chunk, and chunk_list_.
+     */
+    PartitionReaderIterator(PartitionStorage* partition_storage);
+
+    virtual ~PartitionReaderIterator();
+
+    /**
+     * @brief Method description: According the iterator to call chunk list and
+     * create chunk iterator.
+     * @return ret: NULL: create the chunk iterator failed. NOt NULL: succeed.
+     */
+    virtual ChunkReaderIterator* NextChunk();
+
+    virtual bool NextBlock(BlockStreamBase*& block);
+
+   protected:
+    PartitionStorage* ps_;
+    unsigned chunk_cur_;
+    ChunkReaderIterator* chunk_it_;
+  };
+
+  class AtomicPartitionReaderIterator : public PartitionReaderIterator {
+   public:
+    /**
+     * @brief Method description: Construct the partition iterator. Different
+     * from
+     * PartitionReaderiterator, it don't copy next block one by one, just using
+     * the block_accessor that store the point of block to assign.
+     * @param  PartitionStorage: include the point of container, the cursor of
+     * chunk, and chunk_list_.
+     */
+    AtomicPartitionReaderIterator(PartitionStorage* partition_storage)
+        : PartitionReaderIterator(partition_storage) {}
+
+    virtual ~AtomicPartitionReaderIterator() override;
+
+    /**
+     * @brief Method description: According the iterator to call chunk list and
+     * create chunk iterator. Different from PartitionReaderiterator, it don't
+     * copy next block one by one, just using the block_accessor that store the
+     * point of block to assign.
+     * @return ret: NULL: create the chunk iterator failed. NOt NULL: succeed.
+     */
+    ChunkReaderIterator* NextChunk() override;
+
+    virtual bool NextBlock(BlockStreamBase*& block);
+
+   private:
+    Lock lock_;
+  };
+
   /**
    * @brief Method description: construct the partition container.
    * @param :PartitionID: identify which partition is our require.
@@ -79,7 +136,7 @@ class PartitionStorage {
   /**
   * @brief Method description: Generate the iterator in iterator pattern.
   */
-  PartitionReaderIterator* CreateReaderIterator();
+  PartitionStorage::PartitionReaderIterator* CreateReaderIterator();
 
   /**
    * @brief Method description: Generate the iterator in iterator
@@ -87,7 +144,7 @@ class PartitionStorage {
    * one by one, just using the block_accessor that store the point of block to
    * assign.
    */
-  PartitionReaderIterator* CreateAtomicReaderIterator();
+  PartitionStorage::PartitionReaderIterator* CreateAtomicReaderIterator();
 
  protected:
   PartitionID partition_id_;

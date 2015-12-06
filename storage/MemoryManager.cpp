@@ -43,7 +43,7 @@ using claims::common::rReturnFailFindTargetChunkId;
 // namespace claims {
 // namespace stroage {
 
-MemoryChunkStore* MemoryChunkStore::instance_ = NULL;
+MemoryChunkStore* MemoryChunkStore::instance_ = 0;
 MemoryChunkStore::MemoryChunkStore()
     : chunk_pool_(CHUNK_SIZE), block_pool_(BLOCK_SIZE) {}
 
@@ -59,7 +59,7 @@ bool MemoryChunkStore::IsExist(ChunkID& chunk_id) {
   if (it != chunk_list_.cend()) {
     LOG(INFO) << "chunk id already exists (chunk id = " << chunk_id.chunk_off
               << ")" << endl;
-    it->second.lifetime_ = 0;
+    it->second.ClearTime();
     return true;
   } else {
     return false;

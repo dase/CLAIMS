@@ -102,10 +102,10 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
           /* there is enough memory storage space, so the storage level can be
            * shifted.*/
           if (Config::local_disk_mode) {
-            chunk_info.length = BlockManager::getInstance()->loadFromDisk(
+            chunk_info.length = BlockManager::getInstance()->LoadFromDisk(
                 chunk_id_, chunk_info.hook, chunk_info.length);
           } else {
-            chunk_info.length = BlockManager::getInstance()->loadFromHdfs(
+            chunk_info.length = BlockManager::getInstance()->LoadFromHdfs(
                 chunk_id_, chunk_info.hook, chunk_info.length);
           }
           if (chunk_info.length <= 0) {

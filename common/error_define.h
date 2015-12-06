@@ -41,11 +41,11 @@ typedef int RetCode;  // means return code
   LOG(WARNING) << "[" << ret << ", " << CStrError(ret) << "] " << warning_info \
                << std::endl;
 
-#define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info)  \
-  do {                                             \
-    if (rSuccess != (ret = f)) {                   \
-      ELOG(ret, err_info) failed to read one block \
-    }                                              \
+#define EXEC_AND_ONLY_LOG_ERROR(ret, f, err_info) \
+  do {                                            \
+    if (rSuccess != (ret = f)) {                  \
+      ELOG(ret, err_info)                         \
+    }                                             \
   } while (0)
 
 #define EXEC_AND_LOG(ret, f, info, err_info) \
@@ -249,6 +249,9 @@ const int rFailOpenFileInDiskChunkReaderIterator = -6005;
 const int rFailReadOneBlockInDiskChunkReaderIterator = -6006;
 const int rFailOpenHDFSFileInStorage = -6007;
 const int rFailSetStartOffsetInStorage = -6008;
+const int rLoadFromHdfsOpenFailed = -6009;
+const int rUnbindPartitionFailed = -6010;
+const int rLoadFromDiskOpenFailed = -6011;
 
 /* errorno for stmt_handler -14001 ~ -15000*/
 const int rStmtHandlerTableExistDuringCreate = -14002;

@@ -239,6 +239,10 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rFailOpenHDFSFileInStorage, "fails to open HDFS file");
   DefineErrorAndMessage(rFailSetStartOffsetInStorage,
                         "fails to set the start offset");
+  DefineErrorAndMessage(rLoadFromHdfsOpenFailed, "Fail to open file from Hdfs");
+  DefineErrorAndMessage(rLoadFromDiskOpenFailed, "Fail to open file from Disk");
+  DefineErrorAndMessage(rUnbindPartitionFailed, "Fail to unbinding partition");
+
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common

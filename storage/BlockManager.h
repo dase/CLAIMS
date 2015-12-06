@@ -23,7 +23,7 @@ using namespace std;
 #include <stdio.h>
 
 #include "hdfs.h"
-#include "MemoryStore.h"
+#include "MemoryManager.h"
 #include "DiskStore.h"
 #include "BlockManagerId.h"
 #include "PartitionStorage.h"
@@ -115,20 +115,20 @@ class BlockManager {
   void *getLocal(string blockId);
   ChunkInfo loadFromHdfs(string file_name);
 
-  int loadFromHdfs(const ChunkID &, void *const &desc, const unsigned &);
+  int LoadFromHdfs(const ChunkID &, void *const &desc, const unsigned &);
 
-  int loadFromDisk(const ChunkID &, void *const &desc, const unsigned &) const;
+  int LoadFromDisk(const ChunkID &, void *const &desc, const unsigned &) const;
   // 将这个blockId所代表的数据存进内存或者磁盘，所以其中有个参数肯定是storagelevel
   bool put(string blockId, storageLevel level, void *value);
 
   /* poc测试 */
   BlockManagerId *getId();
   string askForMatch(string filename, BlockManagerId bmi);
-  bool containsPartition(const PartitionID &part) const;
-  bool addPartition(const PartitionID &, const unsigned &number_of_chunks,
+  bool ContainsPartition(const PartitionID &part) const;
+  bool AddPartition(const PartitionID &, const unsigned &number_of_chunks,
                     const StorageLevel &desirable_storage_level);
-  bool removePartition(const PartitionID &);
-  PartitionStorage *getPartitionHandle(const PartitionID &partition_id) const;
+  bool RemovePartition(const PartitionID &);
+  PartitionStorage *GetPartitionHandle(const PartitionID &partition_id) const;
 
  private:
   BlockManager();
