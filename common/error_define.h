@@ -178,6 +178,7 @@ const int rParamInvalid = -97;
 const int rAccessDiskFileFail = -98;
 const int rAccessHdfsFileFail = -99;
 const int rNoMemory = -100;
+const int rDataPathError = -101;
 
 // schema associated
 const int rEmptyAttributeName = -501;
@@ -262,7 +263,6 @@ const int rTableAliasEqualLowerAlias = -14103;
 const int rColumnNotExist = -14104;
 const int rColumnIsAmbiguous = -14105;
 const int rTabelHaveNotColumn = -14106;
-const int rColumnAliasIsAmbiguous = -14107;
 const int rColumnIsAmbiguousAfterAlias = -14108;
 const int rColumnIsAmbiguousToExistedColumn = -14109;
 const int rUnaryArgNotExist = -14110;
