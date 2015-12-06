@@ -13,7 +13,8 @@
 #include "ThreadPool.h"
 #include <unistd.h>
 #include <sys/syscall.h>
-#define __USE_GNU  //启用CPU_ZERO等相关的宏
+
+#define __USE_GNU  // 启用CPU_ZERO等相关的宏
 
 ThreadPool::ThreadPool() {}
 
@@ -45,9 +46,10 @@ bool ThreadPool::Thread_Pool_init(int thread_count_in_pool_) {
     }
     ++free_thread_count;
   }
-  assert(free_thread_count = thread_count);
-  //	ThreadPoolLogging::log("thread pool init %d free thread\n",
-  //free_thread_count);
+
+  assert(free_thread_count == thread_count);
+  // ThreadPoolLogging::log("thread pool init %d free thread\n",
+  // free_thread_count);
   return success;
 }
 
@@ -91,11 +93,11 @@ void *ThreadPool::thread_exec(void *arg) {
           "thread (id=%ld,offset=%lx) in thread pool finished executing..\n",
           syscall(__NR_gettid), pthread_self());
 
-      Task::destroy_task(task);  // TODO: consider whether destroy task
+      Task::destroy_task(task);  //  TODO: consider whether destroy task
       task = NULL;
     }
 
-    //		sem_post(&task_sem);
+    //  sem_post(&task_sem);
   }
   pthread_exit(NULL);
   return NULL;

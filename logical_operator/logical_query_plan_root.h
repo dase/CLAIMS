@@ -66,6 +66,9 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    *                  generated from this logical operator
    */
   LogicalQueryPlanRoot(NodeID collecter_node_id, LogicalOperator* child,
+                       string raw_sql,
+                       const OutputStyle& fashion = kPerformance);
+  LogicalQueryPlanRoot(NodeID collecter_node_id, LogicalOperator* child,
                        const OutputStyle& fashion = kPerformance);
 
   virtual ~LogicalQueryPlanRoot();
@@ -105,11 +108,14 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    */
   std::vector<std::string> GetAttributeName(
       const PlanContext& plan_context) const;
+  void GetColumnHeader(std::vector<std::string>& column_header,
+                       std::vector<Attribute>& attribute_list);
 
  private:
   NodeID collecter_node;
   LogicalOperator* child_;
   OutputStyle style_;
+  string raw_sql_;
   PlanContext* plan_context_;
 };
 

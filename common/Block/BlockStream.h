@@ -175,7 +175,7 @@ class BlockStreamFix : public BlockStreamBase {
   BlockStreamBase* createBlockAndDeepCopy();
 
  protected:
- public:
+  // public:
   unsigned tuple_size_;
   char* free_;  // should be protected.
 };

@@ -155,6 +155,11 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rAccessHdfsFileFail, "failed to access hdfs file");
 
   DefineErrorAndMessage(rNoMemory, "failed to allocate memory from system");
+  DefineErrorAndMessage(rDataPathError, "Data path not exist");
+
+  // schema assocated
+  DefineErrorAndMessage(rEmptyAttributeName,
+                        "the given attribute associated with empty name");
 
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(rNoTableFound, "No such table found");
@@ -224,6 +229,7 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rNoProjection, "No Projection on this table.");
   DefineErrorAndMessage(rLimitNotStandardized, "limit not standard.");
   DefineErrorAndMessage(rLimitZero, "limit zero.");
+
   /*errorno for the layor of storage -6001 ~ -7000 */
 
   DefineErrorAndMessage(rMemoryPoolMallocFail,
@@ -243,6 +249,65 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rLoadFromDiskOpenFailed, "Fail to open file from Disk");
   DefineErrorAndMessage(rUnbindPartitionFailed, "Fail to unbinding partition");
 
+  /* errorno for stmt_handler -14001 ~ -15000*/
+  DefineErrorAndMessage(rStmtHandlerCreateTableExisted,
+                        "the table to be created is already existed");
+  DefineErrorAndMessage(rStmtHandlerCreateTableFailed, "create table failed");
+  DefineErrorAndMessage(
+      rStmtHandlerCreateProjectionWithEmptyColumn,
+      "Creating projection on table given with empty columns");
+  DefineErrorAndMessage(rNoTalbeFound, "no table found");
+  DefineErrorAndMessage(rTableAlreadyExist, "table already exist");
+  DefineErrorAndMessage(rEqualJoinCondiNotMatch,
+                        "equal join condition not match");
+  DefineErrorAndMessage(rEqualJoinCondiInATable,
+                        "equal join condition in a single talbe");
+  DefineErrorAndMessage(rNoDataTypeInConst, "no actual type");
+  DefineErrorAndMessage(rLeftTableIsNULLInJoin, "left table is null in join");
+  DefineErrorAndMessage(rRightTableIsNULLInJoin, "right table is null in join");
+  DefineErrorAndMessage(rMoreColumnsInSelectHaveALLALL,
+                        "more columns in select in which has *.*");
+  DefineErrorAndMessage(rColumnAllShouldNotInOtherClause,
+                        "column all should not in other clause");
+  DefineErrorAndMessage(rTableNotExistInTableColumnALL,
+                        "table not exist in table column all");
+  DefineErrorAndMessage(rHavingNotAgg,
+                        "having clause exist only if has aggregation");
+  DefineErrorAndMessage(rAggSelectExprHaveOtherColumn,
+                        "other column except from aggregation funcs and "
+                        "groupby expressions in select expressions");
+  DefineErrorAndMessage(rAggCouldNotInGroupByClause,
+                        "aggregation could not in group by clause");
+  DefineErrorAndMessage(rAggCouldNotInWhereClause,
+                        "aggregation could not in where clause");
+  DefineErrorAndMessage(rAggHaveAgg, "aggregation statement have aggregation");
+  DefineErrorAndMessage(rAliasConfictInSelectNode,
+                        "alias conflict in one select node");
+  DefineErrorAndMessage(rSelectNodeExprStrIsNULL,
+                        "select node expression string is null");
+  DefineErrorAndMessage(rGroupbyNodeExprStrIsNULL,
+                        "group by node expression string is null");
+  DefineErrorAndMessage(rAggNodeExprStrIsNULL,
+                        "aggregation node expression string is null");
+  DefineErrorAndMessage(rGroupByNotSupportColumn,
+                        "group by not support column");
+  DefineErrorAndMessage(rGroupbyListIsNULL, "group by list is null");
+  DefineErrorAndMessage(rSelectClauseIsNULL, "select clause is null");
+  DefineErrorAndMessage(rFromClauseIsNULL, "from clause is null");
+  DefineErrorAndMessage(rUnaryArgNotExist, "Unary arg not exist");
+  DefineErrorAndMessage(rColumnIsAmbiguousToExistedColumn,
+                        "column already exist");
+  DefineErrorAndMessage(rColumnIsAmbiguousAfterAlias,
+                        "column is ambiguous after alias");
+  DefineErrorAndMessage(rTabelHaveNotColumn, "column not exist in table");
+  DefineErrorAndMessage(rColumnIsAmbiguous, "column is ambiguous");
+  DefineErrorAndMessage(rColumnNotExist, "column not exist");
+  DefineErrorAndMessage(rTableillegal, "table is illegal");
+  DefineErrorAndMessage(rTableNotExisted, "table not exist");
+  DefineErrorAndMessage(rLimitParaCouldnotLessZero,
+                        "limit parameter couldn't zero.");
+  DefineErrorAndMessage(rLimitParaShouldNaturalNumber,
+                        "limit parameter should be natural number.");
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common

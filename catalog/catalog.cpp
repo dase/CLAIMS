@@ -48,6 +48,7 @@ using std::string;
 using std::endl;
 using claims::common::rSuccess;
 using claims::common::rCatalogNotFound;
+using claims::common::rDataPathError;
 using claims::common::FileOpenFlag;
 using claims::common::FilePlatform;
 using claims::loader::FileConnector;
@@ -195,6 +196,11 @@ bool Catalog::IsDataFileExist() {
     struct dirent* file_ptr = NULL;
 
     dir = opendir(Config::data_dir.c_str());
+    if (NULL == dir) {
+      ELOG(rDataPathError, Config::data_dir << " not exist!");
+      cout << "Oooooops, we can't find data directory! Client will be closed."
+           << endl;
+    }
     while ((file_ptr = readdir(dir)) != NULL) {
       if ('T' == file_ptr->d_name[0]) {
         LOG(INFO) << "The data disk file started with 'T': "
@@ -312,18 +318,22 @@ bool Catalog::DropTable(const std::string table_name, const TableID id) {
         if it is, not shadow table confirmed.
 */
 void Catalog::GetAllTables(ostringstream& ostr) const {
-  for (auto it = name_to_table.begin(); it != name_to_table.end(); ++it) {
-    string tbname = it->first;
-    int len = tbname.length();
-    // if (len <= 4) continue;
-    if (len >= 4 && tbname.substr(len - 4, len) == "_DEL") {
-      tbname = tbname.substr(0, len - 4);
-      if (name_to_table.find(tbname) != name_to_table.cend()) {
+  for (int id = 0; id < getTableCount(); ++id) {
+    auto it_tableid_to_table = tableid_to_table.find(id);
+    if (tableid_to_table.end() != it_tableid_to_table) {
+      string tbname = it_tableid_to_table->second->getTableName();
+      int len = tbname.length();
+      if (len >= 4 && tbname.substr(len - 4, len) == "_DEL" &&
+          name_to_table.find(tbname.substr(0, len - 4)) !=
+              name_to_table.cend()) {
+        // hide the deleted data table created by claims
       } else {
-        ostr << "  " << tbname << endl;
+        ostr
+            //<< it_tableid_to_table->first << "\t"
+            << it_tableid_to_table->second->getTableName() << "\t"
+            //    << it_tableid_to_table->second->getNumberOfProjection()
+            << endl;
       }
-    } else {
-      ostr << "  " << tbname << endl;
     }
   }
 }

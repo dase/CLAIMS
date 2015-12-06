@@ -48,17 +48,17 @@ namespace claims {
 namespace physical_operator {
 
 PhysicalAggregation::PhysicalAggregation(State state)
-    : state_(state),
-      hashtable_(0),
-      hash_(0),
-      bucket_cur_(0),
-      PhysicalOperator(4, 3) {
+    : PhysicalOperator(4, 3),
+      state_(state),
+      hashtable_(NULL),
+      hash_(NULL),
+      bucket_cur_(0) {
   InitExpandedStatus();
   assert(state_.hash_schema_);
 }
 
 PhysicalAggregation::PhysicalAggregation()
-    : hashtable_(0), hash_(0), bucket_cur_(0), PhysicalOperator(4, 3) {
+    : PhysicalOperator(4, 3), hashtable_(NULL), hash_(NULL), bucket_cur_(0) {
   InitExpandedStatus();
 }
 
@@ -160,7 +160,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
 
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
-    UnregisterExpandedThreadToAllBarriers();
+    UnregisterExpandedThreadToAllBarriers(1);
     return true;
   }
   state_.child_->Open(partition_offset);
@@ -370,7 +370,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
 
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
-    UnregisterExpandedThreadToAllBarriers(1);
+    UnregisterExpandedThreadToAllBarriers(2);
     return true;
   }
   BarrierArrive(2);

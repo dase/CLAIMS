@@ -32,7 +32,9 @@
 #include <glog/logging.h>
 #include <vector>
 #include <string>
+#include <boost/algorithm/string.hpp>
 
+#include "./logical_limit.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../logical_operator/logical_operator.h"
@@ -53,6 +55,16 @@ using claims::physical_operator::ResultPrinter;
 
 namespace claims {
 namespace logical_operator {
+LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
+                                           LogicalOperator* child,
+                                           string raw_sql,
+                                           const OutputStyle& style)
+    : LogicalOperator(kLogicalQueryPlanRoot),
+      collecter_node(collecter),
+      child_(child),
+      raw_sql_(raw_sql),
+      style_(style),
+      plan_context_(NULL) {}
 LogicalQueryPlanRoot::LogicalQueryPlanRoot(NodeID collecter,
                                            LogicalOperator* child,
                                            const OutputStyle& style)
@@ -79,7 +91,16 @@ LogicalQueryPlanRoot::~LogicalQueryPlanRoot() {
 PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     const unsigned& block_size) {
   PlanContext child_plan_context = GetPlanContext();
-  PhysicalOperatorBase* child_iterator = child_->GetPhysicalPlan(block_size);
+  ///////////
+  LogicalLimit* limit = NULL;
+  PhysicalOperatorBase* child_iterator = NULL;
+  if (child_->get_operator_type() == OperatorType::kLogicalLimit) {
+    limit = reinterpret_cast<LogicalLimit*>(child_);
+    child_iterator = limit->child_->GetPhysicalPlan(block_size);
+  } else {
+    child_iterator = child_->GetPhysicalPlan(block_size);
+  }
+  /////////////
   NodeTracker* node_tracker = NodeTracker::GetInstance();
 
   bool is_exchange_need = false;
@@ -130,7 +151,9 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
   expander_state.child_ = child_iterator;
   expander_state.schema_ = GetSchema(child_plan_context.attribute_list_);
   PhysicalOperatorBase* expander = new Expander(expander_state);
-
+  if (child_->get_operator_type() == OperatorType::kLogicalLimit) {
+    expander = limit->GetPhysicalPlan(block_size, expander);
+  }
   PhysicalOperatorBase* ret;
   switch (style_) {
     case kPrint: {
@@ -148,10 +171,8 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
     }
     case kResultCollector: {
       std::vector<std::string> column_header;
-      for (unsigned i = 0; i < child_plan_context.attribute_list_.size(); i++) {
-        column_header.push_back(
-            child_plan_context.attribute_list_[i].getName());
-      }
+      GetColumnHeader(column_header, child_plan_context.attribute_list_);
+
       physical_operator::ResultCollector::State result_state(
           GetSchema(child_plan_context.attribute_list_), expander, block_size,
           column_header);
@@ -325,6 +346,77 @@ bool LogicalQueryPlanRoot::GetOptimalPhysicalPlan(
     return true;
   else
     return false;
+}
+void LogicalQueryPlanRoot::GetColumnHeader(
+    std::vector<std::string>& column_header,
+    std::vector<Attribute>& attribute_list) {
+  string str_upper = raw_sql_;
+  for (int i = 0; i < str_upper.length(); i++) {
+    if (isalpha(str_upper[i])) {
+      str_upper[i] = toupper(str_upper[i]);
+    } else if (str_upper[i] == '\n' || str_upper[i] == '\t') {
+      raw_sql_[i] = ' ';
+      str_upper[i] = ' ';
+    }
+  }
+  int end = str_upper.find(" FROM ");
+  int begin = 6;
+  string word = "";
+  string upper_word = "";
+  vector<string> upper_list;
+  for (int i = begin; i < end; i++) {
+    if (str_upper[i] != ',') {
+      word += raw_sql_[i];
+      upper_word += str_upper[i];
+    } else {
+      if (word != "") {
+        column_header.push_back(word);
+        upper_list.push_back(upper_word);
+        upper_word = "";
+        word = "";
+      } else {
+        continue;
+      }
+    }
+  }
+  column_header.push_back(word);
+  upper_list.push_back(upper_word);
+  auto i = column_header.begin();
+  auto j = upper_list.begin();
+  for (; i != column_header.end(); i++, j++) {
+    int pos = (*j).find(" AS ");
+    if (pos != -1) {
+      (*j) = (*j).substr(pos + 4, (*j).length() - pos - 4);
+      (*i) = (*i).substr(pos + 4, (*j).length() - pos - 4);
+    }
+    boost::trim(*j);
+    boost::trim(*i);
+    //(*i) = FormmatAttrName((*i));
+    //(*j) = FormmatAttrName((*j));
+  }
+  // select * from tb; the bug is when select * from tb group by col;
+  if (column_header.size() == 1 && column_header[0] == "*") {
+    column_header.clear();
+    for (unsigned i = 0; i < attribute_list.size(); i++) {
+      column_header.push_back(attribute_list[i].getName());
+    }
+  }
+  // select tb.* from tb,ta; the bug is when tb only has one column
+  if (column_header.size() != attribute_list.size()) {
+    column_header.clear();
+    for (unsigned i = 0; i < attribute_list.size(); i++) {
+      column_header.push_back(attribute_list[i].getName());
+    }
+  }
+  // romove "NULL_MID.", if above bug occur, but the recovered name may be not
+  // match the raw expression
+  for (int i = 0; i < column_header.size(); ++i) {
+    if (column_header[i].size() > 9) {
+      if (column_header[i].substr(0, 9) == "NULL_MID.") {
+        column_header[i] = column_header[i].substr(9);
+      }
+    }
+  }
 }
 
 std::vector<std::string> LogicalQueryPlanRoot::GetAttributeName(

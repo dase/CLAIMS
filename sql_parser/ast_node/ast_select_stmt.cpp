@@ -376,7 +376,7 @@ RetCode AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
       Environment::getInstance()->getCatalog()->getTable(table_name_);
   if (NULL == tbl) {
     LOG(ERROR) << "table: " << table_name_ << " dosen't exist!" << endl;
-    return rTableNotExist;
+    return rTableNotExisted;
   }
   if (table_alias_ == "NULL") {
     table_alias_ = table_name_;
@@ -404,9 +404,10 @@ RetCode AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
 
   //
   // TODO(xiaozhou): judge del is null or not
-  if (NULL !=
-      Environment::getInstance()->getCatalog()->getTable(table_name_ +
-                                                         "_DEL")) {
+  if (Environment::getInstance()
+          ->getCatalog()
+          ->getTable(table_name_)
+          ->HasDeletedTuples()) {
     LogicalOperator* base_table = new LogicalScan(Environment::getInstance()
                                                       ->getCatalog()
                                                       ->getTable(table_name_)
@@ -870,6 +871,7 @@ RetCode AstGroupByClause::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
     return rSuccess;
   }
+  ELOG(rGroupbyListIsNULL, "");
   return rGroupbyListIsNULL;
 }
 void AstGroupByClause::RecoverExprName(string& name) {
@@ -1117,6 +1119,10 @@ RetCode AstLimitClause::GetLogicalPlan(LogicalOperator*& logical_plan) {
     }
     return rLimitNotStandardized;
   }
+  if (row_count_->ast_node_type() != AST_EXPR_CONST ||
+      (NULL != offset_ && offset_->ast_node_type() != AST_EXPR_CONST)) {
+    return rLimitParaShouldNaturalNumber;
+  }
   int64_t row_count =
       atol((dynamic_cast<AstExprConst*>(row_count_))->data_.c_str());
   if (0 == row_count) {
@@ -1126,6 +1132,9 @@ RetCode AstLimitClause::GetLogicalPlan(LogicalOperator*& logical_plan) {
       (NULL != offset_)
           ? atol((dynamic_cast<AstExprConst*>(offset_))->data_.c_str())
           : 0;
+  if (row_count < 0 || offset < 0) {
+    return rLimitParaCouldnotLessZero;
+  }
   logical_plan = new LogicalLimit(logical_plan, row_count, offset);
   return rSuccess;
 }
@@ -1372,7 +1381,7 @@ RetCode AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
 
   } else {
-    LOG(ERROR) << "select list is NULL" << endl;
+    ELOG(rSelectClauseIsNULL, "");
     return rSelectClauseIsNULL;
   }
   // aggregation couldn't in group by clause
@@ -1462,6 +1471,7 @@ RetCode AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     sem_cnxt->ClearSelectAttrs();
     ret = select_list_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
+      ELOG(rAggSelectExprHaveOtherColumn, "");
       return rAggSelectExprHaveOtherColumn;
     }
   }
@@ -1591,14 +1601,17 @@ RetCode AstSelectStmt::GetLogicalPlan(LogicalOperator*& logic_plan) {
       return ret;
     }
   }
-  if (NULL != limit_clause_) {
-    ret = limit_clause_->GetLogicalPlan(logic_plan);
+  if (NULL != select_list_) {
+    ret = GetLogicalPlanOfProject(logic_plan);
     if (rSuccess != ret) {
       return ret;
     }
   }
-  if (NULL != select_list_) {
-    ret = GetLogicalPlanOfProject(logic_plan);
+  // it's optimal to add limit operator before select operator, but because it's
+  // necessary add limit physical operator below LogicalQueryPlanRoot, so
+  // underlying limit should at the top of plan
+  if (NULL != limit_clause_) {
+    ret = limit_clause_->GetLogicalPlan(logic_plan);
     if (rSuccess != ret) {
       return ret;
     }

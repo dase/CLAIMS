@@ -109,6 +109,10 @@ class TableDescriptor {
   inline unsigned int getNumberOfAttribute() {
     return attributes.size();
   }  // add by Yu
+  inline bool HasDeletedTuples() { return has_deleted_tuples_; }
+  inline void SetDeletedTuples(bool has_deleted_tuples) {
+    has_deleted_tuples_ = has_deleted_tuples;
+  }
 
  protected:
   string tableName;
@@ -116,6 +120,7 @@ class TableDescriptor {
   TableID table_id_;
   vector<ProjectionDescriptor*> projection_list_;
   unsigned long row_number_;
+  bool has_deleted_tuples_ = false;
 
   Lock lock_;
   // delete for debugging
@@ -124,7 +129,8 @@ class TableDescriptor {
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar& tableName& attributes& table_id_& projection_list_& row_number_;
+    ar& tableName& attributes& table_id_& projection_list_& row_number_&
+        has_deleted_tuples_;
   }
 };
 

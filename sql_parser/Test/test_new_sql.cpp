@@ -68,8 +68,9 @@ int TestNewSql() {
       LogicalOperator* logic_plan = NULL;
       raw_ast->GetLogicalPlan(logic_plan);
 
-      logic_plan = new LogicalQueryPlanRoot(
-          0, logic_plan, LogicalQueryPlanRoot::kResultCollector);
+      logic_plan =
+          new LogicalQueryPlanRoot(0, logic_plan, my_parser->get_sql_stmt(),
+                                   LogicalQueryPlanRoot::kResultCollector);
       logic_plan->GetPlanContext();
 #ifdef PRINTCONTEXT
       logic_plan->Print();

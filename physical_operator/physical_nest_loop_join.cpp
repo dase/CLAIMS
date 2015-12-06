@@ -75,10 +75,8 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     winning_thread = true;
     timer = curtick();
     block_buffer_ = new DynamicBlockBuffer();
-    LOG(INFO) << "[NestloopJoin]: "
-              << "["
-              << "the first thread opens the nestloopJoin physical operator"
-              << "]" << std::endl;
+    LOG(INFO) << "[NestloopJoin]: [the first thread opens the nestloopJoin "
+                 "physical operator]" << std::endl;
   }
   state_.child_left_->Open(partition_offset);
   BarrierArrive(0);
@@ -102,16 +100,17 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers(1);
-    LOG(INFO) << "[NestloopJoin]: "
-              << "["
-              << "the" << pthread_self() << "the thread is called to exit"
-              << "]" << std::endl;
+    LOG(INFO) << "[NestloopJoin]: [the" << pthread_self()
+              << "the thread is called to exit]" << std::endl;
     return true;  // the
   }
   BarrierArrive(1);  // ??ERROR
   //	join_thread_context* jtc=new join_thread_context();
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_right_);
   jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
+  jtc->buffer_iterator_ = block_buffer_->createIterator();
+  jtc->buffer_stream_iterator_ =
+      jtc->buffer_iterator_.nextBlock()->createIterator();
   InitContext(jtc);  // rename this function, here means to store the thread
                      // context in the operator context
   state_.child_right_->Open(partition_offset);
@@ -132,51 +131,57 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
    * @ return
    * @details   (additional)
    */
-  void *tuple_from_buffer_child;
-  void *tuple_from_right_child;
-  void *result_tuple;
+  void *tuple_from_buffer_child = NULL;
+  void *tuple_from_right_child = NULL;
+  void *result_tuple = NULL;
   BlockStreamBase *buffer_block = NULL;
   NestLoopJoinContext *jtc =
       reinterpret_cast<NestLoopJoinContext *>(GetContext());
   while (1) {
-    while ((tuple_from_right_child =
-                jtc->block_stream_iterator_->currentTuple()) > 0) {
-      jtc->buffer_iterator_ = block_buffer_->createIterator();
-      while ((buffer_block = jtc->buffer_iterator_.nextBlock()) > 0) {
-        jtc->buffer_stream_iterator_->~BlockStreamTraverseIterator();
-        jtc->buffer_stream_iterator_ = buffer_block->createIterator();
-        while ((tuple_from_buffer_child =
-                    jtc->buffer_stream_iterator_->currentTuple()) > 0) {
-          if ((result_tuple = block->allocateTuple(
-                   state_.output_schema_->getTupleMaxSize())) > 0) {
+    while (NULL != (tuple_from_right_child =
+                        jtc->block_stream_iterator_->currentTuple())) {
+      while (1) {
+        while (NULL != (tuple_from_buffer_child =
+                            jtc->buffer_stream_iterator_->currentTuple())) {
+          if (NULL != (result_tuple = block->allocateTuple(
+                           state_.output_schema_->getTupleMaxSize()))) {
             const unsigned copyed_bytes = state_.input_schema_left_->copyTuple(
                 tuple_from_buffer_child, result_tuple);
             state_.input_schema_right_->copyTuple(
                 tuple_from_right_child,
                 reinterpret_cast<char *>(result_tuple + copyed_bytes));
           } else {
-            LOG(INFO) << "[NestloopJoin]: "
-                      << "["
-                      << "a block of the result is full of the nest loop "
-                         "join result"
-                      << "]" << std::endl;
+            //            LOG(INFO) << "[NestloopJoin]:  [a block of the result
+            //            is full of "
+            //                         "the nest loop join result ]" <<
+            //                         std::endl;
             return true;
           }
           jtc->buffer_stream_iterator_->increase_cur_();
         }
+
+        jtc->buffer_stream_iterator_->~BlockStreamTraverseIterator();
+        if (NULL != (buffer_block = jtc->buffer_iterator_.nextBlock())) {
+          jtc->buffer_stream_iterator_ = buffer_block->createIterator();
+        } else {
+          break;
+        }
       }
+      jtc->buffer_iterator_.ResetCur();
+      jtc->buffer_stream_iterator_ =
+          jtc->buffer_iterator_.nextBlock()->createIterator();
       jtc->block_stream_iterator_->increase_cur_();
     }
     jtc->block_for_asking_->setEmpty();
     if (false == state_.child_right_->Next(jtc->block_for_asking_)) {
       if (true == block->Empty()) {
-        LOG(WARNING) << "[NestloopJoin]: "
-                     << "["
-                     << "no join result is stored in the block after traverse "
-                        "the right child operator"
-                     << "]" << std::endl;
+        LOG(WARNING) << "[NestloopJoin]: [no join result is stored in the "
+                        "block after traverse the right child operator]"
+                     << std::endl;
         return false;
       } else {
+        LOG(INFO) << "[NestloopJoin]: get a new block from right child "
+                  << std::endl;
         return true;
       }
     }

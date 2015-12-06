@@ -29,8 +29,13 @@
 #ifndef STMT_HANDLER_CREATE_PROJECTION_EXEC_H_
 #define STMT_HANDLER_CREATE_PROJECTION_EXEC_H_
 
+#include <string>
+#include <vector>
 #include "../stmt_handler/stmt_exec.h"
 #include "../sql_parser/ast_node/ast_create_stmt.h"
+#include "../catalog/catalog.h"
+
+#define CREATE_DEL_TABLE
 namespace claims {
 namespace stmt_handler {
 /**
@@ -50,6 +55,15 @@ class CreateProjectionExec : public StmtExec {
    * @param ExecutedResult *exec_result
    */
   RetCode Execute(ExecutedResult* exec_result);
+
+ private:
+  RetCode CreateTableProjection(const string& table_name, Catalog*& catalog,
+                                const vector<ColumnOffset>& columns,
+                                const string& partition_attribute,
+                                const int& partition_num);
+  RetCode AddPartitionAttributeToDel(const string& table_name,
+                                     const string& partition_attribute_name,
+                                     Catalog*& catalog);
 
  private:
   AstCreateProjection* create_projection_ast_;

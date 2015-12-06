@@ -157,9 +157,11 @@ RetCode AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
       expr_type_ == "AVG" || expr_type_ == "COUNT" ||
       expr_type_ == "COUNT_ALL") {
     if (SemanticContext::kWhereClause == sem_cnxt->clause_type_) {
+      ELOG(rAggCouldNotInWhereClause, "");
       return rAggCouldNotInWhereClause;
     }
     if (SemanticContext::kGroupByClause == sem_cnxt->clause_type_) {
+      ELOG(rAggCouldNotInGroupByClause, "");
       return rAggCouldNotInGroupByClause;
     }
   }
@@ -176,6 +178,7 @@ RetCode AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
          expr_type_ == "AVG" || expr_type_ == "COUNT");
 
     if (sem_cnxt->have_agg && here_have_agg) {
+      ELOG(rAggHaveAgg, "");
       return rAggHaveAgg;
     }
     sem_cnxt->have_agg = here_have_agg;
@@ -189,7 +192,7 @@ RetCode AstExprUnary::SemanticAnalisys(SemanticContext* sem_cnxt) {
     sem_cnxt->have_agg = false;
     return rSuccess;
   }
-  LOG(ERROR) << "arg0 is NULL in unary expr!" << endl;
+  ELOG(rUnaryArgNotExist, "");
   return rUnaryArgNotExist;
 }
 

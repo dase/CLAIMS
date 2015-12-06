@@ -124,7 +124,6 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
            * chunk_info is updated.*/
           BlockManager::getInstance()->getMemoryChunkStore()->updateChunkInfo(
               chunk_id_, chunk_info);
-
           ret = new InMemoryChunkReaderItetaor(
               chunk_info.hook, chunk_info.length,
               chunk_info.length / block_size_, block_size_, chunk_id_);
@@ -228,6 +227,11 @@ bool DiskChunkReaderIteraror::NextBlock(BlockStreamBase*& block) {
    */
   tSize bytes_num =
       read(fd_, block_buffer_->getBlock(), block_buffer_->getsize());
+<<<<<<< HEAD
+=======
+  //	printf("Tuple
+  // count=%d\n",*(int*)((char*)block_buffer_->getBlock()+65532));
+>>>>>>> for_auto_test_1206
   if (bytes_num == block_size_) {
     cur_block_++;
     block->constructFromBlock(*block_buffer_);
@@ -379,16 +383,17 @@ void ChunkReaderIterator::InMemeryBlockAccessor::GetBlock(
 #else
 
   /* According to my experiment, the performance can by improved by 2x by
-   * aoviding the memocy copy here */
+   * avoiding the memory copy here */
 
   block->setIsReference(true);
   block->setBlock(target_block_start_address_);
   int tuple_count =
       *(unsigned*)((char*)target_block_start_address_ +
                    block->getSerializedBlockSize() - sizeof(unsigned));
-  ((BlockStreamFix*)block)->free_ =
-      (char*)block->getBlock() +
-      tuple_count * ((BlockStreamFix*)block)->tuple_size_;
+  dynamic_cast<BlockStreamFix*>(block)->setTuplesInBlock(tuple_count);
+//  ((BlockStreamFix*)block)->free_ =
+//      (char*)block->getBlock() +
+//      tuple_count * ((BlockStreamFix*)block)->tuple_size_;
 
 #endif
 }

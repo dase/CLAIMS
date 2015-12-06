@@ -178,6 +178,10 @@ const int rParamInvalid = -97;
 const int rAccessDiskFileFail = -98;
 const int rAccessHdfsFileFail = -99;
 const int rNoMemory = -100;
+const int rDataPathError = -101;
+
+// schema associated
+const int rEmptyAttributeName = -501;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int rInitSQLParserErr = -1001;
@@ -254,7 +258,7 @@ const int rUnbindPartitionFailed = -6010;
 const int rLoadFromDiskOpenFailed = -6011;
 
 /* errorno for stmt_handler -14001 ~ -15000*/
-const int rStmtHandlerTableExistDuringCreate = -14002;
+const int rStmtHandlerCreateTableExisted = -14002;
 const int kStmtHandlerTypeNotSupport = -14003;
 const int kStmtHandlerCreateTableSuccess = -14004;
 const int kStmtHandlerTableNotExistDuringLoad = -14005;
@@ -262,15 +266,16 @@ const int kStmtHandlerLoadDataSuccess = -14006;
 const int kStmtHandlerTableNotExistDuringInsert = -14007;
 const int kStmtHandlerInsertDataSuccess = -14008;
 const int rStmtHandlerInsertNoValue = -14009;
+const int rStmtHandlerCreateTableFailed = -14010;
+const int rStmtHandlerCreateProjectionWithEmptyColumn = 14011;
 
-const int rTableNotExist = -14100;
+const int rTableNotExisted = -14100;
 const int rTableillegal = -14101;
 const int rTableAliasEqualExistedTable = -14102;
 const int rTableAliasEqualLowerAlias = -14103;
 const int rColumnNotExist = -14104;
 const int rColumnIsAmbiguous = -14105;
 const int rTabelHaveNotColumn = -14106;
-const int rColumnAliasIsAmbiguous = -14107;
 const int rColumnIsAmbiguousAfterAlias = -14108;
 const int rColumnIsAmbiguousToExistedColumn = -14109;
 const int rUnaryArgNotExist = -14110;
@@ -300,6 +305,8 @@ const int rNoTalbeFound = -14133;
 const int rNoProjection = -14134;
 const int rLimitNotStandardized = -14135;
 const int rLimitZero = -14136;
+const int rLimitParaCouldnotLessZero = -14137;
+const int rLimitParaShouldNaturalNumber = -14138;
 }  // end namespace common
 }  // end namespace claims
 
