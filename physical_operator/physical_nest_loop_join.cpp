@@ -94,14 +94,9 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     delete jtc->block_for_asking_;
     jtc->block_for_asking_ = NULL;
   }
-  if (TryEntryIntoSerializedSection(1)) {
-    CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
-    block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
-  }
   // when the finished expanded thread finished its allocated work, it can be
   // called back here. What should be noticed that the callback meas the to
-  // exit
-  // on the of the thread
+  // exit on the of the thread
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers(1);
@@ -114,11 +109,17 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_right_);
   jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
   jtc->buffer_iterator_ = block_buffer_->createIterator();
-  jtc->buffer_stream_iterator_ =
-      jtc->buffer_iterator_.nextBlock()->createIterator();
+
+  // underlying bug: as for buffer_iterator may be NULL, it's necessary to let
+  // every buffer_iterator of each thread point to an empty block
+  // jtc->buffer_stream_iterator_ =
+  //    jtc->buffer_iterator_.nextBlock()->createIterator();
+
   InitContext(jtc);  // rename this function, here means to store the thread
                      // context in the operator context
-  state_.child_right_->Open(partition_offset);
+  if (block_buffer_->GetBufferSize() > 0) {
+    state_.child_right_->Open(partition_offset);
+  }
   return true;
 }
 
@@ -172,11 +173,28 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
           break;
         }
       }
+
       jtc->buffer_iterator_.ResetCur();
-      jtc->buffer_stream_iterator_ =
-          jtc->buffer_iterator_.nextBlock()->createIterator();
+      if (NULL == (buffer_block = jtc->buffer_iterator_.nextBlock())) {
+        LOG(ERROR) << "[NestloopJoin]: this block shouldn't be NULL in nest "
+                      "loop join!";
+        assert(
+            false &&
+            "[NestloopJoin]: this block shouldn't be NULL in nest loop join!");
+      }
+      jtc->buffer_stream_iterator_ = buffer_block->createIterator();
       jtc->block_stream_iterator_->increase_cur_();
     }
+
+    // if buffer is empty, return false directly
+    jtc->buffer_iterator_.ResetCur();
+    if (NULL == (buffer_block = jtc->buffer_iterator_.nextBlock())) {
+      LOG(INFO) << "[NestloopJoin]: the buffer is empty in nest loop join!";
+      return false;
+    }
+    jtc->buffer_stream_iterator_ = buffer_block->createIterator();
+
+    // ask block from right child
     jtc->block_for_asking_->setEmpty();
     if (false == state_.child_right_->Next(jtc->block_for_asking_)) {
       if (true == block->Empty()) {
