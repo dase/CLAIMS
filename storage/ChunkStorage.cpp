@@ -73,7 +73,7 @@ ChunkStorage::~ChunkStorage() {
  * file is chunk.
  */
 ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
-  ChunkReaderIterator* ret = NULL;
+  ChunkReaderIterator* ret;
 
   lock_.acquire();
   switch (current_storage_level_) {
@@ -139,7 +139,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
       ret = new DiskChunkReaderIteraror(chunk_id_, chunk_size_, block_size_);
       break;
     }
-    default: { WLOG(rUnkownStroageLevel, "current storage level: unknown!") }
+    default: { WLOG(rUnkownStroageLevel, "current storage level: unknown!"); }
   }
   lock_.release();
   return ret;
@@ -236,8 +236,6 @@ bool DiskChunkReaderIteraror::NextBlock(BlockStreamBase*& block) {
     cur_block_++;
     ELOG(rFailReadOneBlockInDiskChunkReaderIterator,
          "failed to read one block");
-    printf("failed to read one block, only %d bytes are read!,error=%s\n",
-           bytes_num, strerror(errno));
     lock_.release();
     return false;
   }

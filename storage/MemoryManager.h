@@ -67,13 +67,14 @@ typedef struct HdfsBlock {
   HdfsBlock(void* add, int length) : hook(add), length(length), lifetime_(0) {}
   void* hook;
   /*记录每个block大小也就是文件长度*/
+  // record every block that is the length of file.
   int length;
+  // whether is serialized
   // 是否被序列化过
+  // the time stay in memory，this value is used to LIRS.
   int lifetime_;
   //生存周期,用于LRU
 } HdfsInMemoryChunk;
-
-// typedef HdfsBlock HdfsInMemoryChunk;
 
 /*
  * memorystore只是负责数据的存取，而和数据的管理和为什么存储是没有关系的，

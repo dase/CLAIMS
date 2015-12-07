@@ -122,7 +122,6 @@ bool BlockManager::tryToReportBlockStatus(string blockId) {
   return true;
 }
 
-#ifdef nothing_use
 void BlockManager::get(string blockId) { getLocal(blockId); }
 void* BlockManager::getLocal(string blockId) {
   void* rt = NULL;
@@ -256,7 +255,6 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name) {
   hdfsDisconnect(fs);
   return ci;
 }
-#endif
 
 int BlockManager::LoadFromHdfs(const ChunkID& chunk_id, void* const& desc,
                                const unsigned& length) {

@@ -57,8 +57,9 @@ bool MemoryChunkStore::IsExist(ChunkID& chunk_id) {
       chunk_list_.find(chunk_id);
   WasteTime();
   if (it != chunk_list_.cend()) {
-    LOG(INFO) << "chunk id already exists (chunk id = " << chunk_id.chunk_off
-              << ")" << endl;
+    DLOG(INFO) << "chunk id already exists (chunk id = " << chunk_id.chunk_off
+               << ")" << endl;
+
     it->second.lifetime_ = 0;
     return true;
   } else {
