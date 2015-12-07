@@ -36,7 +36,7 @@
 namespace claims {
 namespace physical_operator {
 
-PhysicalNestLoopJoin::PhysicalNestLoopJoin() : PhysicalOperator(2, 1) {
+PhysicalNestLoopJoin::PhysicalNestLoopJoin() : PhysicalOperator(2, 2) {
   InitExpandedStatus();
 }
 
@@ -44,7 +44,7 @@ PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
   // TODO Auto-generated destructor stub
 }
 PhysicalNestLoopJoin::PhysicalNestLoopJoin(State state)
-    : state_(state), PhysicalOperator(2, 1) {
+    : PhysicalOperator(2, 2), state_(state) {
   InitExpandedStatus();
 }
 PhysicalNestLoopJoin::State::State(PhysicalOperatorBase *child_left,
@@ -88,10 +88,15 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
     CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
   }
-  // the last block is created without storing the results from the left child
+  //  the last block is created without storing the results from the left
+  // child
   if (NULL != jtc->block_for_asking_) {
     delete jtc->block_for_asking_;
     jtc->block_for_asking_ = NULL;
+  }
+  if (TryEntryIntoSerializedSection(1)) {
+    CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
+    block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
   }
   // when the finished expanded thread finished its allocated work, it can be
   // called back here. What should be noticed that the callback meas the to
