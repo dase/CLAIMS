@@ -65,7 +65,6 @@ using boost::pool;
 typedef struct HdfsBlock {
   HdfsBlock() : hook(NULL), length(0), lifetime_(0) {}
   HdfsBlock(void* add, int length) : hook(add), length(length), lifetime_(0) {}
-  void ClearTime() { lifetime_ = 0; }
   void* hook;
   /*记录每个block大小也就是文件长度*/
   int length;

@@ -53,13 +53,13 @@ MemoryChunkStore::~MemoryChunkStore() {
 }
 
 bool MemoryChunkStore::IsExist(ChunkID& chunk_id) {
-  boost::unordered_map<ChunkID, HdfsInMemoryChunk>::const_iterator it =
+  boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator it =
       chunk_list_.find(chunk_id);
   WasteTime();
   if (it != chunk_list_.cend()) {
     LOG(INFO) << "chunk id already exists (chunk id = " << chunk_id.chunk_off
               << ")" << endl;
-    it->second.ClearTime();
+    it->second.lifetime_ = 0;
     return true;
   } else {
     return false;
@@ -76,30 +76,33 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
   //    lock_.release();
   //    return false;
   //  }
-  if (IsExist(chunk_id) == false) {
-    if (rSuccess != HasEnoughMemory()) {
-      WLOG(HasEnoughMemory(), "not enough memory!!");  //错误码完成
-      FreeChunk();
-      lock_.release();
-      return false;
-    }
-  } else {
-    if ((start_address = chunk_pool_.malloc()) != 0) {
-      chunk_list_[chunk_id] = HdfsInMemoryChunk(start_address, CHUNK_SIZE);
-      lock_.release();
-      return true;
-    }  //通过pool获取系统内存，malloc（） --han
-    else {
-      ELOG(rMemoryPoolMallocFail, "Error occurs when memalign!");  // wancheng
-      lock_.release();
-      return false;
-    }
+  if (IsExist(chunk_id) == true) {
+    lock_.release();
+    return false;
+  }
+
+  if (rSuccess != HasEnoughMemory()) {
+    WLOG(HasEnoughMemory(), "not enough memory!!");  //错误码完成
+    FreeChunk();
+    lock_.release();
+    return false;
+  }
+
+  if ((start_address = chunk_pool_.malloc()) != 0) {
+    chunk_list_[chunk_id] = HdfsInMemoryChunk(start_address, CHUNK_SIZE);
+    lock_.release();
+    return true;
+  }  //通过pool获取系统内存，malloc（） --han
+  else {
+    ELOG(rMemoryPoolMallocFail, "Error occurs when memalign!");  // wancheng
+    lock_.release();
+    return false;
   }
 }  //目前完成，需要测试～～ --han
 
 void MemoryChunkStore::returnChunk(const ChunkID& chunk_id) {
   lock_.acquire();
-  boost::unordered_map<ChunkID, HdfsInMemoryChunk>::const_iterator it =
+  boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator it =
       chunk_list_.find(chunk_id);
   if (it == chunk_list_.cend()) {
     WLOG(rReturnFailFindTargetChunkId,
@@ -160,9 +163,9 @@ bool MemoryChunkStore::putChunk(const ChunkID& chunk_id,
 // todo：清空最近最少使用的块，但是我没有加入LIRS
 void MemoryChunkStore::FreeChunk() {
   lock_.acquire();
-  boost::unordered_map<ChunkID, HdfsInMemoryChunk>::const_iterator target_ =
+  boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator target_ =
       chunk_list_.begin();
-  for (boost::unordered_map<ChunkID, HdfsInMemoryChunk>::const_iterator mei_ =
+  for (boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator mei_ =
            chunk_list_.begin();
        mei_ != chunk_list_.end(); mei_++) {
     if ((*mei_).second.lifetime_ > (*target_).second.lifetime_) {
