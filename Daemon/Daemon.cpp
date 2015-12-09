@@ -117,9 +117,14 @@ void* Daemon::worker(void* para) {
     // function.
 
     ClientListener::checkFdValid(result.fd);
+    GETCURRENTTIME(start_time);
 
     Executing::run_sql(rc.cmd, result.result, result.status, result.error_info,
                        result.info, result.fd);
+    double time = GetElapsedTime(start_time) / 1000.0;
+    cout << "exec time: " << time << " s" << endl;
+    result.result->query_time_ = time;
+
     ClientLogging::log(
         "after running sql, the result is : status-%d, err-%s, info-%s",
         result.status, result.error_info.c_str(), result.info.c_str());
