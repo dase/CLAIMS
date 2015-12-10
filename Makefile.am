@@ -41,6 +41,7 @@ LDADD =  \
 	catalog/stat/libstat.a \
 	loader/libloader.a \
 	loader/test/libtest.a \
+    codegen/libcodegen.a\
 	common/libcommon.a \
 	common/Block/libblock.a \
 	common/Expression/libexpression.a \
@@ -54,7 +55,6 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-    codegen/libcodegen.a\
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
