@@ -534,6 +534,11 @@ RetCode AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
 }
 
 RetCode AstSubquery::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  RetCode ret = rSuccess;
+  ret = subquery_->PushDownCondition(NULL);
+  if (rSuccess != ret) {
+    return ret;
+  }
   pdccnxt->from_tables_.insert(subquery_alias_);
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
   return rSuccess;

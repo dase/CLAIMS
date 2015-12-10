@@ -254,7 +254,7 @@ const int kStmtHandlerTableNotExistDuringInsert = -14007;
 const int kStmtHandlerInsertDataSuccess = -14008;
 const int rStmtHandlerInsertNoValue = -14009;
 const int rStmtHandlerCreateTableFailed = -14010;
-const int rStmtHandlerCreateProjectionWithEmptyColumn = 14011;
+const int rStmtHandlerCreateProjectionWithEmptyColumn = -14011;
 
 const int rTableNotExisted = -14100;
 const int rTableillegal = -14101;
@@ -269,7 +269,7 @@ const int rUnaryArgNotExist = -14110;
 const int rFromClauseIsNULL = -14111;
 const int rSelectClauseIsNULL = -14112;
 const int rGroupbyListIsNULL = -14113;
-const int rGroupByNotSupportColumn = -141014;
+const int rGroupByNotSupportColumn = -14114;
 const int rAggNodeExprStrIsNULL = -14115;
 const int rGroupbyNodeExprStrIsNULL = -14116;
 const int rSelectNodeExprStrIsNULL = -14117;
