@@ -65,6 +65,7 @@ PlanContext LogicalSubquery::GetPlanContext() {
    */
   ret.commu_cost_ = child_plan_context.commu_cost_;
   ret.plan_partitioner_ = child_plan_context.plan_partitioner_;
+  ret.plan_partitioner_.UpdateTableNameOfPartitionKey(subquery_alias_);
   // construct an input schema from attribute list of child
   subquery_attrs_ = child_plan_context.attribute_list_;
   /**

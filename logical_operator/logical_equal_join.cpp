@@ -277,6 +277,7 @@ bool LogicalEqualJoin::IsHashOnLeftKey(const Partitioner& part,
   }
   return part.getPartitionKey() == key;
 }
+// TODO(fzh) should consider shadow_partition_keys_
 bool LogicalEqualJoin::CanOmitHashRepartition(
     const std::vector<Attribute>& join_key_list,
     const PlanPartitioner& partitoiner) const {
@@ -727,39 +728,31 @@ PlanPartitioner LogicalEqualJoin::DecideOutputDataflowProperty(
 }
 void LogicalEqualJoin::Print(int level) const {
   cout << setw(level * kTabSize) << " "
-       << "EqualJoin:" << endl;
+       << "EqualJoin: ";
   ++level;
   switch (join_policy_) {
     case kNoRepartition: {
-      cout << setw(level * kTabSize) << " "
-           << "no_repartition" << endl;
+      cout << "no_repartition!" << endl;
       break;
     }
     case kLeftRepartition: {
-      cout << setw(level * kTabSize) << " "
-           << "left_repartition" << endl;
+      cout << "left_repartition!" << endl;
       break;
     }
     case kRightRepartition: {
-      cout << setw(level * kTabSize) << " "
-           << "right_repartition!" << endl;
+      cout << "right_repartition!" << endl;
       break;
     }
     case kCompleteRepartition: {
-      cout << setw(level * kTabSize) << " "
-           << "complete_repartition!" << endl;
+      cout << "complete_repartition!" << endl;
       break;
     }
-    default: {
-      cout << setw(level * kTabSize) << " "
-           << "not given!" << endl;
-    }
+    default: { cout << "not given!" << endl; }
   }
   for (unsigned i = 0; i < this->joinkey_pair_list_.size(); i++) {
     cout << setw(level * kTabSize) << " "
-         << joinkey_pair_list_[i].left_join_attr_.attrName
+         << joinkey_pair_list_[i].left_join_attr_.attrName << " = "
          << joinkey_pair_list_[i].right_join_attr_.attrName << endl;
-    cout << endl;
   }
   --level;
   left_child_->Print(level);

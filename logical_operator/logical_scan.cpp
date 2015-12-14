@@ -188,6 +188,7 @@ PlanContext LogicalScan::GetPlanContext() {
 
   Partitioner* par = target_projection_->getPartitioner();
   plan_context_->plan_partitioner_ = PlanPartitioner(*par);
+  plan_context_->plan_partitioner_.UpdateTableNameOfPartitionKey(table_alias_);
   plan_context_->commu_cost_ = 0;
   lock_->release();
   return *plan_context_;
