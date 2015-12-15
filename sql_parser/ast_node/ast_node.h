@@ -209,8 +209,8 @@ class PushDownConditionContext {
   SubExprType GetSubExprType(AstNode* sub_expr, int ref_table_num);
   bool IsEqualJoinCondition(AstNode* sub_expr);
   bool IsTableSubSet(set<string>& expr_tables, set<string>& from_tables);
-  void SetCondition(set<AstNode*>& equal_join_condi,
-                    set<AstNode*>& normal_condi);
+  void SetCondition(vector<AstNode*>& equal_join_condi,
+                    vector<AstNode*>& normal_condi);
   std::vector<SubExprInfo*> sub_expr_info_;
   set<string> from_tables_;
 };
@@ -267,9 +267,9 @@ class AstNode {
   RetCode GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
                            LogicalOperator* args_lplan,
                            LogicalOperator* next_lplan,
-                           const set<AstNode*>& equal_join_condition);
+                           const vector<AstNode*>& equal_join_condition);
   RetCode GetFilterCondition(vector<ExprNode*>& condition,
-                             const set<AstNode*>& normal_condition,
+                             const vector<AstNode*>& normal_condition,
                              LogicalOperator* logic_plan);
   virtual RetCode SolveSelectAlias(
       SelectAliasSolver* const select_alias_solver) {

@@ -294,6 +294,7 @@ RetCode AstFromList::PushDownCondition(PushDownConditionContext* pdccnxt) {
                                  cur_pdccnxt->from_tables_.end());
   }
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+  delete cur_pdccnxt;
   return rSuccess;
 }
 RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {

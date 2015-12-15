@@ -92,8 +92,8 @@ class AstFromList : public AstNode {
   AstNode* args_;
   AstNode* next_;
   AstNode* condition_;
-  set<AstNode*> equal_join_condition_;
-  set<AstNode*> normal_condition_;
+  vector<AstNode*> equal_join_condition_;
+  vector<AstNode*> normal_condition_;
 };
 /**
  * @brief The AST of table.
@@ -110,8 +110,8 @@ class AstTable : public AstNode {
   RetCode PushDownCondition(PushDownConditionContext* pdccnxt);
   RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
 
-  set<AstNode*> equal_join_condition_;
-  set<AstNode*> normal_condition_;
+  vector<AstNode*> equal_join_condition_;
+  vector<AstNode*> normal_condition_;
   string db_name_;
   string table_name_;
   string table_alias_;
@@ -135,8 +135,8 @@ class AstSubquery : public AstNode {
 
   string subquery_alias_;
   AstNode* subquery_;
-  set<AstNode*> equal_join_condition_;
-  set<AstNode*> normal_condition_;
+  vector<AstNode*> equal_join_condition_;
+  vector<AstNode*> normal_condition_;
 };
 /**
  * @brief The AST of join condition.
@@ -170,8 +170,8 @@ class AstJoin : public AstNode {
   AstNode* left_table_;
   AstNode* right_table_;
   AstJoinCondition* join_condition_;
-  set<AstNode*> equal_join_condition_;
-  set<AstNode*> normal_condition_;
+  vector<AstNode*> equal_join_condition_;
+  vector<AstNode*> normal_condition_;
 };
 /**
  * @brief The AST of where clause.
