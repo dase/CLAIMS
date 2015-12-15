@@ -92,10 +92,9 @@ void GetJoinedRoot(map<string, AstNode*> table_joined_root,
                    AstNode* joined_root) {
   return;
 }
-RetCode AstNode::GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
-                                  LogicalOperator* left_plan,
-                                  LogicalOperator* right_plan,
-                                  const set<AstNode*>& equal_join_condition) {
+RetCode AstNode::GetEqualJoinPair(
+    vector<LogicalEqualJoin::JoinPair>& join_pair, LogicalOperator* left_plan,
+    LogicalOperator* right_plan, const vector<AstNode*>& equal_join_condition) {
   for (auto it = equal_join_condition.begin(); it != equal_join_condition.end();
        ++it) {
     AstExprCmpBinary* equal_condi = reinterpret_cast<AstExprCmpBinary*>(*it);
@@ -125,7 +124,7 @@ RetCode AstNode::GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
   return rSuccess;
 }
 RetCode AstNode::GetFilterCondition(vector<ExprNode*>& condition,
-                                    const set<AstNode*>& normal_condition,
+                                    const vector<AstNode*>& normal_condition,
                                     LogicalOperator* logic_plan) {
   RetCode ret = rSuccess;
   ExprNode* expr_node = NULL;
@@ -510,15 +509,15 @@ bool PushDownConditionContext::IsTableSubSet(set<string>& expr_tables,
   }
   return true;
 }
-void PushDownConditionContext::SetCondition(set<AstNode*>& equal_join_condi,
-                                            set<AstNode*>& normal_condi) {
+void PushDownConditionContext::SetCondition(vector<AstNode*>& equal_join_condi,
+                                            vector<AstNode*>& normal_condi) {
   for (int i = 0; i < sub_expr_info_.size(); ++i) {
     if (sub_expr_info_[i]->is_set == false &&
         IsTableSubSet(sub_expr_info_[i]->ref_table_, from_tables_)) {
       if (kIsEqualCondition == sub_expr_info_[i]->sub_expr_type_) {
-        equal_join_condi.insert(sub_expr_info_[i]->sub_expr_);
+        equal_join_condi.push_back(sub_expr_info_[i]->sub_expr_);
       } else {
-        normal_condi.insert(sub_expr_info_[i]->sub_expr_);
+        normal_condi.push_back(sub_expr_info_[i]->sub_expr_);
       }
       sub_expr_info_[i]->is_set = true;
     }
