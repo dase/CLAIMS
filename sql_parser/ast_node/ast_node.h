@@ -168,7 +168,7 @@ class SemanticContext {
   void GetUniqueAggAttr(set<AstNode*>& new_set);
   void ClearSelectAttrs() { select_attrs_.clear(); }
   set<AstNode*> get_aggregation();
-  set<AstNode*> get_groupby_attrs();
+  vector<AstNode*> get_groupby_attrs();
   set<AstNode*> get_select_attrs();
   multimap<string, string> get_column_to_table();
   set<string> get_tables();
@@ -185,7 +185,7 @@ class SemanticContext {
 
  private:
   set<AstNode*> aggregation_;
-  set<AstNode*> groupby_attrs_;
+  vector<AstNode*> groupby_attrs_;
   set<AstNode*> select_attrs_;
   multimap<string, string> column_to_table_;
   set<string> tables_;

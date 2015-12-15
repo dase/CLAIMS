@@ -352,7 +352,7 @@ class AstSelectStmt : public AstNode {
   AstNode* orderby_clause_;
   AstNode* limit_clause_;
   AstNode* select_into_clause_;
-  set<AstNode*> groupby_attrs_;
+  vector<AstNode*> groupby_attrs_;
   set<AstNode*> agg_attrs_;
 
   bool have_aggeragion_;
