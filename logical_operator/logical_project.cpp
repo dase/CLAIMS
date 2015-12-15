@@ -197,6 +197,15 @@ void LogicalProject::Print(int level) const {
     LOG(INFO) << expression_tree_[i]->alias.c_str() << endl;
   }
 #else
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
   ++level;
   for (int i = 0; i < expr_list_.size(); ++i) {
     cout << setw(level * kTabSize) << " " << expr_list_[i]->alias_ << endl;

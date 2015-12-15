@@ -1300,7 +1300,11 @@ AstSelectStmt::AstSelectStmt(AstNodeType ast_node_type, int select_opts,
       having_clause_(having_clause),
       orderby_clause_(orderby_clause),
       limit_clause_(limit_clause),
-      select_into_clause_(select_into_clause) {}
+      select_into_clause_(select_into_clause),
+      have_aggeragion_(false) {
+  groupby_attrs_.clear();
+  agg_attrs_.clear();
+}
 
 AstSelectStmt::~AstSelectStmt() {
   delete select_list_;

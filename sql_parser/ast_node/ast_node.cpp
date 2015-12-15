@@ -378,7 +378,11 @@ RetCode SemanticContext::RebuildTableColumn(set<AstNode*>& aggregation) {
   if (rSuccess != ret) {
     return ret;
   }
-  ret = AddNewTableColumn(groupby_attrs_, false);
+  set<AstNode*> group_nodes;
+  for (int i = 0; i < groupby_attrs_.size(); ++i) {
+    group_nodes.insert(groupby_attrs_[i]);
+  }
+  ret = AddNewTableColumn(group_nodes, false);
   if (rSuccess != ret) {
     return ret;
   }
@@ -426,9 +430,6 @@ RetCode SemanticContext::AddAggregation(AstNode* agg_node) {
   return rSuccess;
 }
 RetCode SemanticContext::AddGroupByAttrs(AstNode* groupby_node) {
-  if (groupby_attrs_.count(groupby_node) > 0) {
-    return rSuccess;
-  }
   bool exist = false;
   for (auto it = groupby_attrs_.begin(); it != groupby_attrs_.end(); ++it) {
     if (groupby_node->expr_str_ == "") {
@@ -443,7 +444,7 @@ RetCode SemanticContext::AddGroupByAttrs(AstNode* groupby_node) {
   if (exist) {
     LOG(INFO) << "eliminate one groupby node" << endl;
   } else {
-    groupby_attrs_.insert(groupby_node);
+    groupby_attrs_.push_back(groupby_node);
   }
   return rSuccess;
 }
@@ -471,8 +472,9 @@ RetCode SemanticContext::AddSelectAttrs(AstNode* select_node) {
   return rSuccess;
 }
 set<AstNode*> SemanticContext::get_aggregation() { return aggregation_; }
-set<AstNode*> SemanticContext::get_groupby_attrs() {
-  GetUniqueAggAttr(groupby_attrs_);
+vector<AstNode*> SemanticContext::get_groupby_attrs() {
+  // due to groupby_attrs_ set => vector
+  //  GetUniqueAggAttr(groupby_attrs_);
   return groupby_attrs_;
 }
 set<AstNode*> SemanticContext::get_select_attrs() { return select_attrs_; }
