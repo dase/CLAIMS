@@ -294,6 +294,7 @@ RetCode AstFromList::PushDownCondition(PushDownConditionContext* pdccnxt) {
                                  cur_pdccnxt->from_tables_.end());
   }
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+  delete cur_pdccnxt;
   return rSuccess;
 }
 RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
@@ -534,6 +535,11 @@ RetCode AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
 }
 
 RetCode AstSubquery::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  RetCode ret = rSuccess;
+  ret = subquery_->PushDownCondition(NULL);
+  if (rSuccess != ret) {
+    return ret;
+  }
   pdccnxt->from_tables_.insert(subquery_alias_);
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
   return rSuccess;
@@ -1295,7 +1301,11 @@ AstSelectStmt::AstSelectStmt(AstNodeType ast_node_type, int select_opts,
       having_clause_(having_clause),
       orderby_clause_(orderby_clause),
       limit_clause_(limit_clause),
-      select_into_clause_(select_into_clause) {}
+      select_into_clause_(select_into_clause),
+      have_aggeragion_(false) {
+  groupby_attrs_.clear();
+  agg_attrs_.clear();
+}
 
 AstSelectStmt::~AstSelectStmt() {
   delete select_list_;

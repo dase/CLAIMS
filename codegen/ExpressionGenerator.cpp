@@ -22,6 +22,8 @@
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/IR/IntrinsicInst.h"
+
+#include "../common/data_type.h"
 #include "CompareFunctonGenerator.h"
 #include "../common/TypePromotionMap.h"
 
@@ -1225,7 +1227,7 @@ void test_while() {
   //	 typedef void (*func)(int &);
   //
   //	 func
-  //ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
+  // ret=CodeGenerator::getInstance()->getExecutionEngine()->getPointerToFunction(F);
   //	 int a=1024;
   //	 ret(a);
   //	 printf("result %d!\n",a);
@@ -1424,10 +1426,10 @@ void myllvm::test1() {
     builder->CreateStore(int32_c, ptr_c_addr);
     builder->CreateStore(const_int32_3, ptr_b);
     //	  StoreInst* void_4 = new StoreInst(int32_c, ptr_c_addr, false,
-    //label_entry);
+    // label_entry);
     //	  void_4->setAlignment(4);
     //	  StoreInst* void_5 = new StoreInst(const_int32_3, ptr_b, false,
-    //label_entry);
+    // label_entry);
     //	  void_5->setAlignment(4);
     builder->CreateBr(label_while_cond);
     //	  BranchInst::Create(label_while_cond, label_entry);
@@ -1441,12 +1443,12 @@ void myllvm::test1() {
     //	  LoadInst* int32_7 = new LoadInst(ptr_b, "", false, label_while_cond);
     //	  int32_7->setAlignment(4);
     //	  LoadInst* int32_8 = new LoadInst(ptr_c_addr, "", false,
-    //label_while_cond);
+    // label_while_cond);
     //	  int32_8->setAlignment(4);
     //	  ICmpInst* int1_cmp = new ICmpInst(*label_while_cond,
-    //ICmpInst::ICMP_SLT, int32_7, int32_8, "cmp");
+    // ICmpInst::ICMP_SLT, int32_7, int32_8, "cmp");
     //	  BranchInst::Create(label_while_body, label_while_end, int1_cmp,
-    //label_while_cond);
+    // label_while_cond);
 
     // Block while.body (label_while_body)
 
@@ -1461,9 +1463,9 @@ void myllvm::test1() {
     //	  LoadInst* int32_11 = new LoadInst(ptr_b, "", false, label_while_body);
     //	  int32_11->setAlignment(4);
     //	  BinaryOperator* int32_mul = BinaryOperator::Create(Instruction::Mul,
-    //int32_10, int32_11, "mul", label_while_body);
+    // int32_10, int32_11, "mul", label_while_body);
     //	  StoreInst* void_12 = new StoreInst(int32_mul, ptr_b, false,
-    //label_while_body);
+    // label_while_body);
     //	  void_12->setAlignment(4);
     //	  BranchInst::Create(label_while_cond, label_while_body);
 
