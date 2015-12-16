@@ -182,6 +182,7 @@ const int rDataPathError = -101;
 
 // schema associated
 const int rEmptyAttributeName = -501;
+const int rEmptyTableAlias = -502;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int rInitSQLParserErr = -1001;
@@ -246,15 +247,15 @@ const int rCatalogNotFound = -5005;
 
 /* errorno for stmt_handler -14001 ~ -15000*/
 const int rStmtHandlerCreateTableExisted = -14002;
-const int kStmtHandlerTypeNotSupport = -14003;
-const int kStmtHandlerCreateTableSuccess = -14004;
-const int kStmtHandlerTableNotExistDuringLoad = -14005;
-const int kStmtHandlerLoadDataSuccess = -14006;
-const int kStmtHandlerTableNotExistDuringInsert = -14007;
-const int kStmtHandlerInsertDataSuccess = -14008;
+const int rStmtHandlerTypeNotSupport = -14003;
+const int rStmtHandlerCreateTableSuccess = -14004;
+const int rStmtHandlerTableNotExistDuringLoad = -14005;
+const int rStmtHandlerLoadDataSuccess = -14006;
+const int rStmtHandlerTableNotExistDuringInsert = -14007;
+const int rStmtHandlerInsertDataSuccess = -14008;
 const int rStmtHandlerInsertNoValue = -14009;
 const int rStmtHandlerCreateTableFailed = -14010;
-const int rStmtHandlerCreateProjectionWithEmptyColumn = 14011;
+const int rStmtHandlerCreateProjectionWithEmptyColumn = -14011;
 
 const int rTableNotExisted = -14100;
 const int rTableillegal = -14101;
@@ -269,7 +270,7 @@ const int rUnaryArgNotExist = -14110;
 const int rFromClauseIsNULL = -14111;
 const int rSelectClauseIsNULL = -14112;
 const int rGroupbyListIsNULL = -14113;
-const int rGroupByNotSupportColumn = -141014;
+const int rGroupByNotSupportColumn = -14114;
 const int rAggNodeExprStrIsNULL = -14115;
 const int rGroupbyNodeExprStrIsNULL = -14116;
 const int rSelectNodeExprStrIsNULL = -14117;

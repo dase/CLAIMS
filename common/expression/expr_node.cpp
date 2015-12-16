@@ -70,7 +70,7 @@ bool ExprNode::IsEqualAttr(const Attribute& attr) {
   }
   return false;
 }
-Attribute ExprNode::ExprNodeToAttr(const int id) {
+Attribute ExprNode::ExprNodeToAttr(const int id, const unsigned table_id) {
   column_type* column = NULL;
   if (t_string == this->return_type_ || t_decimal == this->return_type_) {
     column = new column_type(this->return_type_, this->value_size_);
@@ -78,7 +78,6 @@ Attribute ExprNode::ExprNodeToAttr(const int id) {
     column = new column_type(this->return_type_);
   }
   // set TableID
-  const unsigned kTableID = INTERMEIDATE_TABLEID;
   string attr_name = "NULL_MID." + alias_;
   if (t_qcolcumns == expr_node_type_) {
     ExprColumn* column = reinterpret_cast<ExprColumn*>(this);
@@ -87,7 +86,7 @@ Attribute ExprNode::ExprNodeToAttr(const int id) {
       attr_name = column->table_name_ + "." + column->column_name_;
     }  // else is for the case it's aliased
   }
-  Attribute attr_alais(kTableID, id, attr_name, column->type, column->size);
+  Attribute attr_alais(table_id, id, attr_name, column->type, column->size);
   return attr_alais;
 }
 }  // namespace common
