@@ -50,6 +50,7 @@ class DynamicBlockBuffer {
    * NOTE: this function should be used carefully, as the block memory is not
    * allocated by this class.
    */
+  int64 GetBufferSize() { return block_list_.size(); }
   void destory();
   unsigned long getNumberOftuples() const;
 
