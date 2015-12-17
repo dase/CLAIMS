@@ -6,15 +6,23 @@
  */
 
 #include "BufferManager.h"
+
+#include <fcntl.h>
+#include <fstream>
+
+using std::__basic_file;
+using std::basic_fstream;
 BufferManager* BufferManager::instance_ = 0;
 BufferManager::BufferManager() {
   totol_capacity_ = (unsigned long)1024 * 1024 * 1024 * 80;
-  storage_budget_max_ = (unsigned long)1024 * 1024 * 1024 * 60;
-  storage_budget_min_ = (unsigned long)1024 * 1024 * 1024 * 60;
+  storage_budget_max_ = (unsigned long)1024 * 1024 * 1024 * 4;
+  storage_budget_min_ = (unsigned long)1024 * 1024 * 1024 * 4;
   storage_used_ = 0;
   intermediate_buffer_budget_max_ = 896 * 1024 * 1024;
   intermediate_buffer_budget_min_ = 896 * 1024 * 1024;
   intermediate_buffer_used_ = 0;
+  page_size = sysconf(_SC_PAGESIZE);
+  total_memory = sysconf(_SC_PHYS_PAGES);
   memory_storage_ = MemoryChunkStore::getInstance();
   logging_ = new BufferManagerLogging();
   logging_->log("Initialized!");
@@ -37,13 +45,18 @@ unsigned long int BufferManager::getTotalUsed() const {
 }
 bool BufferManager::applyStorageDedget(unsigned long size) {
   bool ret = false;
+  actucl_free_memory = sysconf(_SC_AVPHYS_PAGES) * page_size;
   lock_.acquire();
-  if (storage_used_ + size <= storage_budget_max_) {
-    storage_used_ += size;
-    ret = true;
+
+  if (size <= (actucl_free_memory)) {
+    if (storage_used_ + size <= (storage_budget_max_ / 2)) {
+      storage_used_ += size;
+      ret = true;
+    }
   }
   logging_->log("%d MB applied, %d MB left!", size / 1024 / 1024,
                 (storage_budget_max_ - storage_used_) / 1024 / 1024);
+  logging_->log("%d actucl left free memory", actucl_free_memory / 1024 / 1024);
   lock_.release();
   return ret;
 }

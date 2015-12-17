@@ -10,6 +10,7 @@
 #include "../storage/MemoryManager.h"
 #include "../utility/lock.h"
 #include "../common/Logging.h"
+#include "unistd.h"
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -33,6 +34,9 @@ class BufferManager {
   unsigned long int intermediate_buffer_budget_max_;
   unsigned long int intermediate_buffer_budget_min_;
   unsigned long int intermediate_buffer_used_;
+  long long total_memory;
+  long long page_size;
+  long long actucl_free_memory;
   MemoryChunkStore* memory_storage_;
   static BufferManager* instance_;
   Lock lock_;

@@ -83,10 +83,9 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
   }
 
   if (rSuccess != HasEnoughMemory()) {
-    WLOG(HasEnoughMemory(), "not enough memory!!");  //错误码完成
     FreeChunk();
-    lock_.release();
-    return false;
+    LOG(INFO) << "not enough memory!!" << endl;  //错误码完成
+    cout << "not enough memory!!" << endl;
   }
 
   if ((start_address = chunk_pool_.malloc()) != 0) {
@@ -163,20 +162,19 @@ bool MemoryChunkStore::putChunk(const ChunkID& chunk_id,
 
 // todo：清空最近最少使用的块，但是我没有加入LIRS
 void MemoryChunkStore::FreeChunk() {
-  lock_.acquire();
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator target_ =
       chunk_list_.begin();
   for (boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator mei_ =
-           chunk_list_.begin();
+           target_;
        mei_ != chunk_list_.end(); mei_++) {
-    if ((*mei_).second.lifetime_ > (*target_).second.lifetime_) {
+    if (mei_->second.lifetime_ >= target_->second.lifetime_) {
       target_ = mei_;
     }
   }
   //释放最近最少使用的chunk，在内存池释放并且将它在chunk_list_位置清空。
   chunk_pool_.free(target_->second.hook);
   chunk_list_.erase(target_);
-  lock_.release();  //需不需要加锁  --han
+  BufferManager::getInstance()->returnStorageBudget(target_->second.length);
 }
 MemoryChunkStore* MemoryChunkStore::getInstance() {
   if (instance_ == 0) {

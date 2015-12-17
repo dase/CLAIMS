@@ -76,16 +76,22 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
   ChunkReaderIterator* ret;
 
   lock_.acquire();
+  HdfsInMemoryChunk chunk_info;
+  if (current_storage_level_ == MEMORY &&
+      !BlockManager::getInstance()->getMemoryChunkStore()->getChunk(
+          chunk_id_, chunk_info)) {
+    current_storage_level_ = HDFS;
+  }  //判断之前被free调的chunk，脏数据的storage——level修改。
   switch (current_storage_level_) {
     case MEMORY: {
-      HdfsInMemoryChunk chunk_info;
       if (BlockManager::getInstance()->getMemoryChunkStore()->getChunk(
               chunk_id_, chunk_info))
         ret = new InMemoryChunkReaderItetaor(chunk_info.hook, chunk_info.length,
                                              chunk_info.length / block_size_,
                                              block_size_, chunk_id_);
       else
-        ret = NULL;
+        ret = NULL;  //问题点
+      cout << "clean dirty data" << endl;
       break;
     }
     case DISK: {
@@ -95,7 +101,6 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
     }
     case HDFS: {
       if (desirable_storage_level_ == MEMORY) {
-        HdfsInMemoryChunk chunk_info;
         chunk_info.length = CHUNK_SIZE;
         if (BlockManager::getInstance()->getMemoryChunkStore()->applyChunk(
                 chunk_id_, chunk_info.hook)) {
@@ -115,7 +120,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
              */
             BlockManager::getInstance()->getMemoryChunkStore()->returnChunk(
                 chunk_id_);
-            ret = 0;
+            ret = NULL;
             break;
           }
           current_storage_level_ = MEMORY;
@@ -133,9 +138,14 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
            * TODO: swap algorithm. I finish in applychunk().*/
           printf("Failed to get memory chunk budege!\n");
           LOG(WARNING) << "Failed to get memory chunk budege!" << endl;
-          assert(false);
+          //          BlockManager::getInstance()->getMemoryChunkStore()->FreeChunk();
+
+          //          current_storage_level_ =
+          //          HDFS;//chunk_list_.setStorageLevel
+          //          assert(false);
         }
       }
+
       ret = new DiskChunkReaderIteraror(chunk_id_, chunk_size_, block_size_);
       break;
     }
