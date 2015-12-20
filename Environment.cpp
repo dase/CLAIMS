@@ -5,9 +5,10 @@
  *      Author: wangli
  */
 
-#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "Environment.h"
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
+#undef GLOG_NO_ABBREVIATED_SEVERITIES
 #include <libconfig.h++>
 #include <iostream>
 #include <sstream>
