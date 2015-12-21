@@ -165,8 +165,6 @@ class MemoryChunkStore {
     return block_set;
   }
   //获得当前memory情况～～～  --han(做性能优化～～ )
-  void GetAvailableMemory() {}
-  void GetFreeMemory() {}
 
   RetCode HasEnoughMemory();
 

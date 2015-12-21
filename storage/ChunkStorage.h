@@ -154,7 +154,7 @@ class ChunkReaderIterator {
    * @brief Method description: Just judge whether the cursor of block arrived
    * at the end of block. It is a logical information of the cursor of block.
    * @return true: Has block in the chunk.
-   * @return false: nothing block left in the chunk.
+   * @return false: nothing left in the chunk.
    */
   bool NextBlock();
 
@@ -186,7 +186,7 @@ class InMemoryChunkReaderItetaor : public ChunkReaderIterator {
    * @brief Method description: Just judge whether the cursor of block arrived
    * at the end of block. It is a logical information of the cursor of block.
    * @return true: Has block in the chunk.
-   * @return false: nothing block left in the chunk.
+   * @return false: nothing left in the chunk.
    */
   bool NextBlock(BlockStreamBase*& block);
 
@@ -221,7 +221,7 @@ class DiskChunkReaderIteraror : public ChunkReaderIterator {
    * at the end of block. It is a logical information of the cursor of block.
    * @param: block
    * @return true: Has block in the chunk.
-   * @return false: nothing block left in the chunk.
+   * @return false: nothing left in the chunk.
    */
   bool NextBlock(BlockStreamBase*& block);
 
@@ -256,7 +256,7 @@ class HDFSChunkReaderIterator : public ChunkReaderIterator {
    * at the end of block. It is a logical information of the cursor of block.
    * @param: block
    * @return true: Has block in the chunk.
-   * @return false: nothing block left in the chunk.
+   * @return false: nothing left in the chunk.
    */
   bool NextBlock(BlockStreamBase*& block);
 

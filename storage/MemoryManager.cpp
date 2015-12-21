@@ -73,7 +73,7 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
   //      chunk_list_.find(chunk_id);
   //  WasteTime();  //--Han
   //  if (it != chunk_list_.cend()) {
-  //    printf("chunk id already exists (chunk id =%d)!\n", chunk_id.chunk_off);
+  //
   //    lock_.release();
   //    return false;
   //  }
@@ -84,8 +84,8 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
 
   if (rSuccess != HasEnoughMemory()) {
     FreeChunk();
-    LOG(INFO) << "not enough memory!!" << endl;  //错误码完成
-    cout << "not enough memory!!" << endl;
+    LOG(INFO) << "not enough memory!!" << std::endl;  //错误码完成
+    std::cout << "not enough memory!!" << std::endl;
   }
 
   if ((start_address = chunk_pool_.malloc()) != 0) {
@@ -174,7 +174,6 @@ void MemoryChunkStore::FreeChunk() {
   //释放最近最少使用的chunk，在内存池释放并且将它在chunk_list_位置清空。
   chunk_pool_.free(target_->second.hook);
   chunk_list_.erase(target_);
-  BufferManager::getInstance()->returnStorageBudget(target_->second.length);
 }
 MemoryChunkStore* MemoryChunkStore::getInstance() {
   if (instance_ == 0) {
