@@ -394,7 +394,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
     return ret;
   }
   if ('\n' != tuples[tuples.length() - 1]) {
-    LOG(WARNING) << "tuples string ends with " << *tuples.end()
+    LOG(WARNING) << "tuples string ends with " << tuples[tuples.length() - 1]
                  << ", but not '\\n' " << endl;
   }
   EXEC_AND_ONLY_LOG_ERROR(ret, PrepareInitInfo(kAppendFile),
@@ -413,7 +413,8 @@ RetCode DataInjector::InsertFromString(const string tuples,
   vector<void*> correct_tuple_buffer;
 
   while (string::npos != (cur = tuples.find('\n', prev_cur))) {
-    string tuple_record = tuples.substr(prev_cur, cur);
+    //    DLOG(INFO) << "cur: " << cur << " prev_cur: " << prev_cur << endl;
+    string tuple_record = tuples.substr(prev_cur, cur - prev_cur);
     LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
     EXEC_AND_ONLY_LOG_ERROR(
