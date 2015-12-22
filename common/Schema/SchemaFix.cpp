@@ -166,7 +166,9 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
   //  DLOG(INFO) << "after all tovalue, prev_pos :" << (prev_pos ==
   //  string::npos)
   //             << "prev_pos+1 :" << (prev_pos + 1 == string::npos)
-  //             << "npos :" << string::npos << " pos:" << pos << endl;
+  //             << "npos :" << string::npos << " pos:" << pos
+  //             << " prev_pos:" << prev_pos
+  //             << " text_tuple's length:" << text_tuple.length() << endl;
   if (text_tuple.length() != prev_pos) {  // too many column data
     ret = rTooManyColumn;
     columns_validities.push_back(Validity(-1, ret));
