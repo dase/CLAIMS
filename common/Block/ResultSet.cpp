@@ -40,7 +40,7 @@ void ResultSet::print() const {
   }
 
   //	unsigned
-  //sample_budget=20>this->getNumberOftuples()?20:this->getNumberOftuples();
+  // sample_budget=20>this->getNumberOftuples()?20:this->getNumberOftuples();
   unsigned sample_budget = 20;
 
   Iterator it = this->createIterator();
