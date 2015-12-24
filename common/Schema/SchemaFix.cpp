@@ -118,8 +118,9 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       } else {  // correct
         text_column = text_tuple.substr(prev_pos, pos - prev_pos);
         prev_pos = pos + attr_separator.length();
-        //        DLOG(INFO) << "after prev_pos adding, prev_pos :" << prev_pos
-        //                   << " pos:" << pos << endl;
+        DLOG_IF(INFO, kClaimsDebugLog == true)
+            << "after prev_pos adding, prev_pos :" << prev_pos << " pos:" << pos
+            << endl;
 
         GETCURRENTTIME(check_string_time);
         ret = columns[i].operate->CheckSet(text_column);
@@ -146,29 +147,27 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       }
     }
     DataInjector::total_get_substr_time_ += GetElapsedTime(get_substr_time);
-    //    DLOG(INFO) << "Before toValue, column data is " << text_column <<
-    //    endl;
+    DLOG_IF(INFO, kClaimsDebugLog == true) << "Before toValue, column data is "
+                                           << text_column << endl;
 
     GETCURRENTTIME(to_value_time);
     columns[i].operate->toValue(
         static_cast<char*>(binary_tuple) + accum_offsets[i],
         text_column.c_str());
 
-    //    DLOG(INFO) << "Original: "
-    //               << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
-    //               << "\t Transfer: "
-    //               << columns[i].operate->toString(binary_tuple +
-    //               accum_offsets[i])
-    //               << endl;
+    DLOG_IF(INFO, kClaimsDebugLog == true)
+        << "Original: " << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
+        << "\t Transfer: "
+        << columns[i].operate->toString(binary_tuple + accum_offsets[i])
+        << endl;
     DataInjector::total_to_value_time_ += GetElapsedTime(to_value_time);
   }
 
-  //  DLOG(INFO) << "after all tovalue, prev_pos :" << (prev_pos ==
-  //  string::npos)
-  //             << "prev_pos+1 :" << (prev_pos + 1 == string::npos)
-  //             << "npos :" << string::npos << " pos:" << pos
-  //             << " prev_pos:" << prev_pos
-  //             << " text_tuple's length:" << text_tuple.length() << endl;
+  DLOG_IF(INFO, kClaimsDebugLog == true)
+      << "after all tovalue, prev_pos :" << (prev_pos == string::npos)
+      << "prev_pos+1 :" << (prev_pos + 1 == string::npos)
+      << "npos :" << string::npos << " pos:" << pos << " prev_pos:" << prev_pos
+      << " text_tuple's length:" << text_tuple.length() << endl;
   if (text_tuple.length() != prev_pos) {  // too many column data
     ret = rTooManyColumn;
     columns_validities.push_back(Validity(-1, ret));

@@ -32,6 +32,8 @@
 #include "./error_no.h"
 using claims::common::CStrError;
 
+const bool kClaimsDebugLog = true;
+
 typedef int RetCode;  // means return code
 #define ELOG(ret, err_info)                                              \
   LOG(ERROR) << "[" << ret << ", " << CStrError(ret) << "] " << err_info \

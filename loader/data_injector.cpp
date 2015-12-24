@@ -278,11 +278,17 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       result->SetError("Can't open file :" + file_name);
       return ret;
     }
-    //    DLOG(INFO) << "Now handle file :" << file_name << endl;
+    DLOG_IF(INFO, kClaimsDebugLog == true) << "Now handle file :" << file_name
+                                           << endl;
 
     // read every tuple
-    while (GetTupleTerminatedBy(input_file, tuple_record, row_separator_) &&
-           !input_file.eof()) {
+    while (GetTupleTerminatedBy(input_file, tuple_record, row_separator_) ||
+           tuple_record != "") {
+      DLOG_IF(INFO, kClaimsDebugLog) << "---------------read tuple "
+                                     << tuple_record << ". input file's eof is "
+                                     << input_file.eof() << endl;
+      if (input_file.eof()) break;
+
       // just to tell everyone "i am alive!!!"
       if (0 == row_id_in_file % 10000) {
         cout << load_output_info[(row_id_in_file / 10000) % 7] << std::flush;
@@ -301,8 +307,8 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       tuple_record += col_separator_;
       total_add_time += GetElapsedTime(add_time);
 
-      //      DLOG(INFO) << "after adding row id, tuple is:" << tuple_record <<
-      //      endl;
+      DLOG_IF(INFO, kClaimsDebugLog == true)
+          << "after adding row id, tuple is:" << tuple_record << endl;
 
       GETCURRENTTIME(start_check_time);
       vector<Validity> columns_validities;
@@ -324,7 +330,8 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       for (auto it : columns_validities) {
         string validity_info =
             GenerateDataValidityInfo(it, table_, row_id_in_file, file_name);
-        //        DLOG(INFO) << "append warning info:" << validity_info << endl;
+        DLOG_IF(INFO, kClaimsDebugLog == true)
+            << "append warning info:" << validity_info << endl;
         result->AppendWarning(validity_info);
       }
       total_check_time += GetElapsedTime(start_check_time);
@@ -339,6 +346,10 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       ++row_id_;
       tuple_record.clear();
     }
+
+    DLOG_IF(INFO, kClaimsDebugLog) << "--------------- input file's eof is "
+                                   << input_file.eof() << endl;
+
     LOG(INFO) << "insert all " << row_id_in_file << " line from " << file_name
               << " into blocks" << endl;
     input_file.close();
@@ -413,7 +424,8 @@ RetCode DataInjector::InsertFromString(const string tuples,
   vector<void*> correct_tuple_buffer;
 
   while (string::npos != (cur = tuples.find('\n', prev_cur))) {
-    //    DLOG(INFO) << "cur: " << cur << " prev_cur: " << prev_cur << endl;
+    DLOG_IF(INFO, kClaimsDebugLog == true) << "cur: " << cur
+                                           << " prev_cur: " << prev_cur << endl;
     string tuple_record = tuples.substr(prev_cur, cur - prev_cur);
     LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
@@ -447,7 +459,8 @@ RetCode DataInjector::InsertFromString(const string tuples,
     // handle all warnings
     for (auto it : columns_validities) {
       string validity_info = GenerateDataValidityInfo(it, table_, line, "");
-      //      DLOG(INFO) << "append warning info:" << validity_info << endl;
+      DLOG_IF(INFO, kClaimsDebugLog == true)
+          << "append warning info:" << validity_info << endl;
       result->AppendWarning(validity_info);
     }
 
@@ -582,8 +595,9 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
                      partition_key_addr,
                      partition_functin_list_[i]->getNumberOfPartitions());
 
-  //  DLOG(INFO) << "insert tuple into projection: " << i << ",
-  //  partition: " << part << endl;
+  DLOG_IF(INFO, kClaimsDebugLog == true)
+      << "insert tuple into projection: " << i << ", partition: " << part
+      << endl;
 
   ++tuples_per_partition[i][part];
 
