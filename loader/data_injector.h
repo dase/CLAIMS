@@ -28,6 +28,7 @@
 
 #ifndef LOADER_DATA_INJECTOR_H_
 #define LOADER_DATA_INJECTOR_H_
+#include <list>
 #include <vector>
 #include <string>
 
@@ -163,6 +164,12 @@ class DataInjector {
   string col_separator_;
   string row_separator_;
   uint64_t row_id_;
+
+  std::list<std::string> tuple_buffer_;
+  Lock tuple_buffer_access_lock_;
+  semaphore tuple_count_sem_in_buffer_;
+  bool data_has_error_ = false;
+  bool all_tuple_read_ = false;
   /******************debug********************/
  public:
   static double total_get_substr_time_;

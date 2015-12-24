@@ -257,6 +257,8 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   double total_insert_time = 0;
   double total_add_time = 0;
   string tuple_record = "";
+  data_has_error_ = false;
+  all_tuple_read_ = false;
   static char* load_output_info[7] = {
       "Loading         \r", "Loading.\r",     "Loading..\r",    "Loading...\r",
       "Loading....\r",      "Loading.....\r", "Loading......\r"};
@@ -278,8 +280,10 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       result->SetError("Can't open file :" + file_name);
       return ret;
     }
+  }
+  for (auto file_name : input_file_names) {
     //    DLOG(INFO) << "Now handle file :" << file_name << endl;
-
+    ifstream input_file(file_name.c_str());
     // read every tuple
     while (GetTupleTerminatedBy(input_file, tuple_record, row_separator_) &&
            !input_file.eof()) {
@@ -292,6 +296,12 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
       // sample
       if (GetRandomDecimal() >= sample_rate) continue;
 
+      {
+        LockGuard<Lock> guard(tuple_buffer_access_lock_);
+        tuple_buffer_.push_back(std::move(tuple_record));
+        tuple_count_sem_in_buffer_.post();
+      }
+      //--------------------------------------------------------//
       GETCURRENTTIME(add_time);
       EXEC_AND_ONLY_LOG_ERROR(
           ret, AddRowIdColumn(tuple_record),
@@ -345,12 +355,14 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
     ++file_count;
   }
   DELETE_PTR(tuple_buffer);
+  //--------------------------------------------------------------//
   LOG(INFO) << "used " << GetElapsedTime(start_read_time) / 1000
             << " time to handled " << file_count
             << " file, then flush unfilled block " << endl;
 
   LOG(INFO) << "  total add time: " << total_add_time / 1000.0
-            << "  total get substring time: " << total_get_substr_time_ / 1000
+            << "  total get substring and check string time: "
+            << total_get_substr_time_ / 1000
             << "  total check string time: " << total_check_string_time_ / 1000
             << "  total to value time: " << total_to_value_time_ / 1000.0
             << "  total to value func time: "
@@ -377,6 +389,21 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
             << " End!-----------------------\n";
 
   return ret;
+}
+
+void HandleTuple(void* ptr) {
+  DataInjector* injector = static_cast<DataInjector*>(ptr);
+  string tuple_to_handle;
+  if (injector->data_has_error_ == true) return;
+  if (injector->all_tuple_read_ == true) {
+    if (injector->tuple_count_sem_in_buffer_.try_wait() == false) {
+      return;  // success. all tuple is handled
+    } else {
+      LockGuard<Lock> guard(injector->tuple_buffer_access_lock_);
+      tuple_to_handle = injector->tuple_buffer_.front();
+      injector->tuple_buffer_.pop_front();
+    }
+  }
 }
 
 /**
