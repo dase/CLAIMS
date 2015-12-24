@@ -270,7 +270,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
 
   GETCURRENTTIME(start_read_time);
   for (auto file_name : input_file_names) {
-    ifstream input_file(file_name.c_str());
+    ifstream input_file(file_name.c_str(), ios::binary);
     if (!input_file.good()) {
       ret = rOpenDiskFileFail;
       PLOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ]"
@@ -284,10 +284,12 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
     // read every tuple
     while (GetTupleTerminatedBy(input_file, tuple_record, row_separator_) ||
            tuple_record != "") {
-      DLOG_IF(INFO, kClaimsDebugLog) << "---------------read tuple "
-                                     << tuple_record << ". input file's eof is "
-                                     << input_file.eof() << endl;
-      if (input_file.eof()) break;
+      if (tuple_record == "\r")
+        tuple_record = "";  // eliminate the effect of '\r'
+      DLOG_IF(INFO, kClaimsDebugLog)
+          << "---------------read tuple " << tuple_record << "tuple size is "
+          << tuple_record.length() << ". input file's eof is "
+          << input_file.eof() << endl;
 
       // just to tell everyone "i am alive!!!"
       if (0 == row_id_in_file % 10000) {
