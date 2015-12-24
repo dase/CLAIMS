@@ -270,7 +270,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
 
   GETCURRENTTIME(start_read_time);
   for (auto file_name : input_file_names) {
-    ifstream input_file(file_name.c_str());
+    ifstream input_file(file_name.c_str(), ios::binary);
     if (!input_file.good()) {
       ret = rOpenDiskFileFail;
       PLOG(ERROR) << "[ " << ret << ", " << CStrError(ret) << " ]"

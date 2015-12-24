@@ -96,6 +96,7 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
   for (int i = 0; i < columns.size(); ++i) {
     GETCURRENTTIME(get_substr_time);
 
+    C_DLOGI("tuple size is " << text_tuple.length());
     if (pos != string::npos && text_tuple.length() == prev_pos) {
       // meet the first column without data
       pos = string::npos;
@@ -107,6 +108,9 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       } else {  // treated as warning
         WLOG(ret, "Data from File is lost from column whose index is " << i);
         columns[i].operate->SetDefault(text_column);  // no more need to check
+        C_DLOGI("after setting default, the value is "
+                << text_column << "  operate's nullable is "
+                << columns[i].operate->nullable);
         ret = rSuccess;
       }
     } else {
