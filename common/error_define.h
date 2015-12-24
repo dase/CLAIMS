@@ -69,6 +69,8 @@ typedef int RetCode;  // means return code
     }                                                               \
   } while (0)
 
+#define C_DLOGI(info) DLOG_IF(INFO, kClaimsDebugLog) << info << std::endl;
+
 namespace claims {
 namespace common {
 
