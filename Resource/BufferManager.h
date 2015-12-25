@@ -10,6 +10,7 @@
 #include "../storage/MemoryManager.h"
 #include "../utility/lock.h"
 #include "../common/Logging.h"
+#include "../Config.h"
 #include "unistd.h"
 #ifdef DMALLOC
 #include "dmalloc.h"

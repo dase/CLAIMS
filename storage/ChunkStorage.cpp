@@ -82,7 +82,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
           chunk_id_, chunk_info)) {
     current_storage_level_ = HDFS;
     cout << "clean dirty data" << endl;
-    cout << "the chunk has be freed" << chunk_id_.chunk_off << endl;
+    cout << "the chunk has be freed : " << chunk_id_.chunk_off << endl;
   }  //判断之前被free调的chunk，脏数据的storage——level修改。
   switch (current_storage_level_) {
     case MEMORY: {

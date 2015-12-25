@@ -153,7 +153,9 @@ class MemoryChunkStore {
     return true;
   }
 
-  void FreeChunk();  //选择内存池哪些应该被释放。基于LRU。 --han
+  void FreeChunkLRU();  //选择内存池哪些应该被释放。基于LRU。 --han
+
+  void FreeRandomChunk();
 
   /* 有这个函数提供一个文件到block的映射,这个地方可以用iterator模式将其从
    * master端获取，因为做iterator的节zcl点肯定不是主节点，下面为调试用

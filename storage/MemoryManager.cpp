@@ -27,6 +27,9 @@
  */
 
 #include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
 #include <memory.h>
 #include <glog/logging.h>
 #include "MemoryManager.h"
@@ -43,7 +46,7 @@ using claims::common::rReturnFailFindTargetChunkId;
 // namespace claims {
 // namespace stroage {
 
-MemoryChunkStore* MemoryChunkStore::instance_ = 0;
+MemoryChunkStore* MemoryChunkStore::instance_ = NULL;
 MemoryChunkStore::MemoryChunkStore()
     : chunk_pool_(CHUNK_SIZE), block_pool_(BLOCK_SIZE) {}
 
@@ -69,22 +72,15 @@ bool MemoryChunkStore::IsExist(ChunkID& chunk_id) {
 
 bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
   lock_.acquire();
-  //  boost::unordered_map<ChunkID, HdfsInMemoryChunk>::const_iterator it =
-  //      chunk_list_.find(chunk_id);
-  //  WasteTime();  //--Han
-  //  if (it != chunk_list_.cend()) {
-  //
-  //    lock_.release();
-  //    return false;
-  //  }
   if (IsExist(chunk_id) == true) {
     lock_.release();
     return false;
   }
 
   if (rSuccess != HasEnoughMemory()) {
-    FreeChunk();
-    LOG(INFO) << "not enough memory!!" << std::endl;  //错误码完成
+    //    FreeChunkLRU();
+    FreeRandomChunk();
+    DLOG(INFO) << "not enough memory!!" << std::endl;  //错误码完成
     std::cout << "not enough memory!!" << std::endl;
   }
 
@@ -94,16 +90,17 @@ bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
     return true;
   }  //通过pool获取系统内存，malloc（） --han
   else {
-    ELOG(rMemoryPoolMallocFail, "Error occurs when memalign!");  // wancheng
+    ELOG(rMemoryPoolMallocFail, "Error occurs when memalign!");
     lock_.release();
     return false;
   }
-}  //目前完成，需要测试～～ --han
+}
 
 void MemoryChunkStore::returnChunk(const ChunkID& chunk_id) {
   lock_.acquire();
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator it =
       chunk_list_.find(chunk_id);
+
   if (it == chunk_list_.cend()) {
     WLOG(rReturnFailFindTargetChunkId,
          "return fail to find the target chunk id !");
@@ -111,7 +108,6 @@ void MemoryChunkStore::returnChunk(const ChunkID& chunk_id) {
     return;
   }
   HdfsInMemoryChunk chunk_info = it->second;
-
   chunk_pool_.free(chunk_info.hook);
   chunk_list_.erase(it);
   BufferManager::getInstance()->returnStorageBudget(chunk_info.length);
@@ -161,7 +157,7 @@ bool MemoryChunkStore::putChunk(const ChunkID& chunk_id,
 }
 
 // todo：清空最近最少使用的块，但是我没有加入LIRS
-void MemoryChunkStore::FreeChunk() {
+void MemoryChunkStore::FreeChunkLRU() {
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator target_ =
       chunk_list_.begin();
   for (boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator mei_ =
@@ -175,8 +171,21 @@ void MemoryChunkStore::FreeChunk() {
   chunk_pool_.free(target_->second.hook);
   chunk_list_.erase(target_);
 }
+
+void MemoryChunkStore::FreeRandomChunk() {
+  boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator it_ =
+      chunk_list_.begin();
+  int count = (int)chunk_list_.size();
+  srand((unsigned)time(NULL));
+  int size = rand() % count;
+  for (int i = 0; i < size; i++) it_++;
+  cout << "which chunk has be free : NO " << it_->first.chunk_off << endl;
+  chunk_pool_.free(it_->second.hook);
+  chunk_list_.erase(it_);
+}
+
 MemoryChunkStore* MemoryChunkStore::getInstance() {
-  if (instance_ == 0) {
+  if (NULL == instance_) {
     instance_ = new MemoryChunkStore();
   }
   return instance_;
