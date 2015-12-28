@@ -299,7 +299,6 @@ class ChunkStorage {
   StorageLevel desirable_storage_level_;
   StorageLevel current_storage_level_;
   ChunkID chunk_id_;
-
   Lock lock_;
 };
 

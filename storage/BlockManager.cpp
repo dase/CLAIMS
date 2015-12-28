@@ -171,55 +171,6 @@ bool BlockManager::put(string blockId, storageLevel level, void* value) {
   return true;
 }
 
-//// 这个函数返回一个构造好的chunkid和每个chunk的指针
-//// 这个里面的chunkId肯定是要在blockManager注册然后汇报信息的
-//// put的话也是会这样的，可以将这个函数中调用put然后统一汇报信息的接口
-// vector<ChunkInfo> BlockManager::loadFromHdfs(string file_name){
-//	// 由此函数得到的<blockId,指针>
-//	vector<ChunkInfo> vci;
-//	map<string, void *>::iterator it_;
-//	it_=bufferpool_.find(file_name);
-//	if(it_!=bufferpool_.end()){
-////		rt=bufferpool_[file_name];
-//	}
-//	else{
-//		hdfsFS fs=hdfsConnect(HDFS_N,9000);
-//		hdfsFile
-// readFile=hdfsOpenFile(fs,file_name.c_str(),O_RDONLY,0,0,0);
-//		hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,file_name.c_str());
-////		char
-///***path=hdfsGetHosts(fs,"/home/hayue/input/3_64m",0,201326592+12);
-//		cout<<"file size: "<<hdfsfile->mSize<<endl;
-//		if(!readFile){
-//			cout<<"open file error"<<endl;
-//		}
-//		unsigned length=0;
-//		int offset=0;
-//		while(length<hdfsfile->mSize){
-//			ChunkInfo ci;
-//			void *rt=malloc(CHUNK_SIZE);		//newmalloc
-//			tSize
-// bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
-//			cout<<"split interface: "<<bytes_num<<endl;
-//			ostringstream chunkid;
-//			chunkid<<file_name.c_str()<<"_"<<offset++;
-//			ci.chunkId=chunkid.str().c_str();
-//			ci.hook=rt;
-//			vci.push_back(ci);
-//			cout<<ci.chunkId.c_str()<<"---"<<length<<endl;
-//			length=length+CHUNK_SIZE;
-//		}
-////		hdfsSeek(fs,readFile,CHUNK_SIZE);
-//		hdfsCloseFile(fs,readFile);
-////		cout<<bytes_num<<endl;
-////		bufferpool_[file_namerUnbindPartitionFailed]=rt;
-//	}
-//	return vci;
-//}
-
-// 这个函数返回一个构造好的chunkid和每个chunk的指针
-// 这个里面的chunkId肯定是要在blockManager注册然后汇报信息的
-// put的话也是会这样的，可以将这个函数中调用put然后统一汇报信息的接口
 ChunkInfo BlockManager::loadFromHdfs(string file_name) {
   // 由此函数得到的<blockId,指针>
   ChunkInfo ci;

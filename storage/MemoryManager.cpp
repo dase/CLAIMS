@@ -48,11 +48,15 @@ using claims::common::rReturnFailFindTargetChunkId;
 
 MemoryChunkStore* MemoryChunkStore::instance_ = NULL;
 MemoryChunkStore::MemoryChunkStore()
-    : chunk_pool_(CHUNK_SIZE), block_pool_(BLOCK_SIZE) {}
+    : chunk_pool_(CHUNK_SIZE), block_pool_(BLOCK_SIZE), fc_(NULL) {}
 
 MemoryChunkStore::~MemoryChunkStore() {
   chunk_pool_.purge_memory();
   block_pool_.purge_memory();
+  if (NULL != fc_) {
+    delete fc_;
+    fc_ = NULL;
+  }
 }
 
 bool MemoryChunkStore::IsExist(ChunkID& chunk_id) {
@@ -72,19 +76,19 @@ bool MemoryChunkStore::IsExist(ChunkID& chunk_id) {
 
 bool MemoryChunkStore::applyChunk(ChunkID chunk_id, void*& start_address) {
   lock_.acquire();
-  if (IsExist(chunk_id) == true) {
+  if (true == IsExist(chunk_id)) {
     lock_.release();
     return false;
   }
 
   if (rSuccess != HasEnoughMemory()) {
     //    FreeChunkLRU();
-    FreeRandomChunk();
+    fc_->WayOfFreeChunk();
     DLOG(INFO) << "not enough memory!!" << std::endl;  //错误码完成
     std::cout << "not enough memory!!" << std::endl;
   }
 
-  if ((start_address = chunk_pool_.malloc()) != 0) {
+  if (NULL != (start_address = chunk_pool_.malloc())) {
     chunk_list_[chunk_id] = HdfsInMemoryChunk(start_address, CHUNK_SIZE);
     lock_.release();
     return true;
@@ -157,31 +161,34 @@ bool MemoryChunkStore::putChunk(const ChunkID& chunk_id,
 }
 
 // todo：清空最近最少使用的块，但是我没有加入LIRS
-void MemoryChunkStore::FreeChunkLRU() {
+void MemoryChunkStore::FreeChunkLRU::WayOfFreeChunk() {
+  cout << "LRU free Chunk :" << endl;
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator target_ =
-      chunk_list_.begin();
+      MemoryChunkStore::getInstance()->chunk_list_.begin();
   for (boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator mei_ =
            target_;
-       mei_ != chunk_list_.end(); mei_++) {
+       mei_ != MemoryChunkStore::getInstance()->chunk_list_.end(); mei_++) {
     if (mei_->second.lifetime_ >= target_->second.lifetime_) {
       target_ = mei_;
     }
   }
   //释放最近最少使用的chunk，在内存池释放并且将它在chunk_list_位置清空。
-  chunk_pool_.free(target_->second.hook);
-  chunk_list_.erase(target_);
+  cout << "which chunk has be free : NO " << target_->first.chunk_off << endl;
+  MemoryChunkStore::getInstance()->chunk_pool_.free(target_->second.hook);
+  MemoryChunkStore::getInstance()->chunk_list_.erase(target_);
 }
 
-void MemoryChunkStore::FreeRandomChunk() {
+void MemoryChunkStore::FreeChunkRandom::WayOfFreeChunk() {
+  cout << "Random Free Chunk :" << endl;
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator it_ =
-      chunk_list_.begin();
-  int count = (int)chunk_list_.size();
+      MemoryChunkStore::getInstance()->chunk_list_.begin();
+  int count = (int)MemoryChunkStore::getInstance()->chunk_list_.size();
   srand((unsigned)time(NULL));
   int size = rand() % count;
   for (int i = 0; i < size; i++) it_++;
   cout << "which chunk has be free : NO " << it_->first.chunk_off << endl;
-  chunk_pool_.free(it_->second.hook);
-  chunk_list_.erase(it_);
+  MemoryChunkStore::getInstance()->chunk_pool_.free(it_->second.hook);
+  MemoryChunkStore::getInstance()->chunk_list_.erase(it_);
 }
 
 MemoryChunkStore* MemoryChunkStore::getInstance() {

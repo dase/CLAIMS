@@ -153,10 +153,41 @@ class MemoryChunkStore {
     return true;
   }
 
-  void FreeChunkLRU();  //选择内存池哪些应该被释放。基于LRU。 --han
+  class FreeChunk {
+    friend MemoryChunkStore;
 
-  void FreeRandomChunk();
+   public:
+    FreeChunk(){};
+    virtual ~FreeChunk(){};
+    virtual void WayOfFreeChunk(){};
+  };
+  //选择内存池哪些应该被释放。基于LRU。 --han
+  class FreeChunkLRU : public FreeChunk {
+   public:
+    FreeChunkLRU(){};
+    ~FreeChunkLRU(){};
+    void WayOfFreeChunk() override;
+  };
 
+  class FreeChunkRandom : public FreeChunk {
+    friend MemoryChunkStore;
+
+   public:
+    FreeChunkRandom(){};
+    ~FreeChunkRandom(){};
+    void WayOfFreeChunk() override;
+  };
+
+  void SetFreeAlgorithm(int flag) {
+    if (NULL != fc_) {
+      delete fc_;
+      fc_ = NULL;
+    }
+    if (flag == 1)
+      fc_ = new FreeChunkLRU();
+    else
+      fc_ = new FreeChunkRandom();
+  }
   /* 有这个函数提供一个文件到block的映射,这个地方可以用iterator模式将其从
    * master端获取，因为做iterator的节zcl点肯定不是主节点，下面为调试用
    * */
@@ -166,7 +197,6 @@ class MemoryChunkStore {
     block_set.push_back("/home/casa/storage/data/2");
     return block_set;
   }
-  //获得当前memory情况～～～  --han(做性能优化～～ )
 
   RetCode HasEnoughMemory();
 
@@ -179,6 +209,7 @@ class MemoryChunkStore {
   long currentMemory_;
   // 在存储进去buffer pool的时候要枷锁
   Lock lock_;
+  FreeChunk* fc_;
 
   pool<> chunk_pool_;
   pool<> block_pool_;

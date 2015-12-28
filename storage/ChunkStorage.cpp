@@ -92,7 +92,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
                                              chunk_info.length / block_size_,
                                              block_size_, chunk_id_);
       else
-        ret = NULL;  //问题点
+        ret = NULL;
       break;
     }
     case DISK: {
@@ -137,13 +137,8 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
         } else {
           /*The storage memory is full, some swap algorithm is needed here.
            * TODO: swap algorithm. I finish in applychunk().*/
-          printf("Failed to get memory chunk budege!\n");
           LOG(WARNING) << "Failed to get memory chunk budege!" << endl;
-          //          BlockManager::getInstance()->getMemoryChunkStore()->FreeChunk();
-
-          //          current_storage_level_ =
-          //          HDFS;//chunk_list_.setStorageLevel
-          //          assert(false);
+          assert(false);
         }
       }
 

@@ -31,6 +31,7 @@
 #include "../Debug.h"
 #include "./MemoryManager.h"
 #include "../Config.h"
+#include "../Resource/BufferManager.h"
 
 /**
  * According to number_of_chunks, construct chunk from partition and add into
@@ -43,6 +44,11 @@ PartitionStorage::PartitionStorage(const PartitionID& partition_id,
     : partition_id_(partition_id),
       number_of_chunks_(number_of_chunks),
       desirable_storage_level_(storage_level) {
+  if (number_of_chunks_ * CHUNK_SIZE / 1024 / 1024 >
+      BufferManager::getInstance()->getStorageMemoryBudegeInMilibyte() / 2)
+    MemoryChunkStore::getInstance()->SetFreeAlgorithm(0);
+  else
+    MemoryChunkStore::getInstance()->SetFreeAlgorithm(1);
   for (unsigned i = 0; i < number_of_chunks_; i++) {
     chunk_list_.push_back(new ChunkStorage(
         ChunkID(partition_id_, i), BLOCK_SIZE, desirable_storage_level_));
