@@ -55,6 +55,16 @@ namespace loader {
 class FileConnector;
 class DataInjector {
  public:
+  struct LoadTask {
+    std::string tuple_;
+    std::string file_name_;
+    uint64_t row_id_in_file_ = 0;
+    LoadTask(std::string tuple, std::string file_name, uint64_t row_id)
+        : tuple_(tuple), file_name_(file_name), row_id_in_file_(row_id) {}
+    LoadTask() = default;
+  };
+
+ public:
   //  DataInjector() {}
   /**
    * @brief Method description: get necessary info from table and init
@@ -80,6 +90,14 @@ class DataInjector {
    */
   RetCode LoadFromFile(vector<string> input_file_names, FileOpenFlag open_flag,
                        ExecutedResult* result, double sample_rate = 1.0);
+
+  RetCode LoadFromFileSingleThread(vector<string> input_file_names,
+                                   FileOpenFlag open_flag,
+                                   ExecutedResult* result, double sample_rate);
+
+  RetCode LoadFromFileMultiThread(vector<string> input_file_names,
+                                  FileOpenFlag open_flag,
+                                  ExecutedResult* result, double sample_rate);
 
   /**
    * @brief Method description: insert tuples into table
@@ -138,6 +156,17 @@ class DataInjector {
 
   string GenerateDataValidityInfo(const Validity& vali, TableDescriptor* table,
                                   int line, const string& file);
+  void AnnounceIAmLoading();
+
+  static void* HandleTuple(void* ptr);
+
+  RetCode SetTableState(FileOpenFlag open_flag, ExecutedResult* result);
+  RetCode CheckFiles(vector<string> input_file_names, ExecutedResult* result);
+  RetCode PrepareEverythingForLoading(vector<string> input_file_names,
+                                      FileOpenFlag open_flag,
+                                      ExecutedResult* result);
+
+  RetCode FinishJobAfterLoading(FileOpenFlag open_flag);
 
  public:
   static istream& GetTupleTerminatedBy(ifstream& ifs, string& res,
@@ -163,19 +192,29 @@ class DataInjector {
 
   string col_separator_;
   string row_separator_;
-  uint64_t row_id_;
+  uint64_t row_id_in_table_;
 
-  std::list<std::string> tuple_buffer_;
+  // support multi-thread
+  std::list<LoadTask> tuple_buffer_;
   Lock tuple_buffer_access_lock_;
   semaphore tuple_count_sem_in_buffer_;
-  bool data_has_error_ = false;
+
+  Lock row_id_lock_;
+  Lock** pj_buffer_access_lock_;
+  semaphore finished_thread_sem_;
+
   bool all_tuple_read_ = false;
+  RetCode multi_thread_status_ = rSuccess;
+  ExecutedResult* result_;
   /******************debug********************/
  public:
-  static double total_get_substr_time_;
-  static double total_check_string_time_;
-  static double total_to_value_time_;
-  static double total_to_value_func_time_;
+  static uint64_t total_get_substr_time_;
+  static uint64_t total_check_string_time_;
+  static uint64_t total_to_value_time_;
+  static uint64_t total_check_and_to_value_func_time_;
+  static uint64_t total_check_and_to_value_time_;
+  static uint64_t total_insert_time_;
+  static uint64_t total_add_time_;
 };
 
 } /* namespace loader */

@@ -28,8 +28,13 @@ using claims::common::rInvalidNullData;
 using claims::common::rTooLongData;
 using claims::common::rTooManyColumn;
 
+const bool kSchemaFixDebugLog = false;
+
+#define DLOG_SF(info) \
+  DLOG_IF(INFO, (kClaimsDebugLog) && (kSchemaFixDebugLog)) << info << endl;
+
 SchemaFix::SchemaFix(const std::vector<column_type>& col) : Schema(col) {
-  //	accum_offsets=new unsigned[columns.size()];	//new
+  // accum_offsets=new unsigned[columns.size()];  // new
   totalsize = 0;
   unsigned accumu = 0;
   for (unsigned i = 0; i < col.size(); i++) {
@@ -43,7 +48,7 @@ SchemaFix::SchemaFix(const SchemaFix& r) : Schema(r) {
   this->totalsize = r.totalsize;
 }
 SchemaFix::~SchemaFix() {
-  //	accum_offsets.~vector();
+  // accum_offsets.~vector();
 }
 
 unsigned SchemaFix::getTupleMaxSize() const { return totalsize; }
@@ -52,7 +57,8 @@ void SchemaFix::getColumnValue(unsigned index, void* src, void* desc) {
   assert(index < columns.size());
   assert(src != 0 && desc != 0);
 
-  columns[index].operate->assignment(accum_offsets[index] + (char*)src, desc);
+  columns[index].operate->assignment(
+      accum_offsets[index] + static_cast<char*>(src), desc);
 }
 
 unsigned SchemaFix::getColumnOffset(unsigned index) {
@@ -96,6 +102,7 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
   for (int i = 0; i < columns.size(); ++i) {
     GETCURRENTTIME(get_substr_time);
 
+    DLOG_SF("tuple size is " << text_tuple.length());
     if (pos != string::npos && text_tuple.length() == prev_pos) {
       // meet the first column without data
       pos = string::npos;
@@ -107,6 +114,9 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       } else {  // treated as warning
         WLOG(ret, "Data from File is lost from column whose index is " << i);
         columns[i].operate->SetDefault(text_column);  // no more need to check
+        DLOG_SF("after setting default, the value is "
+                << text_column << "  operate's nullable is "
+                << columns[i].operate->nullable);
         ret = rSuccess;
       }
     } else {
@@ -118,57 +128,58 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       } else {  // correct
         text_column = text_tuple.substr(prev_pos, pos - prev_pos);
         prev_pos = pos + attr_separator.length();
-        //        DLOG(INFO) << "after prev_pos adding, prev_pos :" << prev_pos
-        //                   << " pos:" << pos << endl;
+        DLOG_SF("after prev_pos adding, prev_pos :" << prev_pos
+                                                    << " pos:" << pos);
 
         GETCURRENTTIME(check_string_time);
         ret = columns[i].operate->CheckSet(text_column);
         if (rIncorrectData == ret || rInvalidNullData == ret) {  // error
           if (kSQL == raw_data_source) {  // treated as error
-            columns_validities.push_back(Validity(i, ret));
+            columns_validities.push_back(std::move(Validity(i, ret)));
             ELOG(ret, "Data from SQL is for column whose index is " << i);
             return ret;
           } else {  // treated as warning and set default
-            columns_validities.push_back(Validity(i, ret));
+            columns_validities.push_back(std::move(Validity(i, ret)));
             columns[i].operate->SetDefault(text_column);
             ret = rSuccess;
           }
         } else if (rTooLongData == ret) {  // data truncate warning
-          columns_validities.push_back(Validity(i, ret));
+          columns_validities.push_back(std::move(Validity(i, ret)));
           ret = rSuccess;
         } else if (rSuccess != ret) {  // other warnings
-          columns_validities.push_back(Validity(i, ret));
+          columns_validities.push_back(std::move(Validity(i, ret)));
           columns[i].operate->SetDefault(text_column);
           ret = rSuccess;
         }
-        DataInjector::total_check_string_time_ +=
-            GetElapsedTime(check_string_time);
+        __sync_add_and_fetch(&DataInjector::total_check_string_time_,
+                             GetElapsedTimeInUs(check_string_time));
       }
     }
-    DataInjector::total_get_substr_time_ += GetElapsedTime(get_substr_time);
-    //    DLOG(INFO) << "Before toValue, column data is " << text_column <<
-    //    endl;
+    uint64_t temp = GetElapsedTimeInUs(get_substr_time);
+    __sync_add_and_fetch(&DataInjector::total_get_substr_time_, temp);
+    LOG(INFO) << "get_substr time:" << temp << endl;
+
+    DLOG_SF("Before toValue, column data is " << text_column);
 
     GETCURRENTTIME(to_value_time);
     columns[i].operate->toValue(
         static_cast<char*>(binary_tuple) + accum_offsets[i],
         text_column.c_str());
 
-    //    DLOG(INFO) << "Original: "
-    //               << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
-    //               << "\t Transfer: "
-    //               << columns[i].operate->toString(binary_tuple +
-    //               accum_offsets[i])
-    //               << endl;
-    DataInjector::total_to_value_time_ += GetElapsedTime(to_value_time);
+    DLOG_SF("Original: " << text_tuple.substr(prev_pos, pos - prev_pos).c_str()
+                         << "\t Transfer: "
+                         << columns[i].operate->toString(binary_tuple +
+                                                         accum_offsets[i]));
+    temp = GetElapsedTimeInUs(to_value_time);
+    __sync_add_and_fetch(&DataInjector::total_to_value_time_, temp);
+    LOG(INFO) << "tovalue time:" << temp << endl;
   }
 
-  //  DLOG(INFO) << "after all tovalue, prev_pos :" << (prev_pos ==
-  //  string::npos)
-  //             << "prev_pos+1 :" << (prev_pos + 1 == string::npos)
-  //             << "npos :" << string::npos << " pos:" << pos
-  //             << " prev_pos:" << prev_pos
-  //             << " text_tuple's length:" << text_tuple.length() << endl;
+  DLOG_SF("after all tovalue, prev_pos :"
+          << (prev_pos == string::npos) << "prev_pos+1 :"
+          << (prev_pos + 1 == string::npos) << "npos :" << string::npos
+          << " pos:" << pos << " prev_pos:" << prev_pos
+          << " text_tuple's length:" << text_tuple.length());
   if (text_tuple.length() != prev_pos) {  // too many column data
     ret = rTooManyColumn;
     columns_validities.push_back(Validity(-1, ret));
@@ -180,8 +191,11 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       ret = rSuccess;
     }
   }
-  DataInjector::total_to_value_func_time_ +=
-      GetElapsedTime(to_value_func_time_);
+  uint64_t temp = GetElapsedTimeInUs(to_value_func_time_);
+  __sync_add_and_fetch(&DataInjector::total_check_and_to_value_func_time_,
+                       temp);
+
+  LOG(INFO) << "check_and_to_value func time:" << temp << endl;
   return ret;
 }
 
