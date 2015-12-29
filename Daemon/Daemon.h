@@ -12,10 +12,13 @@
 #include <list>
 #include "../common/Block/ResultSet.h"
 #include "../utility/lock.h"
+#include "../utility/lock_guard.h"
 
 #define EXECUTED_RESULT_STATUS_OK 0
 #define EXECUTED_RESULT_STATUS_ERROR 1
 #define NEWSQLINTERFACE
+
+using claims::utility::LockGuard;
 
 struct remote_command {
   std::string cmd;
@@ -30,6 +33,8 @@ struct ExecutedResult {
   std::string info_;
   std::string warning_;
   int warning_count_;
+
+  Lock append_lock_;
 
   ExecutedResult()
       : status_(0),
@@ -52,6 +57,13 @@ struct ExecutedResult {
     info_ = info;
   }
   void AppendWarning(string warning_info) {
+    if (++warning_count_ < kWarningShowMaxCount &&
+        warning_.length() + warning_info.length() < kWarningShowMaxLength)
+      warning_ += warning_info;
+  }
+
+  void AtomicAppendWarning(string warning_info) {
+    LockGuard<Lock> guard(append_lock_);
     if (++warning_count_ < kWarningShowMaxCount &&
         warning_.length() + warning_info.length() < kWarningShowMaxLength)
       warning_ += warning_info;
