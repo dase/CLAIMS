@@ -85,6 +85,8 @@ bool Config::enable_codegen;
 
 std::string Config::catalog_file;
 
+int Config::thread_pool_init_thread_num;
+
 Config *Config::getInstance() {
   if (instance_ == 0) {
     instance_ = new Config();
@@ -141,6 +143,8 @@ void Config::initialize() {
   catalog_file = getString("catalog_file", data_dir + "CATALOG");
 
   enable_codegen = getBoolean("enable_codegen", true);
+
+  thread_pool_init_thread_num = getInt("thread_pool_init_thread_num", 100);
 
 #ifdef DEBUG_Config
   print_configure();

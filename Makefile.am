@@ -10,7 +10,7 @@ AM_CPPFLAGS=-fPIC  -DTHERON_XS\
 #-L/usr/local/lib \
 #-I/usr/local/include
 AM_LDFLAGS=  -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system \
-	-lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -rdynamic -Wl,--no-as-needed -ldl -lglog
+	-lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic -lglog
 
 if OPT_TCMALLOC
 AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
@@ -55,6 +55,7 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
+	${THERON_HOME}/Lib/libtherond.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
@@ -62,7 +63,6 @@ LDADD =  \
 	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.so \
 	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
 	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
-	${THERON_HOME}/Lib/libtherond.a \
 	${GTEST_HOME}/libgtest.a \
 	${GLOG_HOME}/.libs/libglog.so.0 \
 	-lLLVMJIT -lLLVMX86Disassembler -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter \

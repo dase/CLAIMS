@@ -5,9 +5,10 @@
  *      Author: wangli
  */
 
-#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "Environment.h"
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
+#undef GLOG_NO_ABBREVIATED_SEVERITIES
 #include <libconfig.h++>
 #include <iostream>
 #include <sstream>
@@ -217,7 +218,7 @@ void Environment::destoryClientListener() {
 bool Environment::initializeThreadPool() {
   thread_pool_ = new ThreadPool();
   //	return thread_pool_->Thread_Pool_init(2*sysconf(_SC_NPROCESSORS_CONF));
-  return thread_pool_->Thread_Pool_init(100);
+  return thread_pool_->Thread_Pool_init(Config::thread_pool_init_thread_num);
 }
 
 IteratorExecutorSlave* Environment::getIteratorExecutorSlave() const {
