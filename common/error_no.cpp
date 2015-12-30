@@ -240,6 +240,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(
       rStmtHandlerCreateProjectionWithEmptyColumn,
       "Creating projection on table given with empty columns");
+  DefineErrorAndMessage(rCreateProjectionOnDelTableFailed,
+                        "Create projections on del table failed");
 
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
