@@ -13,9 +13,9 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD = ../Catalog/libcatalog.a \
-		../Catalog/stat/libstat.a \
-		../Loader/libloader.a \
+LDADD = ../catalog/libcatalog.a \
+		../catalog/stat/libstat.a \
+		../loader/libloader.a \
 		../common/libcommon.a \
 		../common/expression/libexpression.a \
 		../utility/libutility.a \

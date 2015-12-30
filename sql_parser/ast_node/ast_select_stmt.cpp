@@ -414,15 +414,15 @@ RetCode AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
                                                       ->getProjectoin(0),
                                                   table_alias_);
     Attribute filter_base =
-        base_table->GetPlanContext().GetAttribute(table_alias_ + ".row_id");
+        base_table->GetPlanContext().plan_partitioner_.get_partition_key();
     LogicalOperator* del_table =
         new LogicalScan(Environment::getInstance()
                             ->getCatalog()
                             ->getTable(table_name_ + "_DEL")
                             ->getProjectoin(0),
                         table_alias_ + "_DEL");
-    Attribute filter_del = del_table->GetPlanContext().GetAttribute(
-        table_alias_ + "_DEL.row_id_DEL");
+    Attribute filter_del =
+        del_table->GetPlanContext().plan_partitioner_.get_partition_key();
 
     assert(filter_base.attrName != "NULL");
     assert(filter_del.attrName != "NULL");
