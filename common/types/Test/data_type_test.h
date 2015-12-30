@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include <fstream>
 #include "../NValue.hpp"
+#include "../decimal.h"
+
+using claims::common::Decimal;
+
 #include "../../Schema/SchemaFix.h"
 
 //#include "../../Comparator.h"
@@ -104,6 +108,19 @@ std::string test_decimal_add(char* left,char* right,int number_of_fractions){
 	test_decimal_to_value4();
 	test_decimal_to_value5();
 	test_decimal_add1();
+}
+
+void test_new_decimal()
+{
+
+}
+ 
+TEST(DATA_TYPE,NEW_DECIMAL)
+{
+ //test_new_decimal()
+ Decimal a();
+ cout << "sizeof Decimal:" << sizeof(Decimal) << endl;
+
 }
 
 TEST(DATA_TYPE,DECIMAL_TO_STRING){

@@ -112,7 +112,7 @@ inline void *string_to_string(void *value, void *tovalue) {
   return tovalue;
 }
 inline void *string_to_decimal(void *value, void *tovalue) {
-  *(NValue *)tovalue = NValue::getDecimalValueFromString(string((char *)value));
+  *(Decimal *)tovalue = Decimal( 65, 30,string((char *)value));
   return tovalue;
 }
 inline void *string_to_boolean(void *value, void *tovalue) {

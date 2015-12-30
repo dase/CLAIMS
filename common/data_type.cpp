@@ -476,11 +476,20 @@ RetCode OperateUSmallInt::CheckSet(string& str) const {
  */
 RetCode OperateDecimal::CheckSet(string& str) const {
   RetCode ret = rSuccess;
+  Decimal decimal(this->precision_, this->scale_, str);
   if (str == "" && nullable) return rSuccess;
   if (str == "" && !nullable) {
     ret = rInvalidNullData;
     ELOG(ret, str);
     return ret;
+  }
+  if(decimal.StringToDecimal(str))
+  {
+	ret = rSuccess;
+  }
+  else
+  {
+	ret = rInvalidNullData;
   }
   return ret;
 }
