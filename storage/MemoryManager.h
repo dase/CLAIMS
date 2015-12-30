@@ -56,36 +56,121 @@ using std::endl;
 using boost::pool;
 
 /**
- * @brief Method description: HdfsBlock is a struct in
- * @param
- * @return
- * @details   (additional)
+ * @brief Method description: the struct of chunk, include the start_address,
+ * the length of chunk, and the life time in the memory.
  */
-
 typedef struct HdfsBlock {
   HdfsBlock() : hook(NULL), length(0), lifetime_(0) {}
   HdfsBlock(void* add, int length) : hook(add), length(length), lifetime_(0) {}
   void* hook;
-  /*记录每个block大小也就是文件长度*/
   // record every block that is the length of file.
   int length;
   // whether is serialized
-  // 是否被序列化过
   // the time stay in memory，this value is used to LIRS.
   int lifetime_;
-  //生存周期,用于LRU
 } HdfsInMemoryChunk;
 
-/*
- * memorystore只是负责数据的存取，而和数据的管理和为什么存储是没有关系的，
- * 在负责数据存取的同时，put的时候还要看看内存够不够，如果不够就要开始内存
- * 空间的移除，在此有很多的策略选择，要将memstore写成单例模式
- * */
+/**
+ * @brief Method description: memorystore only responsible for access data,
+ * but this is noting to data management and how to store. when accessing the
+ * data, it must check out how many space in memory. if no enough memory, we
+ * should choose the policy to remove the space. There are a lot of strategy
+ * selections, so design memorystore in the pattern of singleton.
+ */
 class MemoryChunkStore {
  public:
-  static MemoryChunkStore* getInstance();
+  /**
+   * @brief: the implement of the  singleton pattern
+   */
+  static MemoryChunkStore* GetInstance();
   MemoryChunkStore();
   virtual ~MemoryChunkStore();
+
+  /**
+   * @brief Method description: judge whether the chunk in the chunk_list_
+   * @param ChunkID: the only token.
+   * @return True: the chunk in the chunk_list_. False: or not.
+   */
+  bool IsExist(ChunkID& chunk_id);
+
+  /**
+   * @brief Method description: apply the space of memory for chunk .if the
+   * system is no enough memory, it will free other chunk before malloc the new
+   * chunk in the pool of memory. the policy is decided before construct the
+   * partition storage.
+   * @param ChunkID: the only token.
+   * @param start_address: if the start_address is null, it will assign the new
+   * space for it. if not, just skip the step of malloc.
+   * @return True: apply successful. False: Error occurs when mmealign. it
+   * happened in the step of malloc, you should check out the reminder of
+   * operation system's memory.
+   */
+  bool ApplyChunk(ChunkID chunk_id, void*& start_address);
+
+  /**
+   * @brief Method description: return the resource which be occupied by each of
+   * chunk_list_
+   * @param ChunkID: the only token.
+   */
+  void ReturnChunk(const ChunkID& chunk_id);
+
+  /**
+   * @brief Method description: update the information of chunk info, and avoid
+   * the waste of resource.
+   * @param ChunkID: the only token.
+   * @param chunk_info: use for replace.
+   */
+  bool UpdateChunkInfo(const ChunkID& chunk_id,
+                       const HdfsInMemoryChunk& chunk_info);
+
+  /**
+   * @brief: the method is that increasing the time component.
+   */
+  void WasteTime() {
+    for (auto& i : chunk_list_) i.second.lifetime_++;
+  };
+
+  /**
+   * @brief: the base class for the method of free chunk.Aimed to polymorphic.
+   * the implement of the strategy pattern.
+   */
+  class FreeChunk {
+   public:
+    FreeChunk(){};
+    virtual ~FreeChunk(){};
+    virtual void WayOfFreeChunk(){};
+  };
+  class FreeChunkLRU : public FreeChunk {
+   public:
+    FreeChunkLRU(){};
+    ~FreeChunkLRU(){};
+    void WayOfFreeChunk() override;
+  };
+
+  class FreeChunkRandom : public FreeChunk {
+   public:
+    FreeChunkRandom(){};
+    ~FreeChunkRandom(){};
+    void WayOfFreeChunk() override;
+  };
+  /**
+   * @brief Method description: Currently according to the partition apply the
+   * space, we choose the best policy to remove chunk.
+   * @param flag:0:Random;1:LRU;
+   */
+  // TODO(han): Add new algorithm in the future;
+  void SetFreeAlgorithm(int flag) {
+    if (NULL != fc_) {
+      delete fc_;
+      fc_ = NULL;
+    }
+    if (flag == 1)
+      fc_ = new FreeChunkLRU();
+    else
+      fc_ = new FreeChunkRandom();
+  }
+
+  RetCode HasEnoughMemory();
 
   /* todo:这里还有可能是直接存储对象或者存储将对象序列化之后的结果两种
    * 在spark中要估计结果，所以有一个hdfsBlock中的length变量，在此留接口
@@ -97,16 +182,6 @@ class MemoryChunkStore {
     tryToPut(chunkId, value);
     return true;
   };
-
-  bool IsExist(ChunkID& chunk_id);
-
-  bool applyChunk(ChunkID chunk_id, void*& start_address);
-
-  void returnChunk(const ChunkID& chunk_id);
-
-  bool updateChunkInfo(const ChunkID& chunk_id,
-                       const HdfsInMemoryChunk& chunk_info);
-
   void* getChunk(string blockId) {
     map<string, HdfsBlock>::iterator it_;
     it_ = bufferpool_.find(blockId);
@@ -114,26 +189,12 @@ class MemoryChunkStore {
       return it_->second.hook;
     }
   };
-  bool getChunk(const ChunkID& chunk_id, HdfsInMemoryChunk& chunk_info);
+  bool GetChunk(const ChunkID& chunk_id, HdfsInMemoryChunk& chunk_info);
 
-  bool putChunk(const ChunkID& chunk_id, HdfsInMemoryChunk& chunk_info);
-
-  bool remove(string blockId) { return true; };
-
-  bool contains(string blockId) { return false; };
-
-  unsigned getSize(string blockId) { return 0; };
-
-  void ClearTime() {
-    for (auto& i : chunk_list_) i.second.lifetime_ = 0;
-  };
-  void WasteTime() {
-    for (auto& i : chunk_list_) i.second.lifetime_++;
-  };  //用于增加时间成分的。 --han
-
+  bool PutChunk(const ChunkID& chunk_id, HdfsInMemoryChunk& chunk_info);
   /*
-       * 将block为单位放到buffer pool中
-       * */
+   * 将block为单位放到buffer pool中
+   */
   bool tryToPut(string chunkId, void* value) {
     if (ensureFreeSpace()) {
       lock_.acquire();
@@ -152,42 +213,6 @@ class MemoryChunkStore {
     // todo: 基于LRU的column-based交换
     return true;
   }
-
-  class FreeChunk {
-    friend MemoryChunkStore;
-
-   public:
-    FreeChunk(){};
-    virtual ~FreeChunk(){};
-    virtual void WayOfFreeChunk(){};
-  };
-  //选择内存池哪些应该被释放。基于LRU。 --han
-  class FreeChunkLRU : public FreeChunk {
-   public:
-    FreeChunkLRU(){};
-    ~FreeChunkLRU(){};
-    void WayOfFreeChunk() override;
-  };
-
-  class FreeChunkRandom : public FreeChunk {
-    friend MemoryChunkStore;
-
-   public:
-    FreeChunkRandom(){};
-    ~FreeChunkRandom(){};
-    void WayOfFreeChunk() override;
-  };
-
-  void SetFreeAlgorithm(int flag) {
-    if (NULL != fc_) {
-      delete fc_;
-      fc_ = NULL;
-    }
-    if (flag == 1)
-      fc_ = new FreeChunkLRU();
-    else
-      fc_ = new FreeChunkRandom();
-  }
   /* 有这个函数提供一个文件到block的映射,这个地方可以用iterator模式将其从
    * master端获取，因为做iterator的节zcl点肯定不是主节点，下面为调试用
    * */
@@ -198,23 +223,28 @@ class MemoryChunkStore {
     return block_set;
   }
 
-  RetCode HasEnoughMemory();
-
  private:
-  map<string, HdfsBlock> bufferpool_;
+  static MemoryChunkStore* instance_;
+  /**
+   * @brief: The logical struct about the chunk in the memory
+   */
   boost::unordered_map<ChunkID, HdfsInMemoryChunk> chunk_list_;
-  // 本节点能使用的最大的内存，以兆为单位
-  long maxMemory_;
-  // 现在使用了多少内存？以兆为单位
-  long currentMemory_;
-  // 在存储进去buffer pool的时候要枷锁
+  /**
+   * @brief: when you store in the pool, you should lock to avoid the deadlock.
+   */
   Lock lock_;
+
+  /**
+   * @brief: Instantiate the fc_ in different way to choose the policy.
+   */
   FreeChunk* fc_;
 
+  /**
+   * @brief: the memory pool is used to the strategy of remove the chunk.
+   */
   pool<> chunk_pool_;
+  map<string, HdfsBlock> bufferpool_;
   pool<> block_pool_;
-
-  static MemoryChunkStore* instance_;
 };
 
 #endif  //  STORAGE_MEMORYMANAGER_H_

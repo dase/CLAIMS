@@ -12,7 +12,7 @@
 
 using std::__basic_file;
 using std::basic_fstream;
-BufferManager* BufferManager::instance_ = 0;
+BufferManager* BufferManager::instance_ = NULL;
 BufferManager::BufferManager() {
   totol_capacity_ = (unsigned long)1024 * 1024 * 1024 * 80;
   storage_budget_max_ = (unsigned long)1024 * 1024 * 1024 * 4;
@@ -23,19 +23,19 @@ BufferManager::BufferManager() {
   intermediate_buffer_used_ = 0;
   page_size = sysconf(_SC_PAGESIZE);
   total_memory = sysconf(_SC_PHYS_PAGES);
-  memory_storage_ = MemoryChunkStore::getInstance();
+  memory_storage_ = MemoryChunkStore::GetInstance();
   logging_ = new BufferManagerLogging();
   logging_->log("Initialized!");
 }
 
 BufferManager::~BufferManager() {
   // TODO Auto-generated destructor stub
-  instance_ = 0;
+  instance_ = NULL;
   delete logging_;
 }
 
 BufferManager* BufferManager::getInstance() {
-  if (instance_ == 0) {
+  if (NULL == instance_) {
     instance_ = new BufferManager();
   }
   return instance_;

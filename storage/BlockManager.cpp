@@ -18,10 +18,10 @@ using claims::common::rLoadFromHdfsOpenFailed;
 using claims::common::rLoadFromDiskOpenFailed;
 using claims::common::rUnbindPartitionFailed;
 
-BlockManager* BlockManager::blockmanager_ = 0;
+BlockManager* BlockManager::blockmanager_ = NULL;
 
 BlockManager* BlockManager::getInstance() {
-  if (blockmanager_ == 0) {
+  if (NULL == blockmanager_) {
     blockmanager_ = new BlockManager();
   }
   return blockmanager_;
@@ -38,10 +38,10 @@ BlockManager::BlockManager() {
   logging_ = new StorageManagerLogging();
   logging_->log("BlockManagerSlave is initialized. The ActorName=%s",
                 actor_name.str().c_str());
-  memstore_ = MemoryChunkStore::getInstance();
+  memstore_ = MemoryChunkStore::GetInstance();
 }
 BlockManager::~BlockManager() {
-  blockmanager_ = 0;
+  blockmanager_ = NULL;
   delete actor_;
   delete framework_;
   delete logging_;
@@ -55,7 +55,7 @@ void BlockManager::initialize() {
   // 读配置文件中的配置，然后根据是否是master注册
   // 1，建两个存储，一个是内存的，一个磁盘的
   diskstore_ = new DiskStore(DISKDIR);
-  memstore_ = MemoryChunkStore::getInstance();
+  memstore_ = MemoryChunkStore::GetInstance();
 
   /// the version written by zhanglei/////////////////////////////////
   //	blockManagerId_=new BlockManagerId();

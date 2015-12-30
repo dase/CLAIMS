@@ -78,7 +78,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
   lock_.acquire();
   HdfsInMemoryChunk chunk_info;
   if (current_storage_level_ == MEMORY &&
-      !BlockManager::getInstance()->getMemoryChunkStore()->getChunk(
+      !BlockManager::getInstance()->getMemoryChunkStore()->GetChunk(
           chunk_id_, chunk_info)) {
     current_storage_level_ = HDFS;
     cout << "clean dirty data" << endl;
@@ -86,7 +86,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
   }  //判断之前被free调的chunk，脏数据的storage——level修改。
   switch (current_storage_level_) {
     case MEMORY: {
-      if (BlockManager::getInstance()->getMemoryChunkStore()->getChunk(
+      if (BlockManager::getInstance()->getMemoryChunkStore()->GetChunk(
               chunk_id_, chunk_info))
         ret = new InMemoryChunkReaderItetaor(chunk_info.hook, chunk_info.length,
                                              chunk_info.length / block_size_,
@@ -103,7 +103,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
     case HDFS: {
       if (desirable_storage_level_ == MEMORY) {
         chunk_info.length = CHUNK_SIZE;
-        if (BlockManager::getInstance()->getMemoryChunkStore()->applyChunk(
+        if (BlockManager::getInstance()->getMemoryChunkStore()->ApplyChunk(
                 chunk_id_, chunk_info.hook)) {
           /* there is enough memory storage space, so the storage level can be
            * shifted.*/
@@ -119,7 +119,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
           * chunk_info.length<=0 means that either the file does not exist or
           * the current chunk_id exceeds the actual size of the file.
              */
-            BlockManager::getInstance()->getMemoryChunkStore()->returnChunk(
+            BlockManager::getInstance()->getMemoryChunkStore()->ReturnChunk(
                 chunk_id_);
             ret = NULL;
             break;
@@ -128,7 +128,7 @@ ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
 
           /* update the chunk info in the Chunk store in case that the
            * chunk_info is updated.*/
-          BlockManager::getInstance()->getMemoryChunkStore()->updateChunkInfo(
+          BlockManager::getInstance()->getMemoryChunkStore()->UpdateChunkInfo(
               chunk_id_, chunk_info);
           ret = new InMemoryChunkReaderItetaor(
               chunk_info.hook, chunk_info.length,

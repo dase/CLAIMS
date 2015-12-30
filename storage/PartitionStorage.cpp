@@ -35,7 +35,9 @@
 
 /**
  * According to number_of_chunks, construct chunk from partition and add into
- * the chunk_list_. Meantime, you can get specific information about chunk.
+ * the chunk_list_. Meantime, you can get specific information about chunk. when
+ * number_of_chunks more than storage_max_bugdege, you should choose the random
+ * way to remove the chunk which in the memory. or not, choose LRU.
  */
 PartitionStorage::PartitionStorage(const PartitionID& partition_id,
                                    const unsigned& number_of_chunks,
@@ -46,9 +48,9 @@ PartitionStorage::PartitionStorage(const PartitionID& partition_id,
       desirable_storage_level_(storage_level) {
   if (number_of_chunks_ * CHUNK_SIZE / 1024 / 1024 >
       BufferManager::getInstance()->getStorageMemoryBudegeInMilibyte() / 2)
-    MemoryChunkStore::getInstance()->SetFreeAlgorithm(0);
+    MemoryChunkStore::GetInstance()->SetFreeAlgorithm(0);
   else
-    MemoryChunkStore::getInstance()->SetFreeAlgorithm(1);
+    MemoryChunkStore::GetInstance()->SetFreeAlgorithm(1);
   for (unsigned i = 0; i < number_of_chunks_; i++) {
     chunk_list_.push_back(new ChunkStorage(
         ChunkID(partition_id_, i), BLOCK_SIZE, desirable_storage_level_));
@@ -73,7 +75,7 @@ void PartitionStorage::UpdateChunksWithInsertOrAppend(
     const PartitionID& partition_id, const unsigned& number_of_chunks,
     const StorageLevel& storage_level) {
   if (!chunk_list_.empty()) {
-    MemoryChunkStore::getInstance()->returnChunk(
+    MemoryChunkStore::GetInstance()->ReturnChunk(
         chunk_list_.back()->GetChunkID());
     chunk_list_.back()->SetCurrentStorageLevel(HDFS);
   }
@@ -91,9 +93,9 @@ void PartitionStorage::UpdateChunksWithInsertOrAppend(
 void PartitionStorage::RemoveAllChunks(const PartitionID& partition_id) {
   if (!chunk_list_.empty()) {
     vector<ChunkStorage*>::iterator iter = chunk_list_.begin();
-    MemoryChunkStore* mcs = MemoryChunkStore::getInstance();
+    MemoryChunkStore* mcs = MemoryChunkStore::GetInstance();
     for (; iter != chunk_list_.end(); iter++) {
-      mcs->returnChunk((*iter)->GetChunkID());
+      mcs->ReturnChunk((*iter)->GetChunkID());
     }
     chunk_list_.clear();
     number_of_chunks_ = 0;
@@ -153,7 +155,7 @@ bool PartitionStorage::AtomicPartitionReaderIterator::NextBlock(
     BlockStreamBase*& block) {
   lock_.acquire();
   ChunkReaderIterator::block_accessor* ba = NULL;
-  if (chunk_it_ != 0 && chunk_it_->GetNextBlockAccessor(ba)) {
+  if (NULL != chunk_it_ && chunk_it_->GetNextBlockAccessor(ba)) {
     lock_.release();
     ba->GetBlock(block);
     return true;

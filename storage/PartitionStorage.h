@@ -141,8 +141,7 @@ class PartitionStorage {
   /**
    * @brief Method description: Generate the iterator in iterator
    * pattern. Different from PartitionReaderiterator, it don't copy next block
-   * one by one, just using the block_accessor that store the point of block to
-   * assign.
+   * one by one, just using the block_accessor that store the point of block.
    */
   PartitionStorage::PartitionReaderIterator* CreateAtomicReaderIterator();
 
