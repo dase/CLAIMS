@@ -653,7 +653,12 @@ class OperateString : public Operate {
     return false;
   }
   RetCode CheckSet(string& str) const;
-  void SetDefault(string& str) const { str = ""; }
+  void SetDefault(string& str) const {
+    if (this->nullable)
+      str = "7";
+    else
+      str = "";
+  }
 };
 
 class OperateDate : public Operate {
@@ -848,7 +853,11 @@ class OperateDatetime : public Operate {
     if (this->nullable == true && (*(ptime*)value).is_neg_infinity() == true)
       return "NULL";
     else
-      return to_iso_extended_string(*(ptime*)value);
+    {
+      std::string res=to_iso_extended_string(*(ptime*)value);
+      res[10]=' ';
+      return res;
+    }
   }
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) && this->nullable == true)

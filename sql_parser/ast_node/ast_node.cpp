@@ -92,10 +92,9 @@ void GetJoinedRoot(map<string, AstNode*> table_joined_root,
                    AstNode* joined_root) {
   return;
 }
-RetCode AstNode::GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
-                                  LogicalOperator* left_plan,
-                                  LogicalOperator* right_plan,
-                                  const set<AstNode*>& equal_join_condition) {
+RetCode AstNode::GetEqualJoinPair(
+    vector<LogicalEqualJoin::JoinPair>& join_pair, LogicalOperator* left_plan,
+    LogicalOperator* right_plan, const vector<AstNode*>& equal_join_condition) {
   for (auto it = equal_join_condition.begin(); it != equal_join_condition.end();
        ++it) {
     AstExprCmpBinary* equal_condi = reinterpret_cast<AstExprCmpBinary*>(*it);
@@ -125,7 +124,7 @@ RetCode AstNode::GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
   return rSuccess;
 }
 RetCode AstNode::GetFilterCondition(vector<ExprNode*>& condition,
-                                    const set<AstNode*>& normal_condition,
+                                    const vector<AstNode*>& normal_condition,
                                     LogicalOperator* logic_plan) {
   RetCode ret = rSuccess;
   ExprNode* expr_node = NULL;
@@ -297,6 +296,7 @@ RetCode SemanticContext::AddTableColumn(
        it_column != column_to_table_.end(); ++it_column) {
     for (auto it = column_to_table.begin(); it != column_to_table.end(); ++it) {
       if (it_column->first == it->first && it_column->second == it->second) {
+        ELOG(rColumnIsAmbiguousToExistedColumn, "");
         return rColumnIsAmbiguousToExistedColumn;
       }
     }
@@ -377,7 +377,11 @@ RetCode SemanticContext::RebuildTableColumn(set<AstNode*>& aggregation) {
   if (rSuccess != ret) {
     return ret;
   }
-  ret = AddNewTableColumn(groupby_attrs_, false);
+  set<AstNode*> group_nodes;
+  for (int i = 0; i < groupby_attrs_.size(); ++i) {
+    group_nodes.insert(groupby_attrs_[i]);
+  }
+  ret = AddNewTableColumn(group_nodes, false);
   if (rSuccess != ret) {
     return ret;
   }
@@ -395,6 +399,7 @@ RetCode SemanticContext::GetAliasColumn(
     const string& alias, multimap<string, string>& column_to_table) {
   for (auto it = column_to_table_.begin(); it != column_to_table_.end(); ++it) {
     if (column_to_table_.count(it->first) > 1) {
+      ELOG(rColumnIsAmbiguousAfterAlias, "");
       return rColumnIsAmbiguousAfterAlias;
     }
     column_to_table.insert(make_pair(it->first, alias));
@@ -408,6 +413,7 @@ RetCode SemanticContext::AddAggregation(AstNode* agg_node) {
   bool exist = false;
   for (auto it = aggregation_.begin(); it != aggregation_.end(); ++it) {
     if (agg_node->expr_str_ == "") {
+      ELOG(rAggNodeExprStrIsNULL, "");
       return rAggNodeExprStrIsNULL;
     }
     if (agg_node->expr_str_ == (*it)->expr_str_) {
@@ -423,12 +429,10 @@ RetCode SemanticContext::AddAggregation(AstNode* agg_node) {
   return rSuccess;
 }
 RetCode SemanticContext::AddGroupByAttrs(AstNode* groupby_node) {
-  if (groupby_attrs_.count(groupby_node) > 0) {
-    return rSuccess;
-  }
   bool exist = false;
   for (auto it = groupby_attrs_.begin(); it != groupby_attrs_.end(); ++it) {
     if (groupby_node->expr_str_ == "") {
+      ELOG(rGroupbyNodeExprStrIsNULL, "");
       return rGroupbyNodeExprStrIsNULL;
     }
     if (groupby_node->expr_str_ == (*it)->expr_str_) {
@@ -439,7 +443,7 @@ RetCode SemanticContext::AddGroupByAttrs(AstNode* groupby_node) {
   if (exist) {
     LOG(INFO) << "eliminate one groupby node" << endl;
   } else {
-    groupby_attrs_.insert(groupby_node);
+    groupby_attrs_.push_back(groupby_node);
   }
   return rSuccess;
 }
@@ -459,7 +463,7 @@ RetCode SemanticContext::AddSelectAttrs(AstNode* select_node) {
   //    }
   //  }
   if (exist) {
-    LOG(ERROR) << "alias confict in one select node" << endl;
+    ELOG(rAliasConfictInSelectNode, "");
     return rAliasConfictInSelectNode;
   } else {
     select_attrs_.insert(select_node);
@@ -467,8 +471,9 @@ RetCode SemanticContext::AddSelectAttrs(AstNode* select_node) {
   return rSuccess;
 }
 set<AstNode*> SemanticContext::get_aggregation() { return aggregation_; }
-set<AstNode*> SemanticContext::get_groupby_attrs() {
-  GetUniqueAggAttr(groupby_attrs_);
+vector<AstNode*> SemanticContext::get_groupby_attrs() {
+  // due to groupby_attrs_ set => vector
+  //  GetUniqueAggAttr(groupby_attrs_);
   return groupby_attrs_;
 }
 set<AstNode*> SemanticContext::get_select_attrs() { return select_attrs_; }
@@ -504,15 +509,15 @@ bool PushDownConditionContext::IsTableSubSet(set<string>& expr_tables,
   }
   return true;
 }
-void PushDownConditionContext::SetCondition(set<AstNode*>& equal_join_condi,
-                                            set<AstNode*>& normal_condi) {
+void PushDownConditionContext::SetCondition(vector<AstNode*>& equal_join_condi,
+                                            vector<AstNode*>& normal_condi) {
   for (int i = 0; i < sub_expr_info_.size(); ++i) {
     if (sub_expr_info_[i]->is_set == false &&
         IsTableSubSet(sub_expr_info_[i]->ref_table_, from_tables_)) {
       if (kIsEqualCondition == sub_expr_info_[i]->sub_expr_type_) {
-        equal_join_condi.insert(sub_expr_info_[i]->sub_expr_);
+        equal_join_condi.push_back(sub_expr_info_[i]->sub_expr_);
       } else {
-        normal_condi.insert(sub_expr_info_[i]->sub_expr_);
+        normal_condi.push_back(sub_expr_info_[i]->sub_expr_);
       }
       sub_expr_info_[i]->is_set = true;
     }

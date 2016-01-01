@@ -354,6 +354,9 @@ void LogicalQueryPlanRoot::GetColumnHeader(
   for (int i = 0; i < str_upper.length(); i++) {
     if (isalpha(str_upper[i])) {
       str_upper[i] = toupper(str_upper[i]);
+    } else if (str_upper[i] == '\n' || str_upper[i] == '\t') {
+      raw_sql_[i] = ' ';
+      str_upper[i] = ' ';
     }
   }
   int end = str_upper.find(" FROM ");
@@ -427,6 +430,15 @@ std::vector<std::string> LogicalQueryPlanRoot::GetAttributeName(
 void LogicalQueryPlanRoot::Print(int level) const {
   cout << setw(level * kTabSize) << " "
        << "Root" << endl;
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
   child_->Print(level);
 }
 
