@@ -1,12 +1,30 @@
 /*
+ * Copyright [2012-2015] DaSE@ECNU
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  * physical_operator.cpp
  *
  *  Created on: Mar 8, 2014
- *      Author: wangli
+ *      Author: wangli,fangzhuhe
  */
 
 #include "../physical_operator/physical_operator.h"
 
+#include <glog/logging.h>
 #include "../utility/CpuScheduler.h"
 #include "../Executor/expander_tracker.h"
 namespace claims {
@@ -59,6 +77,7 @@ void PhysicalOperator::RegisterExpandedThreadToAllBarriers() {
 
 void PhysicalOperator::UnregisterExpandedThreadToAllBarriers(
     unsigned barrier_index) {
+  lock_number_of_registered_expanded_threads_.acquire();
   number_of_registered_expanded_threads_--;
   lock_number_of_registered_expanded_threads_.release();
   for (unsigned i = barrier_index; i < number_of_barrier_; i++) {
@@ -71,14 +90,20 @@ void PhysicalOperator::BarrierArrive(unsigned barrier_index) {
   barrier_[barrier_index].Arrive();
 }
 void PhysicalOperator::DestoryAllContext() {
-  for (boost::unordered_map<pthread_t, ThreadContext*>::const_iterator it =
-           context_list_.begin();
-       it != context_list_.cend(); it++) {
-    delete it->second;
+  for (auto it = context_list_.begin(); it != context_list_.cend(); ++it) {
+    if (NULL != it->second) {
+      delete it->second;
+      it->second = NULL;
+    }
   }
+  context_list_.clear();
   for (int i = 0; i < free_context_list_.size(); i++) {
-    delete free_context_list_[i];
+    if (NULL != free_context_list_[i]) {
+      delete free_context_list_[i];
+      free_context_list_[i] = NULL;
+    }
   }
+  free_context_list_.clear();
 }
 // void ExpandableBlockStreamIteratorBase::destorySelfContext(){
 //	context_lock_.acquire();
@@ -95,9 +120,11 @@ void PhysicalOperator::DestoryAllContext() {
 void PhysicalOperator::InitContext(ThreadContext* tc) {
   context_lock_.acquire();
   /* assert that no context is available for current thread*/
-  assert(context_list_.find(pthread_self()) == context_list_.cend());
+  pthread_t pid = pthread_self();
+  // BUG(FZH):NOTE thread could be reused!!!!!!!!!!
+  assert(context_list_.find(pid) == context_list_.cend());
 
-  context_list_[pthread_self()] = tc;
+  context_list_[pid] = tc;
   //	printf("Thread %llx is inited! context:%llx\n",pthread_self(),tc);
   context_lock_.release();
 }
@@ -108,7 +135,7 @@ ThreadContext* PhysicalOperator::GetContext() {
   if ((it = context_list_.find(pthread_self())) != context_list_.cend()) {
     ret = it->second;
   } else {
-    ret = 0;
+    ret = NULL;
   }
   //	printf("Thread %lx is poped!\n",pthread_self());
   context_lock_.release();
@@ -124,7 +151,10 @@ void PhysicalOperator::SetReturnStatus(bool ret) { ret = open_ret_ && ret; }
 
 ThreadContext* PhysicalOperator::CreateOrReuseContext(context_reuse_mode crm) {
   ThreadContext* target = GetFreeContext(crm);
-  if (target != 0) return target;
+  if (target != NULL) {
+    return target;
+  }
+
   target = CreateContext();
   target->set_locality_(getCurrentCpuAffility());
   InitContext(target);
@@ -135,10 +165,10 @@ bool PhysicalOperator::GetReturnStatus() const { return open_ret_; }
 
 ThreadContext* PhysicalOperator::GetFreeContext(context_reuse_mode crm) {
   int32_t locality = getCurrentCpuAffility();
-  for (int i = 0; i < free_context_list_.size(); i++) {
+  for (int i = 0; i < free_context_list_.size(); ++i) {
     switch (crm) {
       case crm_no_reuse:
-        return 0;
+        return NULL;
       case crm_core_sensitive:
         if (locality == free_context_list_[i]->get_locality_())
           return free_context_list_[i];
@@ -150,11 +180,14 @@ ThreadContext* PhysicalOperator::GetFreeContext(context_reuse_mode crm) {
         break;
       case crm_anyway:
         return free_context_list_[i];
-      default:
+      default: {
+        LOG(ERROR) << "context_reuse_mode isn't setted!";
+        assert(false);
         break;
+      }
     }
   }
-  return 0;
+  return NULL;
 }
 }  // namespace physical_operator
 }  // namespace claims

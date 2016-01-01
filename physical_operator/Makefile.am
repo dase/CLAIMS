@@ -47,7 +47,8 @@ libphysicalqueryplan_a_SOURCES = \
 	exchange_sender_materialized.cpp 		exchange_sender_materialized.h \
 	physical_filter.cpp 					physical_filter.h \
 	physical_projection_scan.cpp 			physical_projection_scan.h \
-	physical_nest_loop_join.h				physical_nest_loop_join.cpp	
+	physical_nest_loop_join.h				physical_nest_loop_join.cpp	\
+	physical_delete_filter.h                physical_delete_filter.cpp
 			
 SUBDIRS = 
 DIST_SUBDIRS = 

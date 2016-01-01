@@ -43,9 +43,9 @@
 #include "../common/hash.h"
 #include "../common/hashtable.h"
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/expression/expr_node.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
-
 namespace claims {
 namespace physical_operator {
 
@@ -106,7 +106,6 @@ class PhysicalHashJoin : public PhysicalOperator {
     // hashtable
     unsigned hashtable_bucket_num_;
     unsigned hashtable_bucket_size_;
-
     unsigned block_size_;
   };
   PhysicalHashJoin(State state);
@@ -176,7 +175,7 @@ class PhysicalHashJoin : public PhysicalOperator {
   /* payload_right map to the output*/
   std::map<unsigned, unsigned> payload_right_to_output_;
 
-  PartitionFunction* hash_;
+  PartitionFunction* hash_func_;
   BasicHashTable* hashtable_;
   Schema* hashtable_schema_;
 

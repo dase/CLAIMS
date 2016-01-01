@@ -33,23 +33,25 @@
 #include <string>
 #include <vector>
 #include <map>
+
+#include "../common/expression/expr_node.h"
 #include "../common/Mapping.h"
-#include "../common/ExpressionItem.h"
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
 #include "../common/Expression/qnode.h"
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../logical_operator/logical_operator.h"
 #include "../logical_operator/Requirement.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_project.h"
-
+using claims::common::ExprNode;
 namespace claims {
 namespace logical_operator {
 
 class LogicalProject : public LogicalOperator {
  public:
   LogicalProject(LogicalOperator* child, vector<QNode*> expression_tree);
+  LogicalProject(LogicalOperator* child, vector<ExprNode*> expression_list);
 
   virtual ~LogicalProject();
 
@@ -85,20 +87,11 @@ class LogicalProject : public LogicalOperator {
    */
   Schema* GetOutputSchema();
 
-  /**
-   * @brief Method description:get the index of column according to the
-   * attribute list of PlanContext
-   * @param PlanContext: constructed PlanContext
-   * @return  : if true, then this operation successes; else, fails
-   */
-  void SetColumnID(PlanContext plan_context);
-
  private:
   PlanContext* plan_context_;
   LogicalOperator* child_;
-
+  std::vector<ExprNode*> expr_list_;
   std::vector<QNode*> expression_tree_;
-  std::map<std::string, int> column_id_;
 };
 
 }  // namespace logical_operator

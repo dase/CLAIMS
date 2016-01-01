@@ -36,7 +36,7 @@ namespace logical_operator {
 class PlanPartitionInfo {
  public:
   friend class PlanPartitioner;
-  PlanPartitionInfo() : filtered_(false){};
+  PlanPartitionInfo() : filtered_(false) {}
   PlanPartitionInfo(unsigned partitoin_id, int cardinality, NodeID location);
   PlanPartitionInfo(const PlanPartitionInfo& part);
   virtual ~PlanPartitionInfo();

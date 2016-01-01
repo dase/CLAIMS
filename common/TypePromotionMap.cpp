@@ -7,4 +7,5 @@
 
 #include "TypePromotionMap.h"
 
-data_type TypePromotion::arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];
+data_type
+    TypePromotion::arith_type_promotion_map[DATA_TYPE_NUMBER][DATA_TYPE_NUMBER];

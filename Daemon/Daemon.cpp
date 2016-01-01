@@ -11,7 +11,10 @@
 #include <glog/logging.h>
 
 #include "./Executing.h"
-#include "../Parsetree/runparsetree.h"
+#include "../Client/ClaimsServer.h"
+#include "../stmt_handler/stmt_handler.h"
+
+using claims::stmt_handler::StmtHandler;
 #define WORK_THREAD_COUNT 3
 
 Daemon* Daemon::instance_ = 0;
@@ -29,7 +32,6 @@ Daemon* Daemon::getInstance() {
     instance_ = new Daemon();
   }
   lock_->release();
-
   return instance_;
 }
 
@@ -58,21 +60,22 @@ Daemon::~Daemon() {
  remote_command rc = Daemon::getInstance()->getRemoteCommand();
 
  //assume all commands are sql commands.
- executed_result result;
+ ExecutedResult result;
  std::string error_info;
  Node* node;
- ResultSet* result_set = Executing::run_sql(std::string(rc.cmd),error_info);
+ ResultSet* result_set = Executing::ru    delete
+ stmt_handler;n_sql(std::string(rc.cmd),error_info);
 
  if(result_set==0){
  printf("-Worker: add error result!\n");
  result.error_info = error_info;
  result.result = 0;
- result.status = EXECUTED_RESULT_STATUS_ERROR;
+ result.status_ = EXECUTED_RESULT_STATUS_ERROR;
  result.fd = rc.socket_fd;
  }
  else{
  printf("-Worker: add ok result!\n");
- result.status = EXECUTED_RESULT_STATUS_OK;
+ result.status_ = EXECUTED_RESULT_STATUS_OK;
  result.result = result_set;
  result.fd = rc.socket_fd;
  }
@@ -81,7 +84,7 @@ Daemon::~Daemon() {
  printf("-Worker add result into the queue!\n");
  pthis->addExecutedResult(result);
 
- //   pthis->;
+ //		pthis->;
  }
  }
  */
@@ -92,45 +95,25 @@ void* Daemon::worker(void* para) {
     remote_command rc = Daemon::getInstance()->getRemoteCommand();
 
     // assume all commands are sql commands.
-    executed_result result;
-    result.fd = rc.socket_fd;
-    result.status = true;
-
-    // must be delete after loading
-    //    rc.cmd = "load table field from \"/home/imdb/data/stock/field\" with
-    //    '\t','\n';\n\n"
-    //        "load table area from \"/home/imdb/data/stock/area\" with
-    //        '\t','\n';\n\n"
-    //        "load table trade from "
-    //        "\"/home/imdb/data/poc/CJ/CJ20100901.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100902.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100903.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100906.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100907.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100908.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100909.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100910.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100913.txt\","
-    //        "\"/home/imdb/data/poc/CJ/CJ20100914.txt\" with '|','\n';\n\n"
+    ExecutedResult result;
+    result.fd_ = rc.socket_fd;
+    result.status_ = true;
 
     // result is a pointer, which now is NULL and should be assigned in
     // function.
 
-    ClientListener::checkFdValid(result.fd);
-    GETCURRENTTIME(start_time);
+    ClientListener::checkFdValid(result.fd_);
+    StmtHandler* stmt_handler = new StmtHandler(rc.cmd);
+    stmt_handler->Execute(&result);
+    LOG(INFO) << "the result of after running sql: " << rc.cmd
+              << " status_: " << result.status_
+              << "error info: " << result.error_info_
+              << " info: " << result.info_ << endl;
 
-    Executing::run_sql(rc.cmd, result.result, result.status, result.error_info,
-                       result.info, result.fd);
-    double time = GetElapsedTime(start_time) / 1000.0;
-    cout << "exec time: " << time << " s" << endl;
-    result.result->query_time_ = time;
-
-    ClientLogging::log(
-        "after running sql, the result is : status-%d, err-%s, info-%s",
-        result.status, result.error_info.c_str(), result.info.c_str());
-    ClientListener::checkFdValid(result.fd);
+    ClientListener::checkFdValid(result.fd_);
     printf("-Worker add result into the queue!\n");
     Daemon::getInstance()->addExecutedResult(result);
+    delete stmt_handler;
   }
   return NULL;
 }
@@ -153,10 +136,10 @@ remote_command Daemon::getRemoteCommand() {
   return ret;
 }
 
-executed_result Daemon::getExecutedResult() {
+ExecutedResult Daemon::getExecutedResult() {
   semaphore_result_queue_.wait();
   LOG(INFO) << "semaphore_result_queue_ waited" << endl;
-  executed_result ret;
+  ExecutedResult ret;
   lock_->acquire();
   ret = executed_result_queue_.front();
   executed_result_queue_.pop_front();
@@ -165,7 +148,7 @@ executed_result Daemon::getExecutedResult() {
   return ret;
 }
 
-void Daemon::addExecutedResult(const executed_result& item) {
+void Daemon::addExecutedResult(const ExecutedResult& item) {
   lock_->acquire();
   executed_result_queue_.push_back(item);
   LOG(INFO) << "pushed result into result queue" << endl;

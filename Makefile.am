@@ -20,31 +20,34 @@ endif
 LDADD =  \
 	Test/libtest.a \
 	Test/common/libcommon.a \
-	Test/TestSuit/libtestsuit.a \
 	Test/utility/libutility.a \
 	common/serialization/libserialization.a \
 	Client/libclient.a \
 	Client/Test/libtest.a \
 	Daemon/libdaemon.a \
-	Daemon/Test/libtest.a \
 	Executor/libexecutor.a \
 	Executor/Test/libtest.a \
 	IndexManager/libindexmanager.a \
 	IndexManager/Test/libtest.a \
-	Parsetree/libparsetree.a \
-	Parsetree/Test/libtest.a \
+    stmt_handler/libstmthandler.a \
+    sql_parser/Test/libparser_test.a	\
+    sql_parser/parser/libparser.a \
+    sql_parser/ast_node/libast_node.a \
 	logical_operator/liblogicalqueryplan.a \
 	physical_operator/libphysicalqueryplan.a \
 	storage/libstorage.a \
 	Resource/libresouce.a \
-	Catalog/libcatalog.a \
-	Catalog/Test/libtest.a \
-	Catalog/stat/libstat.a \
-	Loader/libloader.a \
-	Loader/Test/libtest.a \
+	catalog/libcatalog.a \
+	catalog/stat/libstat.a \
+	loader/libloader.a \
+	loader/test/libtest.a \
+    codegen/libcodegen.a\
 	common/libcommon.a \
 	common/Block/libblock.a \
 	common/Expression/libexpression.a \
+	common/expression/libexpression.a \
+	common/file_handle/libfilehandle.a \
+	common/file_handle/test/libtest.a \
 	common/log/liblog.a \
 	common/Schema/libschema.a \
 	common/Schema/Test/libtest.a \
@@ -52,7 +55,7 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-    codegen/libcodegen.a \
+	${THERON_HOME}/Lib/libtherond.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
@@ -60,7 +63,6 @@ LDADD =  \
 	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.so \
 	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
 	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
-	${THERON_HOME}/Lib/libtherond.a \
 	${GTEST_HOME}/libgtest.a \
 	${GLOG_HOME}/.libs/libglog.so.0 \
 	-lLLVMJIT -lLLVMX86Disassembler -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter \
@@ -77,7 +79,7 @@ include_HEADERS = Config.h \
 				
 bin_PROGRAMS =  claimsserver \
 				client \
-				test
+				test	
 				
 client_SOURCES = Client.cpp \
 					Environment.cpp \
@@ -96,10 +98,11 @@ test_SOURCES = Test/gtest_main.cpp\
 				
 
 
-SUBDIRS=  Catalog Client common Daemon Executor IndexManager\
-Loader physical_operator logical_operator Parsetree Resource \
-storage Test utility codegen
+SUBDIRS=  catalog Client common Daemon Executor IndexManager\
+loader physical_operator logical_operator  Resource \
+storage Test utility codegen sql_parser stmt_handler
 
-DIST_SUBDIRS =  Catalog Client common Daemon Executor IndexManager\
-Loader physical_operator logical_operator Parsetree Resource \
-storage Test utility codegen
+DIST_SUBDIRS =  catalog Client common Daemon Executor IndexManager\
+loader physical_operator logical_operator  Resource \
+storage Test utility codegen sql_parser stmt_handler
+

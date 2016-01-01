@@ -1,3 +1,4 @@
+#include "../common/error_no.h"
 
 /*
  * Copyright [2012-2015] DaSE@ECNU
@@ -40,27 +41,26 @@
 using claims::physical_operator::ExchangeMerger;
 using claims::physical_operator::Expander;
 using claims::physical_operator::PhysicalNestLoopJoin;
-using namespace claims::common;
-
+using claims::common::rUninitializedJoinPolicy;
+using claims::common::rGeneratePlanContextFailed;
+using claims::common::rGenerateSubPhyPlanFailed;
 namespace claims {
 namespace logical_operator {
 
 LogicalCrossJoin::LogicalCrossJoin()
-    : left_child_(NULL),
+    : LogicalOperator(kLogicalCrossJoin),
+      left_child_(NULL),
       right_child_(NULL),
       plan_context_(NULL),
-      join_policy_(kUninitialized) {
-  set_operator_type(kLogicalCrossJoin);
-}
+      join_policy_(kUninitialized) {}
 
 LogicalCrossJoin::LogicalCrossJoin(LogicalOperator* left_child,
                                    LogicalOperator* right_child)
-    : left_child_(left_child),
+    : LogicalOperator(kLogicalCrossJoin),
+      left_child_(left_child),
       right_child_(right_child),
       plan_context_(NULL),
-      join_policy_(kUninitialized) {
-  set_operator_type(kLogicalCrossJoin);
-}
+      join_policy_(kUninitialized) {}
 LogicalCrossJoin::~LogicalCrossJoin() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -88,9 +88,9 @@ int LogicalCrossJoin::get_join_policy_() {
     return join_policy_;
   } else {
     LOG(WARNING) << "[CrossJoin]: "
-                 << "[" << kErrorMessage[kUninitializedJoinPolicy] << ","
+                 << "[" << CStrError(rUninitializedJoinPolicy) << ","
                  << "]" << std::endl;
-    return kUninitializedJoinPolicy;
+    return rUninitializedJoinPolicy;
   }
 }
 /**
@@ -102,14 +102,16 @@ int LogicalCrossJoin::get_join_policy_() {
  */
 
 PlanContext LogicalCrossJoin::GetPlanContext() {
+  lock_->acquire();
   if (NULL != plan_context_) {
-    /* the plan context has been computed already！*/
+    lock_->release();
     return *plan_context_;
   }
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
   PlanContext ret;
-  if (kSuccess == DecideJoinPolicy(left_plan_context, right_plan_context)) {
+  if (claims::common::rSuccess ==
+      DecideJoinPolicy(left_plan_context, right_plan_context)) {
     const Attribute left_partition_key =
         left_plan_context.plan_partitioner_.get_partition_key();
     const Attribute right_partition_key =
@@ -190,17 +192,18 @@ PlanContext LogicalCrossJoin::GetPlanContext() {
     }
     plan_context_ = new PlanContext();
     *plan_context_ = ret;
-    return ret;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
-                 << "[" << kErrorMessage[kGeneratePlanContextFailed] << "],"
+                 << "[" << CStrError(rGeneratePlanContextFailed) << "],"
                  << std::endl;
-    return ret;
   }
+  lock_->release();
+  return *plan_context_;
 }
 
 /**
- * @brief Method description: decide the join policy of the cross join based on
+ * @brief Method description: decide the join policy of the cross join based
+* on
 * the partition of the child operator
 * @param
 * @return
@@ -221,17 +224,18 @@ int LogicalCrossJoin::DecideJoinPolicy(const PlanContext& left_plan_context,
     }
   }
   if (kUninitialized != join_policy_) {
-    return kSuccess;
+    return claims::common::rSuccess;
   } else {
     LOG(WARNING) << "[CROSS JOIN]:"
-                 << "[" << kErrorMessage[kUninitializedJoinPolicy] << ",]"
+                 << "[" << CStrError(rUninitializedJoinPolicy) << ",]"
                  << std::endl;
-    return kUninitializedJoinPolicy;
+    return rUninitializedJoinPolicy;
   }
 }
 
 /**
- * @brief Method description: get the sub physical execution plan of the current
+ * @brief Method description: get the sub physical execution plan of the
+* current
 * local operator
 * @param
 * @return
@@ -265,7 +269,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
     PhysicalOperatorBase*& left_child_iterator_tree,
     PhysicalOperatorBase*& right_child_iterator_tree,
     const unsigned& blocksize) {
-  int ret = kSuccess;
+  int ret = claims::common::rSuccess;
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
   switch (join_policy_) {
@@ -330,16 +334,16 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
     }
     default: { assert(false); }
       if (NULL == left_child_iterator_tree) {
-        ret = kGenerateSubPhyPlanFailed;
+        ret = rGenerateSubPhyPlanFailed;
         LOG(WARNING) << "[CrossJoin]: "
-                     << "[" << kErrorMessage[kGenerateSubPhyPlanFailed] << ","
+                     << "[" << CStrError(rGenerateSubPhyPlanFailed) << ","
                      << "left child sub physical plan"
                      << "]" << std::endl;
       }
       if (NULL == right_child_iterator_tree) {
-        ret = kGenerateSubPhyPlanFailed;
+        ret = rGenerateSubPhyPlanFailed;
         LOG(WARNING) << "[CrossJoin]: "
-                     << "[" << kErrorMessage[kGenerateSubPhyPlanFailed] << ","
+                     << "[" << CStrError(rGenerateSubPhyPlanFailed) << ","
                      << "right child sub physical plan"
                      << "]" << std::endl;
       }
@@ -348,23 +352,35 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
 }
 
 void LogicalCrossJoin::Print(int level) const {
-  printf("CrossJoin:\n", level * 8, " ");
+  cout << setw(level * kTabSize) << " "
+       << "CrossJoin: ";
+  ++level;
   switch (join_policy_) {
     case kLeftBroadcast: {
-      printf(" left_broadcast\n");
+      cout << "left_broadcast" << endl;
       break;
     }
     case kRightBroadcast: {
-      printf(" right_broadcast\n");
+      cout << "right_broadcast" << endl;
       break;
     }
     case kLocalJoin: {
-      printf(" loca_join\n");
+      cout << "loca_join" << endl;
       break;
     }
   }
-  left_child_->Print(level + 1);
-  right_child_->Print(level + 1);
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
+  --level;
+  left_child_->Print(level);
+  right_child_->Print(level);
 }
 
 /**
@@ -372,7 +388,8 @@ void LogicalCrossJoin::Print(int level) const {
  * can be issued on local node or not?
  * The criterion is based on the number of partitions generated from the child
  * operator.
- * if the number of partitions from both of the left and right are 1, then it is
+ * if the number of partitions from both of the left and right are 1, then it
+ * is
  * joined locally
  * @param  left child operator plan context
  * @param  right child operator plan context

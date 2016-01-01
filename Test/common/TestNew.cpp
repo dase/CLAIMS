@@ -1,18 +1,11 @@
 ///*
 // * tpc_h_test.cpp
-// *
-// *  Created on: Apr 1, 2014
-// *      Author: wangli
-// */
-//
-//#ifndef TEST_NEW
-//#define TEST_NEW
-//#include "../../Environment.h"
-//#include "../../Catalog/table.h"
-//#include "../../Loader/Hdfsloader.h"
+//#include "../../catalog/table.h"
+//#include "../../loader/Hdfsloader.h"
 //#include "../../logical_operator/LogicalQueryPlanRoot.h"
 //#include "../../logical_operator/logical_aggregation.h"
-//#include "../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
+//#include
+//"../../BlockStreamIterator/ParallelBlockStreamIterator/BlockStreamAggregationIterator.h"
 //#include "../../logical_operator/logical_scan.h"
 //#include "../../logical_operator/Filter.h"
 //#include "../../logical_operator/Project.h"
@@ -32,7 +25,8 @@
 ////	 * notation: p a p s
 ////	 * */
 ////	unsigned long long int start=curtick();
-////	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("PART");
+////	TableDescriptor*
+///table=Environment::getInstance()->getCatalog()->getTable("PART");
 ////	//===========================scan===========================
 ////	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 ////
@@ -69,20 +63,31 @@
 ////
 ////	//========================aggregation=======================
 ////		std::vector<Attribute> group_by_attributes;
-////		group_by_attributes.push_back(table->getAttribute("L_RETURNFLAG"));
-////		group_by_attributes.push_back(table->getAttribute("L_LINESTATUS"));
-////		std::vector<Attribute> aggregation_attributes;
-////		aggregation_attributes.push_back(table->getAttribute("L_QUANTITY"));
-////		aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
-////		aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
-////		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-////		std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
 ////
-////		aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-////		aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-////		aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-////		aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-////		LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
+///group_by_attributes.push_back(table->getAttribute("L_RETURNFLAG"));
+////
+///group_by_attributes.push_back(table->getAttribute("L_LINESTATUS"));
+////		std::vector<Attribute> aggregation_attributes;
+////
+///aggregation_attributes.push_back(table->getAttribute("L_QUANTITY"));
+////
+///aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
+////
+///aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
+////		aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
+////		std::vector<BlockStreamAggregationIterator::State::aggregation>
+///aggregation_function;
+////
+////
+///aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+////
+///aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+////
+///aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+////
+///aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+////		LogicalOperator* aggregation=new
+///Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
 ////
 ////	//==========================project=========================
 ////	vector< vector<ExpressionItem> >expr_list;
@@ -115,10 +120,12 @@
 ////
 ////	LogicalOperator* project2=new LogicalProject(scan,expr_list);
 ////	//===========================root===========================
-////	LogicalOperator* root=new LogicalQueryPlanRoot(0,project2,LogicalQueryPlanRoot::PERFORMANCE);
+////	LogicalOperator* root=new
+///LogicalQueryPlanRoot(0,project2,LogicalQueryPlanRoot::PERFORMANCE);
 ////
 ////	cout<<"performance is ok!"<<endl;
-////	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+////	BlockStreamIteratorBase*
+///physical_iterator_tree=root->getIteratorTree(64*1024);
 //////	physical_iterator_tree->print();
 ////	physical_iterator_tree->open();
 ////	while(physical_iterator_tree->next(0));
@@ -130,9 +137,10 @@
 //#include "../set_up_environment.h"
 //>>>>>>> refs/remotes/origin/master
 //
-//static void query_select_a_b_c_d(){
+// static void query_select_a_b_c_d(){
 //	unsigned long long int start=curtick();
-//	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("PART");
+//	TableDescriptor*
+//table=Environment::getInstance()->getCatalog()->getTable("PART");
 //	//===========================scan===========================
 //	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
 //
@@ -168,10 +176,12 @@
 //	LogicalOperator* project=new LogicalProject(scan,expr_list);
 //
 //	//===========================root===========================
-//	LogicalOperator* root=new LogicalQueryPlanRoot(0,project,LogicalQueryPlanRoot::PERFORMANCE);
+//	LogicalOperator* root=new
+//LogicalQueryPlanRoot(0,project,LogicalQueryPlanRoot::PERFORMANCE);
 //
 //	cout<<"performance is ok!"<<endl;
-//	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+//	BlockStreamIteratorBase*
+//physical_iterator_tree=root->getIteratorTree(64*1024);
 ////	physical_iterator_tree->print();
 //	physical_iterator_tree->open();
 //	while(physical_iterator_tree->next(0));
@@ -180,12 +190,14 @@
 //
 //}
 //
-//static void query_select_star(){
+// static void query_select_star(){
 //	unsigned long long int start=curtick();
-//	TableDescriptor* table=Environment::getInstance()->getCatalog()->getTable("PART");
+//	TableDescriptor*
+//table=Environment::getInstance()->getCatalog()->getTable("PART");
 //
 ////	Filter::Condition filter_condition_1;
-////	filter_condition_1.add(table->getAttribute("L_SHIPDATE"),FilterIterator::AttributeComparator::L,std::string("1998-12-01"));
+////
+///filter_condition_1.add(table->getAttribute("L_SHIPDATE"),FilterIterator::AttributeComparator::L,std::string("1998-12-01"));
 ////	LogicalOperator* filter=new Filter(filter_condition_1,scan);
 //////	LogicalOperator* filter=new Filter();
 ////
@@ -194,16 +206,23 @@
 ////	group_by_attributes.push_back(table->getAttribute("L_LINESTATUS"));
 ////	std::vector<Attribute> aggregation_attributes;
 ////	aggregation_attributes.push_back(table->getAttribute("L_QUANTITY"));
-////	aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
+////
+///aggregation_attributes.push_back(table->getAttribute("L_EXTENDEDPRICE"));
 ////	aggregation_attributes.push_back(table->getAttribute("L_DISCOUNT"));
 ////	aggregation_attributes.push_back(Attribute(ATTRIBUTE_ANY));
-////	std::vector<BlockStreamAggregationIterator::State::aggregation> aggregation_function;
+////	std::vector<BlockStreamAggregationIterator::State::aggregation>
+///aggregation_function;
 ////
-////	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-////	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-////	aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
-////	aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
-////	LogicalOperator* aggregation=new Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
+////
+///aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+////
+///aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+////
+///aggregation_function.push_back(BlockStreamAggregationIterator::State::sum);
+////
+///aggregation_function.push_back(BlockStreamAggregationIterator::State::count);
+////	LogicalOperator* aggregation=new
+///Aggregation(group_by_attributes,aggregation_attributes,aggregation_function,filter);
 //
 //	//===========================scan===========================
 //	LogicalOperator* scan=new LogicalScan(table->getProjectoin(0));
@@ -275,10 +294,12 @@
 //	LogicalOperator* project=new LogicalProject(scan,expr_list);
 //
 //	//===========================root===========================
-//	LogicalOperator* root=new LogicalQueryPlanRoot(0,project,LogicalQueryPlanRoot::PRINT);
+//	LogicalOperator* root=new
+//LogicalQueryPlanRoot(0,project,LogicalQueryPlanRoot::PRINT);
 //
 //	cout<<"performance is ok!"<<endl;
-//	BlockStreamIteratorBase* physical_iterator_tree=root->getIteratorTree(64*1024);
+//	BlockStreamIteratorBase*
+//physical_iterator_tree=root->getIteratorTree(64*1024);
 ////	physical_iterator_tree->print();
 //	physical_iterator_tree->open();
 //	while(physical_iterator_tree->next(0));
@@ -288,18 +309,21 @@
 //}
 //
 //<<<<<<< HEAD
-//static void init_single_node_tpc_h_envoriment(bool master=true){
+// static void init_single_node_tpc_h_envoriment(bool master=true){
 //	Environment::getInstance(master);
 //	printf("Press any key to continue!\n");
 //	int input;
 //	scanf("%d",&input);
-//	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+//	ResourceManagerMaster
+//*rmms=Environment::getInstance()->getResourceManagerMaster();
 //	Catalog* catalog=Environment::getInstance()->getCatalog();
 //
-//	/////////////////////////////// PART TABLE //////////////////////////////////
+//	/////////////////////////////// PART TABLE
+////////////////////////////////////
 //	TableDescriptor* table_1=new TableDescriptor("PART",0);
 //	table_1->addAttribute("row_id", data_type(t_u_long),0,true);
-//	table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);  				//0
+//	table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);
+////0
 //	table_1->addAttribute("P_NAME",data_type(t_string),55);
 //	table_1->addAttribute("P_MFGR",data_type(t_string),25);
 //	table_1->addAttribute("P_BRAND",data_type(t_string),10);
@@ -309,28 +333,33 @@
 //	table_1->addAttribute("P_RETAILPRICE",data_type(t_decimal),4);
 //	table_1->addAttribute("P_COMMENT",data_type(t_string),23);
 //
-//	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",1);//should be 4
+//	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",1);//should
+//be 4
 //
 //	catalog->add_table(table_1);
 //
-//	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+//	for(unsigned
+//i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 //
 //		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
 //	}
 //}
 //
-//static void init_multi_node_tpc_h_envoriment(bool master=true){
+// static void init_multi_node_tpc_h_envoriment(bool master=true){
 //	Environment::getInstance(master);
 //	printf("Press any key to continue!\n");
 //	int input;
 //	scanf("%d",&input);
-//	ResourceManagerMaster *rmms=Environment::getInstance()->getResourceManagerMaster();
+//	ResourceManagerMaster
+//*rmms=Environment::getInstance()->getResourceManagerMaster();
 //	Catalog* catalog=Environment::getInstance()->getCatalog();
 //
-//	/////////////////////////////// PART TABLE //////////////////////////////////
+//	/////////////////////////////// PART TABLE
+////////////////////////////////////
 //	TableDescriptor* table_1=new TableDescriptor("PART",0);
 //	table_1->addAttribute("row_id", data_type(t_u_long),0,true);
-//	table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);  				//0
+//	table_1->addAttribute("P_PARTKEY",data_type(t_u_long),0,true);
+////0
 //	table_1->addAttribute("P_NAME",data_type(t_string),55);
 //	table_1->addAttribute("P_MFGR",data_type(t_string),25);
 //	table_1->addAttribute("P_BRAND",data_type(t_string),10);
@@ -340,16 +369,18 @@
 //	table_1->addAttribute("P_RETAILPRICE",data_type(t_decimal),4);
 //	table_1->addAttribute("P_COMMENT",data_type(t_string),23);
 //
-//	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);//should be 4
+//	table_1->createHashPartitionedProjectionOnAllAttribute("P_PARTKEY",4);//should
+//be 4
 //
 //	catalog->add_table(table_1);
 //
-//	for(unsigned i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
+//	for(unsigned
+//i=0;i<table_1->getProjectoin(0)->getPartitioner()->getNumberOfPartitions();i++){
 //		catalog->getTable(0)->getProjectoin(0)->getPartitioner()->RegisterPartition(i,3);
 //	}
 //}
 //
-//static int common_project_tcp_h_test_single_node(){
+// static int common_project_tcp_h_test_single_node(){
 //
 //	unsigned repeated_times=3;
 //
@@ -365,7 +396,7 @@
 //
 //=======
 //>>>>>>> refs/remotes/origin/master
-//static int common_project_tcp_h_test_multi_nodes(){
+// static int common_project_tcp_h_test_multi_nodes(){
 //	unsigned repeated_times=2;
 //	printf("Master or slave?\n");
 //	int input;

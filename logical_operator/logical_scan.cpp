@@ -29,10 +29,12 @@
 #include "../logical_operator/logical_scan.h"
 #include <stdio.h>
 #include <glog/logging.h>
+#include <iosfwd>
 #include <iostream>
+
 #include <vector>
 
-#include "../Catalog/Catalog.h"
+#include "../catalog/catalog.h"
 #include "../IDsGenerator.h"
 #include "../logical_operator/plan_partition_info.h"
 #include "../physical_operator/exchange_merger.h"
@@ -45,32 +47,45 @@ using claims::physical_operator::PhysicalProjectionScan;
 namespace claims {
 namespace logical_operator {
 LogicalScan::LogicalScan(std::vector<Attribute> attribute_list)
-    : scan_attribute_list_(attribute_list),
+    : LogicalOperator(kLogicalScan),
+      scan_attribute_list_(attribute_list),
       target_projection_(NULL),
-      plan_context_(NULL) {
-  set_operator_type(kLogicalScan);
-}
+      plan_context_(NULL) {}
 
 LogicalScan::LogicalScan(const TableID& table_id)
-    : target_projection_(NULL), plan_context_(NULL) {
+    : LogicalOperator(kLogicalScan),
+      target_projection_(NULL),
+      plan_context_(NULL) {
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (NULL == table) {
     LOG(WARNING) << "Table[id" << table_id << "] does not exists!" << std::endl;
   }
   scan_attribute_list_ = table->getAttributes();
-  set_operator_type(kLogicalScan);
 }
 LogicalScan::LogicalScan(ProjectionDescriptor* projection,
                          const float sample_rate)
-    : sample_rate_(sample_rate), plan_context_(NULL) {
+    : LogicalOperator(kLogicalScan),
+      sample_rate_(sample_rate),
+      plan_context_(NULL) {
   scan_attribute_list_ = projection->getAttributeList();
   target_projection_ = projection;
-  set_operator_type(kLogicalScan);
+}
+LogicalScan::LogicalScan(ProjectionDescriptor* projection,
+                         const string table_alias, const float sample_rate)
+    : LogicalOperator(kLogicalScan),
+      sample_rate_(sample_rate),
+      table_alias_(table_alias),
+      plan_context_(NULL) {
+  scan_attribute_list_ = projection->getAttributeList();
+  ChangeAliasAttr();
+  target_projection_ = projection;
 }
 LogicalScan::LogicalScan(
     const TableID& table_id,
     const std::vector<unsigned>& selected_attribute_index_list)
-    : target_projection_(NULL), plan_context_(NULL) {
+    : LogicalOperator(kLogicalScan),
+      target_projection_(NULL),
+      plan_context_(NULL) {
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
   if (NULL == table) {
     LOG(WARNING) << "Table[id" << table_id << "] does not exists!" << std::endl;
@@ -79,7 +94,6 @@ LogicalScan::LogicalScan(
     scan_attribute_list_.push_back(
         table->getAttribute(selected_attribute_index_list[i]));
   }
-  set_operator_type(kLogicalScan);
 }
 
 LogicalScan::~LogicalScan() {
@@ -88,20 +102,37 @@ LogicalScan::~LogicalScan() {
     plan_context_ = NULL;
   }
 }
+void LogicalScan::ChangeAliasAttr() {
+  for (int i = 0; i < scan_attribute_list_.size(); ++i) {
+    scan_attribute_list_[i].attrName =
+        table_alias_ +
+        scan_attribute_list_[i].attrName.substr(
+            scan_attribute_list_[i].attrName.find('.'));
+  }
+}
 
 /**
  * @brief It can generate many projection. We need the smallest cost of
  * projections, so we should choose the best one what we need with traversing
  * scan_attribute_list_.
+ *  TODO（minqi）add a set of policies to select a best projection (or group of
+ * best projections), while now it only supports to select one projection. If a
+ * group of projections is selected, join or later materialized join should be
+ * supported to minimize the cost of the storage or transmission of the
+ * intermediate result
  */
 PlanContext LogicalScan::GetPlanContext() {
-  if (NULL != plan_context_) return *plan_context_;
+  lock_->acquire();
+  if (NULL != plan_context_) {
+    lock_->release();
+    return *plan_context_;
+  }
   plan_context_ = new PlanContext();
 
   TableID table_id = scan_attribute_list_[0].table_id_;
   TableDescriptor* table = Catalog::getInstance()->getTable(table_id);
 
-  if (target_projection_ == NULL) {
+  if (NULL == target_projection_) {
     ProjectionOffset target_projection_off = -1;
     unsigned int min_projection_cost = -1;
     // TODO(KaiYu): get real need column as scan_attribute_list_, otherwise,
@@ -157,7 +188,9 @@ PlanContext LogicalScan::GetPlanContext() {
 
   Partitioner* par = target_projection_->getPartitioner();
   plan_context_->plan_partitioner_ = PlanPartitioner(*par);
+  plan_context_->plan_partitioner_.UpdateTableNameOfPartitionKey(table_alias_);
   plan_context_->commu_cost_ = 0;
+  lock_->release();
   return *plan_context_;
 }
 
@@ -276,11 +309,23 @@ bool LogicalScan::GetOptimalPhysicalPlan(
     return false;
 }
 void LogicalScan::Print(int level) const {
-  printf("%*.sScan: %s\n", level * 8, " ",
-         Catalog::getInstance()
-             ->getTable(target_projection_->getProjectionID().table_id)
-             ->getTableName()
-             .c_str());
+  cout << setw(level * kTabSize) << " "
+       << "Scan:" << endl;
+  level++;
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
+  cout << setw(level * kTabSize) << " "
+       << "table name: "
+       << Catalog::getInstance()
+              ->getTable(target_projection_->getProjectionID().table_id)
+              ->getTableName() << "   alias: " << table_alias_ << endl;
 }
 
 }  // namespace logical_operator
