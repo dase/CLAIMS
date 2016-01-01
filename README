@@ -7,7 +7,6 @@ setup steps:
 5. make -j8
 6. make install
 
-
 cleanup steps:
 
 1  make distclean

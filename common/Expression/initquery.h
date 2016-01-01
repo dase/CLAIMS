@@ -16,13 +16,11 @@
 #include <map>
 #include "execfunc.h"
 #include "queryfunc.h"
-#include "../../Parsetree/sql_node_struct.h"
 #include "../../common/data_type.h"
 #include "../../common/TypePromotionMap.h"
 #include "../../common/Logging.h"
 #include "../../Environment.h"
 #include <algorithm>
-
 #include "../../logical_operator/logical_operator.h"
 using namespace claims::logical_operator;
 QNode *transformqual(Node *node, LogicalOperator *child);

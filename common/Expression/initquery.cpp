@@ -8,8 +8,11 @@
 #include "../../common/TypeCast.h"
 #include "queryfunc.h"
 #include "qnode.h"
-#include "../../Parsetree/sql_node_struct.h"
 #include "../../logical_operator/logical_operator.h"
+#include "../error_define.h"
+#include "sql_node_struct.h"
+
+using claims::common::rNoMemory;
 /*
  * the transformqual() transform the ast(the parsetree) to expression tree
  */
@@ -41,6 +44,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "+") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
+
         data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *qcalnode = new QExpr_binary(
@@ -81,6 +85,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
       } else if (strcmp(calnode->sign, "LIKE") == 0) {
         QNode *lnode = transformqual(calnode->lnext, child);
         QNode *rnode = transformqual(calnode->rnext, child);
+
         data_type a_type = TypePromotion::arith_type_promotion_map
             [lnode->actual_type][rnode->actual_type];
         QExpr_binary *likenode = new QExpr_binary(
@@ -237,10 +242,8 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
         }
         QNode *cwnode = new QExpr_case_when(qual, ans, funcnode->str);
         return cwnode;
-      } else if (strcmp(funcnode->funname, "CASE4") == 0)  // now just support
-                                                           // |case [when expr
-                                                           // then expr]* [else
-                                                           // expr] end|
+      } else if (strcmp(funcnode->funname, "CASE4") == 0)
+      // now just support |case [when expr then expr]* [else expr] end|
       {
         vector<QNode *> qual;
         vector<QNode *> ans;
@@ -468,7 +471,7 @@ QNode *transformqual(Node *node, LogicalOperator *child) {
     case t_name_name: {
       Columns *col = (Columns *)node;
       //			data_type
-      //a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
+      // a_type=Environment::getInstance()->getCatalog()->name_to_table[col->parameter1]->getAttribute2(col->parameter2).attrType->type;
       data_type a_type = child->GetPlanContext()
                              .GetAttribute(string(col->parameter2))
                              .attrType->type;
@@ -620,7 +623,7 @@ void InitExprAtLogicalPlan(QNode *node, data_type r_type,
         qcol->length = max(schema->getcolumn(qcol->id).get_length(),
                            (unsigned int)BASE_SIZE);
       else
-        qcol->length = schema->getcolumn(qcol->id).size;
+        qcol->length = schema->getcolumn(qcol->id).get_length();
       qcol->isnull = false;  // TODO
     } break;
     case t_qexpr: {
@@ -658,7 +661,7 @@ void InitExprAtPhysicalPlan(QNode *node) {
     {
       QExpr_binary *cmpnode = (QExpr_binary *)(node);
       cmpnode->FuncId = Exec_cmp;
-      //			cmpnode->actual_type=t_boolean;//
+
       InitExprAtPhysicalPlan(cmpnode->lnext);
       InitExprAtPhysicalPlan(cmpnode->rnext);
       cmpnode->function_call = ExectorFunction::operator_function
@@ -741,20 +744,25 @@ void InitExprAtPhysicalPlan(QNode *node) {
       qcol->type_cast_func =
           TypeCast::type_cast_func[qcol->actual_type][qcol->return_type];
       qcol->value = memalign(cacheline_size, qcol->length);
+      if (NULL == qcol->value) {
+        int ret = rNoMemory;
+        ELOG(ret, "memalign length is" << qcol->length);
+      }
     } break;
     case t_qexpr:  // copy the value from conststring to node->value,and the
                    // data type has casted
-    {
-      QExpr *qexpr = (QExpr *)(node);
-      qexpr->FuncId = getConst;
-      qexpr->value = memalign(cacheline_size, qexpr->length);
-      strcpy((char *)qexpr->value,
-             qexpr->const_value.c_str());  // change the storage style from
-                                           // string to char *,so store the
-                                           // value in the return_type[]
-      TypeCast::type_cast_func[t_string][qexpr->return_type](qexpr->value,
-                                                             qexpr->value);
-    } break;
+      {
+        QExpr *qexpr = (QExpr *)(node);
+        qexpr->FuncId = getConst;
+        qexpr->value = memalign(cacheline_size, qexpr->length);
+        strcpy((char *)qexpr->value,
+               qexpr->const_value.c_str());  // change the storage style from
+                                             // string to char *,so store the
+                                             // value in the return_type[]
+        TypeCast::type_cast_func[t_string][qexpr->return_type](qexpr->value,
+                                                               qexpr->value);
+      }
+      break;
     default: {}
   }
 }

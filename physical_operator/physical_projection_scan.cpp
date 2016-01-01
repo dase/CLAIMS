@@ -41,18 +41,19 @@
 #include "../storage/ChunkStorage.h"
 #include "../Executor/expander_tracker.h"
 #include "../storage/PartitionStorage.h"
-
-using namespace claims::common;
+using claims::common::rNoPartitionIdScan;
+using claims::common::rSuccess;
+using claims::common::rCodegenFailed;
 
 namespace claims {
 namespace physical_operator {
 PhysicalProjectionScan::PhysicalProjectionScan(State state)
-    : state_(state), partition_reader_iterator_(NULL) {
+    : state_(state), partition_reader_iterator_(NULL), perf_info_(NULL) {
   InitExpandedStatus();
 }
 
 PhysicalProjectionScan::PhysicalProjectionScan()
-    : partition_reader_iterator_(NULL) {
+    : partition_reader_iterator_(NULL), perf_info_(NULL) {
   InitExpandedStatus();
 }
 
@@ -60,6 +61,10 @@ PhysicalProjectionScan::~PhysicalProjectionScan() {
   if (NULL != state_.schema_) {
     delete state_.schema_;
     state_.schema_ = NULL;
+  }
+  if (NULL != perf_info_) {
+    delete perf_info_;
+    perf_info_ = NULL;
   }
 }
 
@@ -77,6 +82,8 @@ PhysicalProjectionScan::State::State(ProjectionID projection_id, Schema* schema,
  */
 
 bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
+  RegisterExpandedThreadToAllBarriers();
+
   if (TryEntryIntoSerializedSection()) {
     /* this is the first expanded thread*/
     PartitionStorage* partition_handle_;
@@ -85,8 +92,7 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
              PartitionID(state_.projection_id_, kPartitionOffset)))) {
       LOG(ERROR) << PartitionID(state_.projection_id_, kPartitionOffset)
                         .getName()
-                        .c_str() << kErrorMessage[kNoPartitionIdScan]
-                 << std::endl;
+                        .c_str() << CStrError(rNoPartitionIdScan) << std::endl;
       SetReturnStatus(false);
     } else {
       partition_reader_iterator_ =
@@ -108,9 +114,9 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
 #endif
     ExpanderTracker::getInstance()->addNewStageEndpoint(
         pthread_self(), LocalStageEndPoint(stage_src, "Scan", 0));
-    kPerfInfo =
+    perf_info_ =
         ExpanderTracker::getInstance()->getPerformanceInfo(pthread_self());
-    kPerfInfo->initialize();
+    perf_info_->initialize();
   }
   BarrierArrive();
   return GetReturnStatus();
@@ -171,7 +177,7 @@ bool PhysicalProjectionScan::Next(BlockStreamBase* block) {
           pthread_self())) {
     return false;
   }
-  kPerfInfo->processed_one_block();
+  perf_info_->processed_one_block();
   // case(2)
   return partition_reader_iterator_->nextBlock(block);
 

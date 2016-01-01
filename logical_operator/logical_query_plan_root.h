@@ -19,7 +19,8 @@
  * /Claims/logical_operator/logical_query_plan_root.h
  *
  *  Created on: Nov 13, 2013
- *      Author: wangli, yukai
+ *  Modified on: Nov 16, 2015
+ *      Author: wangli, yukai, tonglanxuan
  *		   Email: yukai2014@gmail.com
  *
  * Description:
@@ -31,7 +32,9 @@
 #include <string>
 #include <vector>
 #include "../common/ids.h"
-#include "../logical_operator/logical_limit.h"
+#ifndef NEWLIMIT
+#include "./logical_limit.h"
+#endif
 #include "../physical_operator/physical_operator_base.h"
 #include "../logical_operator/logical_operator.h"
 
@@ -61,12 +64,12 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    * @param fashion : decide the top physical operator
    *                  (BlockStreamPrint,BlockStreamPerformanceMonitorTop,BlockStreamResultCollector)
    *                  generated from this logical operator
-   *        limit_constraint : apply the necessary info about limit, default
-   * value is no limit
    */
   LogicalQueryPlanRoot(NodeID collecter_node_id, LogicalOperator* child,
-                       const OutputStyle& fashion = kPerformance,
-                       LimitConstraint limit_constraint = LimitConstraint());
+                       string raw_sql,
+                       const OutputStyle& fashion = kPerformance);
+  LogicalQueryPlanRoot(NodeID collecter_node_id, LogicalOperator* child,
+                       const OutputStyle& fashion = kPerformance);
   virtual ~LogicalQueryPlanRoot();
   PlanContext GetPlanContext();
   /**
@@ -104,12 +107,15 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    */
   std::vector<std::string> GetAttributeName(
       const PlanContext& plan_context) const;
+  void GetColumnHeader(std::vector<std::string>& column_header,
+                       std::vector<Attribute>& attribute_list);
 
  private:
   NodeID collecter_node;
   LogicalOperator* child_;
   OutputStyle style_;
-  LimitConstraint limit_constraint_;
+  string raw_sql_;
+  PlanContext* plan_context_;
 };
 
 }  // namespace logical_operator

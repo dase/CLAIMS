@@ -28,17 +28,21 @@
 #ifndef LOGICAL_OPERATOR_LOGICAL_OPERATOR_H_
 #define LOGICAL_OPERATOR_LOGICAL_OPERATOR_H_
 #include <stdio.h>
+#include <map>
 #include <vector>
-
+#include <string>
+#include <atomic>
 #include "../common/ids.h"
 #include "../common/Schema/SchemaFix.h"
 #include "../logical_operator/plan_context.h"
 #include "../logical_operator/Requirement.h"
 #include "../physical_operator/physical_operator_base.h"
+#include "../utility/lock.h"
 
+static std::atomic_uint MIDINADE_TABLE_ID(1000000);
 namespace claims {
 namespace logical_operator {
-
+#define kTabSize 4
 using claims::physical_operator::PhysicalOperatorBase;
 enum OperatorType {
   kLogicalScan,
@@ -48,7 +52,10 @@ enum OperatorType {
   kLogicalProject,
   kLogicalSort,
   kLogicalQueryPlanRoot,
-  kLogicalCrossJoin
+  kLogicalCrossJoin,
+  kLogicalLimit,
+  kLogicalSubquery,
+  kLogicalDeleteFilter
 };
 
 typedef PhysicalOperatorBase* PhysicalPlan;
@@ -68,9 +75,18 @@ typedef struct PhysicalPlanDescriptor {
 class LogicalOperator {
  public:
   LogicalOperator(){};
-  virtual ~LogicalOperator(){};
+  LogicalOperator(OperatorType operator_type) : operator_type_(operator_type) {
+    lock_ = new Lock();
+  }
+  virtual ~LogicalOperator() {
+    if (NULL != lock_) {
+      delete lock_;
+      lock_ = NULL;
+    }
+  }
   /**
-   * get the plan context which describes the property of the data after having
+   * get the plan context which describes the property of the data after
+   * having
    * executed corresponding operator.
    */
   virtual PlanContext GetPlanContext() = 0;
@@ -83,7 +99,8 @@ class LogicalOperator {
 
   /**
    * get the optimal Physical plan that meets the requirement.
-   * @return true if find physical plan that meets the requirement and store the
+   * @return true if find physical plan that meets the requirement and store
+   * the
    * physical plan and
    * its corresponding information in physical_plan_descriptor.
    */
@@ -92,6 +109,8 @@ class LogicalOperator {
       const unsigned& block_size = 4096 * 1024){};
 
   virtual void Print(int level = 0) const = 0;
+
+  OperatorType get_operator_type() { return operator_type_; }
 
  protected:
   Schema* GetSchema(const std::vector<Attribute>&) const;
@@ -107,6 +126,10 @@ class LogicalOperator {
   inline void set_operator_type(OperatorType operator_type) {
     operator_type_ = operator_type;
   }
+  void GetColumnToId(const std::vector<Attribute>& attributes,
+                     map<string, int>& column_to_id);
+  Lock* lock_;
+  //  static std::atomic_uint MIDINADE_TABLE_ID;
 
  private:
   OperatorType operator_type_;

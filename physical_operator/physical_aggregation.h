@@ -33,6 +33,9 @@
 
 #include <vector>
 #include <map>
+
+#include "../common/expression/expr_node.h"
+#include "../common/expression/expr_unary.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../common/hashtable.h"
 #include "../common/hash.h"
@@ -42,9 +45,11 @@
 #include "../common/Schema/Schema.h"
 #include "../common/Expression/queryfunc.h"
 #include "../physical_operator/physical_operator.h"
-
+using claims::common::ExprUnary;
+using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
+#define NEWCONDI
 
 /**
  * @brief     Aggregation physical operator
@@ -60,36 +65,36 @@ class PhysicalAggregation : public PhysicalOperator {
 
    public:
     enum Aggregation { kSum, kMin, kMax, kCount, kAvg };
-    enum AggNodeType { kHybridAggGlobal, kHybridAggPrivate, kNotHybridAgg };
+    enum AggNodeType { kHybridAggGlobal, kHybridAggLocal, kNotHybridAgg };
     State(Schema *input, Schema *output, Schema *hash_schema,
-          PhysicalOperatorBase *child, std::vector<unsigned> groupby_index,
-          std::vector<unsigned> aggregation_index,
-          std::vector<Aggregation> aggregations, unsigned num_of_buckets,
+          PhysicalOperatorBase *child, unsigned num_of_buckets,
           unsigned bucket_size, unsigned block_size,
-          std::vector<unsigned> avg_index, AggNodeType agg_node_type);
-    State() : hash_schema_(0), input_(0), output_(0), child_(0){};
+          std::vector<unsigned> avg_index, AggNodeType agg_node_type,
+          vector<ExprNode *> group_by_attrs,
+          vector<ExprUnary *> aggregation_attrs, int count_column_id);
+    State() : hash_schema_(0), input_schema_(0), output_schema_(0), child_(0){};
     ~State(){};
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int version) {
-      ar &input_ &output_ &hash_schema_ &child_ &index_of_group_by_ &
-          aggregation_index_ &aggregations_ &num_of_buckets_ &bucket_size_ &
-              block_size_ &avg_index_ &agg_node_type_;
+      ar &input_schema_ &output_schema_ &hash_schema_ &child_ &num_of_buckets_ &
+          bucket_size_ &block_size_ &avg_index_ &agg_node_type_ &
+              group_by_attrs_ &aggregation_attrs_ &count_column_id_;
     }
 
    public:
-    Schema *input_;
-    Schema *output_;
+    Schema *input_schema_;
+    Schema *output_schema_;
     Schema *hash_schema_;
     PhysicalOperatorBase *child_;
-    std::vector<unsigned> index_of_group_by_;
-    std::vector<unsigned> aggregation_index_;
-    std::vector<Aggregation> aggregations_;
     unsigned num_of_buckets_;
     unsigned bucket_size_;
     unsigned block_size_;
     std::vector<unsigned> avg_index_;
     AggNodeType agg_node_type_;
+    vector<ExprNode *> group_by_attrs_;
+    vector<ExprUnary *> aggregation_attrs_;
+    int count_column_id_;
   };
   PhysicalAggregation(State state);
   PhysicalAggregation();
@@ -100,23 +105,12 @@ class PhysicalAggregation : public PhysicalOperator {
   bool Close();
   void Print();
 
- private:
-  /* prepare all sorts of indices to facilitate aggregate*/
-  void PrepareIndex();
-
-  /* prepare the aggregation functions */
-  void PrepareAggregateFunctions();
-
  public:
   State state_;
 
  private:
   BasicHashTable *hashtable_;
   PartitionFunction *hash_;
-  std::map<unsigned, unsigned> input_group_by_to_output_;
-  std::map<unsigned, unsigned> input_aggregation_to_output_;
-  std::vector<fun> global_aggregation_functions_;
-  std::vector<fun> private_aggregation_functions_;
 
   // hashtable traverse and in the next func
   Lock hashtable_cur_lock_;

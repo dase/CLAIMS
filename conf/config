@@ -1,0 +1,48 @@
+#local node ip
+ip = "127.0.0.1";
+
+#port range
+PortManager:
+{
+    start = 19000;
+    end   = 19500;
+}
+
+#the ip and port of master
+coordinator:
+{
+    ip="127.0.0.1"
+    port="11001"
+}
+
+#this node is master (master=1) of not (master=0)
+master=1
+
+client_listener_port = 10000
+
+#the path for data and catalog
+data="Your Path"
+
+hdfs_master_ip="127.0.0.1"
+hdfs_master_port=9000
+
+#max degree of parallelism of this node
+max_degree_of_parallelism=4
+
+#initial degree of parallelism of this node
+initial_degree_of_parallelism=1
+
+expander_adaptivity_check_frequency=5000
+
+enable_expander_adaptivity=0
+
+#pipelined exchange or materialized 
+pipelined_exchange=1
+
+#run at local node or Hdfs
+local_disk_mode=1
+
+scan_batch=100
+
+#enable llvm codegen or not
+enable_codegen=0

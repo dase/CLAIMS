@@ -4,7 +4,7 @@ AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
 -I${THERON_HOME}/Include \
 -I${GTEST_HOME}/include \
 -I/usr/local/include  -D_DEBUG -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS \
--D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -g \
+-D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS  \
 -std=c++11 -fvisibility-inlines-hidden  \
 -fPIC -Woverloaded-virtual -ffunction-sections \
 -fdata-sections -Wcast-qual

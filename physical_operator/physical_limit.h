@@ -52,8 +52,8 @@ class PhysicalLimit : public PhysicalOperatorBase {
    private:
     Schema* schema_;
     PhysicalOperatorBase* child_;
-    unsigned long limit_tuples_;
     unsigned block_size_;
+    unsigned long limit_tuples_;
     unsigned long start_position_;
 
    private:

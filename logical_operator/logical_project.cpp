@@ -1,6 +1,4 @@
-#include "../physical_operator/physical_project.h"
-
-using claims::physical_operator::PhysicalProject;
+#include <atomic>
 
 /*
  * Copyright [2012-2015] DaSE@ECNU
@@ -33,21 +31,35 @@ using claims::physical_operator::PhysicalProject;
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <vector>
+#include <map>
+#include <string>
+#include "../common/expression/expr_column.h"
 #include "../logical_operator/logical_project.h"
+#include "../logical_operator/logical_operator.h"
 #include "../common/ids.h"
 #include "../common/data_type.h"
 #include "../common/Expression/initquery.h"
 #include "../common/log/logging.h"
+#include "../common/expression/expr_node.h"
+#include "../physical_operator/physical_project.h"
 
+using claims::common::ExprColumn;
+using claims::common::ExprNode;
+using claims::physical_operator::PhysicalProject;
 namespace claims {
 namespace logical_operator {
-
 LogicalProject::LogicalProject(LogicalOperator* child,
                                vector<QNode*> expression_tree)
-    : child_(child), expression_tree_(expression_tree), plan_context_(NULL) {
-  set_operator_type(kLogicalProject);
-}
-
+    : LogicalOperator(kLogicalProject),
+      child_(child),
+      expression_tree_(expression_tree),
+      plan_context_(NULL) {}
+LogicalProject::LogicalProject(LogicalOperator* child,
+                               vector<ExprNode*> expr_list)
+    : LogicalOperator(kLogicalProject),
+      child_(child),
+      expr_list_(expr_list),
+      plan_context_(NULL) {}
 LogicalProject::~LogicalProject() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -60,7 +72,11 @@ LogicalProject::~LogicalProject() {
 }
 // construct a PlanContext from child
 PlanContext LogicalProject::GetPlanContext() {
-  if (NULL != plan_context_) return *plan_context_;
+  lock_->acquire();
+  if (NULL != plan_context_) {
+    lock_->release();
+    return *plan_context_;
+  }
   PlanContext ret;
   // get the PlanContext of child
   const PlanContext child_plan_context = child_->GetPlanContext();
@@ -72,21 +88,23 @@ PlanContext LogicalProject::GetPlanContext() {
   ret.plan_partitioner_ = child_plan_context.plan_partitioner_;
   std::vector<Attribute> ret_attrs;
   // construct an input schema from attribute list of child
-  Schema* input_ = GetSchema(child_plan_context.attribute_list_);
-  // get the index of attributes in child PlanContext
-  SetColumnID(child_plan_context);
-  /**
-   * if the expression type is compare,then the new column will be boolean
-   * type,
-   * else will be it's actual type according to the variable
-   */
+  Schema* input_schema = GetSchema(child_plan_context.attribute_list_);
+// get the index of attributes in child PlanContext
+/**
+ * if the expression type is compare,then the new column will be boolean
+ * type,
+ * else will be it's actual type according to the variable
+ */
+
+#ifdef NEWCONDI
   for (int i = 0; i < expression_tree_.size(); ++i) {
     if (expression_tree_[i]->type == t_qexpr_cmp) {
-      InitExprAtLogicalPlan(expression_tree_[i], t_boolean, column_id_, input_);
+      InitExprAtLogicalPlan(expression_tree_[i], t_boolean, column_id_,
+                            input_schema);
     } else {
       InitExprAtLogicalPlan(expression_tree_[i],
                             expression_tree_[i]->actual_type, column_id_,
-                            input_);
+                            input_schema);
     }
   }
   // clean the attribute list of PlanContext to be returned
@@ -114,22 +132,34 @@ PlanContext LogicalProject::GetPlanContext() {
     // construct an attribute list
     ret_attrs.push_back(attr_alais);
   }
+#else
+  ret_attrs.clear();
+  map<string, int> column_to_id;
+  int mid_table_id = MIDINADE_TABLE_ID++;
+  GetColumnToId(child_plan_context.attribute_list_, column_to_id);
+  for (int i = 0; i < expr_list_.size(); ++i) {
+    expr_list_[i]->InitExprAtLogicalPlan(expr_list_[i]->actual_type_,
+                                         column_to_id, input_schema);
+    ret_attrs.push_back(expr_list_[i]->ExprNodeToAttr(i, mid_table_id));
+
+    // update partition key
+    if (t_qcolcumns == expr_list_[i]->expr_node_type_) {
+      ExprColumn* column = reinterpret_cast<ExprColumn*>(expr_list_[i]);
+      if (ret.plan_partitioner_.get_partition_key().attrName ==
+          column->table_name_ + "." + column->column_name_) {
+        ret.plan_partitioner_.set_partition_key(ret_attrs[i]);
+      }
+    }
+  }
+
+#endif
   // set the attribute list of the PlanContext to be returned
   ret.attribute_list_ = ret_attrs;
   plan_context_ = new PlanContext();
   // set the PlanContext to be returned
   *plan_context_ = ret;
+  lock_->release();
   return ret;
-}
-
-/**
- * Traverse the attribute_list_，
- * store the attribute name and index into colindex_.
- */
-void LogicalProject::SetColumnID(PlanContext plan_context) {
-  for (int i = 0; i < plan_context.attribute_list_.size(); ++i) {
-    column_id_[plan_context.attribute_list_[i].attrName] = i;
-  }
 }
 
 // get PlanContext and child physical plan from child ,
@@ -146,6 +176,7 @@ PhysicalOperatorBase* LogicalProject::GetPhysicalPlan(
   state.schema_input_ = GetSchema(child_plan_context.attribute_list_);
   state.schema_output_ = GetOutputSchema();
   state.expr_tree_ = expression_tree_;
+  state.expr_list_ = expr_list_;
   return new PhysicalProject(state);
 }
 
@@ -157,13 +188,31 @@ Schema* LogicalProject::GetOutputSchema() {
 
 // Print the whole logical operation tree
 void LogicalProject::Print(int level) const {
-  printf("project:\n");
-  LOG(INFO) << "project:\n" << endl;
+  cout << setw(level * kTabSize) << " "
+       << "Project:" << endl;
+  LOG(INFO) << "Project:\n" << endl;
+#ifdef NEWCONDI
   for (int i = 0; i < expression_tree_.size(); i++) {
     printf("%s\n", expression_tree_[i]->alias.c_str());
     LOG(INFO) << expression_tree_[i]->alias.c_str() << endl;
   }
-  child_->Print(level + 1);
+#else
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
+  ++level;
+  for (int i = 0; i < expr_list_.size(); ++i) {
+    cout << setw(level * kTabSize) << " " << expr_list_[i]->alias_ << endl;
+  }
+  --level;
+#endif
+  child_->Print(level);
 }
 
 }  // namespace logical_operator
