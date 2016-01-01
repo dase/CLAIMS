@@ -188,6 +188,7 @@ PlanContext LogicalScan::GetPlanContext() {
 
   Partitioner* par = target_projection_->getPartitioner();
   plan_context_->plan_partitioner_ = PlanPartitioner(*par);
+  plan_context_->plan_partitioner_.UpdateTableNameOfPartitionKey(table_alias_);
   plan_context_->commu_cost_ = 0;
   lock_->release();
   return *plan_context_;
@@ -311,6 +312,15 @@ void LogicalScan::Print(int level) const {
   cout << setw(level * kTabSize) << " "
        << "Scan:" << endl;
   level++;
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
   cout << setw(level * kTabSize) << " "
        << "table name: "
        << Catalog::getInstance()
