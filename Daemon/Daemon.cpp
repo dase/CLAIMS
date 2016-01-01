@@ -103,13 +103,6 @@ void* Daemon::worker(void* para) {
     // function.
 
     ClientListener::checkFdValid(result.fd_);
-#ifndef NEWSQLINTERFACE
-    Executing::run_sql(rc.cmd, result.result, result.status_, result.error_info,
-                       result.info_, result.fd);
-    ClientLogging::log(
-        "after running sql, the result is : status_-%d, err-%s, info-%s",
-        result.status_, result.error_info.c_str(), result.info_.c_str());
-#else
     StmtHandler* stmt_handler = new StmtHandler(rc.cmd);
     stmt_handler->Execute(&result);
     LOG(INFO) << "the result of after running sql: " << rc.cmd
@@ -117,7 +110,6 @@ void* Daemon::worker(void* para) {
               << "error info: " << result.error_info_
               << " info: " << result.info_ << endl;
 
-#endif
     ClientListener::checkFdValid(result.fd_);
     printf("-Worker add result into the queue!\n");
     Daemon::getInstance()->addExecutedResult(result);
