@@ -552,6 +552,19 @@ RetCode AstSubquery::GetLogicalPlan(LogicalOperator*& logic_plan) {
     return ret;
   }
   logic_plan = new LogicalSubquery(logic_plan, subquery_alias_);
+
+  LOG(WARNING) << "there shouldn't be equal join condition here.";
+  assert(equal_join_condition_.size() == 0);
+
+  if (normal_condition_.size() > 0) {
+    vector<ExprNode*> condition;
+    condition.clear();
+    ret = GetFilterCondition(condition, normal_condition_, logic_plan);
+    if (rSuccess != ret) {
+      return ret;
+    }
+    logic_plan = new LogicalFilter(logic_plan, condition);
+  }
   return rSuccess;
 }
 
@@ -1330,7 +1343,7 @@ void AstSelectStmt::Print(int level) const {
   if (orderby_clause_ != NULL) orderby_clause_->Print(level);
   if (limit_clause_ != NULL) limit_clause_->Print(level);
   if (select_into_clause_ != NULL) select_into_clause_->Print(level);
-  cout << "------------select ast print over!------------------" << endl;
+  //  cout << "------------select ast print over!------------------" << endl;
 }
 /**
  *  NOTE: the physical execution may be divide into 2 step_
