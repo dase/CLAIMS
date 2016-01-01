@@ -203,7 +203,9 @@ class DataInjector {
   Lock** pj_buffer_access_lock_;
   semaphore finished_thread_sem_;
 
-  bool all_tuple_read_ = false;
+  // should be bool type,
+  // but in order to use __sync_..... function it changed to be int type
+  int all_tuple_read_ = 0;
   RetCode multi_thread_status_ = rSuccess;
   ExecutedResult* result_;
   /******************debug********************/
@@ -215,6 +217,9 @@ class DataInjector {
   static uint64_t total_check_and_to_value_time_;
   static uint64_t total_insert_time_;
   static uint64_t total_add_time_;
+
+  static uint64_t total_lock_tuple_buffer_time_;
+  static uint64_t total_lock_pj_buffer_time_;
 };
 
 } /* namespace loader */
