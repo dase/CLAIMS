@@ -70,23 +70,44 @@ using claims::catalog::ProjectionDescriptor;
 using claims::catalog::Catalog;
 using boost::lexical_cast;
 using namespace claims::common;
+/*
+#define DEFINE_DEBUG_LOG(FLAG, log) \
+  #ifdef CLAIMS_DEBUG_LOG \
+    #ifdef FLAG \
+    #define log(info) DLOG(INFO) << info << endl; \
+    #else \
+      #define log(info) \
+    #endif \
+  #else \
+    #define log(info)\
+  #endif
+*/
 
-const bool kDataInjectorDebugLog = false;
-
-#define DLOG_DI(info) \
-  DLOG_IF(INFO, (kDataInjectorDebugLog) && (kClaimsDebugLog)) << info << endl;
-
-// open multi-thread loading
+/* open multi-thread loading */
 #define MULTI_THREAD_LOAD
-
-#define LOAD_PERFORMANCE_MONITOR
 
 // this macro decides whether really write data into data file.
 // Open means no write.
 #define DATA_DO_LOAD
-//// this macro decides whether write DLOG message into log file.
-//// Open means no DLOG message.
-// #define NDEBUG
+
+/* switch to open debug log ouput */
+// #define DATA_INJECTOR_DEBUG
+#define DATA_INJECTOR_PREF
+
+#ifdef CLAIMS_DEBUG_LOG
+#ifdef DATA_INJECTOR_DEBUG
+#define DLOG_DI(info) DLOG(INFO) << info << endl;
+#else
+#define DLOG_DI(info)
+#endif
+#ifdef DATA_INJECTOR_PREF
+#define PLOG_DI(info) DLOG(INFO) << info << endl;
+#else
+#define PLOG_DI(info)
+#endif
+#else
+#define DLOG_DI(info)
+#endif
 
 namespace claims {
 namespace loader {
@@ -98,6 +119,8 @@ static uint64_t DataInjector::total_check_and_to_value_func_time_ = 0;
 static uint64_t DataInjector::total_check_and_to_value_time_ = 0;
 static uint64_t DataInjector::total_insert_time_ = 0;
 static uint64_t DataInjector::total_add_time_ = 0;
+static uint64_t DataInjector::total_lock_tuple_buffer_time_ = 0;
+static uint64_t DataInjector::total_lock_pj_buffer_time_ = 0;
 
 DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
                            const string row_separator)
@@ -313,18 +336,17 @@ RetCode DataInjector::LoadFromFileSingleThread(vector<string> input_file_names,
   LOG(INFO) << "used " << GetElapsedTimeInUs(start_read_time) / 1000000.0
             << " time to handled " << file_count
             << " file, then flush unfilled block " << endl;
-  LOG(INFO) << "  total add time: " << total_add_time_ / 1000000.0
-            << "  total check string time: "
-            << total_check_string_time_ / 1000000.0
-            << "  total get substring and check string time: "
-            << total_get_substr_time_ / 1000000.0
-            << "  total to value time: " << total_to_value_time_ / 1000000.0
-            << "  total check_to_value func time: "
-            << total_check_and_to_value_func_time_ / 1000000.0
-            << "  total check_to_value time: "
-            << total_check_and_to_value_time_ / 1000000.0
-            << "  total insert time: " << total_insert_time_ / 1000000.0
-            << endl;
+  PLOG_DI("  total add time: "
+          << total_add_time_ / 1000000.0 << "  total check string time: "
+          << total_check_string_time_ / 1000000.0
+          << "  total get substring and check string time: "
+          << total_get_substr_time_ / 1000000.0
+          << "  total to value time: " << total_to_value_time_ / 1000000.0
+          << "  total check_to_value func time: "
+          << total_check_and_to_value_func_time_
+          << "  total check_to_value time: "
+          << total_check_and_to_value_time_ / 1000000.0
+          << "  total insert time: " << total_insert_time_ / 1000000.0);
 
   EXEC_AND_RETURN_ERROR(ret, FinishJobAfterLoading(open_flag), "");
 
@@ -388,29 +410,31 @@ RetCode DataInjector::PrepareEverythingForLoading(
   GETCURRENTTIME(prepare_start_time);
   EXEC_AND_RETURN_ERROR(ret, PrepareInitInfo(open_flag),
                         "failed to prepare initialization info");
-  LOG(INFO) << "prepare time: "
-            << GetElapsedTimeInUs(prepare_start_time) / 1000000.0 << endl;
+  PLOG_DI("prepare time: " << GetElapsedTimeInUs(prepare_start_time) /
+                                  1000000.0);
 
   // open files
   GETCURRENTTIME(open_start_time);
+#ifdef DATA_DO_LOAD
   EXEC_AND_RETURN_ERROR(ret, connector_->Open(open_flag),
                         " failed to open connector");
+#endif
 
-  LOG(INFO) << "open connector time: "
-            << GetElapsedTimeInUs(open_start_time) / 1000000.0 << endl;
+  PLOG_DI("open connector time: " << GetElapsedTimeInUs(open_start_time) /
+                                         1000000.0);
 
   // set table initialized state
   GETCURRENTTIME(unbind_time);
   EXEC_AND_RETURN_ERROR(ret, SetTableState(open_flag, result),
                         "failed to set table state");
-  LOG(INFO) << "unbind time: " << GetElapsedTimeInUs(unbind_time) << endl;
+  PLOG_DI("unbind time: " << GetElapsedTimeInUs(unbind_time) / 1000000.0);
 
   // check files
   GETCURRENTTIME(start_check_file_time);
   EXEC_AND_RETURN_ERROR(ret, CheckFiles(input_file_names, result),
                         "some files are unaccessible");
-  LOG(INFO) << "used " << GetElapsedTimeInUs(start_check_file_time) / 1000000.0
-            << " time to check file " << endl;
+  PLOG_DI("used " << GetElapsedTimeInUs(start_check_file_time) / 1000000.0
+                  << " time to check file ");
   return ret;
 }
 
@@ -428,8 +452,7 @@ RetCode DataInjector::FinishJobAfterLoading(FileOpenFlag open_flag) {
   GETCURRENTTIME(update_time);
   EXEC_AND_ONLY_LOG_ERROR(ret, UpdateCatalog(open_flag),
                           "failed to update catalog information. ret:" << ret);
-  LOG(INFO) << "update time: " << GetElapsedTimeInUs(update_time) / 1000000.0
-            << endl;
+  PLOG_DI("update time: " << GetElapsedTimeInUs(update_time) / 1000000.0);
 
   LOG(INFO) << "\n-----------------------"
             << (kCreateFile == open_flag ? "Load" : "Append")
@@ -458,7 +481,9 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
       "failed to prepare everything for loading");
 
   // create threads handling tuples
-  int thread_count = sysconf(_SC_NPROCESSORS_CONF) + 2;
+  int thread_count = Config::load_thread_num;
+  assert(thread_count >= 1);
+  //  thread_count = 1;  // debug
   for (int i = 0; i < thread_count - 1; ++i)
     Environment::getInstance()->getThreadPool()->add_task(HandleTuple, this);
 
@@ -483,7 +508,10 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
       if (GetRandomDecimal() >= sample_rate) continue;  // sample
 
       {  // push into tuple pool
+        GETCURRENTTIME(start_tuple_buffer_lock_time);
         LockGuard<Lock> guard(tuple_buffer_access_lock_);
+        __sync_add_and_fetch(&total_lock_tuple_buffer_time_,
+                             GetElapsedTimeInUs(start_tuple_buffer_lock_time));
         tuple_buffer_.push_back(
             std::move(LoadTask(tuple_record, file_name, row_id_in_file)));
         tuple_count_sem_in_buffer_.post();
@@ -497,13 +525,17 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
     input_file.close();
     ++file_count;
   }
-  all_tuple_read_ = true;
+  __sync_add_and_fetch(&all_tuple_read_, 1);
   LOG(INFO) << "used " << GetElapsedTimeInUs(start_read_time) / 1000000.0
             << " time to read all " << file_count
             << " file and insert them into pool " << endl;
 
   // after read all tuple, go on handling tuple as well as child threads
+  GETCURRENTTIME(main_thread_start_handle_time);
   HandleTuple(this);
+  PLOG_DI("main thread use "
+          << GetElapsedTimeInUs(main_thread_start_handle_time) / 1000000.0
+          << " sec time to handle tuple");
   if (rSuccess != (ret = multi_thread_status_)) {
     ELOG(multi_thread_status_, "failed to load using multi-thread ");
     return ret;
@@ -513,16 +545,20 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
   for (int i = 0; i < thread_count; ++i) finished_thread_sem_.wait();
   LOG(INFO) << " all threads finished its job " << endl;
 
-  LOG(INFO) << "  total add time: " << total_add_time_ / 1000000.0
-            << "  total check string time: "
-            << total_check_string_time_ / 1000000.0
-            << "  total get substring and check string time: "
-            << total_get_substr_time_ / 1000000.0
-            << "  total to value time: " << total_to_value_time_
-            << "  total to value func time: "
-            << total_check_and_to_value_func_time_
-            << "  total check time: " << total_check_and_to_value_time_
-            << "  total insert time: " << total_insert_time_ << endl;
+  PLOG_DI("  total add time: "
+          << total_add_time_ / 1000000.0 << "  total check string time: "
+          << total_check_string_time_ / 1000000.0
+          << "  total get substring and check string time: "
+          << total_get_substr_time_ / 1000000.0 << "  total to value time: "
+          << total_to_value_time_ / 1000000.0 << "  total to value func time: "
+          << total_check_and_to_value_func_time_ / 1000000.0
+          << "  total check time: "
+          << total_check_and_to_value_time_ / 1000000.0
+          << "  total insert time: " << total_insert_time_ / 1000000.0
+          << " total lock tuple buffer time: "
+          << total_lock_tuple_buffer_time_ / 1000000.0
+          << "total lock pj buffer time: "
+          << total_lock_pj_buffer_time_ / 1000000.0);
 
   EXEC_AND_RETURN_ERROR(ret, FinishJobAfterLoading(open_flag), "");
 
@@ -576,7 +612,7 @@ void* DataInjector::HandleTuple(void* ptr) {
 
   while (true) {
     if (injector->multi_thread_status_ != rSuccess) return NULL;
-    if (injector->all_tuple_read_ == true) {
+    if (injector->all_tuple_read_ == 1) {
       if (injector->tuple_count_sem_in_buffer_.try_wait() == false) {
         DLOG_DI("all tuple in pool is handled ");
         injector->finished_thread_sem_.post();
@@ -590,8 +626,11 @@ void* DataInjector::HandleTuple(void* ptr) {
       // waiting for new tuple read from file
       injector->tuple_count_sem_in_buffer_.wait();
     }
-    {
+    {  // get tuple from pool
+      GETCURRENTTIME(start_tuple_buffer_lock_time);
       LockGuard<Lock> guard(injector->tuple_buffer_access_lock_);
+      __sync_add_and_fetch(&injector->total_lock_tuple_buffer_time_,
+                           GetElapsedTimeInUs(start_tuple_buffer_lock_time));
       task = injector->tuple_buffer_.front();
       injector->tuple_buffer_.pop_front();
     }
@@ -670,9 +709,10 @@ RetCode DataInjector::InsertFromString(const string tuples,
   }
   EXEC_AND_RETURN_ERROR(ret, PrepareInitInfo(kAppendFile),
                         "failed to prepare initialization info");
-
+#ifdef DATA_DO_LOAD
   EXEC_AND_RETURN_ERROR(ret, connector_->Open(kAppendFile),
                         " failed to open connector");
+#endif
 
   row_id_in_table_ = table_->getRowNumber();
   LOG(INFO) << "\n------------------Insert  Begin!-----------------------\n";
@@ -683,8 +723,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
   vector<void*> correct_tuple_buffer;
 
   while (string::npos != (cur = tuples.find('\n', prev_cur))) {
-    DLOG_IF(INFO, kClaimsDebugLog == true) << "cur: " << cur
-                                           << " prev_cur: " << prev_cur << endl;
+    DLOG_DI("cur: " << cur << " prev_cur: " << prev_cur);
     string tuple_record = tuples.substr(prev_cur, cur - prev_cur);
     LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
@@ -717,8 +756,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
     // handle all warnings
     for (auto it : columns_validities) {
       string validity_info = GenerateDataValidityInfo(it, table_, line, "");
-      DLOG_IF(INFO, kClaimsDebugLog == true)
-          << "append warning info:" << validity_info << endl;
+      DLOG_DI("append warning info:" << validity_info);
       result->AppendWarning(validity_info);
     }
 
@@ -875,13 +913,16 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
   void* block_tuple_addr;
   {
 #ifdef MULTI_THREAD_LOAD
+    GETCURRENTTIME(lock_pj_buffer_time);
     LockGuard<Lock> guard(pj_buffer_access_lock_[i][part]);
+    __sync_add_and_fetch(&total_lock_pj_buffer_time_,
+                         GetElapsedTimeInUs(lock_pj_buffer_time));
 #endif
     block_tuple_addr = pj_buffer[i][part]->allocateTuple(tuple_max_length);
     if (NULL == block_tuple_addr) {
-// if buffer is full, write buffer(64K) to HDFS/disk
-#ifdef DATA_DO_LOAD
+      // if buffer is full, write buffer(64K) to HDFS/disk
       pj_buffer[i][part]->serialize(*sblock);
+#ifdef DATA_DO_LOAD
       EXEC_AND_LOG(ret, connector_->Flush(i, part, sblock->getBlock(),
                                           sblock->getsize()),
                    row_id_in_table_ << "\t64KB has been written to file!",
