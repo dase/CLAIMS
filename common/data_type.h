@@ -653,7 +653,12 @@ class OperateString : public Operate {
     return false;
   }
   RetCode CheckSet(string& str) const;
-  void SetDefault(string& str) const { str = ""; }
+  void SetDefault(string& str) const {
+    if (this->nullable)
+      str = "7";
+    else
+      str = "";
+  }
 };
 
 class OperateDate : public Operate {
