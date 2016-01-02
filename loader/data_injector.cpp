@@ -26,37 +26,43 @@
  *
  */
 
-#include "./data_injector.h"
+#include "data_injector.h"
 
-#include <stdlib.h>
+#include <glog/logging.h>
+#include <libio.h>
+#include <stddef.h>
+#include <sys/time.h>
+#include <algorithm>
+#include <cassert>
+#include <cstdint>
+#include <cstring>
+#include <fstream>
 #include <iostream>
-#include <istream>
-#include <string>
-#include <vector>
+#include <sstream>
 
-#include "./file_connector.h"
-#include "./table_file_connector.h"
-#include "./single_file_connector.h"
-#include "../common/file_handle/file_handle_imp.h"
-#include "../common/file_handle/file_handle_imp_factory.h"
-#include "../common/Schema/TupleConvertor.h"
-#include "../common/Schema/Schema.h"
-#include "../common/Block/Block.h"
-#include "../common/Block/BlockStream.h"
-#include "../common/error_define.h"
-#include "../common/memory_handle.h"
-
-#include "../catalog/projection.h"
-#include "../catalog/table.h"
+#include "../catalog/attribute.h"
 #include "../catalog/catalog.h"
+#include "../catalog/partitioner.h"
+#include "../catalog/projection.h"
 #include "../catalog/projection_binding.h"
-
+#include "../common/Block/BlockStream.h"
+#include "../common/data_type.h"
+#include "../common/error_no.h"
+#include "../common/file_handle/file_handle_imp_factory.h"
+#include "../common/ids.h"
+#include "../common/memory_handle.h"
+#include "../common/Schema/Schema.h"
+#include "../common/Schema/TupleConvertor.h"
 #include "../Config.h"
-#include "../Debug.h"
 #include "../Daemon/Daemon.h"
+#include "../Debug.h"
 #include "../Environment.h"
+#include "../utility/lock.h"
+#include "../utility/lock_guard.h"
 #include "../utility/maths.h"
 #include "../utility/ThreadPool.h"
+#include "../utility/Timer.h"
+#include "table_file_connector.h"
 
 using claims::common::FileOpenFlag;
 using claims::common::FilePlatform;
@@ -127,7 +133,7 @@ DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
     : table_(table),
       col_separator_(col_separator),
       row_separator_(row_separator) {
-  sub_tuple_generator.clear();
+  sub_tuple_generator_.clear();
   table_schema_ = table_->getSchema();
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
     projections_schema_.push_back(table_->getProjectoin(i)->getSchema());
@@ -147,7 +153,7 @@ DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
         table_->getProjectoin(i)->getPartitioner()->getPartitionKey();
     int hash_key_index =
         table_->getProjectoin(i)->getAttributeIndex(partition_attribute);
-    partition_key_index.push_back(hash_key_index);
+    partition_key_index_.push_back(hash_key_index);
 
     PartitionFunction* pf =
         table_->getProjectoin(i)->getPartitioner()->getPartitionFunction();
@@ -161,10 +167,10 @@ DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
     }
     SubTuple* st = new SubTuple(
         table_->getSchema(), table_->getProjectoin(i)->getSchema(), prj_index);
-    sub_tuple_generator.push_back(st);
+    sub_tuple_generator_.push_back(st);
   }
 
-  sblock = new Block(BLOCK_SIZE);
+  sblock_ = new Block(BLOCK_SIZE);
 
 #ifdef DATA_DO_LOAD
   connector_ = new TableFileConnector(
@@ -176,34 +182,24 @@ DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
 DataInjector::~DataInjector() {
   DELETE_PTR(table_schema_);
   DELETE_PTR(connector_);
-  DELETE_PTR(sblock);
-  for (auto it : pj_buffer) {
+  DELETE_PTR(sblock_);
+  for (auto it : pj_buffer_) {
     for (auto iter : it) {
       DELETE_PTR(iter);
     }
     it.clear();
   }
-  pj_buffer.clear();
-  for (auto it : sub_tuple_generator) DELETE_PTR(it);
-  sub_tuple_generator.clear();
+  pj_buffer_.clear();
+  for (auto it : sub_tuple_generator_) DELETE_PTR(it);
+  sub_tuple_generator_.clear();
 
   write_path_.clear();
   file_list_.clear();
-
-  for (int i = 0; i < table_->getNumberOfProjection(); ++i)
-    DELETE_ARRAY(pj_buffer_access_lock_[i]);
-  DELETE_ARRAY(pj_buffer_access_lock_);
 }
 
 RetCode DataInjector::PrepareInitInfo(FileOpenFlag open_flag) {
   int ret = rSuccess;
-#ifdef MULTI_THREAD_LOAD
-  pj_buffer_access_lock_ = new Lock* [table_->getNumberOfProjection()];
-#endif
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
-    pj_buffer_access_lock_[i] = new Lock
-        [table_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions()];
-
     vector<BlockStreamBase*> temp_v;
     vector<size_t> tmp_block_num;
     vector<size_t> tmp_tuple_count;
@@ -229,9 +225,9 @@ RetCode DataInjector::PrepareInitInfo(FileOpenFlag open_flag) {
           << table_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j)
           << endl;
     }
-    pj_buffer.push_back(temp_v);
-    blocks_per_partition.push_back(tmp_block_num);
-    tuples_per_partition.push_back(tmp_tuple_count);
+    pj_buffer_.push_back(temp_v);
+    blocks_per_partition_.push_back(tmp_block_num);
+    tuples_per_partition_.push_back(tmp_tuple_count);
   }
   return ret;
 }
@@ -315,7 +311,7 @@ RetCode DataInjector::LoadFromFileSingleThread(vector<string> input_file_names,
       total_check_and_to_value_time_ += GetElapsedTimeInUs(start_check_time);
 
       GETCURRENTTIME(start_insert_time);
-      EXEC_AND_ONLY_LOG_ERROR(ret, InsertSingleTuple(tuple_buffer),
+      EXEC_AND_ONLY_LOG_ERROR(ret, InsertSingleTuple(tuple_buffer, pj_buffer_),
                               "failed to insert tuple in "
                                   << file_name << " at line " << row_id_in_file
                                   << ". ret:" << ret);
@@ -343,7 +339,7 @@ RetCode DataInjector::LoadFromFileSingleThread(vector<string> input_file_names,
           << total_get_substr_time_ / 1000000.0
           << "  total to value time: " << total_to_value_time_ / 1000000.0
           << "  total check_to_value func time: "
-          << total_check_and_to_value_func_time_
+          << total_check_and_to_value_func_time_ / 1000000.0
           << "  total check_to_value time: "
           << total_check_and_to_value_time_ / 1000000.0
           << "  total insert time: " << total_insert_time_ / 1000000.0);
@@ -419,7 +415,6 @@ RetCode DataInjector::PrepareEverythingForLoading(
   EXEC_AND_RETURN_ERROR(ret, connector_->Open(open_flag),
                         " failed to open connector");
 #endif
-
   PLOG_DI("open connector time: " << GetElapsedTimeInUs(open_start_time) /
                                          1000000.0);
 
@@ -440,9 +435,6 @@ RetCode DataInjector::PrepareEverythingForLoading(
 
 RetCode DataInjector::FinishJobAfterLoading(FileOpenFlag open_flag) {
   int ret = rSuccess;
-  EXEC_AND_LOG(ret, FlushNotFullBlock(),
-               "flush all last block that are not full",
-               "failed to flush all last block. ret:" << ret);
 
 #ifdef DATA_DO_LOAD
   EXEC_AND_LOG(ret, connector_->Close(), "closed connector.",
@@ -474,6 +466,7 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
   multi_thread_status_ = rSuccess;
   all_tuple_read_ = false;
   result_ = result;
+  thread_index_ = 0;
   cout << endl;
 
   EXEC_AND_RETURN_ERROR(
@@ -484,6 +477,9 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
   int thread_count = Config::load_thread_num;
   assert(thread_count >= 1);
   //  thread_count = 1;  // debug
+  task_lists_ = new std::list<LoadTask>[thread_count];
+  task_list_access_lock_ = new Lock[thread_count];
+  tuple_count_sem_in_lists_ = new semaphore[thread_count];
   for (int i = 0; i < thread_count - 1; ++i)
     Environment::getInstance()->getThreadPool()->add_task(HandleTuple, this);
 
@@ -507,15 +503,17 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
 
       if (GetRandomDecimal() >= sample_rate) continue;  // sample
 
-      {  // push into tuple pool
+      int list_index = row_id_in_file % thread_count;
+      {  // push into one thread local tuple pool
         GETCURRENTTIME(start_tuple_buffer_lock_time);
-        LockGuard<Lock> guard(tuple_buffer_access_lock_);
+        LockGuard<Lock> guard(task_list_access_lock_[list_index]);
         __sync_add_and_fetch(&total_lock_tuple_buffer_time_,
                              GetElapsedTimeInUs(start_tuple_buffer_lock_time));
-        tuple_buffer_.push_back(
+
+        task_lists_[list_index].push_back(
             std::move(LoadTask(tuple_record, file_name, row_id_in_file)));
-        tuple_count_sem_in_buffer_.post();
       }
+      tuple_count_sem_in_lists_[list_index].post();
     }
 
     DLOG_DI("--------------- input file's eof is " << input_file.eof());
@@ -549,18 +547,22 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
           << total_add_time_ / 1000000.0 << "  total check string time: "
           << total_check_string_time_ / 1000000.0
           << "  total get substring and check string time: "
-          << total_get_substr_time_ / 1000000.0 << "  total to value time: "
-          << total_to_value_time_ / 1000000.0 << "  total to value func time: "
+          << total_get_substr_time_ / 1000000.0
+          << "  total to value time: " << total_to_value_time_ / 1000000.0
+          << "  total check_and_to_value func time: "
           << total_check_and_to_value_func_time_ / 1000000.0
-          << "  total check time: "
+          << "  total check and to value time: "
           << total_check_and_to_value_time_ / 1000000.0
           << "  total insert time: " << total_insert_time_ / 1000000.0
           << " total lock tuple buffer time: "
-          << total_lock_tuple_buffer_time_ / 1000000.0
-          << "total lock pj buffer time: "
-          << total_lock_pj_buffer_time_ / 1000000.0);
+          << total_lock_tuple_buffer_time_ / 1000000.0);
 
   EXEC_AND_RETURN_ERROR(ret, FinishJobAfterLoading(open_flag), "");
+
+  for (int i = 0; i < thread_count; ++i) task_lists_[i].clear();
+  DELETE_ARRAY(task_lists_);
+  DELETE_ARRAY(task_list_access_lock_);
+  DELETE_ARRAY(tuple_count_sem_in_lists_);
 
   return ret;
 }
@@ -590,6 +592,37 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
 #endif
 }
 
+RetCode DataInjector::PrepareLocalPJBuffer(
+    vector<vector<BlockStreamBase*>>& pj_buffer) {
+  int ret = rSuccess;
+  for (int i = 0; i < table_->getNumberOfProjection(); i++) {
+    vector<BlockStreamBase*> temp_v;
+    for (
+        int j = 0;
+        j < table_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions();
+        ++j) {
+      temp_v.push_back(
+          BlockStreamBase::createBlock(table_->getProjectoin(i)->getSchema(),
+                                       BLOCK_SIZE - sizeof(unsigned)));
+    }
+    pj_buffer.push_back(temp_v);
+  }
+  return ret;
+}
+
+RetCode DataInjector::DestroyLocalPJBuffer(
+    vector<vector<BlockStreamBase*>>& pj_buffer) {
+  int ret = rSuccess;
+  for (auto it : pj_buffer) {
+    for (auto iter : it) {
+      DELETE_PTR(iter);
+    }
+    it.clear();
+  }
+  pj_buffer.clear();
+  return ret;
+}
+
 void* DataInjector::HandleTuple(void* ptr) {
   DataInjector* injector = static_cast<DataInjector*>(ptr);
   string tuple_to_handle = "";
@@ -597,6 +630,7 @@ void* DataInjector::HandleTuple(void* ptr) {
   uint64_t row_id_in_file = 0;
   DataInjector::LoadTask task;
   RetCode ret = rSuccess;
+  int self_thread_index = __sync_fetch_and_add(&injector->thread_index_, 1);
   /*
    * store the validity of every column data,
    * the extra 2 validity[(-1, rTooManyColumn), (-1, rTooFewColumn)]
@@ -610,29 +644,42 @@ void* DataInjector::HandleTuple(void* ptr) {
     return NULL;
   }
 
+  vector<vector<BlockStreamBase*>> local_pj_buffer;
+  injector->PrepareLocalPJBuffer(local_pj_buffer);
+
   while (true) {
     if (injector->multi_thread_status_ != rSuccess) return NULL;
     if (injector->all_tuple_read_ == 1) {
-      if (injector->tuple_count_sem_in_buffer_.try_wait() == false) {
+      if (!injector->tuple_count_sem_in_lists_[self_thread_index].try_wait()) {
         DLOG_DI("all tuple in pool is handled ");
+
+        EXEC_AND_LOG(ret, injector->FlushNotFullBlock(local_pj_buffer),
+                     "flush all last block that are not full",
+                     "failed to flush all last block. ret:" << ret);
         injector->finished_thread_sem_.post();
+        DELETE_PTR(tuple_buffer);
+        injector->DestroyLocalPJBuffer(local_pj_buffer);
         return NULL;  // success. all tuple is handled
       }
       DLOG_DI("all tuple is read ,tuple count sem is:"
-              << injector->tuple_count_sem_in_buffer_.get_value());
+              << injector->tuple_count_sem_in_lists_.get_value());
+      // get tuple from list without lock, as
+      // producer thread is over, there are only consumer threads
+      task = injector->task_lists_[self_thread_index].front();
+      injector->task_lists_[self_thread_index].pop_front();
     } else {
       DLOG_DI("tuple count sem is:"
-              << injector->tuple_count_sem_in_buffer_.get_value());
+              << injector->tuple_count_sem_in_lists_.get_value());
       // waiting for new tuple read from file
-      injector->tuple_count_sem_in_buffer_.wait();
-    }
-    {  // get tuple from pool
+      injector->tuple_count_sem_in_lists_[self_thread_index].wait();
+      // get tuple from pool with lock
       GETCURRENTTIME(start_tuple_buffer_lock_time);
-      LockGuard<Lock> guard(injector->tuple_buffer_access_lock_);
+      LockGuard<Lock> guard(
+          injector->task_list_access_lock_[self_thread_index]);
       __sync_add_and_fetch(&injector->total_lock_tuple_buffer_time_,
                            GetElapsedTimeInUs(start_tuple_buffer_lock_time));
-      task = injector->tuple_buffer_.front();
-      injector->tuple_buffer_.pop_front();
+      task = injector->task_lists_[self_thread_index].front();
+      injector->task_lists_[self_thread_index].pop_front();
     }
 
     tuple_to_handle = task.tuple_;
@@ -676,10 +723,10 @@ void* DataInjector::HandleTuple(void* ptr) {
                          GetElapsedTimeInUs(start_check_time));
 
     GETCURRENTTIME(start_insert_time);
-    EXEC_AND_ONLY_LOG_ERROR(ret, injector->InsertSingleTuple(tuple_buffer),
-                            "failed to insert tuple in "
-                                << file_name << " at line " << row_id_in_file
-                                << ".");
+    EXEC_AND_ONLY_LOG_ERROR(
+        ret, injector->InsertSingleTuple(tuple_buffer, local_pj_buffer),
+        "failed to insert tuple in " << file_name << " at line "
+                                     << row_id_in_file << ".");
     __sync_add_and_fetch(&injector->total_insert_time_,
                          GetElapsedTimeInUs(start_insert_time));
   }
@@ -687,6 +734,7 @@ void* DataInjector::HandleTuple(void* ptr) {
     injector->multi_thread_status_ = ret;
   }
   DELETE_PTR(tuple_buffer);
+  injector->DestroyLocalPJBuffer(local_pj_buffer);
 }
 
 /**
@@ -770,14 +818,14 @@ RetCode DataInjector::InsertFromString(const string tuples,
   }
 
   for (auto it : correct_tuple_buffer) {
-    EXEC_AND_ONLY_LOG_ERROR(ret, InsertSingleTuple(it),
+    EXEC_AND_ONLY_LOG_ERROR(ret, InsertSingleTuple(it, pj_buffer_),
                             "failed to insert tuple in line "
                                 << line << ". ret:" << ret);
     DELETE_PTR(it);
   }
   correct_tuple_buffer.clear();
   LOG(INFO) << "totally inserted " << line << " rows data into blocks" << endl;
-  EXEC_AND_LOG(ret, FlushNotFullBlock(),
+  EXEC_AND_LOG(ret, FlushNotFullBlock(pj_buffer_),
                "flush all last block that are not full",
                "failed to flush all last block");
 #ifdef DATA_DO_LOAD
@@ -792,7 +840,8 @@ RetCode DataInjector::InsertFromString(const string tuples,
 }
 
 // flush the last block which is not full of 64*1024Byte
-RetCode DataInjector::FlushNotFullBlock() {
+RetCode DataInjector::FlushNotFullBlock(
+    vector<vector<BlockStreamBase*>>& pj_buffer) {
   int ret = rSuccess;
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
     for (
@@ -800,17 +849,17 @@ RetCode DataInjector::FlushNotFullBlock() {
         j < table_->getProjectoin(i)->getPartitioner()->getNumberOfPartitions();
         j++) {
       if (!pj_buffer[i][j]->Empty()) {
-        pj_buffer[i][j]->serialize(*sblock);
+        pj_buffer[i][j]->serialize(*sblock_);
 
 #ifdef DATA_DO_LOAD
-        EXEC_AND_LOG(
-            ret, connector_->Flush(i, j, sblock->getBlock(), sblock->getsize()),
-            "flushed the last block from buffer(" << i << "," << j
-                                                  << ") into file",
-            "failed to flush the last block from buffer(" << i << "," << j
-                                                          << "). ret:" << ret);
+        EXEC_AND_LOG(ret, connector_->AtomicFlush(i, j, sblock_->getBlock(),
+                                                  sblock_->getsize()),
+                     "flushed the last block from buffer(" << i << "," << j
+                                                           << ") into file",
+                     "failed to flush the last block from buffer("
+                         << i << "," << j << "). ret:" << ret);
 #endif
-        ++blocks_per_partition[i][j];
+        __sync_add_and_fetch(&blocks_per_partition_[i][j], 1);
         pj_buffer[i][j]->setEmpty();
       }
     }
@@ -830,15 +879,15 @@ RetCode DataInjector::UpdateCatalog(FileOpenFlag open_flag) {
         j++) {
       table_->getProjectoin(i)
           ->getPartitioner()
-          ->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition[i][j]);
+          ->RegisterPartitionWithNumberOfBlocks(j, blocks_per_partition_[i][j]);
       if (kAppendFile == open_flag) {
         table_->getProjectoin(i)
             ->getPartitioner()
             ->UpdatePartitionWithNumberOfChunksToBlockManager(
-                j, blocks_per_partition[i][j]);
+                j, blocks_per_partition_[i][j]);
       }
       LOG(INFO) << "Number of blocks in " << i << "th projection, " << j
-                << "th partition\t: " << blocks_per_partition[i][j] << endl;
+                << "th partition\t: " << blocks_per_partition_[i][j] << endl;
     }
   }
   return ret;
@@ -878,9 +927,9 @@ inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
   return rSuccess;
 }
 
-// TODO(ANYONE): consider multi-thread
-RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
-                                                void* tuple_buffer) {
+RetCode DataInjector::InsertTupleIntoProjection(
+    int proj_index, void* tuple_buffer,
+    vector<vector<BlockStreamBase*>>& local_pj_buffer) {
   int ret = rSuccess;
   if (proj_index >= table_->getNumberOfProjection()) {
     LOG(ERROR) << "projection index is " << proj_index
@@ -893,10 +942,10 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
   // extract the sub tuple according to the projection schema
   void* target = Malloc(tuple_max_length);  // newmalloc
   if (target == NULL) return rNoMemory;
-  sub_tuple_generator[i]->getSubTuple(tuple_buffer, target);
+  sub_tuple_generator_[i]->getSubTuple(tuple_buffer, target);
 
   // determine the partition to write the tuple "target"
-  const int partition_key_local_index = partition_key_index[i];
+  const int partition_key_local_index = partition_key_index_[i];
   void* partition_key_addr = projections_schema_[i]->getColumnAddess(
       partition_key_local_index, target);
   int part = projections_schema_[i]
@@ -907,31 +956,24 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
 
   DLOG_DI("insert tuple into projection: " << i << ", partition: " << part);
 
-  __sync_add_and_fetch(&tuples_per_partition[i][part], 1);
+  __sync_add_and_fetch(&tuples_per_partition_[i][part], 1);
 
   // copy tuple to buffer
   void* block_tuple_addr;
-  {
-#ifdef MULTI_THREAD_LOAD
-    GETCURRENTTIME(lock_pj_buffer_time);
-    LockGuard<Lock> guard(pj_buffer_access_lock_[i][part]);
-    __sync_add_and_fetch(&total_lock_pj_buffer_time_,
-                         GetElapsedTimeInUs(lock_pj_buffer_time));
-#endif
-    block_tuple_addr = pj_buffer[i][part]->allocateTuple(tuple_max_length);
-    if (NULL == block_tuple_addr) {
-      // if buffer is full, write buffer(64K) to HDFS/disk
-      pj_buffer[i][part]->serialize(*sblock);
+  block_tuple_addr = local_pj_buffer[i][part]->allocateTuple(tuple_max_length);
+  if (NULL == block_tuple_addr) {
+    // if buffer is full, write buffer(64K) to HDFS/disk
+    local_pj_buffer[i][part]->serialize(*sblock_);
 #ifdef DATA_DO_LOAD
-      EXEC_AND_LOG(ret, connector_->Flush(i, part, sblock->getBlock(),
-                                          sblock->getsize()),
-                   row_id_in_table_ << "\t64KB has been written to file!",
-                   "failed to write to data file. ret:" << ret);
+    EXEC_AND_LOG(ret, connector_->AtomicFlush(i, part, sblock_->getBlock(),
+                                              sblock_->getsize()),
+                 row_id_in_table_ << "\t64KB has been written to file!",
+                 "failed to write to data file. ret:" << ret);
 #endif
-      ++blocks_per_partition[i][part];
-      pj_buffer[i][part]->setEmpty();
-      block_tuple_addr = pj_buffer[i][part]->allocateTuple(tuple_max_length);
-    }
+    __sync_add_and_fetch(&(blocks_per_partition_[i][part]), 1);
+    local_pj_buffer[i][part]->setEmpty();
+    block_tuple_addr =
+        local_pj_buffer[i][part]->allocateTuple(tuple_max_length);
   }
   int copy_size = projections_schema_[i]->copyTuple(target, block_tuple_addr);
   if (copy_size > tuple_max_length && "copy more than malloc size") {
@@ -948,10 +990,11 @@ RetCode DataInjector::InsertTupleIntoProjection(int proj_index,
  * partition key
  * if the block is full, write to real data file in HDFS/disk.
  */
-RetCode DataInjector::InsertSingleTuple(void* tuple_buffer) {
+RetCode DataInjector::InsertSingleTuple(
+    void* tuple_buffer, vector<vector<BlockStreamBase*>>& local_pj_buffer) {
   int ret = rSuccess;
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
-    ret = InsertTupleIntoProjection(i, tuple_buffer);
+    ret = InsertTupleIntoProjection(i, tuple_buffer, local_pj_buffer);
   }
   return ret;
 }

@@ -113,7 +113,8 @@ class DataInjector {
    * @param tuple_buffer: single tuple memory
    * @return  rSuccess if succeed
    */
-  RetCode InsertSingleTuple(void* tuple_buffer);
+  RetCode InsertSingleTuple(void* tuple_buffer,
+                            vector<vector<BlockStreamBase*>>& local_pj_buffer);
 
   /**
    * @brief Method description: check the validity of the tuple string, and
@@ -138,7 +139,9 @@ class DataInjector {
    * @param proj_index: the id of projection
    * @param tuple_buffer: the memory of tuple to be write
    */
-  RetCode InsertTupleIntoProjection(int proj_index, void* tuple_buffer);
+  RetCode InsertTupleIntoProjection(
+      int proj_index, void* tuple_buffer,
+      vector<vector<BlockStreamBase*>>& local_pj_buffer);
 
   RetCode UpdateCatalog(FileOpenFlag open_flag);
 
@@ -146,7 +149,7 @@ class DataInjector {
    * @brief Method description: after handle all tuple, flush all block that are
    *        not full into file
    */
-  RetCode FlushNotFullBlock();
+  RetCode FlushNotFullBlock(vector<vector<BlockStreamBase*>>& pj_buffer);
 
   RetCode PrepareInitInfo(FileOpenFlag open_flag);
 
@@ -167,6 +170,9 @@ class DataInjector {
                                       ExecutedResult* result);
 
   RetCode FinishJobAfterLoading(FileOpenFlag open_flag);
+  RetCode PrepareLocalPJBuffer(vector<vector<BlockStreamBase*>>& pj_buffer);
+
+  RetCode DestroyLocalPJBuffer(vector<vector<BlockStreamBase*>>& pj_buffer);
 
  public:
   static istream& GetTupleTerminatedBy(ifstream& ifs, string& res,
@@ -182,25 +188,25 @@ class DataInjector {
   vector<vector<string>> write_path_;
 
   vector<PartitionFunction*> partition_functin_list_;
-  vector<int> partition_key_index;
-  vector<SubTuple*> sub_tuple_generator;
-  Block* sblock;
+  vector<int> partition_key_index_;
+  vector<SubTuple*> sub_tuple_generator_;
+  Block* sblock_;
 
-  vector<vector<size_t>> blocks_per_partition;
-  vector<vector<size_t>> tuples_per_partition;
-  vector<vector<BlockStreamBase*>> pj_buffer;
+  vector<vector<size_t>> blocks_per_partition_;
+  vector<vector<size_t>> tuples_per_partition_;
+  vector<vector<BlockStreamBase*>> pj_buffer_;
 
   string col_separator_;
   string row_separator_;
   uint64_t row_id_in_table_;
 
   // support multi-thread
-  std::list<LoadTask> tuple_buffer_;
-  Lock tuple_buffer_access_lock_;
-  semaphore tuple_count_sem_in_buffer_;
+  std::list<LoadTask>* task_lists_ = NULL;
+  Lock* task_list_access_lock_ = NULL;
+  semaphore* tuple_count_sem_in_lists_;
+  int thread_index_ = 0;
 
   Lock row_id_lock_;
-  Lock** pj_buffer_access_lock_;
   semaphore finished_thread_sem_;
 
   // should be bool type,
