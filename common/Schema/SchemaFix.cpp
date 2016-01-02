@@ -29,7 +29,7 @@ using claims::common::rTooLongData;
 using claims::common::rTooManyColumn;
 
 // #define SCHEMA_FIX_DEBUG
-// #define SCHEMA_FIX_PERF
+#define SCHEMA_FIX_PERF
 
 #ifdef CLAIMS_DEBUG_LOG
 #ifdef SCHEMA_FIX_DEBUG
@@ -206,11 +206,10 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       ret = rSuccess;
     }
   }
-  double temp = GetElapsedTime(to_value_func_time);
+  uint64_t temp = GetElapsedTimeInUs(to_value_func_time);
   __sync_add_and_fetch(&DataInjector::total_check_and_to_value_func_time_,
                        temp);
-
-  PLOG_SF("check_and_to_value func time:" << temp * 1000);
+  PLOG_SF("check_and_to_value func time:" << temp << " us");
   return ret;
 }
 
