@@ -29,7 +29,7 @@ using claims::common::rTooLongData;
 using claims::common::rTooManyColumn;
 
 // #define SCHEMA_FIX_DEBUG
-#define SCHEMA_FIX_PERF
+//#define SCHEMA_FIX_PERF
 
 #ifdef CLAIMS_DEBUG_LOG
 #ifdef SCHEMA_FIX_DEBUG
@@ -39,9 +39,11 @@ using claims::common::rTooManyColumn;
 #endif
 
 #ifdef SCHEMA_FIX_PERF
-#define PLOG_SF(info) DLOG(INFO) << info << endl;
+#define PLOG_SF(info) DLOG(INFO) << info << std::endl;
+#define GET_TIME_SF(var) GETCURRENTTIME(var)
 #else
 #define PLOG_SF(info)
+#define GET_TIME_SF(var)
 #endif
 #else
 #define DLOG_SF(info)
@@ -112,9 +114,9 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
    * let's think : '|' is column separator, '\n' is line separator
    * data format is always: xxx|xxx|xxx|......xxx|\n
    */
-  GETCURRENTTIME(to_value_func_time);
+  GET_TIME_SF(to_value_func_time);
   for (int i = 0; i < columns.size(); ++i) {
-    GETCURRENTTIME(get_substr_time);
+    GET_TIME_SF(get_substr_time);
 
     DLOG_SF("tuple size is " << text_tuple.length());
     if (pos != string::npos && text_tuple.length() == prev_pos) {
@@ -145,7 +147,7 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
         DLOG_SF("after prev_pos adding, prev_pos :" << prev_pos
                                                     << " pos:" << pos);
 
-        GETCURRENTTIME(check_string_time);
+        GET_TIME_SF(check_string_time);
         ret = columns[i].operate->CheckSet(text_column);
         if (rIncorrectData == ret || rInvalidNullData == ret) {  // error
           if (kSQL == raw_data_source) {  // treated as error
@@ -165,15 +167,15 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
           columns[i].operate->SetDefault(text_column);
           ret = rSuccess;
         }
-        __sync_add_and_fetch(&DataInjector::total_check_string_time_,
-                             GetElapsedTimeInUs(check_string_time));
+        //        __sync_add_and_fetch(&DataInjector::total_check_string_time_,
+        //                             GetElapsedTimeInUs(check_string_time));
       }
     }
-    __sync_add_and_fetch(&DataInjector::total_get_substr_time_,
-                         GetElapsedTimeInUs(get_substr_time));
+    //    __sync_add_and_fetch(&DataInjector::total_get_substr_time_,
+    //                         GetElapsedTimeInUs(get_substr_time));
     PLOG_SF("get_substr time:" << GetElapsedTimeInUs(get_substr_time));
 
-    GETCURRENTTIME(to_value_time);
+    GET_TIME_SF(to_value_time);
     DLOG_SF("Before toValue, column data is " << text_column);
     columns[i].operate->toValue(
         static_cast<char*>(binary_tuple) + accum_offsets[i],
@@ -182,8 +184,8 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
                          << "\t Transfer: "
                          << columns[i].operate->toString(binary_tuple +
                                                          accum_offsets[i]));
-    __sync_add_and_fetch(&DataInjector::total_to_value_time_,
-                         GetElapsedTimeInUs(to_value_time));
+    //    __sync_add_and_fetch(&DataInjector::total_to_value_time_,
+    //                         GetElapsedTimeInUs(to_value_time));
     PLOG_SF("just to_value time:" << GetElapsedTimeInUs(to_value_time));
     PLOG_SF("inner loop time:" << GetElapsedTimeInUs(get_substr_time));
   }
@@ -206,10 +208,10 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       ret = rSuccess;
     }
   }
-  uint64_t temp = GetElapsedTimeInUs(to_value_func_time);
-  __sync_add_and_fetch(&DataInjector::total_check_and_to_value_func_time_,
-                       temp);
-  PLOG_SF("check_and_to_value func time:" << temp << " us");
+  //  uint64_t temp = GetElapsedTimeInUs(to_value_func_time);
+  //  __sync_add_and_fetch(&DataInjector::total_check_and_to_value_func_time_,
+  //                       temp);
+  //  PLOG_SF("check_and_to_value func time:" << temp << " us");
   return ret;
 }
 
