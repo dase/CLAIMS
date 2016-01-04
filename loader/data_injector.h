@@ -203,7 +203,7 @@ class DataInjector {
 
   // support multi-thread
   std::list<LoadTask>* task_lists_ = NULL;
-  Lock* task_list_access_lock_ = NULL;
+  SpineLock* task_list_access_lock_ = NULL;
   semaphore* tuple_count_sem_in_lists_;
   int thread_index_ = 0;
 
