@@ -206,12 +206,12 @@ class DataInjector {
   semaphore* tuple_count_sem_in_lists_;
   int thread_index_ = 0;
 
-  Lock row_id_lock_;
+  SpineLock row_id_lock_;
   semaphore finished_thread_sem_;
 
   // should be bool type,
   // but in order to use __sync_..... function it changed to be int type
-  int all_tuple_read_ = 0;
+  volatile int all_tuple_read_ = 0;
   RetCode multi_thread_status_ = rSuccess;
   ExecutedResult* result_;
   /******************debug********************/
@@ -226,6 +226,7 @@ class DataInjector {
 
   static uint64_t total_lock_tuple_buffer_time_;
   static uint64_t total_lock_pj_buffer_time_;
+  static uint64_t total_get_task_time_;
 };
 
 } /* namespace loader */

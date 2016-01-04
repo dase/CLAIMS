@@ -26,7 +26,7 @@
  *
  */
 
-#include "data_injector.h"
+#include "./data_injector.h"
 
 #include <glog/logging.h>
 #include <libio.h>
@@ -37,8 +37,11 @@
 #include <cstdint>
 #include <cstring>
 #include <fstream>
+#include <string>
 #include <iostream>
+#include <list>
 #include <sstream>
+#include <vector>
 
 #include "../catalog/attribute.h"
 #include "../catalog/catalog.h"
@@ -60,9 +63,10 @@
 #include "../utility/lock.h"
 #include "../utility/lock_guard.h"
 #include "../utility/maths.h"
+#include "../utility/rdtsc.h"
 #include "../utility/ThreadPool.h"
 #include "../utility/Timer.h"
-#include "table_file_connector.h"
+#include "./table_file_connector.h"
 
 using claims::common::FileOpenFlag;
 using claims::common::FilePlatform;
@@ -97,12 +101,12 @@ using namespace claims::common;
 #define DATA_DO_LOAD
 
 /* switch to open debug log ouput */
-// #define DATA_INJECTOR_DEBUG
-#define DATA_INJECTOR_PREF
+//#define DATA_INJECTOR_DEBUG
+//#define DATA_INJECTOR_PREF
 
 #ifdef CLAIMS_DEBUG_LOG
 #ifdef DATA_INJECTOR_DEBUG
-#define DLOG_DI(info) DLOG(INFO) << info << endl;
+#define DLOG_DI(info) DLOG(INFO) << info << std::endl;
 #else
 #define DLOG_DI(info)
 #endif
@@ -113,6 +117,14 @@ using namespace claims::common;
 #endif
 #else
 #define DLOG_DI(info)
+#endif
+
+#ifdef DATA_INJECTOR_PREF
+#define ATOMIC_ADD(var, value) __sync_add_and_fetch(&var, value);
+#define GET_TIME_DI(var) GETCURRENTTIME(var);
+#else
+#define ATOMIC_ADD(var, value)
+#define GET_TIME_DI(var)
 #endif
 
 namespace claims {
@@ -127,6 +139,7 @@ static uint64_t DataInjector::total_insert_time_ = 0;
 static uint64_t DataInjector::total_add_time_ = 0;
 static uint64_t DataInjector::total_lock_tuple_buffer_time_ = 0;
 static uint64_t DataInjector::total_lock_pj_buffer_time_ = 0;
+static uint64_t DataInjector::total_get_task_time_ = 0;
 
 DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
                            const string row_separator)
@@ -331,7 +344,7 @@ RetCode DataInjector::LoadFromFileSingleThread(vector<string> input_file_names,
 
   LOG(INFO) << "used " << GetElapsedTimeInUs(start_read_time) / 1000000.0
             << " time to handled " << file_count
-            << " file, then flush unfilled block " << endl;
+            << " file, then flush unfilled block " << std::endl;
   PLOG_DI("  total add time: "
           << total_add_time_ / 1000000.0 << "  total check string time: "
           << total_check_string_time_ / 1000000.0
@@ -403,14 +416,14 @@ RetCode DataInjector::PrepareEverythingForLoading(
     vector<string> input_file_names, FileOpenFlag open_flag,
     ExecutedResult* result) {
   int ret = rSuccess;
-  GETCURRENTTIME(prepare_start_time);
+  GET_TIME_DI(prepare_start_time);
   EXEC_AND_RETURN_ERROR(ret, PrepareInitInfo(open_flag),
                         "failed to prepare initialization info");
   PLOG_DI("prepare time: " << GetElapsedTimeInUs(prepare_start_time) /
                                   1000000.0);
 
   // open files
-  GETCURRENTTIME(open_start_time);
+  GET_TIME_DI(open_start_time);
 #ifdef DATA_DO_LOAD
   EXEC_AND_RETURN_ERROR(ret, connector_->Open(open_flag),
                         " failed to open connector");
@@ -419,13 +432,13 @@ RetCode DataInjector::PrepareEverythingForLoading(
                                          1000000.0);
 
   // set table initialized state
-  GETCURRENTTIME(unbind_time);
+  GET_TIME_DI(unbind_time);
   EXEC_AND_RETURN_ERROR(ret, SetTableState(open_flag, result),
                         "failed to set table state");
   PLOG_DI("unbind time: " << GetElapsedTimeInUs(unbind_time) / 1000000.0);
 
   // check files
-  GETCURRENTTIME(start_check_file_time);
+  GET_TIME_DI(start_check_file_time);
   EXEC_AND_RETURN_ERROR(ret, CheckFiles(input_file_names, result),
                         "some files are unaccessible");
   PLOG_DI("used " << GetElapsedTimeInUs(start_check_file_time) / 1000000.0
@@ -441,7 +454,7 @@ RetCode DataInjector::FinishJobAfterLoading(FileOpenFlag open_flag) {
                "Failed to close connector. ret:" << ret);
 #endif
 
-  GETCURRENTTIME(update_time);
+  GET_TIME_DI(update_time);
   EXEC_AND_ONLY_LOG_ERROR(ret, UpdateCatalog(open_flag),
                           "failed to update catalog information. ret:" << ret);
   PLOG_DI("update time: " << GetElapsedTimeInUs(update_time) / 1000000.0);
@@ -505,10 +518,10 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
 
       int list_index = row_id_in_file % thread_count;
       {  // push into one thread local tuple pool
-        GETCURRENTTIME(start_tuple_buffer_lock_time);
+        GET_TIME_DI(start_tuple_buffer_lock_time);
         LockGuard<Lock> guard(task_list_access_lock_[list_index]);
-        __sync_add_and_fetch(&total_lock_tuple_buffer_time_,
-                             GetElapsedTimeInUs(start_tuple_buffer_lock_time));
+        ATOMIC_ADD(total_lock_tuple_buffer_time_,
+                   GetElapsedTimeInUs(start_tuple_buffer_lock_time));
 
         task_lists_[list_index].push_back(
             std::move(LoadTask(tuple_record, file_name, row_id_in_file)));
@@ -528,9 +541,15 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
             << " time to read all " << file_count
             << " file and insert them into pool " << endl;
 
+  for (int i = 0; i < thread_count; ++i)
+    PLOG_DI("after reading all tuple, tuple count sem value of thread "
+            << i << " is :" << tuple_count_sem_in_lists_[i].get_value());
   // after read all tuple, go on handling tuple as well as child threads
-  GETCURRENTTIME(main_thread_start_handle_time);
+  GET_TIME_DI(main_thread_start_handle_time);
   HandleTuple(this);
+  for (int i = 0; i < thread_count; ++i)
+    PLOG_DI("after main thread finished work, tuple count sem value of thread "
+            << i << " is :" << tuple_count_sem_in_lists_[i].get_value());
   PLOG_DI("main thread use "
           << GetElapsedTimeInUs(main_thread_start_handle_time) / 1000000.0
           << " sec time to handle tuple");
@@ -555,7 +574,8 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
           << total_check_and_to_value_time_ / 1000000.0
           << "  total insert time: " << total_insert_time_ / 1000000.0
           << " total lock tuple buffer time: "
-          << total_lock_tuple_buffer_time_ / 1000000.0);
+          << total_lock_tuple_buffer_time_ / 1000000.0
+          << " total get task time: " << total_get_task_time_ / 1000000.0);
 
   EXEC_AND_RETURN_ERROR(ret, FinishJobAfterLoading(open_flag), "");
 
@@ -583,6 +603,9 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   total_check_and_to_value_time_ = 0;
   total_insert_time_ = 0;
   total_add_time_ = 0;
+  total_get_task_time_ = 0;
+  total_lock_tuple_buffer_time_ = 0;
+  total_lock_pj_buffer_time_ = 0;
 #ifndef MULTI_THREAD_LOAD
   return LoadFromFileSingleThread(input_file_names, open_flag, result,
                                   sample_rate);
@@ -631,6 +654,12 @@ void* DataInjector::HandleTuple(void* ptr) {
   DataInjector::LoadTask task;
   RetCode ret = rSuccess;
   int self_thread_index = __sync_fetch_and_add(&injector->thread_index_, 1);
+  LOG(INFO) << "my thread_index is " << self_thread_index << endl;
+  LOG(INFO)
+      << "before handling tuple, thread " << self_thread_index
+      << " tuple count sem value is :"
+      << injector->tuple_count_sem_in_lists_[self_thread_index].get_value()
+      << endl;
   /*
    * store the validity of every column data,
    * the extra 2 validity[(-1, rTooManyColumn), (-1, rTooFewColumn)]
@@ -649,8 +678,10 @@ void* DataInjector::HandleTuple(void* ptr) {
 
   while (true) {
     if (injector->multi_thread_status_ != rSuccess) return NULL;
+    GET_TIME_DI(start_get_task_time);
     if (injector->all_tuple_read_ == 1) {
-      if (!injector->tuple_count_sem_in_lists_[self_thread_index].try_wait()) {
+      if (!injector->tuple_count_sem_in_lists_[self_thread_index]
+               .try_wait()) {  ///// lock/sem
         DLOG_DI("all tuple in pool is handled ");
 
         EXEC_AND_LOG(ret, injector->FlushNotFullBlock(local_pj_buffer),
@@ -662,43 +693,56 @@ void* DataInjector::HandleTuple(void* ptr) {
         return NULL;  // success. all tuple is handled
       }
       DLOG_DI("all tuple is read ,tuple count sem is:"
-              << injector->tuple_count_sem_in_lists_.get_value());
+              << injector->tuple_count_sem_in_lists_[self_thread_index]
+                     .get_value());
       // get tuple from list without lock, as
       // producer thread is over, there are only consumer threads
       task = injector->task_lists_[self_thread_index].front();
       injector->task_lists_[self_thread_index].pop_front();
     } else {
       DLOG_DI("tuple count sem is:"
-              << injector->tuple_count_sem_in_lists_.get_value());
+              << injector->tuple_count_sem_in_lists_[self_thread_index]
+                     .get_value());
       // waiting for new tuple read from file
-      injector->tuple_count_sem_in_lists_[self_thread_index].wait();
+      if (false ==
+          injector->tuple_count_sem_in_lists_[self_thread_index]
+              .try_wait())  ///// lock/sem
+        continue;
       // get tuple from pool with lock
-      GETCURRENTTIME(start_tuple_buffer_lock_time);
+      GET_TIME_DI(start_tuple_buffer_lock_time);
       LockGuard<Lock> guard(
-          injector->task_list_access_lock_[self_thread_index]);
-      __sync_add_and_fetch(&injector->total_lock_tuple_buffer_time_,
-                           GetElapsedTimeInUs(start_tuple_buffer_lock_time));
-      task = injector->task_lists_[self_thread_index].front();
-      injector->task_lists_[self_thread_index].pop_front();
+          injector->task_list_access_lock_[self_thread_index]);  ///// lock/sem
+      ATOMIC_ADD(
+          &injector->total_lock_tuple_buffer_time_,             ///// lock/sem
+          GetElapsedTimeInUs(start_tuple_buffer_lock_time));    ///// lock/sem
+      task = injector->task_lists_[self_thread_index].front();  ///// lock/sem
+      injector->task_lists_[self_thread_index].pop_front();     ///// lock/sem
+      DLOG_DI("child thread " << self_thread_index << " get a task from list "
+                              << self_thread_index);
     }
 
     tuple_to_handle = task.tuple_;
     file_name = task.file_name_;
     row_id_in_file = task.row_id_in_file_;
+    DLOG_DI("thread " << self_thread_index
+                      << " get task whose row_id_in_file is "
+                      << row_id_in_file);
+    ATOMIC_ADD(injector->total_get_task_time_,
+               GetElapsedTimeInUs(start_get_task_time));
     if (0 == row_id_in_file % 10000) injector->AnnounceIAmLoading();
 
-    GETCURRENTTIME(add_time);
-    EXEC_AND_ONLY_LOG_ERROR(ret, injector->AddRowIdColumn(tuple_to_handle),
-                            "failed to add row_id column for tuple.");
+    GET_TIME_DI(add_time);
+    EXEC_AND_ONLY_LOG_ERROR(
+        ret, injector->AddRowIdColumn(tuple_to_handle),  ///// lock/sem
+        "failed to add row_id column for tuple.");
     // make sure tuple string in a uniform format(always has a column
     // separator before row separator) with format of what is get from INSERT
     tuple_to_handle += injector->col_separator_;
-    __sync_add_and_fetch(&injector->total_add_time_,
-                         GetElapsedTimeInUs(add_time));
+    ATOMIC_ADD(injector->total_add_time_, GetElapsedTimeInUs(add_time));
 
     DLOG_DI("after adding row id, tuple is:" << tuple_to_handle);
 
-    GETCURRENTTIME(start_check_time);
+    GET_TIME_DI(start_check_time);
     columns_validities.clear();
     memset(tuple_buffer, 0, injector->table_schema_->getTupleMaxSize());
     if (rSuccess != (ret = injector->CheckAndToValue(
@@ -717,18 +761,22 @@ void* DataInjector::HandleTuple(void* ptr) {
       string validity_info = injector->GenerateDataValidityInfo(
           it, injector->table_, row_id_in_file, file_name);
       DLOG_DI("append warning info:" << validity_info);
-      injector->result_->AtomicAppendWarning(validity_info);
+      injector->result_->AtomicAppendWarning(validity_info);  ///// lock/sem
     }
-    __sync_add_and_fetch(&injector->total_check_and_to_value_time_,
-                         GetElapsedTimeInUs(start_check_time));
+    ATOMIC_ADD(injector->total_check_and_to_value_time_,
+               GetElapsedTimeInUs(start_check_time));
+    //    PLOG_DI(
+    //        "check and to value time : " <<
+    //        GetElapsedTimeInUs(start_check_time));
 
-    GETCURRENTTIME(start_insert_time);
+    GET_TIME_DI(start_insert_time);
     EXEC_AND_ONLY_LOG_ERROR(
-        ret, injector->InsertSingleTuple(tuple_buffer, local_pj_buffer),
+        ret, injector->InsertSingleTuple(tuple_buffer,
+                                         local_pj_buffer),  ///// lock/sem
         "failed to insert tuple in " << file_name << " at line "
                                      << row_id_in_file << ".");
-    __sync_add_and_fetch(&injector->total_insert_time_,
-                         GetElapsedTimeInUs(start_insert_time));
+    ATOMIC_ADD(injector->total_insert_time_,
+               GetElapsedTimeInUs(start_insert_time));
   }
   if (ret != rSuccess) {  // it is not need to use lock
     injector->multi_thread_status_ = ret;
@@ -896,22 +944,21 @@ RetCode DataInjector::UpdateCatalog(FileOpenFlag open_flag) {
 inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
   static column_type row_id(t_u_long);
 
+  // faster than implement with lock, but with bug that some row will be
+  // insert twice
+  uint64_t row_id_value = __sync_fetch_and_add(&row_id_in_table_, 1L);
+  tuple_string =
+      row_id.operate->toString(&row_id_value) + col_separator_ + tuple_string;
+
   /*
     {
-      // faster than implement with lock, but with bug that some row will be
-      // insert twice
-      uint64_t row_id_value = __sync_fetch_and_add(&row_id_in_table_, 1);
-      tuple_string =
-          row_id.operate->toString(&row_id_value) + col_separator_ +
-    tuple_string;
-    }
-    */
-
-  LockGuard<Lock> guard(row_id_lock_);
+  LockGuard<SpineLock> guard(row_id_lock_);
   ++row_id_in_table_;
   tuple_string = row_id.operate->toString(&row_id_in_table_) + col_separator_ +
                  tuple_string;
 
+    }
+    */
   // tuple_string = lexical_cast<string>(row_id_in_table_) + col_separator_ +
   // tuple_string;
 
