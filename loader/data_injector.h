@@ -113,7 +113,7 @@ class DataInjector {
    * @param tuple_buffer: single tuple memory
    * @return  rSuccess if succeed
    */
-  RetCode InsertSingleTuple(void* tuple_buffer,
+  RetCode InsertSingleTuple(void* tuple_buffer, Block* block_to_write,
                             vector<vector<BlockStreamBase*>>& local_pj_buffer);
 
   /**
@@ -140,7 +140,7 @@ class DataInjector {
    * @param tuple_buffer: the memory of tuple to be write
    */
   RetCode InsertTupleIntoProjection(
-      int proj_index, void* tuple_buffer,
+      int proj_index, void* tuple_buffer, Block* block_to_write,
       vector<vector<BlockStreamBase*>>& local_pj_buffer);
 
   RetCode UpdateCatalog(FileOpenFlag open_flag);
@@ -149,7 +149,8 @@ class DataInjector {
    * @brief Method description: after handle all tuple, flush all block that are
    *        not full into file
    */
-  RetCode FlushNotFullBlock(vector<vector<BlockStreamBase*>>& pj_buffer);
+  RetCode FlushNotFullBlock(Block* block_to_write,
+                            vector<vector<BlockStreamBase*>>& pj_buffer);
 
   RetCode PrepareInitInfo(FileOpenFlag open_flag);
 
@@ -211,7 +212,7 @@ class DataInjector {
 
   // should be bool type,
   // but in order to use __sync_..... function it changed to be int type
-  volatile int all_tuple_read_ = 0;
+  int all_tuple_read_ = 0;
   RetCode multi_thread_status_ = rSuccess;
   ExecutedResult* result_;
   /******************debug********************/
