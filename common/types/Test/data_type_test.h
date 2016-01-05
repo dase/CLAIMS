@@ -110,19 +110,6 @@ std::string test_decimal_add(char* left,char* right,int number_of_fractions){
 	test_decimal_add1();
 }
 
-void test_new_decimal()
-{
-
-}
- 
-TEST(DATA_TYPE,NEW_DECIMAL)
-{
- //test_new_decimal()
- Decimal a();
- cout << "sizeof Decimal:" << sizeof(Decimal) << endl;
-
-}
-
 TEST(DATA_TYPE,DECIMAL_TO_STRING){
 	 EXPECT_STREQ("1.0333",test_decimal_to_string("1.033333",4).c_str());
 	 EXPECT_STREQ("1.2220",test_decimal_to_string("1.2220",4).c_str());

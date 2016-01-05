@@ -30,249 +30,346 @@
 
 #include <stdio.h>
 #include <string>
+#include <ctype.h>
 
 namespace claims {
 namespace common {
 
 inline string& ltrim(string& ss, char c) {
-	while (ss.size() > 0 && ss[0] == c) ss.erase(0, 1);
-	return ss;
+  while (ss.size() > 0 && ss[0] == c)
+    ss.erase(0, 1);
+  return ss;
 }
 inline string& rtrim(string& ss, char c) {
-	while (ss.size() > 0 && ss[ss.size() - 1] == c)
-		ss.erase(ss.size() - 1, 1);
-	return ss;
+  while (ss.size() > 0 && ss[ss.size() - 1] == c)
+    ss.erase(ss.size() - 1, 1);
+  return ss;
 }
 inline string& trim(string& st, char c) {
   ltrim(rtrim(st, c), c);
   return st;
 }
 
+inline bool isAllDigit(string &ss) {
+  for (int ii = 0; ii < static_cast<int>(ss.size()); ii++) {
+    if (!isdigit(ss[ii])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+inline bool DoSign(string & ss) {
+  bool isSign = false;
+  if ((isSign = (ss[0] == '-')) || (ss[0] == '+')) ss.erase(0, 1);
+  return isSign;
+}
 
 // 30 '0'  1000000000000000000000000000000
 #define KMAXSCALEFACTOR "1000000000000000000000000000000"
-#define NULLDECIMALSTRING "9999999999\
+
+// 45+30
+#define NULLTTINTSTRING "9999999999\
 9999999999\
 9999999999\
-999999\
-.\
+9999999999\
+99999\
 9999999999\
 9999999999\
 9999999999"
 
-const TTInt Decimal::kMaxScaleFactor = KMAXSCALEFACTOR;
+/*
+ // 42+30
+ #define MAXTTINTSTRING "9999999999\
+9999999999\
+9999999999\
+9999999999\
+99\
+9999999999\
+9999999999\
+9999999999"
 
-Decimal::Decimal(int precision, int scale, string valuestr)
-    : precision_(precision), scale_(scale) {
+ // -, 42+30
+ #define MINTTINTSTRING "-9999999999\
+9999999999\
+9999999999\
+9999999999\
+99\
+9999999999\
+9999999999\
+9999999999"
+ */
+
+const TTInt Decimal::kMaxScaleFactor = KMAXSCALEFACTOR;
+//const TTInt Decimal::kMaxTTIntValue = MAXTTINTSTRING;
+//const TTInt Decimal::kMinTTIntValue = MINTTINTSTRING;
+
+Decimal::Decimal() {
+  memset(word, 0, sizeof(word));
+}
+
+Decimal::Decimal(int precision, int scale, string valuestr) {
   // TODO Auto-generated constructor stub
   memset(word, 0, sizeof(word));
-  StringToDecimal(valuestr);
+
+  bool issign = false;
+  string whole = "";
+  string fractinal = "";
+  if (StringToDecimal(precision, scale, valuestr, &issign, &whole, &fractinal)) SetTTInt(
+      issign, whole, fractinal);
 }
 
 Decimal::~Decimal() {
   // TODO Auto-generated destructor stub
 }
 
-bool Decimal::StringToDecimal(string strdec) {
-  cout << "enter strdec.." << endl;
-  cout << "1:" << strdec << endl;
+bool Decimal::StringToDecimal(int p, int s, string strdec, bool * pissign,
+                              string * pwhole, string * pfractinal) {
+  DecimalString decstr;
+  if (!StringToDecimal(strdec, decstr)) {
+    cout << "Invalied string during convert to decimal:\"" << strdec << "\"."
+         << endl;
+    return false;
+  }
+  DEBUGOUT("To decimal:--------------------------------------");
+  //assert((p>=s)&&(p-s)<=CLAIMS_COMMON_DECIMAL_PSUBS);
+  const int psubs = p - s;
+  if (psubs > CLAIMS_COMMON_DECIMAL_PSUBS) {
+    cout << "Invalided precision and scale:\"" << p << "\", \"" << s << "\"."
+         << endl;
+    return false;
+  }
+  string whole_part(decstr.whole_part_);
+  string fractional_part(decstr.fractional_part_);
+
+  DEBUGOUT("1 whole_part:" << whole_part);
+  DEBUGOUT("2 fractional_part:" << fractional_part);
+
+  if (decstr.e_power_ != "") {
+    int e_int_power = atoi(decstr.e_power_.c_str());
+    DEBUGOUT("epower:" << e_int_power);
+    if (decstr.e_sign_)  // -
+    {
+      if ((int) whole_part.size() - e_int_power > psubs) {
+        cout << "Too Large Decimal value nearly:\"" << whole_part
+            << "\" and \"-" << decstr.e_power_ << "\"." << endl;
+        return false;
+      }
+      if (e_int_power <= (int) whole_part.size()) {
+        fractional_part.insert(
+            0, whole_part.substr(whole_part.size() - e_int_power, e_int_power));
+        whole_part.erase(whole_part.size() - e_int_power, e_int_power);
+      }
+      else {
+        fractional_part.insert(0, whole_part);
+        for (unsigned int ii = 0; ii < e_int_power - whole_part.size(); ii++) {
+          fractional_part.insert(0, "0");
+        }
+        whole_part = "";
+      }
+    }
+    else  //+
+    {
+      /*
+       if((int)whole_part.size() + e_int_power > psubs)
+       {
+       cout << "Too Large Decimal value nearly:\"" << whole_part << "\" and \"+" << decstr.e_power_ << "\"." << endl;
+       return false;
+       }
+       */
+      if (e_int_power <= (int) fractional_part.size()) {
+        whole_part.append(fractional_part.substr(0, e_int_power));
+        fractional_part.erase(0, e_int_power);
+      }
+      else {
+        whole_part.append(fractional_part);
+        for (unsigned int ii = 0; ii < e_int_power - fractional_part.size();
+            ii++) {
+          whole_part.append("0");
+        }
+        fractional_part = "";
+      }
+
+    }
+  }
+
+  ltrim(whole_part, '0');
+
+  DEBUGOUT("3 whole_part:" << whole_part);
+  DEBUGOUT("4 whole_part size:" << whole_part.size());
+  DEBUGOUT("5 fractional_part:" << fractional_part);
+  DEBUGOUT("6 fractional_part size:" << fractional_part.size());
+
+  if ((int) whole_part.size() > psubs) {
+    cout << "Too Large Decimal value nearly:\"" << strdec << "\"." << endl;
+    return false;
+  }
+
+  // here now keep the max scale  30 decimal places
+  if ((int) fractional_part.size() > Decimal::kMaxDecScale) {
+    fractional_part.erase(Decimal::kMaxDecScale,
+                          fractional_part.size() - Decimal::kMaxDecScale);
+  }
+  while (fractional_part.size() < Decimal::kMaxDecScale) {
+    fractional_part.push_back('0');
+  }
+  DEBUGOUT("7 fractional_part:" << fractional_part);
+
+  if ((NULL != pissign) && (NULL != pwhole) && (NULL != pfractinal)) {
+    *pissign = decstr.is_sign_;
+    *pwhole = whole_part;
+    *pfractinal = fractional_part;
+  }
+
+  return true;
+}
+
+bool Decimal::StringToDecimal(string strdec, DecimalString & decstr) {
+  bool is_sign = false;
+  size_t epos = string::npos;
+  size_t dot_pos = string::npos;
+  string numstr = "";
+  string whole_part = "";
+  string fractional_part = "";
+  string e_str_power = "";
+  bool e_sign = false;
+
+  DEBUGOUT("enter strdec...........................................");
+  DEBUGOUT("1:" + strdec);
   trim(strdec, ' ');
-
-  cout << "2:" << strdec << endl;
-  // true is negative, false is postive
-  bool isSign = false;
-  if (isSign = (strdec[0] == '-'))
-    strdec.erase(0, 1);
-  else if (strdec[0] == '+')
-    strdec.erase(0, 1);
-
-  cout << "3:" << strdec << endl;
-
+  DEBUGOUT("2:" + strdec);
+#if 0
   for (int ii = 0; ii < static_cast<int>(strdec.size()); ii++) {
-    if ((strdec[ii] < '0' || strdec[ii] > '9') && (strdec[ii] != '.') &&
-        (strdec[ii] != 'e') && (strdec[ii] != 'E') &&
-        (strdec[ii]) != '-') {
+    if (!isdigit(strdec[ii]) &&
+        (strdec[ii] != '-') &&
+        (strdec[ii] != '.') &&
+        (strdec[ii] != 'e') &&
+        (strdec[ii] != 'E') &&
+        (strdec[ii] != '+')) {
       cout << "Invalid characters in decimal string: " << strdec << endl;
       return false;
     }
   }
+#endif
+  // true is negative, false is postive
+  is_sign = DoSign(strdec);
+  DEBUGOUT("3:" + strdec);
+  epos = ((epos = strdec.find('e')) == string::npos) ? strdec.find('E') : epos;
+  DEBUGOUT("epos:" << epos);
 
-  size_t epos = strdec.find('e');
-  size_t Epos = strdec.find('E');
-  size_t sciencenumpos = string::npos;
-  cout << epos << "-" << Epos << "-" << string::npos << endl;
-  if ((epos != string::npos) && (Epos != string::npos)) {
-    cout << "illegal science number.." << endl;
-    return false;
-  }
-  if ((epos != string::npos) && (Epos == string::npos)) {
-    sciencenumpos = epos;
-  } else if ((epos == string::npos) && (Epos != string::npos)) {
-    sciencenumpos = Epos;
-  }
-  
-  string numstr = strdec.substr(0, sciencenumpos);
+  numstr = strdec.substr(0, epos);
+  DEBUGOUT("4:" + numstr);
+  dot_pos = numstr.find('.', 0);
 
-  cout << "4:" << numstr << endl;
-
-  size_t comma_pos = numstr.find('.', 0);
-  string whole_part = "";
-  string fractional_part = "";
-  if (comma_pos != string::npos) {
-    whole_part = numstr.substr(0, comma_pos);
-    fractional_part = 
-        numstr.substr(comma_pos + 1, numstr.size() - (comma_pos + 1));
-  } else {
-    whole_part = numstr;
-  }
-  cout << "5:" << whole_part << endl;
-  cout << "6:" << fractional_part << endl;
-  size_t child_comma_pos = fractional_part.find('.');
-  if (child_comma_pos != string::npos) {
-    cout << "Invalid fractional_part.." << endl;
-    return false;
-  }
-
+  whole_part = numstr.substr(0, dot_pos);
   ltrim(whole_part, '0');
-  rtrim(fractional_part, '0');
-
-  int sic = 0;
-
-  if (sciencenumpos != string::npos) {
-    // science number like 1.23e4
-    string estr =
-        strdec.substr(sciencenumpos + 1, strdec.size() - (sciencenumpos + 1));
-	if((estr[0] < '0' || estr[0] > '9')&&(estr[0] != '-'))
-	{
-		cout << "Invalid characters sign:" << estr[0] << endl;
-		return false;
-	}
-    for (int ii = 1; ii < static_cast<int>(estr.size()); ii++) {
-      if (estr[ii] < '0' || estr[ii] > '9') {
-        cout << "Invalid characters:" << estr << endl;
-        return false;
-      }
-    }
-    cout << "7:" << estr << endl;
-	bool eisSign = false;
-	if(estr[0] == '-')
-	{
-		estr.erase(0, 1);
-		eisSign = true;
-	}
-    sic = atoi(estr.c_str());
-	if(eisSign)
-	{
-		sic = 0 - sic;
-	}
-	
-  }
-
-  int pvs = whole_part.size() + sic;
-  cout << "13:" << sic << endl;
-
-  if (pvs > precision_ - scale_) {
-    cout << "8:" << pvs << endl;
-    cout << "out of range.." << endl;
+  if (!isAllDigit(whole_part)) {
+    cout << "Invalid characters in decimal whole part:\"" << whole_part << "\"."
+         << endl;
     return false;
   }
-	if(sic >= 0)//1.23e4
-	{
-	  if (sic <= fractional_part.size()) {
-	    whole_part.append(fractional_part.substr(0, sic));
-	    fractional_part.erase(0, sic);
-	  } else {
-	    whole_part.append(fractional_part);
-	    for (unsigned int ii = 0; ii < sic - fractional_part.size(); ii++) {
-	      whole_part.append("0");
-	    }
-	    fractional_part.erase(0, fractional_part.size());
-	  }
-	}
-	else//1.23e-4
-	{
-		cout << "12:" << sic << endl;
-		cout << "still not support now!" << endl;
-		return false;
-	}
-  cout << "9:" << whole_part << endl;
-  cout << "10:" << fractional_part << endl;
-
-  if (fractional_part.size() > (unsigned)scale_) {
-    fractional_part.erase(scale_, fractional_part.size());
-  }
-  while (fractional_part.size() < kMaxDecScale) {
-    fractional_part.push_back('0');
+  if (dot_pos != string::npos) {
+    fractional_part = numstr.substr(dot_pos + 1, numstr.size() - (dot_pos + 1));
+    rtrim(fractional_part, '0');
+    if (!isAllDigit(fractional_part)) {
+      cout << "Invalid characters in decimal fractional part:\""
+           << fractional_part << "\"." << endl;
+      return false;
+    }
   }
 
-  cout << "11:" << fractional_part << endl;
-  TTInt whole(whole_part);
-  TTInt fractional(fractional_part);
+  DEBUGOUT("5:" + whole_part);
+  DEBUGOUT("6:" + fractional_part);
 
-  whole *= kMaxScaleFactor;
-  whole += fractional;
-
-  if (isSign) {
-	  whole.SetSign();
+  if (epos != string::npos) {
+    e_str_power = strdec.substr(epos + 1, strdec.size() - (epos + 1));
+    DEBUGOUT("e_power:" + e_str_power);
+    e_sign = DoSign(e_str_power);
+    ltrim(e_str_power, '0');
+    if (!isAllDigit(e_str_power)) {
+      cout << "Invalid ePower:\"" << e_str_power << "\"." << endl;
+      return false;
+    }
+    DEBUGOUT("7:" + e_str_power);
   }
 
-   SetTTInt(whole);
+  if (NULL != &decstr) {
+    decstr.is_sign_ = is_sign;
+    decstr.whole_part_ = whole_part;
+    decstr.fractional_part_ = fractional_part;
+    decstr.e_sign_ = e_sign;
+    decstr.e_power_ = e_str_power;
+  }
+
   return true;
 }
 
-string Decimal::ToString(unsigned number_of_fractinal_digits) const{
-    if(isNull())
-		return "NULL";
-    std::ostringstream buffer;
-    TTInt scaledValue = GetTTInt();
-    if (scaledValue.IsSign()) {
-        buffer << '-';
-    }
-    TTInt whole(scaledValue);
-    TTInt fractional(scaledValue);
-    whole /= Decimal::kMaxScaleFactor;
-    fractional %= Decimal::kMaxScaleFactor;
-    if (whole.IsSign()) {
-        whole.ChangeSign();
-    }
-    buffer << whole.ToString(10);
-    buffer << '.';
-    if (fractional.IsSign()) {
-        fractional.ChangeSign();
-    }
-    std::string fractionalString = fractional.ToString(10);
-    unsigned number_of_zero=0;
-    for (int ii = static_cast<int>(fractionalString.size()); ii < Decimal::kMaxDecScale&&number_of_zero<number_of_fractinal_digits; ii++,number_of_zero++) {
-        buffer << '0';
-    }
-    number_of_fractinal_digits-=number_of_zero;
-    buffer << (fractionalString.size()>number_of_fractinal_digits? fractionalString.substr(0,number_of_fractinal_digits):fractionalString);
-    return buffer.str();
+void Decimal::SetTTInt(bool issign, string wholestr, string fractinalstr) {
+  string whole_part(wholestr);
+  string fractional_part(fractinalstr);
+
+  TTInt whole(whole_part);
+  TTInt fractional(fractional_part);
+  whole *= Decimal::kMaxScaleFactor;
+  whole += fractional;
+  if (issign) {
+    whole.SetSign();
+  }
+
+  SetTTInt(whole);
 }
 
-Decimal Decimal::CreateNullDecimal()
+TTInt Decimal::Round(unsigned num) const
 {
-	Decimal NDecimal(66, 30, NULLDECIMALSTRING);
-	return NDecimal;
+	TTInt out_value = this->word[0];
+	string sfrafive = "5";
+	while(Decimal::kMaxDecScale - (int)num - sfrafive.size() > 0 )
+		sfrafive.append("0");
+	DEBUGOUT("sfrafive: " << sfrafive);
+	TTInt frafive_value(sfrafive.c_str());
+	if(out_value.IsSign())
+     out_value -= frafive_value;
+	else
+	 out_value += frafive_value;
+	return out_value;
 }
 
-bool Decimal::isNull() const{
-	TTInt NTTInt(NULLDECIMALSTRING);
-	return NTTInt == GetTTInt();
+string Decimal::ToString(unsigned number_of_fractinal_digits) const {
+  if (isNull()) return "NULL";
+  assert(number_of_fractinal_digits <= Decimal::kMaxDecScale);
+  string ress = "";
+  TTInt rest = Round(number_of_fractinal_digits);
+  rest.ToString(ress);
+  if (rest.IsSign()) ress.erase(0, 1);
+  while ((Decimal::kMaxDecScale - (int) ress.length()) >= 0)
+    ress.insert(0, "0");
+  ress.insert(ress.length() - Decimal::kMaxDecScale, ".");
+  ress.erase(ress.size() - Decimal::kMaxDecScale + number_of_fractinal_digits,
+             Decimal::kMaxDecScale - number_of_fractinal_digits);
+  if (rest.IsSign()) ress.insert(0, "-");
+  return ress;
 }
 
-Decimal & Decimal::operator=(const Decimal &rhs){
-	if(this==&rhs) return *this;
-	const_cast<int&>(this->precision_) = rhs.precision_;
-	const_cast<int&>(this->scale_) = rhs.scale_;
-	this->word[0] = rhs.GetTTInt();
-	return *this;
+Decimal Decimal::CreateNullDecimal() {
+  Decimal NDecimal;
+  TTInt NTTInt(NULLTTINTSTRING);
+  NDecimal.SetTTInt(NTTInt);
+  return NDecimal;
 }
 
+bool Decimal::isNull() const {
+  TTInt NTTInt(NULLTTINTSTRING);
+  return NTTInt == this->GetTTInt();
+}
 
-void Decimal::PrintValue()
-{
-	cout << "value : [" <<ToString(scale_)<< "]" << endl;
+Decimal & Decimal::operator=(const Decimal &rhs) {
+  if (this == &rhs) return *this;
+  this->word[0] = rhs.GetTTInt();
+  return *this;
+}
+
+void Decimal::PrintValue(int ifra) {
+  cout << "value : [" << ToString(ifra) << "]" << endl;
 }
 
 }  // namespace common

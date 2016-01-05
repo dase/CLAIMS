@@ -134,8 +134,8 @@ template <>
 inline void ADD_FUNC<char*>(void* target, void* increment) {}
 
 template <>
-inline void ADD_FUNC<NValue*>(void* target, void* increment) {
-  *(NValue*)target = ((NValue*)target)->op_add(*(NValue*)increment);
+inline void ADD_FUNC<Decimal*>(void* target, void* increment) {
+  *(Decimal*)target = ((Decimal*)target)->op_add(*(Decimal*)increment);
 }
 template <>
 inline void ADD_FUNC<date*>(void* target, void* increment) {
@@ -158,8 +158,8 @@ inline void MIN(void* target, void* increment) {
 template <>
 inline void MIN<char*>(void* target, void* increment) {}
 template <>
-inline void MIN<NValue*>(void* target, void* increment) {
-  *(NValue*)target = ((NValue*)target)->op_min(*(NValue*)increment);
+inline void MIN<Decimal*>(void* target, void* increment) {
+  *(Decimal*)target = ((Decimal*)target)->op_min(*(Decimal*)increment);
 }
 
 template <typename T>
@@ -169,8 +169,8 @@ inline void MAX(void* target, void* increment) {
 template <>
 inline void MAX<char*>(void* target, void* increment) {}
 template <>
-inline void MAX<NValue*>(void* target, void* increment) {
-  *(NValue*)target = ((NValue*)target)->op_max(*(NValue*)increment);
+inline void MAX<Decimal*>(void* target, void* increment) {
+  *(Decimal*)target = ((Decimal*)target)->op_max(*(Decimal*)increment);
 }
 
 template <typename T>
@@ -181,9 +181,8 @@ template <>
 inline void IncreaseByOne<char*>(void* target, void* increment) {}
 
 template <>
-inline void IncreaseByOne<NValue*>(void* target, void* increment) {
-  NValue nv1 = NValue::getDecimalValueFromString("1");
-  *(NValue*)target = ((NValue*)target)->op_add(nv1);
+inline void IncreaseByOne<Decimal*>(void* target, void* increment) {
+  *(Decimal*)target = ((Decimal*)target)->op_add(Decimal(1, 0, "1"));
 }
 template <typename T>  //暂时先实现这点
 inline void ADD_IncreaseByOne(void* target, void* increment) {
@@ -194,10 +193,9 @@ template <>
 inline void ADD_IncreaseByOne<char*>(void* target, void* increment) {}
 
 template <>
-inline void ADD_IncreaseByOne<NValue*>(void* target, void* increment) {
-  *(NValue*)target = ((NValue*)target)->op_add(*(NValue*)increment);  // add
-  NValue nv1 = NValue::getDecimalValueFromString("1");
-  *(NValue*)target = ((NValue*)target)->op_add(nv1);
+inline void ADD_IncreaseByOne<Decimal*>(void* target, void* increment) {
+  *(Decimal*)target = ((Decimal*)target)->op_add(*(Decimal*)increment);  // add
+  *(Decimal*)target = ((Decimal*)target)->op_add(Decimal(1, 0, "1"));
 }
 // template<>
 // inline void ADD_IncreaseByOne<date*>(void* target, void* increment)
@@ -944,7 +942,7 @@ class OperateSmallInt : public Operate {
   void toValue(void* target, const char* string) {
     if ((strcmp(string, "") == 0) &&
         this->nullable == true)  // modified by Li Wang in Sep.10th
-      //		if(string==0 && this->nullable ==true)
+                                 //		if(string==0 && this->nullable ==true)
       *(short*)target = NULL_SMALL_INT;
     else
       *(short*)target = (short)atoi(string);
@@ -1082,43 +1080,43 @@ class OperateUSmallInt : public Operate {
 
 class OperateDecimal : public Operate {
  public:
-  OperateDecimal( int size = 0 , bool nullable = true) {
+  OperateDecimal(int size = 0, bool nullable = true) {
+    assert(size > 1000);
     assign = assigns<int>;
     this->size = size;
     this->nullable = nullable;
-	this->precision_ = size / 1000;
-	this->scale_ = size % 1000;
-	cout << this->precision_ << ":" << this->scale_ <<endl;
+    this->precision_ = size / 1000;
+    this->scale_ = size % 1000;
   }
   //	~OperateDecimal(){};
   inline void assignment(const void* const& src, void* const& desc) const {
     *(Decimal*)desc = *(Decimal*)src;
   }
   inline std::string toString(void* value) {
-    if (this->nullable == true && ((Decimal*)value)->isNull())
-      return "NULL";
-	/*
-    char buf[43] = {"\0"};
-    ExportSerializeOutput out(buf, 43);
-    ((NValue*)value)->serializeToExport(out, &size);
-    return std::string(buf + 4);
-    */
+    if (this->nullable == true && ((Decimal*)value)->isNull()) return "NULL";
+    /*
+     char buf[43] = {"\0"};
+     ExportSerializeOutput out(buf, 43);
+     ((NValue*)value)->serializeToExport(out, &size);
+     return std::string(buf + 4);
+     */
     return ((Decimal*)value)->ToString(this->scale_);
   };
-  static std::string toString(const NValue v, unsigned n_o_d_d = 12) {
-    //		if (this->nullable == true && compare(v, (void*)(&NULL_DECIMAL))
-    //==
-    // 0)
-    //			return "NULL";
-    cout << "here toString:::" << endl;
-	return "test by csw";
-    char buf[43] = {"\0"};
-    ExportSerializeOutput out(buf, 43);
-    (v).serializeToExport(out, &n_o_d_d);
-    return std::string(buf + 4);
-  }
+
+  /*
+   static std::string toString(const NValue v, unsigned n_o_d_d = 12) {
+   //		if (this->nullable == true && compare(v, (void*)(&NULL_DECIMAL))
+   //==
+   // 0)
+   //			return "NULL";
+   char buf[43] = {"\0"};
+   ExportSerializeOutput out(buf, 43);
+   (v).serializeToExport(out, &n_o_d_d);
+   return std::string(buf + 4);
+   }
+   */
   void toValue(void* target, const char* str) {
-    if ((strcmp(str, "") == 0) && this->nullable == true)
+    if (((strcmp(str, "") == 0)||(strcmp(str, "NULL") == 0)) && this->nullable == true)
       *(Decimal*)target = Decimal::CreateNullDecimal();
     else
       *(Decimal*)target = Decimal(precision_, scale_, str);
@@ -1146,19 +1144,19 @@ class OperateDecimal : public Operate {
     return 1;
   }
   inline void add(void* target, void* increment) {
-      *(Decimal*)target = ((Decimal*)target)->op_add(*(Decimal*)increment);
+    *(Decimal*)target = ((Decimal*)target)->op_add(*(Decimal*)increment);
   }
   inline void multiple(void* target, void* increment) {
     (*(Decimal*)target) = ((Decimal*)target)->op_multiply(*(Decimal*)increment);
   }
-  inline fun GetADDFunction() { return ADD_FUNC<NValue*>; }
-  inline fun GetMINFunction() { return MIN<NValue*>; }
-  inline fun GetMAXFunction() { return MAX<NValue*>; }
-  inline fun GetIncreateByOneFunction() { return IncreaseByOne<NValue*>; }
-  inline fun GetAVGFunction() { return ADD_IncreaseByOne<NValue*>; }
+  inline fun GetADDFunction() { return ADD_FUNC<Decimal*>; }
+  inline fun GetMINFunction() { return MIN<Decimal*>; }
+  inline fun GetMAXFunction() { return MAX<Decimal*>; }
+  inline fun GetIncreateByOneFunction() { return IncreaseByOne<Decimal*>; }
+  inline fun GetAVGFunction() { return ADD_IncreaseByOne<Decimal*>; }
   unsigned getPartitionValue(
-      const void* key, const PartitionFunction* partition_function) const {	
-    const void * pttint = (&((*(Decimal*)key).GetTTInt()));
+      const void* key, const PartitionFunction* partition_function) const {
+    const void* pttint = (&((*(Decimal*)key).GetTTInt()));
     unsigned long ul1 = *reinterpret_cast<const unsigned long*>(pttint);
     unsigned long ul2 = *reinterpret_cast<const unsigned long*>(pttint + 8);
     unsigned long ul3 = *reinterpret_cast<const unsigned long*>(pttint + 16);
@@ -1166,27 +1164,27 @@ class OperateDecimal : public Operate {
     return partition_function->get_partition_value(ul1 + ul2 + ul3 + ul4);
   }
   unsigned getPartitionValue(const void* key) const {
-	  const void * pttint = (&((*(Decimal*)key).GetTTInt()));
-	  unsigned long ul1 = *reinterpret_cast<const unsigned long*>(pttint);
-	  unsigned long ul2 = *reinterpret_cast<const unsigned long*>(pttint + 8);
-	  unsigned long ul3 = *reinterpret_cast<const unsigned long*>(pttint + 16);
-	  unsigned long ul4 = *reinterpret_cast<const unsigned long*>(pttint + 24);
+    const void* pttint = (&((*(Decimal*)key).GetTTInt()));
+    unsigned long ul1 = *reinterpret_cast<const unsigned long*>(pttint);
+    unsigned long ul2 = *reinterpret_cast<const unsigned long*>(pttint + 8);
+    unsigned long ul3 = *reinterpret_cast<const unsigned long*>(pttint + 16);
+    unsigned long ul4 = *reinterpret_cast<const unsigned long*>(pttint + 24);
 
-    boost::hash_combine(ul1, ul2);	
-	boost::hash_combine(ul1, ul3);
-	boost::hash_combine(ul1, ul4);
+    boost::hash_combine(ul1, ul2);
+    boost::hash_combine(ul1, ul3);
+    boost::hash_combine(ul1, ul4);
     return ul1;
   }
   unsigned getPartitionValue(const void* key, const unsigned long& mod) const {
-	  const void * pttint = (&((*(Decimal*)key).GetTTInt()));
-	  unsigned long ul1 = *reinterpret_cast<const unsigned long*>(pttint);
-	  unsigned long ul2 = *reinterpret_cast<const unsigned long*>(pttint + 8);
-	  unsigned long ul3 = *reinterpret_cast<const unsigned long*>(pttint + 16);
-	  unsigned long ul4 = *reinterpret_cast<const unsigned long*>(pttint + 24);
+    const void* pttint = (&((*(Decimal*)key).GetTTInt()));
+    unsigned long ul1 = *reinterpret_cast<const unsigned long*>(pttint);
+    unsigned long ul2 = *reinterpret_cast<const unsigned long*>(pttint + 8);
+    unsigned long ul3 = *reinterpret_cast<const unsigned long*>(pttint + 16);
+    unsigned long ul4 = *reinterpret_cast<const unsigned long*>(pttint + 24);
 
     boost::hash_combine(ul1, ul2);
-	boost::hash_combine(ul1, ul3);
-	boost::hash_combine(ul1, ul4);
+    boost::hash_combine(ul1, ul3);
+    boost::hash_combine(ul1, ul4);
     return ul1 % mod;
   }
   Operate* duplicateOperator() const {
@@ -1202,12 +1200,11 @@ class OperateDecimal : public Operate {
   }
 
   inline bool isNull(void* value) const {
-    if (this->nullable == true && ((Decimal*)value)->isNull())
-      return true;
+    if (this->nullable == true && ((Decimal*)value)->isNull()) return true;
     return false;
   }
 
-//  unsigned number_of_decimal_digits_;
+  //  unsigned number_of_decimal_digits_;
 
   /**
    * @TODO min and max check is not implemented yet ! *-_-*
@@ -1215,10 +1212,9 @@ class OperateDecimal : public Operate {
   RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = string("0"); }
 
-  private:
-  	int precision_;
-	int scale_;
-  	
+ private:
+  int precision_;
+  int scale_;
 };
 
 class OperateBool : public Operate {
@@ -1345,8 +1341,8 @@ class column_type {
       case t_datetime:
         return sizeof(ptime);
       case t_decimal:
-	  	/* here the 1000 is the same as the  */
-        return sizeof(Decimal);
+        /* here the 1000 is the same as the  */
+        return this->size;
       case t_smallInt:
         return sizeof(short);
       case t_u_smallInt:

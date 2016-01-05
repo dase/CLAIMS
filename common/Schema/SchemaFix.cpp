@@ -8,7 +8,6 @@
 //// this macro decides whether write DLOG message into log file.
 //// Open means no DLOG message.
 // #define NDEBUG
-
 #include "SchemaFix.h"
 #include <memory.h>
 #include <glog/logging.h>
@@ -27,6 +26,7 @@ using claims::common::rIncorrectData;
 using claims::common::rInvalidNullData;
 using claims::common::rTooLongData;
 using claims::common::rTooManyColumn;
+using claims::common::rInvalidInsertData;
 
 SchemaFix::SchemaFix(const std::vector<column_type>& col) : Schema(col) {
   //	accum_offsets=new unsigned[columns.size()];	//new
@@ -123,7 +123,8 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
 
         GETCURRENTTIME(check_string_time);
         ret = columns[i].operate->CheckSet(text_column);
-        if (rIncorrectData == ret || rInvalidNullData == ret) {  // error
+        if (rIncorrectData == ret || rInvalidNullData == ret ||
+            rInvalidInsertData == ret) {  // error
           if (kSQL == raw_data_source) {  // treated as error
             columns_validities.push_back(Validity(i, ret));
             ELOG(ret, "Data from SQL is for column whose index is " << i);
@@ -186,9 +187,9 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
 // TODO(ANYONE): implement this method, which is used when it is sure that the
 // data is correct and needn't check
 /*
-void SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
-                        const char attr_separator) {
-}*/
+ void SchemaFix::toValue(std::string text_tuple, void* binary_tuple,
+ const char attr_separator) {
+ }*/
 
 void SchemaFix::addColumn(column_type ct, unsigned size) {
   accum_offsets.push_back(totalsize);
