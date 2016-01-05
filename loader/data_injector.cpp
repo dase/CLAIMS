@@ -102,7 +102,7 @@ using namespace claims::common;
 
 /* switch to open debug log ouput */
 // #define DATA_INJECTOR_DEBUG
-// #define DATA_INJECTOR_PREF
+#define DATA_INJECTOR_PREF
 
 #ifdef CLAIMS_DEBUG_LOG
 #ifdef DATA_INJECTOR_DEBUG
@@ -140,6 +140,13 @@ static uint64_t DataInjector::total_add_time_ = 0;
 static uint64_t DataInjector::total_lock_tuple_buffer_time_ = 0;
 static uint64_t DataInjector::total_lock_pj_buffer_time_ = 0;
 static uint64_t DataInjector::total_get_task_time_ = 0;
+
+static uint64_t DataInjector::total_read_sem_time_ = 0;
+static uint64_t DataInjector::total_unread_sem_time_ = 0;
+
+static uint64_t DataInjector::total_read_sem_fail_count_ = 0;
+static uint64_t DataInjector::total_unread_sem_fail_count_ = 0;
+static uint64_t DataInjector::total_append_warning_time_ = 0;
 
 DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
                            const string row_separator)
@@ -295,11 +302,11 @@ RetCode DataInjector::LoadFromFileSingleThread(vector<string> input_file_names,
       total_add_time_ += GetElapsedTimeInUs(add_time);
       DLOG_DI("after adding row id, tuple is:" << tuple_record);
 
-      GETCURRENTTIME(start_check_time);
       /*
        * store the validity of every column data, the extra 2 validity is used
        * for too many columns and too few columns
        */
+      GETCURRENTTIME(start_check_time);
       vector<Validity> columns_validities;
       memset(tuple_buffer, 0, table_schema_->getTupleMaxSize());
       if (rSuccess !=
@@ -492,8 +499,6 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
   task_lists_ = new std::list<LoadTask>[thread_count];
   task_list_access_lock_ = new SpineLock[thread_count];
   tuple_count_sem_in_lists_ = new semaphore[thread_count];
-  for (int i = 0; i < thread_count; ++i)
-    Environment::getInstance()->getThreadPool()->add_task(HandleTuple, this);
 
   // start to read every raw data file
   GETCURRENTTIME(start_read_time);
@@ -516,18 +521,17 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
       if (GetRandomDecimal() >= sample_rate) continue;  // sample
 
       int list_index = row_id_in_file % thread_count;
+      GET_TIME_DI(start_tuple_buffer_lock_time);
       {  // push into one thread local tuple pool
-        GET_TIME_DI(start_tuple_buffer_lock_time);
         LockGuard<SpineLock> guard(
             task_list_access_lock_[list_index]);  /// lock/sem
-        ATOMIC_ADD(
-            total_lock_tuple_buffer_time_,                      /// lock/sem
-            GetElapsedTimeInUs(start_tuple_buffer_lock_time));  /// lock/sem
 
-        task_lists_[list_index].push_back(  /// lock/sem
-            std::move(LoadTask(tuple_record, file_name,
-                               row_id_in_file)));  /// lock/sem
+        task_lists_[list_index].push_back(
+            std::move(LoadTask(tuple_record, file_name, row_id_in_file)));
       }
+      ATOMIC_ADD(total_lock_tuple_buffer_time_,
+                 GetElapsedTimeInUs(start_tuple_buffer_lock_time));
+
       tuple_count_sem_in_lists_[list_index].post();
     }
 
@@ -539,9 +543,21 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
     ++file_count;
   }
   __sync_add_and_fetch(&all_tuple_read_, 1);
-  LOG(INFO) << "used " << GetElapsedTimeInUs(start_read_time) / 1000000.0
+  LOG(INFO) << "used "
+            << GetElapsedTimeInUs(start_read_time) / 1000000.0  // 5 sec
             << " time to read all " << file_count
             << " file and insert them into pool " << endl;
+
+  for (int i = 0; i < thread_count; ++i) {
+    //    Environment::getInstance()->getThreadPool()->add_task(HandleTuple,
+    //    this);
+    pthread_t p;
+    if (pthread_create(&p, NULL, HandleTuple, this) !=
+        0) {  // if any failed, return false
+      cout << "ERROR: create pthread failed!" << strerror(errno) << endl;
+      break;
+    }
+  }
 
   for (int i = 0; i < thread_count; ++i)
     PLOG_DI("after reading all tuple, tuple count sem value of thread "
@@ -581,7 +597,13 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
           << "  total insert time: " << total_insert_time_ / 1000000.0
           << " total lock tuple buffer time: "
           << total_lock_tuple_buffer_time_ / 1000000.0
-          << " total get task time: " << total_get_task_time_ / 1000000.0);
+          << " total get task time: " << total_get_task_time_ / 1000000.0
+          << "   total_read_sem_time_ : " << total_read_sem_time_ / 1000000.0
+          << "  total_unread_sem_time_ ; " << total_unread_sem_time_ / 1000000.0
+          << "  total_read_sem_fail_count_ : " << total_read_sem_fail_count_
+          << "  total_unread_sem_fail_count_ : " << total_unread_sem_fail_count_
+          << "  total_append_warning_time_ : "
+          << total_append_warning_time_ / 1000000.0);
 
   EXEC_AND_RETURN_ERROR(ret, FinishJobAfterLoading(open_flag), "");
 
@@ -612,6 +634,14 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   total_get_task_time_ = 0;
   total_lock_tuple_buffer_time_ = 0;
   total_lock_pj_buffer_time_ = 0;
+
+  total_read_sem_time_ = 0;
+  total_unread_sem_time_ = 0;
+
+  total_read_sem_fail_count_ = 0;
+  total_unread_sem_fail_count_ = 0;
+  total_append_warning_time_ = 0;
+
 #ifndef MULTI_THREAD_LOAD
   return LoadFromFileSingleThread(input_file_names, open_flag, result,
                                   sample_rate);
@@ -688,8 +718,12 @@ void* DataInjector::HandleTuple(void* ptr) {
     if (injector->multi_thread_status_ != rSuccess) break;
     GET_TIME_DI(start_get_task_time);
     if (injector->all_tuple_read_ == 1) {
+      GET_TIME_DI(start_read_sem);
       if (!injector->tuple_count_sem_in_lists_[self_thread_index]
                .try_wait()) {  ///// lock/sem
+        ATOMIC_ADD(injector->total_read_sem_fail_count_, 1);
+        ATOMIC_ADD(injector->total_read_sem_time_,
+                   GetElapsedTimeInUs(start_read_sem));
         DLOG_DI("all tuple in pool is handled ");
 
         EXEC_AND_LOG(
@@ -708,26 +742,32 @@ void* DataInjector::HandleTuple(void* ptr) {
                      .get_value());
       // get tuple from list without lock, as
       // producer thread is over, there are only consumer threads
-      task = injector->task_lists_[self_thread_index].front();
+      task = std::move(injector->task_lists_[self_thread_index].front());
       injector->task_lists_[self_thread_index].pop_front();
     } else {
       DLOG_DI("tuple count sem is:"
               << injector->tuple_count_sem_in_lists_[self_thread_index]
                      .get_value());
       // waiting for new tuple read from file
-      if (false ==
-          injector->tuple_count_sem_in_lists_[self_thread_index]  ///// lock/sem
-              .try_wait())                                        ///// lock/sem
+      GET_TIME_DI(start_unread_sem);
+      if (!injector
+               ->tuple_count_sem_in_lists_[self_thread_index]  ///// lock/sem
+               .try_wait()) {                                  ///// lock/sem
+        ATOMIC_ADD(injector->total_unread_sem_fail_count_, 1);
         continue;
+      }
+      ATOMIC_ADD(injector->total_unread_sem_time_,
+                 GetElapsedTimeInUs(start_unread_sem));
       // get tuple from pool with lock
       GET_TIME_DI(start_tuple_buffer_lock_time);
       LockGuard<SpineLock> guard(
           injector->task_list_access_lock_[self_thread_index]);  ///// lock/sem
       ATOMIC_ADD(
-          injector->total_lock_tuple_buffer_time_,              ///// lock/sem
-          GetElapsedTimeInUs(start_tuple_buffer_lock_time));    ///// lock/sem
-      task = injector->task_lists_[self_thread_index].front();  ///// lock/sem
-      injector->task_lists_[self_thread_index].pop_front();     ///// lock/sem
+          injector->total_lock_tuple_buffer_time_,            ///// lock/sem
+          GetElapsedTimeInUs(start_tuple_buffer_lock_time));  ///// lock/sem
+      task = std::move(
+          injector->task_lists_[self_thread_index].front());  ///// lock/sem
+      injector->task_lists_[self_thread_index].pop_front();   ///// lock/sem
       DLOG_DI("child thread " << self_thread_index << " get a task");
     }
 
@@ -775,7 +815,10 @@ void* DataInjector::HandleTuple(void* ptr) {
       string validity_info = injector->GenerateDataValidityInfo(
           it, injector->table_, row_id_in_file, file_name);
       DLOG_DI("append warning info:" << validity_info);
+      GET_TIME_DI(start_append_warning_time);
       injector->result_->AtomicAppendWarning(validity_info);  /////  lock/sem
+      ATOMIC_ADD(injector->total_append_warning_time_,
+                 GetElapsedTimeInUs(start_append_warning_time));
     }
     ATOMIC_ADD(injector->total_check_and_to_value_time_,
                GetElapsedTimeInUs(start_check_time));
@@ -1024,11 +1067,10 @@ RetCode DataInjector::InsertTupleIntoProjection(
     // if buffer is full, write buffer(64K) to HDFS/disk
     local_pj_buffer[i][part]->serialize(*block_to_write);
 #ifdef DATA_DO_LOAD
-    EXEC_AND_LOG(ret, connector_->AtomicFlush(
-                          i, part, block_to_write->getBlock(),  //// lock/sem
-                          block_to_write->getsize()),
-                 row_id_in_table_ << "\t64KB has been written to file!",
-                 "failed to write to data file. ret:" << ret);
+    EXEC_AND_ONLY_LOG_ERROR(
+        ret, connector_->AtomicFlush(i, part, block_to_write->getBlock(),
+                                     block_to_write->getsize()),
+        "failed to write to data file. ret:" << ret);
 #endif
     __sync_add_and_fetch(&blocks_per_partition_[i][part], 1);
     local_pj_buffer[i][part]->setEmpty();

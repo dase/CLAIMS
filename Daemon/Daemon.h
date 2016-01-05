@@ -34,7 +34,7 @@ struct ExecutedResult {
   std::string warning_;
   int warning_count_;
 
-  Lock append_lock_;
+  SpineLock append_lock_;
 
   ExecutedResult()
       : status_(0),
@@ -63,7 +63,7 @@ struct ExecutedResult {
   }
 
   void AtomicAppendWarning(string warning_info) {
-    LockGuard<Lock> guard(append_lock_);
+    LockGuard<SpineLock> guard(append_lock_);
     if (++warning_count_ < kWarningShowMaxCount &&
         warning_.length() + warning_info.length() < kWarningShowMaxLength)
       warning_ += warning_info;

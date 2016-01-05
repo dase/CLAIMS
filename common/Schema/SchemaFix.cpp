@@ -204,7 +204,7 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       ELOG(ret, "");
       return ret;
     } else {
-      WLOG(ret, "");
+      //      WLOG(ret, "");  // ATTENTION: A big performance drag ！！！
       ret = rSuccess;
     }
   }

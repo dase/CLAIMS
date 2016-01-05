@@ -207,7 +207,7 @@ class DataInjector {
   semaphore* tuple_count_sem_in_lists_;
   int thread_index_ = 0;
 
-  SpineLock row_id_lock_;
+  //  SpineLock row_id_lock_;
   semaphore finished_thread_sem_;
 
   // should be bool type,
@@ -228,6 +228,13 @@ class DataInjector {
   static uint64_t total_lock_tuple_buffer_time_;
   static uint64_t total_lock_pj_buffer_time_;
   static uint64_t total_get_task_time_;
+
+  static uint64_t total_read_sem_time_;
+  static uint64_t total_unread_sem_time_;
+  static uint64_t total_read_sem_fail_count_;
+  static uint64_t total_unread_sem_fail_count_;
+
+  static uint64_t total_append_warning_time_;
 };
 
 } /* namespace loader */

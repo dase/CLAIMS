@@ -146,11 +146,11 @@ void ThreadPool::bind_cpu() {
   CPU_SET(insert_cpu, &mask);
   int ret = pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask);
   if (ret == -1) {
-    ThreadPoolLogging::elog("thread %ld bind cpu failed,ret = %d. %s\n",
+    ThreadPoolLogging::elog("thread %ld bind cpu failed,ret = %d. %s",
                             syscall(__NR_gettid), ret, strerror(errno));
   } else {
     ThreadPoolLogging::log(
-        "thread (tid=%ld offset=%lx) stiffened cpu=%ld (start=%ld end=%ld)\n",
+        "thread (tid=%ld offset=%lx) stiffened cpu=%ld (start=%ld count=%ld)",
         syscall(__NR_gettid), pthread_self(), insert_cpu, 0, cpu_count);
   }
 }
