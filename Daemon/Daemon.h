@@ -62,6 +62,11 @@ struct ExecutedResult {
       warning_ += warning_info;
   }
 
+  bool HasEnoughWarning() {
+    return warning_count_ >= kWarningShowMaxCount ||
+           warning_.length() >= kWarningShowMaxLength;
+  }
+
   void AtomicAppendWarning(string warning_info) {
     LockGuard<SpineLock> guard(append_lock_);
     if (++warning_count_ < kWarningShowMaxCount &&
