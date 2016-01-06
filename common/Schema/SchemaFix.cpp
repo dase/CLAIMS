@@ -29,7 +29,7 @@ using claims::common::rTooLongData;
 using claims::common::rTooManyColumn;
 
 // #define SCHEMA_FIX_DEBUG
-//#define SCHEMA_FIX_PERF
+// #define SCHEMA_FIX_PERF
 
 #ifdef CLAIMS_DEBUG_LOG
 #ifdef SCHEMA_FIX_DEBUG
@@ -47,6 +47,14 @@ using claims::common::rTooManyColumn;
 #endif
 #else
 #define DLOG_SF(info)
+#endif
+
+#ifdef SCHEMA_FIX_PERF
+#define ATOMIC_ADD_SF(var, value) __sync_add_and_fetch(&var, value);
+#define GET_TIME_SF(var) GETCURRENTTIME(var);
+#else
+#define ATOMIC_ADD_SF(var, value)
+#define GET_TIME_SF(var)
 #endif
 
 SchemaFix::SchemaFix(const std::vector<column_type>& col) : Schema(col) {
@@ -123,7 +131,7 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       // meet the first column without data
       pos = string::npos;
       ret = rTooFewColumn;
-      columns_validities.push_back(Validity(-1, ret));
+      columns_validities.push_back(std::move(Validity(-1, ret)));
       if (kSQL == raw_data_source) {  // treated as error
         ELOG(ret, "Data from File is lost from column whose index is " << i);
         return ret;
@@ -149,6 +157,7 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
 
         GET_TIME_SF(check_string_time);
         ret = columns[i].operate->CheckSet(text_column);
+
         if (rIncorrectData == ret || rInvalidNullData == ret) {  // error
           if (kSQL == raw_data_source) {  // treated as error
             columns_validities.push_back(std::move(Validity(i, ret)));
@@ -167,13 +176,13 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
           columns[i].operate->SetDefault(text_column);
           ret = rSuccess;
         }
-        //        __sync_add_and_fetch(&DataInjector::total_check_string_time_,
-        //                             GetElapsedTimeInUs(check_string_time));
+        ATOMIC_ADD_SF(DataInjector::total_check_string_time_,
+                      GetElapsedTimeInUs(check_string_time));
       }
     }
-    //    __sync_add_and_fetch(&DataInjector::total_get_substr_time_,
-    //                         GetElapsedTimeInUs(get_substr_time));
-    PLOG_SF("get_substr time:" << GetElapsedTimeInUs(get_substr_time));
+    ATOMIC_ADD_SF(DataInjector::total_get_substr_time_,
+                  GetElapsedTimeInUs(get_substr_time));
+    //    PLOG_SF("get_substr time:" << GetElapsedTimeInUs(get_substr_time));
 
     GET_TIME_SF(to_value_time);
     DLOG_SF("Before toValue, column data is " << text_column);
@@ -184,14 +193,16 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
                          << "\t Transfer: "
                          << columns[i].operate->toString(binary_tuple +
                                                          accum_offsets[i]));
-    //    __sync_add_and_fetch(&DataInjector::total_to_value_time_,
-    //                         GetElapsedTimeInUs(to_value_time));
-    PLOG_SF("just to_value time:" << GetElapsedTimeInUs(to_value_time));
-    PLOG_SF("inner loop time:" << GetElapsedTimeInUs(get_substr_time));
+    ATOMIC_ADD_SF(DataInjector::total_to_value_time_,
+                  GetElapsedTimeInUs(to_value_time));
+    //    PLOG_SF("just to_value time:" << GetElapsedTimeInUs(to_value_time));
+    //    PLOG_SF("inner loop time:" << GetElapsedTimeInUs(get_substr_time));
   }
 
-  PLOG_SF("while loop time:" << GetElapsedTimeInUs(to_value_func_time));
+  //  PLOG_SF("while loop time:" << GetElapsedTimeInUs(to_value_func_time));
 
+  ATOMIC_ADD_SF(DataInjector::total_check_and_to_value_func_time_,
+                GetElapsedTimeInUs(to_value_func_time));
   DLOG_SF("after all tovalue, prev_pos :"
           << (prev_pos == string::npos) << "prev_pos+1 :"
           << (prev_pos + 1 == string::npos) << "npos :" << string::npos
@@ -199,7 +210,7 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
           << " text_tuple's length:" << text_tuple.length());
   if (text_tuple.length() != prev_pos) {  // too many column data
     ret = rTooManyColumn;
-    columns_validities.push_back(Validity(-1, ret));
+    columns_validities.push_back(std::move(Validity(-1, ret)));
     if (kSQL == raw_data_source) {
       ELOG(ret, "");
       return ret;
@@ -208,9 +219,6 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
       ret = rSuccess;
     }
   }
-  //  uint64_t temp = GetElapsedTimeInUs(to_value_func_time);
-  //  __sync_add_and_fetch(&DataInjector::total_check_and_to_value_func_time_,
-  //                       temp);
   //  PLOG_SF("check_and_to_value func time:" << temp << " us");
   return ret;
 }
