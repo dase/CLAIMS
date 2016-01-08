@@ -715,15 +715,27 @@ inline void decimal_less_equal(OperFuncInfo fcinfo) {
 }
 inline void decimal_negative(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 1);
-  Decimal neg(1, 0, "-1");
-  *(Decimal *)fcinfo->result_ = (*(Decimal *)fcinfo->args_[0]).op_multiply(neg);
+  if((*(Decimal *)fcinfo->args_[0]).isNull())
+  	*(Decimal *)fcinfo->result_ = *(Decimal *)fcinfo->args_[0];
+  else
+  {
+    Decimal neg(1, 0, "-1");
+    *(Decimal *)fcinfo->result_ = (*(Decimal *)fcinfo->args_[0]).op_multiply(neg);
+  }
 }
 inline void decimal_agg_max(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
+  if((*(Decimal *)fcinfo->args_[1]).isNull()||(*(Decimal *)fcinfo->args_[0]).isNull())
+  {
+	*(Decimal *)fcinfo->result_ = (*(Decimal *)fcinfo->args_[1]).isNull()?(*(Decimal *)fcinfo->args_[0]):(*(Decimal *)fcinfo->args_[1]);
+  }
+  else
+  {
   *(Decimal *)fcinfo->result_ =
       (*(Decimal *)fcinfo->args_[0]).op_great(*(Decimal *)fcinfo->args_[1])
           ? (*(Decimal *)fcinfo->args_[0])
           : (*(Decimal *)fcinfo->args_[1]);
+  }
 }
 inline void decimal_agg_min(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);

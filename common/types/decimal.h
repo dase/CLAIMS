@@ -191,8 +191,8 @@ class Decimal {
   //  static const TTInt kMaxTTIntValue;
   //  static const TTInt kMinTTIntValue;
 
-  //  const int precision_;
-  //  const int scale_;
+  const int precision_;
+  const int scale_;
   TTInt word[NWORDS];
 };
 
