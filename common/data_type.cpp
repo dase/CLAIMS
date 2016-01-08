@@ -486,8 +486,8 @@ RetCode OperateDecimal::CheckSet(string& str) const {
   if (Decimal::StringToDecimal(this->precision_, this->scale_, str)) {
     ret = rSuccess;
   } else {
-  	ELOG(ret, str);
     ret = rInvalidInsertData;
+    ELOG(ret, str);
   }
   return ret;
 }

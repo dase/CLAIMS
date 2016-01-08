@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <string>
 #include <ctype.h>
+#include <glog/logging.h>
 
 namespace claims {
 namespace common {
@@ -104,19 +105,21 @@ const TTInt Decimal::kMaxScaleFactor = KMAXSCALEFACTOR;
 //const TTInt Decimal::kMaxTTIntValue = MAXTTINTSTRING;
 //const TTInt Decimal::kMinTTIntValue = MINTTINTSTRING;
 
-Decimal::Decimal() {
+Decimal::Decimal()
+    : precision_(10), scale_(0) {
   memset(word, 0, sizeof(word));
 }
 
-Decimal::Decimal(int precision, int scale, string valuestr) {
+Decimal::Decimal(int precision, int scale, string valuestr)
+	: precision_(precision), scale_(scale) {
   // TODO Auto-generated constructor stub
   memset(word, 0, sizeof(word));
 
   bool issign = false;
   string whole = "";
   string fractinal = "";
-  if (StringToDecimal(precision, scale, valuestr, &issign, &whole, &fractinal)) SetTTInt(
-      issign, whole, fractinal);
+  if (StringToDecimal(precision, scale, valuestr, &issign, &whole, &fractinal)) 
+  	SetTTInt(issign, whole, fractinal);
 }
 
 Decimal::~Decimal() {
@@ -127,7 +130,7 @@ bool Decimal::StringToDecimal(int p, int s, string strdec, bool * pissign,
                               string * pwhole, string * pfractinal) {
   DecimalString decstr;
   if (!StringToDecimal(strdec, decstr)) {
-    cout << "Invalied string during convert to decimal:\"" << strdec << "\"."
+    LOG(ERROR) << "Invalid string during convert to decimal:\"" << strdec << "\"."
          << endl;
     return false;
   }
@@ -135,7 +138,7 @@ bool Decimal::StringToDecimal(int p, int s, string strdec, bool * pissign,
   //assert((p>=s)&&(p-s)<=CLAIMS_COMMON_DECIMAL_PSUBS);
   const int psubs = p - s;
   if (psubs > CLAIMS_COMMON_DECIMAL_PSUBS) {
-    cout << "Invalided precision and scale:\"" << p << "\", \"" << s << "\"."
+    LOG(ERROR) << "Invalid precision and scale:\"" << p << "\", \"" << s << "\"."
          << endl;
     return false;
   }
@@ -151,7 +154,7 @@ bool Decimal::StringToDecimal(int p, int s, string strdec, bool * pissign,
     if (decstr.e_sign_)  // -
     {
       if ((int) whole_part.size() - e_int_power > psubs) {
-        cout << "Too Large Decimal value nearly:\"" << whole_part
+        LOG(ERROR) << "Too Large Decimal value nearly:\"" << whole_part
             << "\" and \"-" << decstr.e_power_ << "\"." << endl;
         return false;
       }
@@ -201,7 +204,7 @@ bool Decimal::StringToDecimal(int p, int s, string strdec, bool * pissign,
   DEBUGOUT("6 fractional_part size:" << fractional_part.size());
 
   if ((int) whole_part.size() > psubs) {
-    cout << "Too Large Decimal value nearly:\"" << strdec << "\"." << endl;
+    LOG(ERROR) << "Too Large Decimal value nearly:\"" << strdec << "\"." << endl;
     return false;
   }
 
@@ -264,7 +267,7 @@ bool Decimal::StringToDecimal(string strdec, DecimalString & decstr) {
   whole_part = numstr.substr(0, dot_pos);
   ltrim(whole_part, '0');
   if (!isAllDigit(whole_part)) {
-    cout << "Invalid characters in decimal whole part:\"" << whole_part << "\"."
+    LOG(ERROR) << "Invalid characters in decimal whole part:\"" << whole_part << "\"."
          << endl;
     return false;
   }
@@ -272,7 +275,7 @@ bool Decimal::StringToDecimal(string strdec, DecimalString & decstr) {
     fractional_part = numstr.substr(dot_pos + 1, numstr.size() - (dot_pos + 1));
     rtrim(fractional_part, '0');
     if (!isAllDigit(fractional_part)) {
-      cout << "Invalid characters in decimal fractional part:\""
+      LOG(ERROR) << "Invalid characters in decimal fractional part:\""
            << fractional_part << "\"." << endl;
       return false;
     }
@@ -287,7 +290,7 @@ bool Decimal::StringToDecimal(string strdec, DecimalString & decstr) {
     e_sign = DoSign(e_str_power);
     ltrim(e_str_power, '0');
     if (!isAllDigit(e_str_power)) {
-      cout << "Invalid ePower:\"" << e_str_power << "\"." << endl;
+      LOG(ERROR) << "Invalid ePower:\"" << e_str_power << "\"." << endl;
       return false;
     }
     DEBUGOUT("7:" + e_str_power);
@@ -323,7 +326,7 @@ TTInt Decimal::Round(unsigned num) const
 {
 	TTInt out_value = this->word[0];
 	string sfrafive = "5";
-	while(Decimal::kMaxDecScale - (int)num - sfrafive.size() > 0 )
+	while(Decimal::kMaxDecScale - (int)num- (int)sfrafive.size() > 0 )
 		sfrafive.append("0");
 	DEBUGOUT("sfrafive: " << sfrafive);
 	TTInt frafive_value(sfrafive.c_str());
@@ -343,7 +346,8 @@ string Decimal::ToString(unsigned number_of_fractinal_digits) const {
   if (rest.IsSign()) ress.erase(0, 1);
   while ((Decimal::kMaxDecScale - (int) ress.length()) >= 0)
     ress.insert(0, "0");
-  ress.insert(ress.length() - Decimal::kMaxDecScale, ".");
+  if(number_of_fractinal_digits > 0)
+    ress.insert(ress.length() - Decimal::kMaxDecScale, ".");
   ress.erase(ress.size() - Decimal::kMaxDecScale + number_of_fractinal_digits,
              Decimal::kMaxDecScale - number_of_fractinal_digits);
   if (rest.IsSign()) ress.insert(0, "-");
@@ -365,11 +369,13 @@ bool Decimal::isNull() const {
 Decimal & Decimal::operator=(const Decimal &rhs) {
   if (this == &rhs) return *this;
   this->word[0] = rhs.GetTTInt();
+  const_cast<int&>(this->precision_) = rhs.precision_;
+  const_cast<int&>(this->scale_) = rhs.scale_;
   return *this;
 }
 
 void Decimal::PrintValue(int ifra) {
-  cout << "value : [" << ToString(ifra) << "]" << endl;
+  cout << "value : [" << ToString(ifra) << "]";
 }
 
 }  // namespace common
