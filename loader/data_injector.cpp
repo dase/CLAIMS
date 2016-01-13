@@ -64,7 +64,7 @@
 #include "../utility/lock_guard.h"
 #include "../utility/maths.h"
 #include "../utility/rdtsc.h"
-#include "../utility/ThreadPool.h"
+#include "../utility/thread_pool.h"
 #include "../utility/Timer.h"
 #include "./table_file_connector.h"
 
@@ -497,14 +497,7 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
   task_list_access_lock_ = new SpineLock[thread_count];
   tuple_count_sem_in_lists_ = new semaphore[thread_count];
   for (int i = 0; i < thread_count; ++i) {
-    //    Environment::getInstance()->getThreadPool()->add_task(HandleTuple,
-    //    this);
-    pthread_t p;
-    if (pthread_create(&p, NULL, HandleTuple, this) !=
-        0) {  // if any failed, return false
-      cout << "ERROR: create pthread failed!" << strerror(errno) << endl;
-      break;
-    }
+    Environment::getInstance()->getThreadPool()->AddTask(HandleTuple, this);
   }
 
   // start to read every raw data file
@@ -557,19 +550,6 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
   for (int i = 0; i < thread_count; ++i)
     PLOG_DI("after reading all tuple, tuple count sem value of thread "
             << i << " is :" << tuple_count_sem_in_lists_[i].get_value());
-  /*
-  // after read all tuple, go on handling tuple as well as child threads
-    GET_TIME_DI(main_thread_start_handle_time);
-    HandleTuple(this);
-    for (int i = 0; i < thread_count; ++i)
-      PLOG_DI("after main thread finished work, tuple count sem value of thread
-  "
-              << i << " is :" << tuple_count_sem_in_lists_[i].get_value());
-    PLOG_DI("main thread use "
-            << GetElapsedTimeInUs(main_thread_start_handle_time) / 1000000.0
-            << " sec time to handle tuple");
-
-    */
 
   // waiting for all threads finishing task
   for (int i = 0; i < thread_count; ++i) finished_thread_sem_.wait();
