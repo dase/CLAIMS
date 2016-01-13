@@ -144,21 +144,25 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
         ret = rSuccess;
       }
     } else {
-      pos = text_tuple.find(attr_separator, prev_pos);
+      pos = text_tuple.find(attr_separator,
+                            prev_pos);  // VCLINE --- 7.6s| LINE --- 7.7 s
 
       if (string::npos == pos) {  // not the first column without data
         columns[i].operate->SetDefault(text_column);  // no more need to check
         ret = rSuccess;
       } else {  // correct
+        // VCLINE --- 13.71-7.6 = 6.11 s| LINE  --- 16.58 - 7.7 = 8.88 s
         text_column = text_tuple.substr(prev_pos, pos - prev_pos);
+        // VCLINE --- 18.0 - 13.71 = 4.29 s| LINE --- 18.82-16.58=2.24 s
         prev_pos = pos + attr_separator.length();
         DLOG_SF("after prev_pos adding, prev_pos :" << prev_pos
                                                     << " pos:" << pos);
 
-        GET_TIME_SF(check_string_time);
+        //  GET_TIME_SF(check_string_time);
+        // VCLINE --- 20.55 - 18.0 = 2.55 s| LINE --- 27.05 - 18.82 = 8.23s
         ret = columns[i].operate->CheckSet(text_column);
 
-        if (rIncorrectData == ret || rInvalidNullData == ret) {  // error
+        if (rIncorrectData == ret || rInvalidNullData == ret) {  //  error
           if (kSQL == raw_data_source) {  // treated as error
             columns_validities.push_back(std::move(Validity(i, ret)));
             ELOG(ret, "Data from SQL is for column whose index is " << i);
@@ -176,16 +180,17 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
           columns[i].operate->SetDefault(text_column);
           ret = rSuccess;
         }
-        ATOMIC_ADD_SF(DataInjector::total_check_string_time_,
-                      GetElapsedTimeInUs(check_string_time));
+        //        ATOMIC_ADD_SF(DataInjector::total_check_string_time_,
+        //                      GetElapsedTimeInUs(check_string_time));
       }
     }
-    ATOMIC_ADD_SF(DataInjector::total_get_substr_time_,
-                  GetElapsedTimeInUs(get_substr_time));
+    //    ATOMIC_ADD_SF(DataInjector::total_get_substr_time_,
+    //                  GetElapsedTimeInUs(get_substr_time));
     //    PLOG_SF("get_substr time:" << GetElapsedTimeInUs(get_substr_time));
 
-    GET_TIME_SF(to_value_time);
+    //    GET_TIME_SF(to_value_time);
     DLOG_SF("Before toValue, column data is " << text_column);
+    // VCLINE --- 21.87 - 20.55 = 1.32 s|LINE --- 77.84 - 27.05 = 50.79s
     columns[i].operate->toValue(
         static_cast<char*>(binary_tuple) + accum_offsets[i],
         text_column.c_str());
@@ -193,8 +198,8 @@ RetCode SchemaFix::CheckAndToValue(std::string text_tuple, void* binary_tuple,
                          << "\t Transfer: "
                          << columns[i].operate->toString(binary_tuple +
                                                          accum_offsets[i]));
-    ATOMIC_ADD_SF(DataInjector::total_to_value_time_,
-                  GetElapsedTimeInUs(to_value_time));
+    //    ATOMIC_ADD_SF(DataInjector::total_to_value_time_,
+    //                  GetElapsedTimeInUs(to_value_time));
     //    PLOG_SF("just to_value time:" << GetElapsedTimeInUs(to_value_time));
     //    PLOG_SF("inner loop time:" << GetElapsedTimeInUs(get_substr_time));
   }
