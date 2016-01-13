@@ -115,6 +115,18 @@ RetCode TableFileConnector::Flush(unsigned projection_offset,
   return ret;
 }
 
+RetCode TableFileConnector::AtomicFlush(unsigned projection_offset,
+                                        unsigned partition_offset,
+                                        const void* source, unsigned length) {
+  assert(file_handles_.size() != 0 && "make sure file handles is not empty");
+  int ret = rSuccess;
+  EXEC_AND_ONLY_LOG_ERROR(
+      ret, file_handles_[projection_offset][partition_offset]->AtomicWrite(
+               source, length),
+      "failed to write file. ret:" << ret);
+  return ret;
+}
+
 RetCode TableFileConnector::DeleteFiles() {
   vector<vector<string>>::iterator prj_writepath;
   vector<string>::iterator par_writepath;
