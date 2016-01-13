@@ -161,6 +161,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rEmptyAttributeName,
                         "the given attribute associated with empty name");
 
+  DefineErrorAndMessage(rEmptyTableAlias,
+                        "the given attribute alias associated with empty name");
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(rNoTableFound, "No such table found");
   DefineErrorAndMessage(rInitSQLParserErr, "Failed to init SQL parser");

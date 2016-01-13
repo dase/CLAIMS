@@ -67,6 +67,7 @@ class PlanPartitioner {
   void AddShadowPartitionKey(const Attribute& partitionkey);
   bool HasShadowPartitionKey() const;
   std::vector<Attribute> get_shadow_partition_keys() const;
+  RetCode UpdateTableNameOfPartitionKey(const string& table_alias);
 
  private:
   std::vector<PlanPartitionInfo> partition_list_;
