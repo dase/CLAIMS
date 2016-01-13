@@ -185,6 +185,15 @@ void LogicalSort::PrintOrderByAttr(int level) const {
            order_by_attr_[i]->direction_ == 0 ? "ASC" : "DESC");
   }
 #else
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
   level++;
   for (int i = 0; i < order_by_attrs_.size(); ++i) {
     cout << setw(level * kTabSize) << " " << order_by_attrs_[i].first->alias_

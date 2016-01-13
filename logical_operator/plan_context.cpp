@@ -33,7 +33,11 @@
 #include <string>
 #include <vector>
 #include <iostream>
+
+#include "../catalog/attribute.h"
 #include "../common/Schema/SchemaFix.h"
+
+using claims::catalog::Attribute;
 
 namespace claims {
 namespace logical_operator {
@@ -95,5 +99,6 @@ Attribute PlanContext::GetAttribute(std::string tbname,
   assert(false);
   return Attribute(Attribute::AttributeType::kAttributeNull);
 }
+
 }  // namespace logical_operator
 }  // namespace claims
