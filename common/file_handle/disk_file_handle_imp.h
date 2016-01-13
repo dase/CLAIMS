@@ -49,6 +49,8 @@ class DiskFileHandleImp : public FileHandleImp {
   virtual RetCode Open(std::string file_name, FileOpenFlag open_flag);
   // see more in FileHandleImp class
   virtual RetCode Write(const void* buffer, const size_t length);
+
+  virtual RetCode AtomicWrite(const void* buffer, const size_t length);
   virtual RetCode Close();
   // see more in FileHandleImp class
   virtual RetCode ReadTotalFile(void*& buffer, size_t* length);

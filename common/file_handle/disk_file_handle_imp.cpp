@@ -34,19 +34,20 @@
 #include "./disk_file_handle_imp.h"
 
 #include <glog/logging.h>
+#include <stdio.h>
 #include <fcntl.h>
 #include <string>
-#include <stdio.h>
 
 #include "./file_handle_imp.h"
 #include "../../common/rename.h"
 #include "../memory_handle.h"
-namespace claims {
-namespace common {
-
+#include "../../utility/lock_guard.h"
 using std::endl;
 using std::string;
+using claims::utility::LockGuard;
 
+namespace claims {
+namespace common {
 DiskFileHandleImp::~DiskFileHandleImp() {
   int ret = Close();
   if (ret != 0) LOG(ERROR) << "failed to close file fd. ret:" << ret << endl;
@@ -114,6 +115,27 @@ RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
   //               << " from " << buffer << " into  disk file:" << file_name_
   //               << endl;
   //  }
+  return rSuccess;
+}
+
+RetCode DiskFileHandleImp::AtomicWrite(const void* buffer,
+                                       const size_t length) {
+  assert(fd_ >= 3);
+  assert(open_flag_ != kReadFile &&
+         "It's unavailable to write into a read-only file");
+  size_t total_write_num = 0;
+  LockGuard<Lock> guard(write_lock_);
+  while (total_write_num < length) {
+    ssize_t write_num =
+        write(fd_, static_cast<const char*>(buffer) + total_write_num,
+              length - total_write_num);
+    if (-1 == write_num) {
+      PLOG(ERROR) << "failed to write buffer(" << buffer << ") to file(" << fd_
+                  << "): " << file_name_ << endl;
+      return rWriteDiskFileFail;
+    }
+    total_write_num += write_num;
+  }
   return rSuccess;
 }
 

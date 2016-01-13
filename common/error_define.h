@@ -32,7 +32,7 @@
 #include "./error_no.h"
 using claims::common::CStrError;
 
-const bool kClaimsDebugLog = false;
+#define CLAIMS_DEBUG_LOG
 
 typedef int RetCode;  // means return code
 #define ELOG(ret, err_info)                                              \
@@ -68,6 +68,12 @@ typedef int RetCode;  // means return code
                   << err_info << std::endl;                         \
     }                                                               \
   } while (0)
+
+#define EXEC_AND_RETURN_ERROR(ret, f, err_info) \
+  if (rSuccess != (ret = f)) {                  \
+    ELOG(ret, err_info)                         \
+    return ret;                                 \
+  }
 
 #define C_DLOGI(info) DLOG_IF(INFO, kClaimsDebugLog) << info << std::endl;
 
