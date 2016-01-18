@@ -200,14 +200,8 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
   AstInsertValList *insert_value_list =
       dynamic_cast<AstInsertValList *>(insert_ast_->insert_val_list_);
   if (NULL == insert_value_list) {
-#ifdef NEWRESULT
     LOG(ERROR) << "No value!" << endl;
     exec_result->SetError("No value!");
-#else
-    error_msg_ = "No value!";
-    result_flag_ = false;
-    result_set_ = NULL;
-#endif
     ret = common::rStmtHandlerInsertNoValue;
   } else {
     std::ostringstream ostr;
@@ -230,22 +224,13 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
              position < table_desc_->getNumberOfAttribute(); position++) {
           // check value count
           if (insert_value == NULL) {
-// ASTParserLogging::elog("Value count is too few");
-#ifdef NEWRESULT
             LOG(ERROR) << "Value count is too few" << endl;
             exec_result->SetError("Value count is too few");
-            is_correct_ = false;
-#else
-            is_correct_ = false;
-            error_msg_ = "Value count is too few";
-            result_flag_ = false;
-            result_set_ = NULL;
-#endif
-            break;
+            return claims::common::rFailure;
           }
 
           // insert value to ostringstream and if has warning return 1;   look
-          // out   the order!
+          // out the order!
           ret = InsertValueToStream(insert_value, table_desc_, position, ostr);
 
           // move to next
@@ -256,19 +241,10 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
         if (rSuccess != ret) break;
         // check insert value count
         if (NULL != insert_value) {
-#ifdef NEWRESULT
           LOG(ERROR) << "Value count is too many";
           exec_result->SetError("Value count is too many");
-          is_correct_ = false;
-#else
-          error_msg_ = "Value count is too many";
-          result_flag_ = false;
-          result_set_ = NULL;
-          is_correct_ = false;
-#endif
-          break;
+          return claims::common::rFailure;
         }
-
       } else {  // insert part of columns
         // get insert value count and check whether it match column count
         unsigned insert_value_count = 0;
@@ -277,26 +253,16 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
           insert_value = dynamic_cast<AstInsertVals *>(insert_value->next_);
         }
         if (insert_value_count != col_count) {
-// ASTParserLogging::elog("Column count doesn't match value count");
-#ifdef NEWRESULT
-          LOG(ERROR) << "Column count doesn't match value count";
+          LOG(ERROR) << "Column count doesn't match value count. "
+                        "insert_value_count is " << insert_value_count
+                     << ", col_count is: " << col_count << endl;
           exec_result->SetError("Column count doesn't match value count");
-          is_correct_ = false;
-#else
-          error_msg_ = "Column count doesn't match value count";
-          LOG(ERROR) << "Column count doesn't match value count" << std::endl;
-          result_flag_ = false;
-          result_set_ = NULL;
-          is_correct_ = false;
-#endif
-          break;
+          return claims::common::rFailure;
         }
         unsigned int used_col_count = 0;
         // by scdong: Claims adds a default row_id attribute for all tables
-        // which
-        // is attribute(0), when inserting tuples we should begin to construct
-        // the
-        // string_tuple from the second attribute.
+        // which is attribute(0), when inserting tuples we should begin to
+        // construct the string_tuple from the second attribute.
         for (unsigned int position = 1;
              position < table_desc_->getNumberOfAttribute(); position++) {
           // find the matched column and value by name
@@ -308,7 +274,7 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
           // here is temporary code and need to change later
           while (col &&
                  (table_desc_->getAttribute(position).attrName).compare(
-                     table_desc_->getTableName() + "." + col->relation_name_)) {
+                     table_desc_->getTableName() + "." + col->column_name_)) {
             col = dynamic_cast<AstColumn *>(col->next_);
             insert_value = dynamic_cast<AstInsertVals *>(insert_value->next_);
           }
@@ -322,9 +288,8 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
             if (rSuccess != (ret = InsertValueToStream(insert_value, table,
                                                        position, ostr))) {
               ELOG(ret, "failed to insert value to stream");
-              is_correct_ = false;
               exec_result->SetError("Not supported type to insert");
-              break;
+              return claims::common::rFailure;
             }
           }
           ostr << "|";
@@ -332,33 +297,24 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
 
         // check if every insert column is existed
         if (used_col_count != col_count) {
-// ASTParserLogging::elog("Some columns don't exist");
-#ifdef NEWRESULT
           exec_result->SetError("Some columns don't exist");
-          LOG(ERROR) << "Some columns don't exist" << std::endl;
-#else
-          error_msg_ = "Some columns don't exist";
-          LOG(ERROR) << "Some columns don't exist" << std::endl;
-          result_flag_ = false;
-          result_set_ = NULL;
-          is_correct_ = false;
-#endif
-          break;
+          LOG(ERROR) << "Some columns don't exist. "
+                        "used_col_count is " << used_col_count
+                     << ", col_count is: " << col_count << endl;
+          return claims::common::rFailure;
         }
       }
-
       if (!is_correct_) break;
 
       insert_value_list =
           dynamic_cast<AstInsertValList *>(insert_value_list->next_);
       if (insert_value_list != NULL) ostr << "\n";
       ++changed_row_num;
-
     }  // while
 
-#ifdef NEW_LOADER
-    DataInjector *injector = new DataInjector(table);
+    if (!is_correct_) return claims::common::rFailure;
 
+    DataInjector *injector = new DataInjector(table);
     // str() will copy string buffer without the last '\n'
     ret = injector->InsertFromString(ostr.str() + "\n", exec_result);
     if (rSuccess == ret) {
@@ -370,16 +326,9 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
     } else {
       LOG(ERROR) << "failed to insert tuples into table:"
                  << table->getTableName() << endl;
-
       exec_result->SetError("failed to insert tuples into table ");
     }
     DELETE_PTR(injector);
-#else
-    Hdfsloader *Hl = new Hdfsloader(table);
-    Hl->append(ostr.str());
-    delete Hl;
-#endif
-
     Environment::getInstance()->getCatalog()->saveCatalog();
   }
 
