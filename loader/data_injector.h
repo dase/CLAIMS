@@ -131,7 +131,7 @@ class DataInjector {
   /**
    * @brief Method description: add row_id column value
    */
-  inline RetCode AddRowIdColumn(const string& tuple_string);
+  inline RetCode AddRowIdColumn(string& tuple_string);
 
   /**
    * @brief Method description: insert single tuple insert the proj_index

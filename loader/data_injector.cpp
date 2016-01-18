@@ -850,11 +850,12 @@ RetCode DataInjector::InsertFromString(const string tuples,
 
   while (string::npos != (cur = tuples.find('\n', prev_cur))) {
     DLOG_DI("cur: " << cur << " prev_cur: " << prev_cur);
-    string tuple_record = tuples.substr(prev_cur, cur - prev_cur);
-    LOG(INFO) << "row " << line << ": " << tuple_record << endl;
+    string tuple_record = tuples.substr(prev_cur, cur - prev_cur - 1);  //
 
     EXEC_AND_ONLY_LOG_ERROR(ret, AddRowIdColumn(tuple_record),
                             "failed to add row_id column for tuple.");
+    --row_id_in_table_;  // it will be added in line 894
+    LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
     vector<Validity> columns_validities;
     void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
@@ -971,7 +972,7 @@ RetCode DataInjector::UpdateCatalog(FileOpenFlag open_flag) {
   return ret;
 }
 
-inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
+inline RetCode DataInjector::AddRowIdColumn(string& tuple_string) {
   uint64_t row_id_value = __sync_fetch_and_add(&row_id_in_table_, 1L);
   // make sure tuple string in a uniform format(always has a column
   // separator before row separator) with format of what is get from INSERT
