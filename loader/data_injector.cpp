@@ -130,23 +130,23 @@ using namespace claims::common;
 namespace claims {
 namespace loader {
 
-static uint64_t DataInjector::total_get_substr_time_ = 0;
-static uint64_t DataInjector::total_check_string_time_ = 0;
-static uint64_t DataInjector::total_to_value_time_ = 0;
-static uint64_t DataInjector::total_check_and_to_value_func_time_ = 0;
-static uint64_t DataInjector::total_check_and_to_value_time_ = 0;
-static uint64_t DataInjector::total_insert_time_ = 0;
-static uint64_t DataInjector::total_add_time_ = 0;
-static uint64_t DataInjector::total_lock_tuple_buffer_time_ = 0;
-static uint64_t DataInjector::total_lock_pj_buffer_time_ = 0;
-static uint64_t DataInjector::total_get_task_time_ = 0;
+uint64_t DataInjector::total_get_substr_time_ = 0;
+uint64_t DataInjector::total_check_string_time_ = 0;
+uint64_t DataInjector::total_to_value_time_ = 0;
+uint64_t DataInjector::total_check_and_to_value_func_time_ = 0;
+uint64_t DataInjector::total_check_and_to_value_time_ = 0;
+uint64_t DataInjector::total_insert_time_ = 0;
+uint64_t DataInjector::total_add_time_ = 0;
+uint64_t DataInjector::total_lock_tuple_buffer_time_ = 0;
+uint64_t DataInjector::total_lock_pj_buffer_time_ = 0;
+uint64_t DataInjector::total_get_task_time_ = 0;
 
-static uint64_t DataInjector::total_read_sem_time_ = 0;
-static uint64_t DataInjector::total_unread_sem_time_ = 0;
+uint64_t DataInjector::total_read_sem_time_ = 0;
+uint64_t DataInjector::total_unread_sem_time_ = 0;
 
-static uint64_t DataInjector::total_read_sem_fail_count_ = 0;
-static uint64_t DataInjector::total_unread_sem_fail_count_ = 0;
-static uint64_t DataInjector::total_append_warning_time_ = 0;
+uint64_t DataInjector::total_read_sem_fail_count_ = 0;
+uint64_t DataInjector::total_unread_sem_fail_count_ = 0;
+uint64_t DataInjector::total_append_warning_time_ = 0;
 
 DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
                            const string row_separator)

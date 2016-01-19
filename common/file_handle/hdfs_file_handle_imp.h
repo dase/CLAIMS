@@ -74,7 +74,7 @@ class HdfsFileHandleImp : public FileHandleImp {
   hdfsFS fs_ = NULL;
   hdfsFile file_ = NULL;
   int64_t read_start_pos_;
-  FileOpenFlag open_flag_ = -1;
+  FileOpenFlag open_flag_ = kReadFile;
 };
 }  // namespace common
 } /* namespace claims */
