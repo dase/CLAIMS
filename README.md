@@ -16,13 +16,13 @@ Pipelining the query execution among nodes in the cluster effectively reduces th
 
 ##### 3. Efficient in-memory data processing.
 
-CLAIMS employs a large set of optimization techniques to achieve efficient in-memory data processing, including batch-at-a-time processing, cache-sensitive operators, SIMD-based optimization, code generation, lock-free and concurrent processing structures. These optimizations work collaborately and enable CLAIMS to process upto gigabytes data per second within a single thread.
+CLAIMS employs a large set of optimization techniques to achieve efficient in-memory data processing, including batch-at-a-time processing, cache-sensitive operators, SIMD-based optimization, code generation, lock-free and concurrent processing structures. These optimizations work collaborately and enable CLAIMS to process up to gigabytes data per second within a single thread.
 
 ##### 4. Network communication optimization. 
 Parallel query processing imposes high burdens on network communication, which becomes the performance bottleneck for in-memory parallel databases due to the relatively slow network bandwidth. When compiling a user query into an execution plan, CLAIMS’s query optimizer leverages a sophisticated selectivity propagation system and cost model to generate physical query plans with minimized network communication cost. Furthermore, CLAIMS deploys a new data exchange implementation, which offers efficient, scalable and skew-resilient network data communication among CLAIMS instances. These optimizations greatly reduce the response time of the queries that require network data communication.
 
 #### Performance
-Beneficial from the smart and massively parallelism and the in-memory data processing optimizations, CLAIMS is upto 5X faster than Shark and Impala, two state-of-the-art systems in the open source community, in the queries against TPCH dataset and Shanghai Stock Exchange dataset.
+Beneficial from the smart and massively parallelism and the in-memory data processing optimizations, CLAIMS is up to 5X faster than Shark and Impala, two state-of-the-art systems in the open source community, in the queries against TPCH dataset and Shanghai Stock Exchange dataset.
 
 ![asdf](http://dase.ecnu.edu.cn/liwang/images/compare.jpg)
 
