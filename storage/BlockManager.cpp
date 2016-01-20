@@ -211,7 +211,7 @@ int BlockManager::LoadFromHdfs(const ChunkID& chunk_id, void* const& desc,
                                const unsigned& length) {
   lock.acquire();
   int ret;
-  int offset = chunk_id.chunk_off;
+  uint64_t offset = chunk_id.chunk_off;
   hdfsFS fs =
       hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
   hdfsFile readFile = hdfsOpenFile(
@@ -235,7 +235,8 @@ int BlockManager::LoadFromHdfs(const ChunkID& chunk_id, void* const& desc,
     DLOG(INFO) << "file [" << chunk_id.partition_id.getPathAndName().c_str()
                << "] is opened for offset [" << offset << "]" << endl;
   }
-  long int start_pos = CHUNK_SIZE * offset;
+  uint64_t start_pos = CHUNK_SIZE * offset;
+  if (start_pos < 0) assert(false);
   if (start_pos < hdfsfile->mSize) {
     ret = hdfsPread(fs, readFile, start_pos, desc, length);
   } else {

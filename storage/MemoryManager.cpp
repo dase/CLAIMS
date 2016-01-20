@@ -167,6 +167,8 @@ void MemoryChunkStore::FreeChunkLRU::WayOfFreeChunk() {
       target_ = mei_;
     }
   }
+  DLOG(INFO) << "The way is LRU: the free chunk: " << target_->first.chunk_off
+             << "Which partition: " << target_->first.partition_id << endl;
   MemoryChunkStore::GetInstance()->chunk_pool_.free(target_->second.hook);
   MemoryChunkStore::GetInstance()->chunk_list_.erase(target_);
 }
@@ -178,7 +180,8 @@ void MemoryChunkStore::FreeChunkRandom::WayOfFreeChunk() {
   srand((unsigned)time(NULL));
   int size = rand() % count;
   for (int i = 0; i < size; i++) it_++;
-  ;
+  DLOG(INFO) << "The way is Random: the free chunk: " << it_->first.chunk_off
+             << "which partition: " << it_->first.partition_id << endl;
   MemoryChunkStore::GetInstance()->chunk_pool_.free(it_->second.hook);
   MemoryChunkStore::GetInstance()->chunk_list_.erase(it_);
 }

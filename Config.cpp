@@ -144,7 +144,7 @@ void Config::initialize() {
 
   enable_codegen = getBoolean("enable_codegen", true);
 
-  memory_utilization = getInt("memory_utilization", 1);
+  memory_utilization = getInt("memory_utilization", 100);
 
 #ifdef DEBUG_Config
   print_configure();
