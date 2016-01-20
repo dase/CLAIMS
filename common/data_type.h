@@ -1080,13 +1080,13 @@ class OperateUSmallInt : public Operate {
 
 class OperateDecimal : public Operate {
  public:
-  OperateDecimal(int size = 0, bool nullable = true) {
-    assert(size > 1000);
+  OperateDecimal(int p = 10, int s = 0, bool nullable = true) {
+   // assert(size > 1000);
     assign = assigns<int>;
-    this->size = size;
+   // this->size = size;
     this->nullable = nullable;
-    this->precision_ = size / 1000;
-    this->scale_ = size % 1000;
+    this->precision_ = p;
+    this->scale_ = s;
   }
   //	~OperateDecimal(){};
   inline void assignment(const void* const& src, void* const& desc) const {
@@ -1190,7 +1190,7 @@ class OperateDecimal : public Operate {
   Operate* duplicateOperator() const {
     //    return new OperateDecimal(number_of_decimal_digits_, this->nullable);
 
-    return new OperateDecimal(size, nullable);
+    return new OperateDecimal(precision_, scale_, nullable);
   }
 
   inline bool setNull(void* value) {
@@ -1342,7 +1342,7 @@ class column_type {
         return sizeof(ptime);
       case t_decimal:
         /* here the 1000 is the same as the  */
-        return this->size;
+        return sizeof(Decimal);
       case t_smallInt:
         return sizeof(short);
       case t_u_smallInt:
@@ -1407,7 +1407,7 @@ class column_type {
         operate = new OperateDatetime(nullable);
         break;
       case t_decimal:
-        operate = new OperateDecimal(size, nullable);
+        operate = new OperateDecimal(size/1000, size%1000, nullable);
         break;
       case t_smallInt:
         operate = new OperateSmallInt(nullable);
