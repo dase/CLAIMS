@@ -21,7 +21,7 @@ master=1
 client_listener_port = 10000
 
 #the path for data and catalog
-data="Your Path"
+data="/home/imdb/data/test/"
 
 hdfs_master_ip="127.0.0.1"
 hdfs_master_port=9000
