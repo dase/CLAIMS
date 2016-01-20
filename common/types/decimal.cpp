@@ -472,7 +472,7 @@ Decimal Decimal::op_divide(const Decimal rhs) const {
   string ress;                                                          
   rett.ToString(ress);                                                  
   if (rett.IsSign()) ress.erase(0, 1);                                  
-  while ((kMaxDecScale - (int)ress.length()) >= 0) ress.insert(0, "0");
+  while ((Decimal::kMaxDecScale - (int)ress.length()) >= 0) ress.insert(0, "0");
   ress.insert(ress.length() - Decimal::kMaxDecScale, ".");              
   if (rett.IsSign()) ress.insert(0, "-");                               
   int counttail = ress.length();
