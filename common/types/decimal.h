@@ -62,18 +62,8 @@ typedef ttmath::Int<CLAIMS_COMMON_DECIMAL_TTLSIZE> TTLInt;
 #define DEBUGOUT(A)
 #endif
 
-#define RETURNTODECIMAL()                                                 \
-  do {                                                                    \
-    string ress;                                                          \
-    rett.ToString(ress);                                                  \
-    if (rett.IsSign()) ress.erase(0, 1);                                  \
-    while ((kMaxDecScale - (int)ress.length()) >= 0) ress.insert(0, "0"); \
-    ress.insert(ress.length() - Decimal::kMaxDecScale, ".");              \
-    if (rett.IsSign()) ress.insert(0, "-");                               \
-    Decimal ret(CLAIMS_COMMON_DECIMAL_MAXPRCISION,                        \
-                CLAIMS_COMMON_DECIMAL_MAXSCALE, ress);                    \
-    return ret;                                                           \
-  } while (0)
+#define MAXVAL(A,B) ((A)>(B)?(A):(B))
+#define MINVAL(A,B) ((A)<(B)?(A):(B))
 
 /**-----------------------------------------
  					  e/E
@@ -173,6 +163,10 @@ class Decimal {
 
   Decimal& operator=(const Decimal& rhs);
 
+  void SetPrecsion(int p){ const_cast<int&>(precision_) = p; }
+  void SetScale(int s){ const_cast<int&>(scale_) = s; }
+  int GetScale(){return scale_;}
+
   void PrintValue(int ifra);
 
   const TTInt& GetTTInt() const {
@@ -188,77 +182,12 @@ class Decimal {
  private:
   static const TTInt kMaxScaleFactor;
   static const int kMaxDecScale = CLAIMS_COMMON_DECIMAL_MAXSCALE;
-  //  static const TTInt kMaxTTIntValue;
-  //  static const TTInt kMinTTIntValue;
 
   const int precision_;
   const int scale_;
   TTInt word[NWORDS];
 };
 
-inline Decimal Decimal::op_add(const Decimal rhs) const {
-  if ((this->isNull()) && (!rhs.isNull())) {
-    return rhs;
-  }
-  if ((!this->isNull()) && (rhs.isNull())) {
-    return *this;
-  }
-  if ((this->isNull()) && (rhs.isNull())) {
-    return Decimal::CreateNullDecimal();
-  }
-
-  TTInt rett;
-  rett = this->GetTTInt();
-  rett.Add(rhs.GetTTInt());
-  RETURNTODECIMAL();
-}
-
-inline Decimal Decimal::op_subtract(const Decimal rhs) const {
-  if ((this->isNull()) && (!rhs.isNull())) {
-    return rhs;
-  }
-  if ((!this->isNull()) && (rhs.isNull())) {
-    return *this;
-  }
-  if ((this->isNull()) && (rhs.isNull())) {
-    return Decimal(1, 0, "0");
-  }
-
-  TTInt rett;
-  rett = this->GetTTInt();
-  rett.Sub(rhs.GetTTInt());
-  RETURNTODECIMAL();
-}
-
-inline Decimal Decimal::op_multiply(const Decimal rhs) const {
-  if ((this->isNull()) && (!rhs.isNull())) {
-    return rhs;
-  }
-  if ((!this->isNull()) && (rhs.isNull())) {
-    return *this;
-  }
-  if ((this->isNull()) && (rhs.isNull())) {
-    return Decimal::CreateNullDecimal();
-  }
-  TTLInt rett;
-  rett = this->GetTTInt();
-  rett *= rhs.GetTTInt();
-  rett /= Decimal::kMaxScaleFactor;
-  RETURNTODECIMAL();
-}
-
-inline Decimal Decimal::op_divide(const Decimal rhs) const {
-  TTInt zero("0");
-  if (rhs.isNull() || zero == rhs.GetTTInt() || this->isNull()) {
-    return Decimal::CreateNullDecimal();
-  }
-
-  TTLInt rett;
-  rett = this->GetTTInt();
-  rett *= Decimal::kMaxScaleFactor;
-  rett /= rhs.GetTTInt();
-  RETURNTODECIMAL();
-}
 
 inline int Decimal::compare(const Decimal rhs) const {
   const TTInt l = this->GetTTInt();
