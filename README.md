@@ -4,7 +4,7 @@
 
 ##### 1. Massively parallel execution engine.
 
-CLAIMS relies on highly parallel query processing engine to dramatically accelerate data analysis speed. Query evaluations are distributed across the cluster and executed in parallel. Query evaluations are not only distirbuted across the cluster to leverage the computation power of the cluster, but are also executed in a multi-threaded fashion to unlease the power of modern multi-core hardware.
+CLAIMS relies on highly parallel query processing engine to dramatically accelerate data analysis speed. Query evaluations are distributed across the cluster and executed in parallel. Query evaluations are not only distirbuted across the cluster to leverage the computation power of the cluster, but are also executed in a multi-threaded fashion to unleash the power of modern multi-core hardware.
 
 
 ##### 2. Smart intra-node parallelism. 
