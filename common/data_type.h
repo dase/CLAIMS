@@ -1100,7 +1100,7 @@ class OperateDecimal : public Operate {
      ((NValue*)value)->serializeToExport(out, &size);
      return std::string(buf + 4);
      */
-    return ((Decimal*)value)->ToString(this->scale_);
+    return ((Decimal*)value)->ToString(((Decimal*)value)->GetScale());
   };
 
   /*

@@ -63,7 +63,7 @@ inline void *int_to_decimal(void *value, void *tovalue) {
   if (*(int *)value == NULL_INT) return NULL;
   stringstream va;
   va << *(int *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS, 0, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -113,7 +113,7 @@ inline void *string_to_string(void *value, void *tovalue) {
 }
 inline void *string_to_decimal(void *value, void *tovalue) {
   *(Decimal *)tovalue =
-      Decimal(CLAIMS_COMMON_DECIMAL_MAXPRCISION, CLAIMS_COMMON_DECIMAL_MAXSCALE,
+      Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1,/* Invailed scale */
               string((char *)value));
   return tovalue;
 }
@@ -172,7 +172,7 @@ inline void *ulong_to_double(void *value, void *tovalue) {
 inline void *ulong_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(unsigned long *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS, 0, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -219,7 +219,7 @@ inline void *smallInt_to_boolean(void *value, void *tovalue) {
 inline void *smallInt_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(short int *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS, 0, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -275,9 +275,9 @@ inline void *double_to_boolean(void *value, void *tovalue) {
 }
 inline void *double_to_decimal(void *value, void *tovalue) {
   stringstream va;
+  va.precision(30);
   va << *(double *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_MAXPRCISION,
-                                CLAIMS_COMMON_DECIMAL_MAXSCALE, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -311,8 +311,8 @@ inline void *boolean_to_ulong(void *value, void *tovalue) {
 inline void *boolean_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(bool *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_MAXPRCISION,
-                                CLAIMS_COMMON_DECIMAL_MAXSCALE, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS,
+                                0, va.str());
   va.clear();
   return tovalue;
 }
