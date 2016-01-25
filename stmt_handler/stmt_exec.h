@@ -62,12 +62,12 @@ class StmtExec {
   bool isResultFlag() const;
   const string& getErrorMsg() const;
   const string& getInfo() const;
+  AstNode* stmt_;
 
  protected:
   bool isTableExist();
 
  protected:
-  AstNode* stmt_;
   string tablename_;
   TableDescriptor* table_desc_;
 

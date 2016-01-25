@@ -21,6 +21,7 @@ class Parser {
   explicit Parser(string SQL_statement);
   virtual ~Parser();
   AstNode* GetRawAST();
+  string get_sql_stmt() { return sql_stmt_; }
 
  private:
   AstNode* CreateRawAST(string SQL_statement);

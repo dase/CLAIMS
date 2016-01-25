@@ -413,7 +413,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
   vector<void*> correct_tuple_buffer;
 
   while (string::npos != (cur = tuples.find('\n', prev_cur))) {
-    string tuple_record = tuples.substr(prev_cur, cur);
+    string tuple_record = tuples.substr(prev_cur, cur - prev_cur);
     LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
     EXEC_AND_ONLY_LOG_ERROR(
