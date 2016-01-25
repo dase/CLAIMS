@@ -34,6 +34,7 @@
 #include "../stmt_handler/create_projection_exec.h"
 #include "../stmt_handler/drop_table_exec.h"
 #include "../stmt_handler/show_exec.h"
+#include "../utility/Timer.h"
 namespace claims {
 namespace stmt_handler {
 
@@ -54,7 +55,7 @@ StmtHandler::~StmtHandler() {
 RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
   switch (stmt_ast->ast_node_type_) {
     case AST_SELECT_STMT: {
-      stmt_exec_ = new SelectExec(stmt_ast);
+      stmt_exec_ = new SelectExec(stmt_ast, sql_stmt_);
       break;
     }
     case AST_INSERT_STMT: {
@@ -104,6 +105,7 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
   return rSuccess;
 }
 RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
+  GETCURRENTTIME(start_time);
   RetCode ret = rSuccess;
   sql_parser_ = new Parser(sql_stmt_);
   AstNode* raw_ast = sql_parser_->GetRawAST();
@@ -122,6 +124,10 @@ RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
   if (rSuccess != ret) {
     return ret;
   }
+  double exec_time_ms = GetElapsedTime(start_time);
+  if (NULL != exec_result->result_)
+    exec_result->result_->query_time_ = exec_time_ms / 1000.0;
+  cout << "execute time: " << exec_time_ms / 1000.0 << " sec" << endl;
   return rSuccess;
 }
 
