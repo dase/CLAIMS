@@ -65,7 +65,7 @@ class DiskFileHandleImp : public FileHandleImp {
 
  private:
   int fd_;
-  FileOpenFlag open_flag_ = -1;
+  FileOpenFlag open_flag_ = kReadFile;
 };
 
 }  // namespace common

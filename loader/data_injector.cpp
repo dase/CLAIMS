@@ -130,23 +130,23 @@ using namespace claims::common;
 namespace claims {
 namespace loader {
 
-static uint64_t DataInjector::total_get_substr_time_ = 0;
-static uint64_t DataInjector::total_check_string_time_ = 0;
-static uint64_t DataInjector::total_to_value_time_ = 0;
-static uint64_t DataInjector::total_check_and_to_value_func_time_ = 0;
-static uint64_t DataInjector::total_check_and_to_value_time_ = 0;
-static uint64_t DataInjector::total_insert_time_ = 0;
-static uint64_t DataInjector::total_add_time_ = 0;
-static uint64_t DataInjector::total_lock_tuple_buffer_time_ = 0;
-static uint64_t DataInjector::total_lock_pj_buffer_time_ = 0;
-static uint64_t DataInjector::total_get_task_time_ = 0;
+uint64_t DataInjector::total_get_substr_time_ = 0;
+uint64_t DataInjector::total_check_string_time_ = 0;
+uint64_t DataInjector::total_to_value_time_ = 0;
+uint64_t DataInjector::total_check_and_to_value_func_time_ = 0;
+uint64_t DataInjector::total_check_and_to_value_time_ = 0;
+uint64_t DataInjector::total_insert_time_ = 0;
+uint64_t DataInjector::total_add_time_ = 0;
+uint64_t DataInjector::total_lock_tuple_buffer_time_ = 0;
+uint64_t DataInjector::total_lock_pj_buffer_time_ = 0;
+uint64_t DataInjector::total_get_task_time_ = 0;
 
-static uint64_t DataInjector::total_read_sem_time_ = 0;
-static uint64_t DataInjector::total_unread_sem_time_ = 0;
+uint64_t DataInjector::total_read_sem_time_ = 0;
+uint64_t DataInjector::total_unread_sem_time_ = 0;
 
-static uint64_t DataInjector::total_read_sem_fail_count_ = 0;
-static uint64_t DataInjector::total_unread_sem_fail_count_ = 0;
-static uint64_t DataInjector::total_append_warning_time_ = 0;
+uint64_t DataInjector::total_read_sem_fail_count_ = 0;
+uint64_t DataInjector::total_unread_sem_fail_count_ = 0;
+uint64_t DataInjector::total_append_warning_time_ = 0;
 
 DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
                            const string row_separator)
@@ -850,11 +850,12 @@ RetCode DataInjector::InsertFromString(const string tuples,
 
   while (string::npos != (cur = tuples.find('\n', prev_cur))) {
     DLOG_DI("cur: " << cur << " prev_cur: " << prev_cur);
-    string tuple_record = tuples.substr(prev_cur, cur - prev_cur);
-    LOG(INFO) << "row " << line << ": " << tuple_record << endl;
+    string tuple_record = tuples.substr(prev_cur, cur - prev_cur - 1);  //
 
     EXEC_AND_ONLY_LOG_ERROR(ret, AddRowIdColumn(tuple_record),
                             "failed to add row_id column for tuple.");
+    --row_id_in_table_;  // it will be added in line 894
+    LOG(INFO) << "row " << line << ": " << tuple_record << endl;
 
     vector<Validity> columns_validities;
     void* tuple_buffer = Malloc(table_schema_->getTupleMaxSize());
@@ -971,7 +972,7 @@ RetCode DataInjector::UpdateCatalog(FileOpenFlag open_flag) {
   return ret;
 }
 
-inline RetCode DataInjector::AddRowIdColumn(const string& tuple_string) {
+inline RetCode DataInjector::AddRowIdColumn(string& tuple_string) {
   uint64_t row_id_value = __sync_fetch_and_add(&row_id_in_table_, 1L);
   // make sure tuple string in a uniform format(always has a column
   // separator before row separator) with format of what is get from INSERT
