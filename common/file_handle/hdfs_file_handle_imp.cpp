@@ -50,6 +50,7 @@ HdfsFileHandleImp::HdfsFileHandleImp() : read_start_pos_(-1) {
   if (NULL == fs_) {
     LOG(ERROR) << "failed to connect to HDFS(ip:" << Config::hdfs_master_ip
                << ", port:" << Config::hdfs_master_port << ")" << endl;
+    assert(false);
   }
   LOG(INFO) << "connected to HDFS(ip:" << Config::hdfs_master_ip
             << ", port:" << Config::hdfs_master_port << ")" << endl;
@@ -89,7 +90,7 @@ RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
     PLOG(ERROR) << "failed to open hdfs file :" << file_name_;
     return rOpenHdfsFileFail;
   } else {
-    LOG(INFO) << "opened hdfs file:" << file_name_ << "with "
+    LOG(INFO) << "opened hdfs file: " << file_name_ << " with "
               << (kCreateFile == open_flag
                       ? "kCreateFile"
                       : kAppendFile == open_flag ? "kAppendFile" : "kReadFile")
@@ -175,7 +176,7 @@ RetCode HdfsFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
   int ret = rSuccess;
   hdfsFileInfo* hdfsfile = hdfsGetPathInfo(fs_, file_name_.c_str());
   int file_length = hdfsfile->mSize;
-  LOG(INFO) << "The length of file " << file_name_ << "is " << file_length
+  LOG(INFO) << "The length of file " << file_name_ << " is " << file_length
             << endl;
   // set position 0
   if (rSuccess != (ret = SetPosition(0))) {
