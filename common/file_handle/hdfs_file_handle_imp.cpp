@@ -50,6 +50,7 @@ HdfsFileHandleImp::HdfsFileHandleImp() : read_start_pos_(-1) {
   if (NULL == fs_) {
     LOG(ERROR) << "failed to connect to HDFS(ip:" << Config::hdfs_master_ip
                << ", port:" << Config::hdfs_master_port << ")" << endl;
+    assert(false);
   }
   LOG(INFO) << "connected to HDFS(ip:" << Config::hdfs_master_ip
             << ", port:" << Config::hdfs_master_port << ")" << endl;
