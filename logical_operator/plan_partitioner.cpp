@@ -27,6 +27,7 @@
 
 #include "../logical_operator/plan_partitioner.h"
 
+#include <string>
 #include "../utility/print_tool.h"
 namespace claims {
 namespace logical_operator {
@@ -111,7 +112,10 @@ bool PlanPartitioner::HasShadowPartitionKey() const {
 std::vector<Attribute> PlanPartitioner::get_shadow_partition_keys() const {
   return shadow_partition_keys_;
 }
-
+RetCode PlanPartitioner::UpdateTableNameOfPartitionKey(
+    const string& table_alias) {
+  return partition_key_.UpdateTableNameOfAttr(table_alias);
+}
 std::vector<PlanPartitionInfo> PlanPartitioner::get_partition_list() const {
   return partition_list_;
 }

@@ -29,6 +29,7 @@
 #ifndef STMT_HANDLER_DROP_TABLE_EXEC_H_
 #define STMT_HANDLER_DROP_TABLE_EXEC_H_
 
+#include <string>
 #include "../stmt_handler/stmt_exec.h"
 #include "../sql_parser/ast_node/ast_drop_stmt.h"
 namespace claims {
@@ -42,6 +43,22 @@ class DropTableExec : public StmtExec {
   virtual ~DropTableExec();
 
   RetCode Execute(ExecutedResult* exec_result);
+
+ private:
+  /**
+   * to check the table with given name, whether it is a base table or a del
+   * table. If the return value is true, then the table is the base table, if
+   * not, the table is the del table.
+   * @param table_name the name of the given table
+   */
+  bool CheckBaseTbl(const string& table_name) const;
+  /**
+   * delete the table from the catalog and the delete the associated files in
+   * the disk or in the hdfs
+   * @param table_name
+   * @return
+   */
+  RetCode DropTable(const string& table_name);
 
  private:
   AstDropTable* drop_table_ast_;

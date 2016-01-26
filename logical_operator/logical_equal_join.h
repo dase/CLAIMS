@@ -183,7 +183,7 @@ class LogicalEqualJoin : public LogicalOperator {
   LogicalOperator* left_child_;
   LogicalOperator* right_child_;
   JoinPolicy join_policy_;
-  PlanContext* dataflow_;
+  PlanContext* plan_context_;
 };
 }  // namespace logical_operator
 }  // namespace claims

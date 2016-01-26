@@ -202,7 +202,7 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
                          << std::endl;
               result_flag_ = false;
               // result_set_ = NULL;
-              ret = common::kStmtHandlerTypeNotSupport;
+              ret = common::rStmtHandlerTypeNotSupport;
             }
             break;
           }
@@ -344,7 +344,7 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
                 << std::endl;
             exec_result->status_ = false;
             exec_result->result_ = NULL;
-            ret = common::kStmtHandlerTypeNotSupport;
+            ret = common::rStmtHandlerTypeNotSupport;
 #else
             error_msg_ =
                 "This type is not supported now during creating table!";
@@ -353,7 +353,7 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
                 << std::endl;
             result_flag_ = false;
             result_set_ = NULL;
-            ret = common::kStmtHandlerTypeNotSupport;
+            ret = common::rStmtHandlerTypeNotSupport;
 #endif
           }
         }
@@ -375,7 +375,7 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
     } else {
       exec_result->status_ = false;
       exec_result->result_ = NULL;
-      ret = common::kStmtHandlerTypeNotSupport;
+      ret = common::rStmtHandlerTypeNotSupport;
     }
 #endif
 
@@ -388,12 +388,12 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
       LOG(INFO) << "create table successfully" << std::endl;
       exec_result->result_ = NULL;
       result_flag_ = true;
-      ret = common::kStmtHandlerCreateTableSuccess;
+      ret = common::rStmtHandlerCreateTableSuccess;
 #else
       info_ = "create table successfully";
       LOG(INFO) << "create table successfully" << std::endl;
       result_set_ = NULL;
-      ret = common::kStmtHandlerCreateTableSuccess;
+      ret = common::rStmtHandlerCreateTableSuccess;
 #endif
     }
 #ifdef sem_cnxt
