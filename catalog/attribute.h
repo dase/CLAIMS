@@ -38,6 +38,7 @@
 using claims::common::rSuccess;
 using claims::common::rEmptyAttributeName;
 using claims::common::rColumnNotExist;
+using claims::common::rEmptyTableAlias;
 using std::string;
 namespace claims {
 namespace catalog {
@@ -159,9 +160,26 @@ struct Attribute {
       return ret;
     }
   }
+  inline RetCode UpdateTableNameOfAttr(const string& table_alias) {
+    RetCode ret = rSuccess;
+    if (0 == attrName.size()) {
+      ret = rEmptyAttributeName;
+      ELOG(ret, "The attribute name is empty!");
+      assert(false);
+      return ret;
+    }
+    if (0 == table_alias.size()) {
+      ret = rEmptyTableAlias;
+      ELOG(ret, "The table alias is empty!");
+      assert(false);
+      return ret;
+    }
+    attrName = table_alias + attrName.substr(attrName.find('.'));
+    return rSuccess;
+  }
 
  public:
-  string attrName;
+  string attrName;  // the form : tbl.attr
   column_type* attrType;
   /*the position in the table*/
   unsigned index;

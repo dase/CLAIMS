@@ -270,7 +270,7 @@ void *ClientListener::receiveHandler(void *para) {
             //					cout<<"nread:"<<nread<<endl;
             memset(buf, 0, sizeof(buf));
             int read_count = read(server->m_clientFds[i], buf, nread);
-            buf[read_count] = '\0';  // fix a bug
+            buf[read_count] = '\0';      // fix a bug
             int sql_type = buf[0] - 48;  // '1' - 48 = 1
             ClientLogging::log("sql_type is %d", sql_type);
             if (sql_type <= 9 && sql_type >= 0) {
@@ -287,7 +287,7 @@ void *ClientListener::receiveHandler(void *para) {
 
             int retCode = server->receiveRequest(server->m_clientFds[i], buf);
             if (0 == retCode) {
-              printf("Successfully receive query %s from client %d.\n", buf,
+              printf("Successfully receive query\n %s \nfrom client %d.\n", buf,
                      server->m_clientFds[i]);
             }
             //					else if (-1 == retCode) {
@@ -751,11 +751,10 @@ void *ClientListener::sendHandler(void *para) {
         else
           cliRes.setChange(result.info_ + "\n\nWARNINGS:\n" + result.warning_ +
                            "\n");
-        ClientListenerLogging::log(
-            "to send change response-- status:%d  length:%d  content:%s "
-            "warnings: %s",
-            cliRes.status, cliRes.length, cliRes.content.c_str(),
-            result.warning_.c_str());
+        LOG(INFO) << "to send change response-- status:" << cliRes.status
+                  << "  length:" << cliRes.length
+                  << "  content:" << cliRes.content.c_str()
+                  << " warnings: " << result.warning_.c_str() << std::endl;
         server->write(result.fd_, cliRes);
       } else {
         if (client_type::java == server->client_type_) {

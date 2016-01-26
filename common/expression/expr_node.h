@@ -26,6 +26,7 @@
 #include <boost/serialization/utility.hpp>
 
 #include "../../catalog/attribute.h"
+#include "../../common/ids.h"
 using claims::catalog::Attribute;
 namespace claims {
 namespace common {
@@ -122,7 +123,7 @@ class ExprNode {
   virtual void InitExprAtPhysicalPlan() {}
   virtual ExprNode* ExprCopy() { return NULL; }
   bool IsEqualAttr(const Attribute& attr);
-  Attribute ExprNodeToAttr(const int id);
+  Attribute ExprNodeToAttr(const int id, unsigned table_id = 1000000);
 
  private:
   friend class boost::serialization::access;

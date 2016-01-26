@@ -294,6 +294,7 @@ RetCode AstFromList::PushDownCondition(PushDownConditionContext* pdccnxt) {
                                  cur_pdccnxt->from_tables_.end());
   }
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+  delete cur_pdccnxt;
   return rSuccess;
 }
 RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
@@ -534,6 +535,11 @@ RetCode AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
 }
 
 RetCode AstSubquery::PushDownCondition(PushDownConditionContext* pdccnxt) {
+  RetCode ret = rSuccess;
+  ret = subquery_->PushDownCondition(NULL);
+  if (rSuccess != ret) {
+    return ret;
+  }
   pdccnxt->from_tables_.insert(subquery_alias_);
   pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
   return rSuccess;
@@ -546,6 +552,19 @@ RetCode AstSubquery::GetLogicalPlan(LogicalOperator*& logic_plan) {
     return ret;
   }
   logic_plan = new LogicalSubquery(logic_plan, subquery_alias_);
+
+  LOG(WARNING) << "there shouldn't be equal join condition here.";
+  assert(equal_join_condition_.size() == 0);
+
+  if (normal_condition_.size() > 0) {
+    vector<ExprNode*> condition;
+    condition.clear();
+    ret = GetFilterCondition(condition, normal_condition_, logic_plan);
+    if (rSuccess != ret) {
+      return ret;
+    }
+    logic_plan = new LogicalFilter(logic_plan, condition);
+  }
   return rSuccess;
 }
 
@@ -871,6 +890,7 @@ RetCode AstGroupByClause::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
     return rSuccess;
   }
+  ELOG(rGroupbyListIsNULL, "");
   return rGroupbyListIsNULL;
 }
 void AstGroupByClause::RecoverExprName(string& name) {
@@ -1294,7 +1314,11 @@ AstSelectStmt::AstSelectStmt(AstNodeType ast_node_type, int select_opts,
       having_clause_(having_clause),
       orderby_clause_(orderby_clause),
       limit_clause_(limit_clause),
-      select_into_clause_(select_into_clause) {}
+      select_into_clause_(select_into_clause),
+      have_aggeragion_(false) {
+  groupby_attrs_.clear();
+  agg_attrs_.clear();
+}
 
 AstSelectStmt::~AstSelectStmt() {
   delete select_list_;
@@ -1319,7 +1343,7 @@ void AstSelectStmt::Print(int level) const {
   if (orderby_clause_ != NULL) orderby_clause_->Print(level);
   if (limit_clause_ != NULL) limit_clause_->Print(level);
   if (select_into_clause_ != NULL) select_into_clause_->Print(level);
-  cout << "------------select ast print over!------------------" << endl;
+  //  cout << "------------select ast print over!------------------" << endl;
 }
 /**
  *  NOTE: the physical execution may be divide into 2 step_
@@ -1380,7 +1404,7 @@ RetCode AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     }
 
   } else {
-    LOG(ERROR) << "select list is NULL" << endl;
+    ELOG(rSelectClauseIsNULL, "");
     return rSelectClauseIsNULL;
   }
   // aggregation couldn't in group by clause
@@ -1470,6 +1494,7 @@ RetCode AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
     sem_cnxt->ClearSelectAttrs();
     ret = select_list_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
+      ELOG(rAggSelectExprHaveOtherColumn, "");
       return rAggSelectExprHaveOtherColumn;
     }
   }

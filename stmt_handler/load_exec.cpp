@@ -121,8 +121,6 @@ RetCode LoadExec::Execute(ExecutedResult *exec_result) {
 #ifdef NEW_LOADER
   DataInjector *injector =
       new DataInjector(table, column_separator, tuple_separator);
-  static char *load_output_info[] = {"Loading", "Loading.", "Loading..",
-                                     "Loading..."};
   ret = injector->LoadFromFile(path_names,
                                static_cast<FileOpenFlag>(load_ast_->mode_),
                                exec_result, load_ast_->sample_);

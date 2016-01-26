@@ -104,5 +104,6 @@ void LogicalOperator::GetColumnToId(const std::vector<Attribute>& attributes,
     column_to_id[attributes[i].attrName] = i;
   }
 }
+
 }  // namespace logical_operator
 }  // namespace claims

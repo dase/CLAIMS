@@ -84,7 +84,7 @@ bool ResultCollector::Open(const PartitionOffset& part_offset) {
   }
   registered_thread_count_++;
   if (true == g_thread_pool_used) {
-    Environment::getInstance()->getThreadPool()->add_task(CollectResult, this);
+    Environment::getInstance()->getThreadPool()->AddTask(CollectResult, this);
   } else {
     pthread_t tid;
     pthread_create(&tid, NULL, CollectResult, this);

@@ -9,6 +9,7 @@
 #include "Debug.h"
 #include <stdlib.h>
 #include <libconfig.h++>
+#include <unistd.h>
 #include <iosfwd>
 #include <iostream>
 #include <string>
@@ -85,6 +86,10 @@ bool Config::enable_codegen;
 
 std::string Config::catalog_file;
 
+int Config::thread_pool_init_thread_num;
+
+int Config::load_thread_num;
+
 Config *Config::getInstance() {
   if (instance_ == 0) {
     instance_ = new Config();
@@ -141,6 +146,10 @@ void Config::initialize() {
   catalog_file = getString("catalog_file", data_dir + "CATALOG");
 
   enable_codegen = getBoolean("enable_codegen", true);
+
+  thread_pool_init_thread_num = getInt("thread_pool_init_thread_num", 100);
+
+  load_thread_num = getInt("load_thread_num", sysconf(_SC_NPROCESSORS_CONF));
 
 #ifdef DEBUG_Config
   print_configure();
@@ -199,6 +208,7 @@ void Config::print_configure() const {
   std::cout << "client_lisener_port:" << client_listener_port << std::endl;
   std::cout << "catalog_file:" << catalog_file << std::endl;
   std::cout << "codegen:" << enable_codegen << std::endl;
+  std::cout << "load_thread_num:" << load_thread_num << std::endl;
 }
 
 void Config::setConfigFile(std::string file_name) { config_file = file_name; }

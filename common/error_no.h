@@ -29,11 +29,12 @@
 #pragma once
 #ifndef COMMON_ERROR_NO_H_
 #define COMMON_ERROR_NO_H_
+#include <assert.h>
 
 namespace claims {
 namespace common {
 
-const int kErrorMaxNumber = 10000;
+const int kErrorMaxNumber = 100000;
 static const char* kErrorMessage[kErrorMaxNumber];
 
 const char* CStrError(int errorno);
@@ -42,6 +43,7 @@ static struct ErrorInit {
   ErrorInit();
 
   static inline void DefineErrorAndMessage(int value, const char* messege) {
+    assert(-value < kErrorMaxNumber && -value >= 0 && "value is invalid");
     kErrorMessage[-value] = messege;
   }
 } local_init;

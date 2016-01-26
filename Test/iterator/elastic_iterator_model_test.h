@@ -144,6 +144,57 @@ TEST_F(ElasticIteratorModelTest, CrossJoin) {
   EXPECT_EQ(1000000, *(long *)b_it->nextTuple());
   delete b_it;
 }
+
+TEST_F(ElasticIteratorModelTest, CrossJoinWithSubquery) {
+  ResultSet rs;
+  std::string message;
+  client_.submit(
+      "select count(*) from (select row_id from NATION where row_id<3) as a, "
+      "(select row_id from REGION where row_id=2) as b;",
+      message, rs);
+  DynamicBlockBuffer::Iterator it = rs.createIterator();
+  BlockStreamBase::BlockStreamTraverseIterator *b_it =
+      it.nextBlock()->createIterator();
+  EXPECT_EQ(3, *(long *)b_it->nextTuple());
+  delete b_it;
+}
+
+TEST_F(ElasticIteratorModelTest, CrossJoinWithRightNULLTable) {
+  ResultSet rs;
+  std::string message;
+  client_.submit(
+      "select count(*) from (select row_id from PART) as a, (select row_id "
+      "from REGION where row_id=222) as b;",
+      message, rs);
+  DynamicBlockBuffer::Iterator it = rs.createIterator();
+  BlockStreamBase *b_it = it.nextBlock();
+  EXPECT_EQ(0, b_it);
+}
+
+TEST_F(ElasticIteratorModelTest, CrossJoinWithLeftNULLTable) {
+  ResultSet rs;
+  std::string message;
+  client_.submit(
+      "select count(*) from (select row_id from REGION where row_id>33) as a, "
+      "(select row_id from PART) as b;",
+      message, rs);
+  DynamicBlockBuffer::Iterator it = rs.createIterator();
+  BlockStreamBase *b_it = it.nextBlock();
+  EXPECT_EQ(0, b_it);
+}
+
+TEST_F(ElasticIteratorModelTest, CrossJoinWithAllNULLTable) {
+  ResultSet rs;
+  std::string message;
+  client_.submit(
+      "select count(*) from (select row_id from REGION where row_id>33) as a, "
+      "(select row_id from NATION where row_id>40) as b;",
+      message, rs);
+  DynamicBlockBuffer::Iterator it = rs.createIterator();
+  BlockStreamBase *b_it = it.nextBlock();
+  EXPECT_EQ(0, b_it);
+}
+
 TEST_F(ElasticIteratorModelTest, FilteredJoin) {
   ResultSet rs;
   std::string message;

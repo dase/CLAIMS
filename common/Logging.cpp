@@ -56,7 +56,7 @@ using claims::common::Malloc;
 #define DEBUG_StorageManager
 #define DEBUG_QueryOptimization
 
-#define DEBUG_ThreadPool
+//#define DEBUG_ThreadPool
 #define SQL_Parser
 
 //#endif  //CLAIMS_QUEIT
