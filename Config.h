@@ -78,6 +78,8 @@ class Config {
   static std::string catalog_file;
   static int thread_pool_init_thread_num;
 
+  static int load_thread_num;
+
  private:
   static Config* instance_;
   libconfig::Config cfg;
