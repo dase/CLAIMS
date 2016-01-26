@@ -225,7 +225,6 @@ bool Decimal::StringToDecimal(string strdec, DecimalString & decstr) {
 
   DEBUGOUT("enter strdec...........................................");
   DEBUGOUT("1:" + strdec);
-  cout <<"1:" + strdec << endl;
   trim(strdec, ' ');
   DEBUGOUT("2:" + strdec);
 
