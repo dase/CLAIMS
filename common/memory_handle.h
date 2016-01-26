@@ -57,6 +57,12 @@ static inline void* Malloc(size_t length) {
     ptr = NULL;         \
   } while (false)
 
+#define DELETE_ARRAY(ptr) \
+  do {                    \
+    delete[] ptr;         \
+    ptr = NULL;           \
+  } while (false)
+
 }  // namespace common
 
 }  // namespace claims

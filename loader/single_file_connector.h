@@ -57,8 +57,17 @@ class SingleFileConnector : public FileConnector {
   virtual RetCode Flush(const void* source, unsigned length) {
     return imp_->Write(source, length);
   }
+  virtual RetCode AtomicFlush(const void* source, unsigned length) {
+    return imp_->AtomicWrite(source, length);
+  }
   virtual RetCode Flush(unsigned projection_offset, unsigned partition_offset,
                         const void* source, unsigned length) {
+    assert(false && "not implemented");
+    return common::rFailure;
+  }
+  virtual RetCode AtomicFlush(unsigned projection_offset,
+                              unsigned partition_offset, const void* source,
+                              unsigned length) {
     assert(false && "not implemented");
     return common::rFailure;
   }

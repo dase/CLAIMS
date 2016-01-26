@@ -286,7 +286,7 @@ class OperateInt : public Operate {
     return ret;
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       *(int*)target = NULL_INT;
     else
       *(int*)target = atoi(string);
@@ -360,7 +360,7 @@ class OperateFloat : public Operate {
     return ret;
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       *(float*)target = NULL_FLOAT;
     else
       *(float*)target = atof(string);
@@ -436,7 +436,7 @@ class OperateDouble : public Operate {
     return ret;
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       *(double*)target = NULL_DOUBLE;
     else
       *(double*)target = atof(string);
@@ -512,7 +512,7 @@ class OperateULong : public Operate {
     return ret;
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       *(unsigned long*)target = NULL_U_LONG;
     else
       *(unsigned long*)target = strtoul(string, 0, 10);
@@ -591,7 +591,7 @@ class OperateString : public Operate {
       return trimSpecialCharactor(std::string((char*)value));
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       *(char*)target = NULL_STRING;
     else
       strcpy((char*)target, string);
@@ -653,7 +653,12 @@ class OperateString : public Operate {
     return false;
   }
   RetCode CheckSet(string& str) const;
-  void SetDefault(string& str) const { str = ""; }
+  void SetDefault(string& str) const {
+    if (this->nullable)
+      str = "7";
+    else
+      str = "";
+  }
 };
 
 class OperateDate : public Operate {
@@ -671,7 +676,7 @@ class OperateDate : public Operate {
       return to_iso_extended_string(*(date*)value);
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       setNull(target);
     else {
       std::string s(string);
@@ -767,7 +772,7 @@ class OperateTime : public Operate {
       return to_simple_string(*(time_duration*)value);
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       setNull(target);
     else
       *(time_duration*)target = duration_from_string(string);
@@ -848,10 +853,14 @@ class OperateDatetime : public Operate {
     if (this->nullable == true && (*(ptime*)value).is_neg_infinity() == true)
       return "NULL";
     else
-      return to_iso_extended_string(*(ptime*)value);
+    {
+      std::string res=to_iso_extended_string(*(ptime*)value);
+      res[10]=' ';
+      return res;
+    }
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       setNull(target);
     else
       *(ptime*)target = time_from_string(string);
@@ -1019,7 +1028,7 @@ class OperateUSmallInt : public Operate {
     return ret;
   }
   void toValue(void* target, const char* string) {
-    if ((strcmp(string, "") == 0) && this->nullable == true)
+    if (this->nullable == true && (strcmp(string, "") == 0))
       *(unsigned short*)target = NULL_U_SMALL_INT;
     else
       *(unsigned short*)target = (unsigned short)atoi(string);
