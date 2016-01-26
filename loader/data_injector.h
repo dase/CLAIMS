@@ -91,14 +91,6 @@ class DataInjector {
   RetCode LoadFromFile(vector<string> input_file_names, FileOpenFlag open_flag,
                        ExecutedResult* result, double sample_rate = 1.0);
 
-  RetCode LoadFromFileSingleThread(vector<string> input_file_names,
-                                   FileOpenFlag open_flag,
-                                   ExecutedResult* result, double sample_rate);
-
-  RetCode LoadFromFileMultiThread(vector<string> input_file_names,
-                                  FileOpenFlag open_flag,
-                                  ExecutedResult* result, double sample_rate);
-
   /**
    * @brief Method description: insert tuples into table
    * @param tuples: the data to insert into tables, which may be a line or
@@ -108,6 +100,14 @@ class DataInjector {
   RetCode InsertFromString(const string tuples, ExecutedResult* result);
 
  private:
+  RetCode LoadFromFileSingleThread(vector<string> input_file_names,
+                                   FileOpenFlag open_flag,
+                                   ExecutedResult* result, double sample_rate);
+
+  RetCode LoadFromFileMultiThread(vector<string> input_file_names,
+                                  FileOpenFlag open_flag,
+                                  ExecutedResult* result, double sample_rate);
+
   /**
    * @brief Method description: handle memory which store single line
    * @param tuple_buffer: single tuple memory
