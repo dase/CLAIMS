@@ -90,7 +90,11 @@ RetCode DeleteStmtExec::Execute(ExecutedResult* exec_result) {
     appended_query_sel_stmt->Print();
     // ExecutedResult* appended_result = new ExecutedResult();
     SelectExec* appended_query_exec = new SelectExec(appended_query_sel_stmt);
-    appended_query_exec->Execute(exec_result);
+    ret = appended_query_exec->Execute(exec_result);
+    if (ret != rSuccess) {
+      WLOG(ret, "failed to find the delete tuples from the table ");
+      return ret;
+    }
     ostringstream ostr;
     ostr << exec_result->result_->getNumberOftuples() << " tuples deleted.";
     exec_result->info_ = ostr.str();
