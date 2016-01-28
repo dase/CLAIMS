@@ -60,6 +60,20 @@ class DropTableExec : public StmtExec {
    */
   RetCode DropTable(const string& table_name);
 
+  /**
+   * delete the table information from the catalog
+   * @param table_name
+   * @return
+   */
+  RetCode DropTableFromCatalog(const string& table_name);
+
+  /**
+   * delete the table files from the stroage
+   * @param table_name
+   * @return
+   */
+  RetCode DeleteTableFiles(const string& table_name);
+
  private:
   AstDropTable* drop_table_ast_;
 };
