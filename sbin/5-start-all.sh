@@ -43,7 +43,7 @@ thisstartstr="========run claimsserver time: $datestr========"
 echo $thisstartstr
 echo $thisstartstr >>  $thislog
 echo -e "\033[31m`pwd`\033[0m"
-./claimsserver -c $configfile >> $thislog &
+$CLAIMS_HOME/install/claimsserver -c $configfile >> $thislog &
 echo "claimsserver=$!" > $runclaimsprocid
 echo -e "master start claimsserver [\033[32mOK\033[0m]"
 
