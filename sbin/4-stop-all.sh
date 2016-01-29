@@ -43,7 +43,7 @@ claimspids=`sed '/^claimsserver=/!d;s/.*=//' $runclaimsprocid`
 if [ "$claimspids" != "" ]; then
 echo "claimsserver master pid : [$claimspids]"
 kill -9 $claimspids
-rm -f $runclaimsprocid
 fi
+rm -f $runclaimsprocid
 fi
 fi
