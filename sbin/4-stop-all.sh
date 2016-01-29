@@ -26,6 +26,17 @@ echo "claimsserver master pid : [$claimspid]"
 kill -9 $claimspid
 done
 fi
+
+clientpids=`ps x | grep $CLAIMS_HOME/install/client | grep -v grep | awk '{print $1}'`
+if [ "$clientpids" != "" ]; then
+for clientpid in $clientpids
+do
+echo "claims client pid : [$clientpid]"
+kill -9 $clientpid
+done
+fi
+
+
 else
 if [ -f "$runclaimsprocid" ]; then
 claimspids=`sed '/^claimsserver=/!d;s/.*=//' $runclaimsprocid`

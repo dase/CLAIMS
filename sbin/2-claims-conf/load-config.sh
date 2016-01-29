@@ -12,9 +12,11 @@ config=$CLAIMS_HOME/sbin/2-claims-conf/cluster-deploy.config
 #client_listener_port=`sed '/^client_listener_port=/!d;s/.*=//' $config`
 #logfilepath=`sed '/^logfilepath=/!d;s/.*=//' $config`
 #runclaimsprocid=`sed '/^runclaimsprocid=/!d;s/.*=//' $config`
-
 source $config
+}
 
+function print_config()
+{
 echo "=========cluster config start========"
 echo "config :              [$config]"
 echo "master :              [$master]"
@@ -29,6 +31,5 @@ echo "runclaimsprocid :     [$runclaimsprocid]"
 echo "=========cluster config end=========="
 }
 
-cd $CLAIMS_HOME/sbin/2-claims-conf/
-
 load_config
+#print_config
