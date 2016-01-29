@@ -11,8 +11,7 @@ cd ../
 if [ "$1" = "all" ]; then 
 for slave in $slaves
 do
-  ssh $user@$slave "$deploypath/start-slave.sh>/dev/null 2>&1 &"
-  echo -e "$slave claimsserver stop [\033[32mOK\033[0m]"
+  ssh $user@$slave "$deploypath/stop-slave.sh>/dev/null 2>&1 &"
   
   scp $CLAIMS_HOME/install/claimsserver $user@$slave:$deploypath
   scp $CLAIMS_HOME/sbin/2-claims-conf/config-$slave $user@$slave:$deploypath
