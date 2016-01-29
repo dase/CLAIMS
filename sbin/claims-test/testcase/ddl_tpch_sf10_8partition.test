@@ -1,0 +1,185 @@
+﻿create table PART(
+P_PARTKEY bigint unsigned,
+P_NAME varchar(55),
+P_MFGR varchar(25),
+P_BRAND varchar(10),
+P_TYPE varchar(25),
+P_SIZE int,
+P_CONTAINER varchar(10),
+P_RETAILPRICE  decimal(20,4),
+P_COMMENT varchar(23)
+);
+create projection on PART(
+P_PARTKEY,
+P_NAME,
+P_MFGR,
+P_BRAND,
+P_TYPE,
+P_SIZE,
+P_CONTAINER,
+P_RETAILPRICE,
+P_COMMENT
+) number =  8 partitioned on P_PARTKEY;
+load table PART from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl" with '|','\n';
+
+create table SUPPLIER(
+S_SUPPKEY bigint unsigned,
+S_NAME varchar(25),
+S_ADDRESS varchar(40),
+S_NATIONKEY bigint unsigned,
+S_PHONE varchar(15),
+S_ACCTBAL decimal(20,4),
+S_COMMENT varchar(101)
+);
+create projection on SUPPLIER(
+S_SUPPKEY,
+S_NAME,
+S_ADDRESS,
+S_NATIONKEY,
+S_PHONE,
+S_ACCTBAL,
+S_COMMENT
+) number = 8 partitioned on S_SUPPKEY;
+load table SUPPLIER from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl" with '|','\n';
+
+create table PARTSUPP(
+PS_PARTKEY bigint unsigned,
+PS_SUPPKEY bigint unsigned,
+PS_AVAILQTY int,
+PS_SUPPLYCOST decimal(20,2),
+PS_COMMENT varchar(199)
+);
+
+
+
+create projection on PARTSUPP(
+PS_PARTKEY,
+PS_SUPPKEY,
+PS_AVAILQTY,
+PS_SUPPLYCOST,
+PS_COMMENT
+) number = 8 partitioned on PS_PARTKEY;
+load table PARTSUPP from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl" with '|','\n';
+
+create table CUSTOMER(
+C_CUSTKEY bigint unsigned,
+C_NAME varchar(25),
+C_ADDRESS varchar(40),
+C_NATIONKEY bigint unsigned,
+C_PHONE varchar(15),
+C_ACCTBAL decimal(20,4),
+C_MKTSEGMENT varchar(10),
+C_COMMENT varchar(117)
+);
+create projection on CUSTOMER(
+C_CUSTKEY,
+C_NAME,
+C_ADDRESS,
+C_NATIONKEY,
+C_PHONE,
+C_ACCTBAL,
+C_MKTSEGMENT,
+C_COMMENT
+) number = 8 partitioned on C_CUSTKEY;
+load table CUSTOMER from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl" with '|','\n';
+
+
+create table ORDERS(
+O_ORDERKEY bigint unsigned,
+O_CUSTKEY bigint unsigned,
+O_ORDERSTATUS varchar(1),
+O_TOTALPRICE decimal(20,4),
+O_ORDERDATE date,
+O_ORDERPRIORITY varchar(15),
+O_CLERK varchar(15),
+O_SHIPPRIORITY int,
+O_COMMENT varchar(79)
+);
+create projection on ORDERS(
+O_ORDERKEY,
+O_CUSTKEY,
+O_ORDERSTATUS,
+O_TOTALPRICE,
+O_ORDERDATE,
+O_ORDERPRIORITY,
+O_CLERK,
+O_SHIPPRIORITY,
+O_COMMENT
+) number = 8 partitioned on O_ORDERKEY;
+load table ORDERS from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl" with '|','\n';
+
+
+create table LINEITEM(
+L_ORDERKEY bigint unsigned,
+L_PARTKEY bigint unsigned,
+L_SUPPKEY bigint unsigned,
+L_LINENUMBER int, 
+L_QUANTITY decimal(20,4),
+L_EXTENDEDPRICE decimal(20,4),
+L_DISCOUNT decimal(20,4),
+L_TAX decimal(20,4),
+L_RETURNFLAG varchar(1),
+L_LINESTATUS varchar(1),
+L_SHIPDATE date,
+L_COMMITDATE date,
+L_RECEIPTDATE date,
+L_SHIPINSTRUCT varchar(25),
+L_SHIPMODE varchar(10),
+L_COMMENT varchar(44)
+);
+
+create projection on LINEITEM(
+L_ORDERKEY,
+L_PARTKEY,
+L_SUPPKEY,
+L_LINENUMBER,
+L_QUANTITY,
+L_EXTENDEDPRICE,
+L_DISCOUNT,
+L_TAX,
+L_RETURNFLAG,
+L_LINESTATUS,
+L_SHIPDATE,
+L_COMMITDATE,
+L_RECEIPTDATE,
+L_SHIPINSTRUCT,
+L_SHIPMODE,
+L_COMMENT
+) number = 8 partitioned on L_ORDERKEY;
+
+load table LINEITEM from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl" with '|','\n';
+
+
+create table NATION(
+N_NATIONKEY bigint unsigned,
+N_NAME varchar(25),
+N_REGIONKEY bigint unsigned,
+N_COMMENT varchar(152)
+);
+
+create projection on NATION(
+N_NATIONKEY,
+N_NAME,
+N_REGIONKEY,
+N_COMMENT
+) number = 8 partitioned on N_NATIONKEY;
+
+load table NATION from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl" with '|','\n';
+
+
+
+
+create table REGION(
+R_REGIONKEY bigint unsigned,
+R_NAME varchar(25),
+R_COMMENT varchar(152)
+);
+
+create projection on REGION(
+R_REGIONKEY,
+R_NAME,
+R_COMMENT
+) number = 8 partitioned on R_REGIONKEY;
+load table REGION from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/region.tbl" with '|','\n';
+
+exit;
