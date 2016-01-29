@@ -5,7 +5,7 @@ while [ 1 ]
 do
  procid=`pgrep claimsserver`
  if [ "$procid" = "" ]; then
-  echo "claimsserver is core dumped. Try to restart claimsserver..."
+  echo "claimsserver is aborted. Try to restart..."
   cd $CLAIMS_HOME/sbin
   ./4-stop-all.sh
   ./5-start-all.sh
