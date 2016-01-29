@@ -13,6 +13,17 @@ do
   if [ "$local_disk_mode" = "1" ]; then
   rm $data*
   fi
+  if [ -d "$CLAIMS_HOME/install" ]; then
+    cd $CLAIMS_HOME/install
+    if [ ! -f "claimsserver" ]; then
+     cd $CLAIMS_HOME/sbin
+     ./1-compile.sh
+    fi
+  else
+    cd $CLAIMS_HOME/sbin
+    ./1-compile.sh
+  fi 
+  cd $CLAIMS_HOME/sbin
   ./5-start-all.sh
   sleep 1 
  else
