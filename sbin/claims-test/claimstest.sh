@@ -43,7 +43,7 @@ do
  do
  {
   datestr=`date '+%Y-%m-%d %H:%M:%S'`
-  thisstartstr="========run client [$loop-$cur] time: $datestr========"
+  thisstartstr="========run test:[$3] [$loop-$cur] time: $datestr========"
   echo -e "\033[33m$thisstartstr\033[0m"
 #  echo $thisstartstr >> $thislog
   $CLAIMS_HOME/install/client $master $client_listener_port < $CLAIMS_HOME/sbin/claims-test/testcase/$3.test > $CLAIMS_HOME/sbin/claims-test/testresult/$3-$cur.result

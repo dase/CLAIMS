@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ ! -f "${0##*/}" ]; then
- echo "please run script in jenkins-scripts/ directory!"
+ echo "please run script in sbin/ directory!"
  exit 1
 fi
 

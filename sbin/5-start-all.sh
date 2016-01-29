@@ -1,7 +1,7 @@
 #!/bin/sh  
 
 if [ ! -f "${0##*/}" ]; then
- echo "please run script in jenkins-scripts/ directory!"
+ echo "please run script in sbin/ directory!"
  exit 1
 fi
 
@@ -31,7 +31,7 @@ if [ -f "$runclaimsprocid" ]; then
 claimspids=`sed '/^claimsserver=/!d;s/.*=//' $runclaimsprocid`
 if [ "$claimspids" != "" ]; then
   echo -e "\033[31m  claimsserver is already running with process pid:[$claimspids]
-  please run script: ./3-stopclaimscluster.sh to stop it firstly!\033[0m" 
+  please run script: ./4-stop-all.sh to stop it firstly!\033[0m" 
   exit
 fi
 fi
