@@ -20,6 +20,10 @@ cd $CLAIMS_HOME
 cd install
 ulimit -c unlimited
 
+if [ ! -d "$logfilepath" ]; then
+ mkdir -p "$logfilepath"
+fi
+
 thislog=$logfilepath/claimsserver.$(date +%Y-%m-%d).log
 
 # start master firstly
