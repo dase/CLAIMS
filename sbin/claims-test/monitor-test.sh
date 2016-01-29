@@ -25,7 +25,7 @@ do
   fi 
   cd $CLAIMS_HOME/sbin
   ./5-start-all.sh
-  sleep 1 
+  sleep 3 
  else
   echo "claimsserver is running..."
   cd $CLAIMS_HOME/sbin/claims-test/

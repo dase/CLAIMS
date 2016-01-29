@@ -18,7 +18,8 @@ done
 # master stop claimsserver   #
 ##############################
 if [ "$1" = "all" ]; then
-claimspids=`ps x | grep -w ./claimsserver | grep -v grep | awk '{print $1}'`
+
+claimspids=`ps x | grep -w $CLAIMS_HOME/install/claimsserver | grep -v grep | awk '{print $1}'`
 if [ "$claimspids" != "" ]; then
 for claimspid in $claimspids
 do
@@ -27,7 +28,7 @@ kill -9 $claimspid
 done
 fi
 
-clientpids=`ps x | grep $CLAIMS_HOME/install/client | grep -v grep | awk '{print $1}'`
+clientpids=`ps x | grep -w $CLAIMS_HOME/install/client | grep -v grep | awk '{print $1}'`
 if [ "$clientpids" != "" ]; then
 for clientpid in $clientpids
 do
@@ -35,7 +36,6 @@ echo "claims client pid : [$clientpid]"
 kill -9 $clientpid
 done
 fi
-
 
 else
 if [ -f "$runclaimsprocid" ]; then
