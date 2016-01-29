@@ -1,0 +1,48 @@
+drop table trade;
+
+create table trade(
+trade_no BIGINT UNSIGNED,
+trade_date DATE,
+trade_time TIME,
+trade_time_dec DECIMAL(8,7),
+order_time TIME,
+order_time_dec DECIMAL(8,7),
+order_no DECIMAL(18),
+trade_price DOUBLE,
+trade_amt DOUBLE,
+trade_vol Integer,
+sec_code CHAR(6),
+pbu_id CHAR(5),
+acct_id CHAR(10),
+trade_dir CHAR(1),
+order_prtfil_code CHAR(1),
+tran_type CHAR(3),
+trade_type CHAR(1),
+proc_type CHAR(1),
+order_type CHAR(2),
+stat_pbu_id CHAR(5)
+);
+
+create projection on trade(row_id, trade_no,
+trade_date,
+order_time,
+trade_price,
+trade_amt,
+trade_vol,
+sec_code,
+trade_dir) number = 1 partitioned on row_id;
+
+load table trade from
+"/home/imdb/rawData/poc-raw-data/CJ/CJ20100901.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100902.txt" with '|','\n';
+
+select count(*) from trade;
+
+load table trade from
+"/home/imdb/rawData/poc-raw-data/CJ/CJ20100901.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100902.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100903.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100906.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100907.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100908.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100909.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100910.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100913.txt","/home/imdb/rawData/poc-raw-data/CJ/CJ20100914.txt" with '|','\n';
+
+select count(*) from trade;
+
+exit;
+
+
+
