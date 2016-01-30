@@ -1183,6 +1183,14 @@ string DataInjector::GenerateDataValidityInfo(const Validity& vali,
              "input columns\n";
       break;
     }
+	case rInvalidInsertData: {
+		oss << "Data value is invalid for column '"
+			<< table_->getAttribute(vali.column_index_).attrName
+			<< "' at line: " << line;
+		if ("" != file) oss << " in file: " << file;
+		oss << "\n";
+      break;
+    }
     default:
       LOG(ERROR) << "Unknown ERROR" << endl;
       oss << "Unknown ERROR\n";

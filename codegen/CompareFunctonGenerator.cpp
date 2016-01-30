@@ -20,43 +20,43 @@ extern "C" bool NValueLess(void* l, void* r) {
    *  *ret_bool = lnv->op_less(rnv);
    *  return ret_bool;
    */
-  NValue* lvalue = (NValue*) l;
-  NValue* rvalue = (NValue*) r;
+  Decimal* lvalue = (Decimal*) l;
+  Decimal* rvalue = (Decimal*) r;
 
   return lvalue->op_less(*rvalue);
 }
 
 bool NValueEqual(void *l, void *r) {
-  NValue* lvalue = (NValue*) l;
-  NValue* rvalue = (NValue*) r;
+  Decimal* lvalue = (Decimal*) l;
+  Decimal* rvalue = (Decimal*) r;
 
   return lvalue->op_equals(*rvalue);
 }
 
 bool NValueNotEqual(void *l, void *r) {
-  NValue* lvalue = (NValue*) l;
-  NValue* rvalue = (NValue*) r;
+  Decimal* lvalue = (Decimal*) l;
+  Decimal* rvalue = (Decimal*) r;
 
   return lvalue->op_not_equals(*rvalue);
 }
 
 bool NValueGreat(void *l, void *r) {
-  NValue* lvalue = (NValue*) l;
-  NValue* rvalue = (NValue*) r;
+  Decimal* lvalue = (Decimal*) l;
+  Decimal* rvalue = (Decimal*) r;
 
   return lvalue->op_great(*rvalue);
 }
 
 bool NValueLessEqual(void *l, void *r) {
-  NValue* lvalue = (NValue*) l;
-  NValue* rvalue = (NValue*) r;
+  Decimal* lvalue = (Decimal*) l;
+  Decimal* rvalue = (Decimal*) r;
 
   return lvalue->op_less_equals(*rvalue);
 }
 
 bool NValueGreatEqual(void *l, void *r) {
-  NValue* lvalue = (NValue*) l;
-  NValue* rvalue = (NValue*) r;
+  Decimal* lvalue = (Decimal*) l;
+  Decimal* rvalue = (Decimal*) r;
 
   return lvalue->op_great_equals(*rvalue);
 }
