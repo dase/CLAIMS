@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "types/NValue.hpp"
+#include "types/decimal.h"
+using claims::common::Decimal;
 // =
 template<typename X,typename Y>
 bool equal(const void *x,const void *y){
@@ -22,8 +24,8 @@ bool equal<char*, char*>(const void *x, const void *y){
 	return (strcmp((char*)x, (char*)y)) == 0;
 }
 template<>
-bool equal<NValue*, NValue*>(const void *x,const void *y){
-	return ((NValue*)x)->op_equals(*(NValue*)y);
+bool equal<Decimal*, Decimal*>(const void *x,const void *y){
+	return ((Decimal*)x)->op_equals(*(Decimal*)y);
 }
 
 // != operator
@@ -68,14 +70,14 @@ bool LESS<char*,float>(const void* x,const  void* y)
 }
 
 template<>
-bool LESS<NValue*, NValue*>(const void *x,const void *y){
+bool LESS<Decimal*, Decimal*>(const void *x,const void *y){
 //	if (((NValue*)x)->op_equals(*(NValue*)y))
 //		return false;
 //	NValue tmp = ((NValue*)x)->op_min(*(NValue*)y);
 //	if (tmp.op_equals(*(NValue*)x))
 //		return true;
 //	return false;
-	return ((NValue*)x)->compare(*(NValue*)y)==VALUE_COMPARE_LESSTHAN;
+	return ((Decimal*)x)->compare(*(Decimal*)y)==VALUE_COMPARE_LESSTHAN;
 }
 ////////////////////////////////////////////
 
@@ -123,11 +125,11 @@ bool great<char*,float>(const void* x,const  void* y)
 }
 
 template<>
-bool great<NValue*, NValue*>(const void *x,const void *y){
-	if (((NValue*)x)->op_equals(*(NValue*)y))
+bool great<Decimal*, Decimal*>(const void *x,const void *y){
+	if (((Decimal*)x)->op_equals(*(Decimal*)y))
 		return false;
-	NValue tmp = ((NValue*)x)->op_max(*(NValue*)y);
-	if (tmp.op_equals(*(NValue*)x))
+	Decimal tmp = ((Decimal*)x)->op_max(*(Decimal*)y);
+	if (tmp.op_equals(*(Decimal*)x))
 		return true;
 	return false;
 }
@@ -164,7 +166,7 @@ void Comparator::initialize_L()
 	funs_L[Comparator::Pair(t_date,t_date)]=LESS<date,date>;
 	funs_L[Comparator::Pair(t_time,t_time)]=LESS<time_duration,time_duration>;
 	funs_L[Comparator::Pair(t_datetime,t_datetime)]=LESS<ptime,ptime>;
-	funs_L[Comparator::Pair(t_decimal,t_decimal)]=LESS<NValue*,NValue*>;
+	funs_L[Comparator::Pair(t_decimal,t_decimal)]=LESS<Decimal*,Decimal*>;
 
 	funs_L[Comparator::Pair(t_u_long,t_u_long)]=LESS<unsigned long,unsigned long>;
 }
@@ -186,7 +188,7 @@ void Comparator::initialize_GEQ()
 	funs_GEQ[Comparator::Pair(t_date,t_date)]=greatEqual<date,date>;
 	funs_GEQ[Comparator::Pair(t_time,t_time)]=greatEqual<time_duration,time_duration>;
 	funs_GEQ[Comparator::Pair(t_datetime,t_datetime)]=greatEqual<ptime,ptime>;
-	funs_GEQ[Comparator::Pair(t_decimal,t_decimal)]=greatEqual<NValue*,NValue*>;
+	funs_GEQ[Comparator::Pair(t_decimal,t_decimal)]=greatEqual<Decimal*,Decimal*>;
 
 	funs_GEQ[Comparator::Pair(t_u_long,t_u_long)]=greatEqual<unsigned long,unsigned long>;
 //	lock_.release();
@@ -210,7 +212,7 @@ void Comparator::initialize_EQ()
 	funs_EQ[Comparator::Pair(t_date,t_date)]=equal<date,date>;
 	funs_EQ[Comparator::Pair(t_time,t_time)]=equal<time_duration,time_duration>;
 	funs_EQ[Comparator::Pair(t_datetime,t_datetime)]=equal<ptime,ptime>;
-	funs_EQ[Comparator::Pair(t_decimal,t_decimal)]=equal<NValue*,NValue*>;
+	funs_EQ[Comparator::Pair(t_decimal,t_decimal)]=equal<Decimal*,Decimal*>;
 //	lock_.release();
 }
 
@@ -232,7 +234,7 @@ void Comparator::initialize_NEQ()
 	funs_NEQ[Comparator::Pair(t_date,t_date)]=notEqual<date,date>;
 	funs_NEQ[Comparator::Pair(t_time,t_time)]=notEqual<time_duration,time_duration>;
 	funs_NEQ[Comparator::Pair(t_datetime,t_datetime)]=notEqual<ptime,ptime>;
-	funs_NEQ[Comparator::Pair(t_decimal,t_decimal)]=notEqual<NValue*,NValue*>;
+	funs_NEQ[Comparator::Pair(t_decimal,t_decimal)]=notEqual<Decimal*,Decimal*>;
 }
 
 
@@ -254,7 +256,7 @@ void Comparator::initialize_G()
 	funs_G[Comparator::Pair(t_date,t_date)]=great<date,date>;
 	funs_G[Comparator::Pair(t_time,t_time)]=great<time_duration,time_duration>;
 	funs_G[Comparator::Pair(t_datetime,t_datetime)]=great<ptime,ptime>;
-	funs_G[Comparator::Pair(t_decimal,t_decimal)]=great<NValue*,NValue*>;
+	funs_G[Comparator::Pair(t_decimal,t_decimal)]=great<Decimal*,Decimal*>;
 }
 
 void Comparator::initialize_LEQ()
@@ -275,7 +277,7 @@ void Comparator::initialize_LEQ()
 	funs_LEQ[Comparator::Pair(t_date,t_date)]=lessEqual<date,date>;
 	funs_LEQ[Comparator::Pair(t_time,t_time)]=lessEqual<time_duration,time_duration>;
 	funs_LEQ[Comparator::Pair(t_datetime,t_datetime)]=lessEqual<ptime,ptime>;
-	funs_LEQ[Comparator::Pair(t_decimal,t_decimal)]=lessEqual<NValue*,NValue*>;
+	funs_LEQ[Comparator::Pair(t_decimal,t_decimal)]=lessEqual<Decimal*,Decimal*>;
 }
 
 Comparator::Comparator(column_type x, column_type y, Comparator::comparison c):pair(x,y),compareType(c) {
