@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include <fstream>
 #include "../NValue.hpp"
+#include "../decimal.h"
+
+using claims::common::Decimal;
+
 #include "../../Schema/SchemaFix.h"
 
 //#include "../../Comparator.h"
