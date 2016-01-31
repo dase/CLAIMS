@@ -207,6 +207,11 @@ RetCode DropTableExec::DeleteTableFiles(const string& table_name) {
       prj_write_path.push_back(path);
     }
     write_path.push_back(prj_write_path);
+    // unbound the file in memory
+    if (table_desc->getProjectoin(i)->getPartitioner()->allPartitionBound()) {
+      Catalog::getInstance()->getBindingModele()->UnbindingEntireProjection(
+          table_desc->getProjectoin(i)->getPartitioner());
+    }
   }
   TableFileConnector* connector = new TableFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
