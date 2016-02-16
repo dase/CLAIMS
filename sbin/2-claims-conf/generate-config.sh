@@ -3,6 +3,8 @@
 cd $CLAIMS_HOME/sbin/2-claims-conf
 source ./load-config.sh
 
+rm -f config-*
+
 for slave in $slaves $master
 do
 if [ "$slave" = "$master" ]; then
@@ -10,8 +12,6 @@ if [ "$slave" = "$master" ]; then
 else
  ismaster=0
 fi
-
-rm -f config-$slave
 
 cat >> config-$slave << EOF
 #本机IP地址
