@@ -1,48 +1,63 @@
-#local node ip
+#本机IP地址
 ip = "127.0.0.1";
 
-#port range
+#端口范围（调试用）
 PortManager:
 {
     start = 19000;
     end   = 19500;
 }
 
-#the ip and port of master
+#master的IP地址和端口
 coordinator:
 {
     ip="127.0.0.1"
     port="11001"
 }
 
-#this node is master (master=1) of not (master=0)
+#是否为master. 若为master，则master=1，否则master=0
 master=1
 
 client_listener_port = 10000
 
-#the path for data and catalog
-data="/home/imdb/data/test/"
+
+#hadoop上的数据目录
+ 
+#data="/home/imdb/data/wangli/"
+#data="/home/imdb/data/wangli/"
+#data="/home/imdb/data/POC/sample/"
+#data="/home/minqi/git/Data/data/tpc-h/1-partition/sf-1/"
+data="/home/minqi/git/Data/data/tpc-h/18-partition/sf-1/"
+#data="/home/imdb/data/SF-1/"
+#data="/home/imdb/data/SF-1/"
+#data="/home/imdb/data/stock/"
+#data="/home/imdb/data/stock/"
+ 
+ 
+#data="/home/fish/data/test/"
+#data="/home/imdb/data/POC/"
+#data="/home/imdb/data/POC/"
+#hdfs主节点
+
 
 hdfs_master_ip="127.0.0.1"
+
+#hdfs主节点端口
 hdfs_master_port=9000
 
-#max degree of parallelism of this node
+#最大单机算子并行度
 max_degree_of_parallelism=4
 
-#initial degree of parallelism of this node
+#初始单机算子并行度
 initial_degree_of_parallelism=1
 
 expander_adaptivity_check_frequency=5000
 
 enable_expander_adaptivity=0
 
-#pipelined exchange or materialized 
 pipelined_exchange=1
 
-#run at local node or Hdfs
 local_disk_mode=1
 
 scan_batch=100
 
-#enable llvm codegen or not
-enable_codegen=0

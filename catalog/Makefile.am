@@ -15,7 +15,6 @@ endif
 
 LDADD =	../storage/libstorage.a \
 		../Resource/libresource.a \
-		../Schema/libschema.a \
 		../utility/libutility.a \
 		../common/Schema/libschema.a \
 		../loader/libloader.a \
