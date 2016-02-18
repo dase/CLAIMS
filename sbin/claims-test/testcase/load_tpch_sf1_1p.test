@@ -20,7 +20,7 @@ P_CONTAINER,
 P_RETAILPRICE,
 P_COMMENT
 ) number =  1 partitioned on P_PARTKEY;
-load table PART from "/home/imdb/rawData/tpch_sf1/tpch_sf1/part.tbl" with '|','\n';
+load table PART from "/home/claims/rawData/tpch-raw-data/tpch_sf1/part.tbl" with '|','\n';
 
 create table SUPPLIER(
 S_SUPPKEY bigint unsigned,
@@ -40,7 +40,7 @@ S_PHONE,
 S_ACCTBAL,
 S_COMMENT
 ) number = 1 partitioned on S_SUPPKEY;
-load table SUPPLIER from "/home/imdb/rawData/tpch_sf1/tpch_sf1/supplier.tbl" with '|','\n';
+load table SUPPLIER from "/home/claims/rawData/tpch-raw-data/tpch_sf1/supplier.tbl" with '|','\n';
 
 create table PARTSUPP(
 PS_PARTKEY bigint unsigned,
@@ -59,7 +59,7 @@ PS_AVAILQTY,
 PS_SUPPLYCOST,
 PS_COMMENT
 ) number = 1 partitioned on PS_PARTKEY;
-load table PARTSUPP from "/home/imdb/rawData/tpch_sf1/tpch_sf1/partsupp.tbl" with '|','\n';
+load table PARTSUPP from "/home/claims/rawData/tpch-raw-data/tpch_sf1/partsupp.tbl" with '|','\n';
 
 create table CUSTOMER(
 C_CUSTKEY bigint unsigned,
@@ -81,7 +81,7 @@ C_ACCTBAL,
 C_MKTSEGMENT,
 C_COMMENT
 ) number = 1 partitioned on C_CUSTKEY;
-load table CUSTOMER from "/home/imdb/rawData/tpch_sf1/tpch_sf1/customer.tbl" with '|','\n';
+load table CUSTOMER from "/home/claims/rawData/tpch-raw-data/tpch_sf1/customer.tbl" with '|','\n';
 
 
 create table ORDERS(
@@ -106,7 +106,7 @@ O_CLERK,
 O_SHIPPRIORITY,
 O_COMMENT
 ) number = 1 partitioned on O_ORDERKEY;
-load table ORDERS from "/home/imdb/rawData/tpch_sf1/tpch_sf1/orders.tbl" with '|','\n';
+load table ORDERS from "/home/claims/rawData/tpch-raw-data/tpch_sf1/orders.tbl" with '|','\n';
 
 
 create table LINEITEM(
@@ -147,7 +147,7 @@ L_SHIPMODE,
 L_COMMENT
 ) number = 1 partitioned on L_ORDERKEY;
 
-load table LINEITEM from "/home/imdb/rawData/tpch_sf1/tpch_sf1/lineitem.tbl" with '|','\n';
+load table LINEITEM from "/home/claims/rawData/tpch-raw-data/tpch_sf1/lineitem.tbl" with '|','\n';
 
 
 create table NATION(
@@ -164,7 +164,7 @@ N_REGIONKEY,
 N_COMMENT
 ) number = 1 partitioned on N_NATIONKEY;
 
-load table NATION from "/home/imdb/rawData/tpch_sf1/tpch_sf1/nation.tbl" with '|','\n';
+load table NATION from "/home/claims/rawData/tpch-raw-data/tpch_sf1/nation.tbl" with '|','\n';
 
 
 
@@ -180,5 +180,5 @@ R_REGIONKEY,
 R_NAME,
 R_COMMENT
 ) number = 1 partitioned on R_REGIONKEY;
-load table REGION from "/home/imdb/rawData/tpch_sf1/tpch_sf1/region.tbl" with '|','\n';
+load table REGION from "/home/claims/rawData/tpch-raw-data/tpch_sf1/region.tbl" with '|','\n';
 exit;
