@@ -244,6 +244,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(
       rStmtHandlerCreateProjectionWithEmptyColumn,
       "Creating projection on table given with empty columns");
+  DefineErrorAndMessage(rCreateProjectionOnDelTableFailed,
+                        "Create projections on del table failed");
   DefineErrorAndMessage(rNoTalbeFound, "no table found");
   DefineErrorAndMessage(rTableAlreadyExist, "table already exist");
   DefineErrorAndMessage(rEqualJoinCondiNotMatch,
@@ -292,6 +294,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rColumnNotExist, "column not exist");
   DefineErrorAndMessage(rTableillegal, "table is illegal");
   DefineErrorAndMessage(rTableNotExisted, "table not exist");
+  DefineErrorAndMessage(rNULLDropTableName,
+                        "The table name in the drop table statment is NULL");
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common
