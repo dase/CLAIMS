@@ -16,6 +16,7 @@
 #include "../../common/data_type.h"
 #include "../../common/Logging.h"
 #include "../../common/types/NValue.hpp"
+#include "../../common/types/decimal.h"
 #include "boost/date_time/gregorian/parsers.hpp"
 #include <boost/date_time/gregorian/greg_duration.hpp>
 #include "boost/date_time/gregorian/formatters.hpp"
@@ -664,72 +665,84 @@ inline void boolean_less_equal(OperFuncInfo fcinfo) {
 /*****************decimal********************/
 inline void decimal_add(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(NValue *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_add(*(NValue *)fcinfo->args_[1]);
+  *(Decimal *)fcinfo->result_ =
+      (*(Decimal *)fcinfo->args_[0]).op_add(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_minus(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(NValue *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_subtract(*(NValue *)fcinfo->args_[1]);
+  *(Decimal *)fcinfo->result_ =
+      (*(Decimal *)fcinfo->args_[0]).op_subtract(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_multiply(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(NValue *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_multiply(*(NValue *)fcinfo->args_[1]);
+  *(Decimal *)fcinfo->result_ =
+      (*(Decimal *)fcinfo->args_[0]).op_multiply(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_divide(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(NValue *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_divide(*(NValue *)fcinfo->args_[1]);
+  *(Decimal *)fcinfo->result_ =
+      (*(Decimal *)fcinfo->args_[0]).op_divide(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_equal(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
   *(bool *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_equals(*(NValue *)fcinfo->args_[1]);
+      (*(Decimal *)fcinfo->args_[0]).op_equals(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_not_equal(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(bool *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_not_equals(*(NValue *)fcinfo->args_[1]);
+  *(bool *)fcinfo->result_ = (*(Decimal *)fcinfo->args_[0])
+                                 .op_not_equals(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_great(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
   *(bool *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_great(*(NValue *)fcinfo->args_[1]);
+      (*(Decimal *)fcinfo->args_[0]).op_great(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_great_equal(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(bool *)fcinfo->result_ = (*(NValue *)fcinfo->args_[0])
-                                 .op_great_equals(*(NValue *)fcinfo->args_[1]);
+  *(bool *)fcinfo->result_ = (*(Decimal *)fcinfo->args_[0])
+                                 .op_great_equals(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_less(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
   *(bool *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_less(*(NValue *)fcinfo->args_[1]);
+      (*(Decimal *)fcinfo->args_[0]).op_less(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_less_equal(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(bool *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_less_equals(*(NValue *)fcinfo->args_[1]);
+  *(bool *)fcinfo->result_ = (*(Decimal *)fcinfo->args_[0])
+                                 .op_less_equals(*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_negative(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 1);
-  *(NValue *)fcinfo->result_ = (*(NValue *)fcinfo->args_[0]).op_multiply(
-      NValue::getDecimalValueFromString("-1"));
+  if((*(Decimal *)fcinfo->args_[0]).isNull())
+  	*(Decimal *)fcinfo->result_ = *(Decimal *)fcinfo->args_[0];
+  else
+  {
+    Decimal neg(1, 0, "-1");
+    *(Decimal *)fcinfo->result_ = (*(Decimal *)fcinfo->args_[0]).op_multiply(neg);
+  }
 }
 inline void decimal_agg_max(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(NValue *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_great(*(NValue *)fcinfo->args_[1])
-          ? (*(NValue *)fcinfo->args_[0])
-          : (*(NValue *)fcinfo->args_[1]);
+  if((*(Decimal *)fcinfo->args_[1]).isNull()||(*(Decimal *)fcinfo->args_[0]).isNull())
+  {
+	*(Decimal *)fcinfo->result_ = (*(Decimal *)fcinfo->args_[1]).isNull()?(*(Decimal *)fcinfo->args_[0]):(*(Decimal *)fcinfo->args_[1]);
+  }
+  else
+  {
+  *(Decimal *)fcinfo->result_ =
+      (*(Decimal *)fcinfo->args_[0]).op_great(*(Decimal *)fcinfo->args_[1])
+          ? (*(Decimal *)fcinfo->args_[0])
+          : (*(Decimal *)fcinfo->args_[1]);
+  }
 }
 inline void decimal_agg_min(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 2);
-  *(NValue *)fcinfo->result_ =
-      (*(NValue *)fcinfo->args_[0]).op_less(*(NValue *)fcinfo->args_[1])
-          ? (*(NValue *)fcinfo->args_[0])
-          : (*(NValue *)fcinfo->args_[1]);
+  *(Decimal *)fcinfo->result_ =
+      (*(Decimal *)fcinfo->args_[0]).op_less(*(Decimal *)fcinfo->args_[1])
+          ? (*(Decimal *)fcinfo->args_[0])
+          : (*(Decimal *)fcinfo->args_[1]);
 }
 inline void decimal_agg_sum(OperFuncInfo fcinfo) { decimal_add(fcinfo); }
 inline void decimal_agg_count(OperFuncInfo fcinfo) { decimal_add(fcinfo); }
@@ -1347,11 +1360,11 @@ inline void avg_usmallint_divide(void *sum_value, int64_t tuple_number,
 }
 inline void avg_decimal_divide(void *sum_value, int64_t tuple_number,
                                void *result) {
-  *(NValue *)result = *(NValue *)sum_value;
+  *(Decimal *)result = *(Decimal *)sum_value;
   stringstream ss;
   ss << tuple_number;
-  *(NValue *)result = (*(NValue *)result).op_divide(
-      (*(NValue *)result).getDecimalValueFromString(ss.str()));
+  Decimal tn(CLAIMS_COMMON_DECIMAL_PSUBS, 0, ss.str());
+  *(Decimal *)result = (*(Decimal *)result).op_divide(tn);
 }
 
 /*
