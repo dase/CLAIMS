@@ -15,7 +15,7 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD =	../../Executor/libexecutor.a \
-	    ../../Catalog/libcatalog.a \
+	    ../../catalog/libcatalog.a \
 		../../common/libcommon.a \
 		../../common/Schema/libschema.a \
 		../../common/Block/libblock.a \

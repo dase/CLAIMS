@@ -63,7 +63,7 @@ inline void *int_to_decimal(void *value, void *tovalue) {
   if (*(int *)value == NULL_INT) return NULL;
   stringstream va;
   va << *(int *)value;
-  *(NValue *)tovalue = NValue::getDecimalValueFromString(va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -112,7 +112,9 @@ inline void *string_to_string(void *value, void *tovalue) {
   return tovalue;
 }
 inline void *string_to_decimal(void *value, void *tovalue) {
-  *(NValue *)tovalue = NValue::getDecimalValueFromString(string((char *)value));
+  *(Decimal *)tovalue =
+      Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1,/* Invailed scale */
+              string((char *)value));
   return tovalue;
 }
 inline void *string_to_boolean(void *value, void *tovalue) {
@@ -170,7 +172,7 @@ inline void *ulong_to_double(void *value, void *tovalue) {
 inline void *ulong_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(unsigned long *)value;
-  *(NValue *)tovalue = NValue::getDecimalValueFromString(va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -217,7 +219,7 @@ inline void *smallInt_to_boolean(void *value, void *tovalue) {
 inline void *smallInt_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(short int *)value;
-  *(NValue *)tovalue = NValue::getDecimalValueFromString(va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -247,7 +249,8 @@ inline void *float_to_boolean(void *value, void *tovalue) {
 inline void *float_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(float *)value;
-  *(NValue *)tovalue = NValue::getDecimalValueFromString(va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_MAXPRCISION,
+                                CLAIMS_COMMON_DECIMAL_MAXSCALE, va.str());
   va.clear();
   return tovalue;
 }
@@ -272,8 +275,9 @@ inline void *double_to_boolean(void *value, void *tovalue) {
 }
 inline void *double_to_decimal(void *value, void *tovalue) {
   stringstream va;
+  va.precision(30);
   va << *(double *)value;
-  *(NValue *)tovalue = NValue::getDecimalValueFromString(va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -307,7 +311,8 @@ inline void *boolean_to_ulong(void *value, void *tovalue) {
 inline void *boolean_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(bool *)value;
-  *(NValue *)tovalue = NValue::getDecimalValueFromString(va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS,
+                                0, va.str());
   va.clear();
   return tovalue;
 }
@@ -316,12 +321,12 @@ inline void *boolean_to_decimal(void *value, void *tovalue) {
 
 /***************decimal****************************/
 inline void *decimal_to_decimal(void *value, void *tovalue) {
-  *(NValue *)tovalue = *(NValue *)value;
+  *(Decimal *)tovalue = *(Decimal *)value;
   return tovalue;
 }
 inline void *decimal_to_boolean(void *value, void *tovalue) {
-  NValue tvalue = *(NValue *)value;
-  *(bool *)tovalue = tvalue.op_equals(NValue::getDecimalValueFromString("0"));
+  Decimal tvalue = *(Decimal *)value;
+  *(bool *)tovalue = tvalue.op_equals(Decimal(1, 0, "0"));
   return tovalue;
 }
 /***************decimal****************************/
