@@ -1,0 +1,5 @@
+create table t1(a int, b int, name VARCHAR(40));
+create projection on t1(a, b, name) number = 1 partitioned on row_id;
+create table t2(a int, b int, name VARCHAR(40));
+create projection on t2(a, b, name) number = 1 partitioned on row_id;
+exit;
