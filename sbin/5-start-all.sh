@@ -7,6 +7,7 @@ fi
 
 cd $CLAIMS_HOME/sbin/2-claims-conf/
 source ./load-config.sh
+source ./generate-config.sh
 
 # master config
 configfile=$CLAIMS_HOME/sbin/2-claims-conf/config-$master

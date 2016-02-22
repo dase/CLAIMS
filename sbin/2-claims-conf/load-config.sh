@@ -32,4 +32,4 @@ echo "=========cluster config end=========="
 }
 
 load_config
-print_config
+#print_config
