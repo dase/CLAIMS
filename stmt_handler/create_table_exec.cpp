@@ -310,23 +310,23 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
 
               if (column_atts && (column_atts->datatype_ & 01)) {
                 table_desc_->addAttribute(colname, data_type(t_string),
-                                          l->data1_, true, false);
+                                          l->data1_ + 1, true, false);
               } else if (column_atts && (column_atts->datatype_ & 02)) {
                 table_desc_->addAttribute(colname, data_type(t_string),
-                                          l->data1_, true, true);
+                                          l->data1_ + 1, true, true);
               } else {
                 table_desc_->addAttribute(colname, data_type(t_string),
-                                          l->data1_, true);
+                                          l->data1_ + 1, true);
               }
             } else {
               if (column_atts && (column_atts->datatype_ & 01)) {
-                table_desc_->addAttribute(colname, data_type(t_string), 1, true,
+                table_desc_->addAttribute(colname, data_type(t_string), 2, true,
                                           false);
               } else if (column_atts && (column_atts->datatype_ & 02)) {
-                table_desc_->addAttribute(colname, data_type(t_string), 1, true,
+                table_desc_->addAttribute(colname, data_type(t_string), 2, true,
                                           true);
               } else {
-                table_desc_->addAttribute(colname, data_type(t_string), 1,
+                table_desc_->addAttribute(colname, data_type(t_string), 2,
                                           true);
               }
             }

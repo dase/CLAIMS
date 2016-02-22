@@ -103,7 +103,7 @@ typedef void (*fun)(void*, void*);
 
 #define NULL_FLOAT FLT_MAX   // const transfor to int 2139095039
 #define NULL_DOUBLE DBL_MAX  // const transfor to int -1
-#define NULL_STRING '7'
+#define NULL_STRING 1
 #define NULL_DATE neg_infin  // is_neg_infinity() return true
 #define NULL_TIME neg_infin
 #define NULL_DATETIME neg_infin
@@ -654,10 +654,12 @@ class OperateString : public Operate {
   }
   RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const {
-    if (this->nullable)
-      str = "7";
-    else
+    if (this->nullable) {
+      str = "1";
+      str[0] = NULL_STRING;
+    } else {
       str = "";
+    }
   }
 };
 
@@ -852,10 +854,9 @@ class OperateDatetime : public Operate {
   inline std::string toString(void* value) {
     if (this->nullable == true && (*(ptime*)value).is_neg_infinity() == true)
       return "NULL";
-    else
-    {
-      std::string res=to_iso_extended_string(*(ptime*)value);
-      res[10]=' ';
+    else {
+      std::string res = to_iso_extended_string(*(ptime*)value);
+      res[10] = ' ';
       return res;
     }
   }

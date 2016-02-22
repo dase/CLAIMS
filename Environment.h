@@ -25,7 +25,7 @@
 #include "Resource/BufferManager.h"
 
 using claims::catalog::Catalog;
-class Catalog;
+// class Catalog;
 
 class Environment {
  public:

@@ -2,7 +2,7 @@
 
 function load_config()
 {
-config=$CLAIMS_HOME/sbin/2-claims-conf/cluster-deploy.config
+config=$CLAIMS_HOME/sbin/2-claims-conf/cluster.config
 #master=`sed '/^master=/!d;s/.*=//' $config`
 #slaves=`sed '/^slaves=/!d;s/.*=//' $config`
 #local_disk_mode=`sed '/^local_disk_mode=/!d;s/.*=//' $config`
@@ -32,4 +32,4 @@ echo "=========cluster config end=========="
 }
 
 load_config
-#print_config
+print_config
