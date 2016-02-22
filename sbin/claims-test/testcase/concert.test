@@ -1,0 +1,13 @@
+insert into t1 values(1, 232, "张三");
+select * from t1 where a = 1;
+select * from t1 where a = 1;
+select * from t1 where a = 1;
+select * from t1 where a = 1;
+select * from t1 where a = 1;
+insert into t2 values(1, 232, "张三");
+select * from t2 where a = 1;
+select * from t2 where a = 1;
+select * from t2 where a = 1;
+select * from t2 where a = 1;
+select * from t2 where a = 1;
+exit;
