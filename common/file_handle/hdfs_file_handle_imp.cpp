@@ -79,22 +79,35 @@ RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
   if (kCreateFile == open_flag) {
     file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY, 0, 0, 0);
   } else if (kAppendFile == open_flag) {
+    if (!CanAccess(file_name_)) {  // this file doesn't exist, create one
+      file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY, 0, 0, 0);
+      if (NULL == file_) {
+        PLOG(ERROR) << "failed to create hdfs file :" << file_name_;
+        return rOpenHdfsFileFail;
+      } else {
+        LOG(INFO) << "created hdfs file :" << file_name_ << endl;
+        if (0 != hdfsCloseFile(fs_, file_)) {
+          LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
+          return rCloseHdfsFileFail;
+        }
+      }
+    }
+
     file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY | O_APPEND, 0, 0, 0);
   } else if (kReadFile == open_flag) {
     file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_RDONLY, 0, 0, 0);
   } else {
-    LOG(ERROR) << "parameter flag:" << open_flag << " is invalid" << endl;
+    LOG(ERROR) << "parameter flag:" << file_open_flag_info[open_flag]
+               << " is invalid" << endl;
     return rParamInvalid;
   }
   if (NULL == file_) {
-    PLOG(ERROR) << "failed to open hdfs file :" << file_name_;
+    PLOG(ERROR) << "failed to open hdfs file :" << file_name_
+                << " with mode:" << file_open_flag_info[open_flag];
     return rOpenHdfsFileFail;
   } else {
-    LOG(INFO) << "opened hdfs file: " << file_name_ << " with "
-              << (kCreateFile == open_flag
-                      ? "kCreateFile"
-                      : kAppendFile == open_flag ? "kAppendFile" : "kReadFile")
-              << endl;
+    LOG(INFO) << "opened hdfs file: " << file_name_
+              << " with mode:" << file_open_flag_info[open_flag] << endl;
     return rSuccess;
   }
 }
@@ -158,7 +171,7 @@ RetCode HdfsFileHandleImp::Close() {
   assert(NULL != fs_ && "failed to connect hdfs");
 
   static char* hdfs_file_type[] = {"UNINITIALIZED", "INPUT", "OUTPUT"};
-  LOG(INFO) << "the type of file_ is" << hdfs_file_type[file_->type] << endl;
+  LOG(INFO) << "the type of file_ is " << hdfs_file_type[file_->type] << endl;
 
   if (0 != hdfsCloseFile(fs_, file_)) {
     LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
