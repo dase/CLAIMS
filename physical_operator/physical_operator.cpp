@@ -122,7 +122,7 @@ void PhysicalOperator::InitContext(ThreadContext* tc) {
   /* assert that no context is available for current thread*/
   pthread_t pid = pthread_self();
   // BUG(FZH):NOTE thread could be reused!!!!!!!!!!
-  assert(context_list_.find(pid) == context_list_.cend());
+  //  assert(context_list_.find(pid) == context_list_.cend());
 
   context_list_[pid] = tc;
   //	printf("Thread %llx is inited! context:%llx\n",pthread_self(),tc);
