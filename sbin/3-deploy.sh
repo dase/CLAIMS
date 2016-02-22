@@ -6,6 +6,7 @@ fi
 
 cd $CLAIMS_HOME/sbin/2-claims-conf/
 source ./load-config.sh
+source ./generate-config.sh
 cd ../
 
 if [ "$1" = "all" ]; then 
