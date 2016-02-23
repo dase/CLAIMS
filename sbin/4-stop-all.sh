@@ -28,6 +28,10 @@ kill -9 $claimspid
 done
 fi
 
+if [ -f "$runclaimsprocid" ]; then
+rm -f $runclaimsprocid
+fi
+
 clientpids=`ps x | grep -w $CLAIMS_HOME/install/client | grep -v grep | awk '{print $1}'`
 if [ "$clientpids" != "" ]; then
 for clientpid in $clientpids
