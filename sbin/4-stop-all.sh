@@ -41,6 +41,15 @@ kill -9 $clientpid
 done
 fi
 
+gtestpids=`ps x | grep -w $CLAIMS_HOME/install/test | grep -v grep | awk '{print $1}'`
+if [ "$gtestpids" != "" ]; then
+for gtestpid in $gtestpids
+do
+echo "claims gtest pid : [$gtestpid]"
+kill -9 $gtestpid
+done
+fi
+
 else
 if [ -f "$runclaimsprocid" ]; then
 claimspids=`sed '/^claimsserver=/!d;s/.*=//' $runclaimsprocid`
