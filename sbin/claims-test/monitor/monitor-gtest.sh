@@ -23,9 +23,10 @@ do
   cd $CLAIMS_HOME/sbin
   ./5-start-all.sh
   sleep 3 
+  cd $CLAIMS_HOME/sbin/claims-test
+  ./claimstest.sh 1 1 load_tpch_sf1_1p
  else
   echo "claimsserver is running..."
-  cd $CLAIMS_HOME/install
-  ./test --ip $master --port $client_listener_port
+  $CLAIMS_HOME/install/test --ip $master --port $client_listener_port
  fi
 done
