@@ -28,6 +28,6 @@ do
   sleep 3 
  else
   echo "claimsserver is running..."
-  sleep 30
+  sleep 180
  fi
 done
