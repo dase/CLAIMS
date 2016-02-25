@@ -284,6 +284,7 @@ struct ParseResult {
   AstNode* ast;
   const char* sql_clause;
   int error_number;
+  string error_info_;
 };
 
 /**

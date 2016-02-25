@@ -1193,7 +1193,7 @@ opt_dot_star: /* nil */
 
 void emit(char *s, ...)
 {
- 	/* 
+ 	/*
  	extern int yylineno;
 	va_list ap;
   	va_start(ap, s);
@@ -1203,15 +1203,87 @@ void emit(char *s, ...)
   	*/
 }
 
-void yyerror(struct ParseResult *pp,const char *  s, ...)
-{
-	/*  
-	va_list ap;
-	va_start(ap, s);	
-	fprintf(stderr, "%d: error: ", yyget_lineno(pp->yyscan_info_));
-	vfprintf(stderr, s, ap);
-	fprintf(stderr, "\n");
-	*/
-	fprintf (stderr, "%s\n", s);
+void yyerror(struct ParseResult *pp,const char *  s, ...) {
+  va_list ap;
+  va_start(ap, s);
+  string sql_clause = pp->sql_clause;
+  vector<string> tokens;
+  boost::split(tokens, sql_clause, boost::is_any_of("\n"));
+  ostringstream ostr;
+  int columnno = 0;
+  int lineno = yyget_lineno(pp->yyscan_info_);
+  lineno = lineno % tokens.size();
+  lineno++;
+  // Because find() can only find the first place where the word appears,
+  // so this method may not find the certain place.
+  /*
+  for (int i = 0; i < tokens.size(); i++) {
+    columnno = tokens[i].find(yyget_text(pp->yyscan_info_)) + 1;
+    if (-1 != columnno && ((lineno - 1) == i)) {
+      cout << "In clause \'"
+           << "\e[1m" << tokens[i] << "\e[0m\'" << endl;
+      for (int j = 0; j < (columnno + 9); j++) {
+        cout << ".";
+      }
+      cout << "^" << endl;
+      ostr << "In clause \'"
+           << "\e[1m" << tokens[i] << "\e[0m\'" << endl;
+      for (int j = 0; j < (columnno + 9); j++) {
+        ostr << ".";
+      }
+      ostr << "^" << endl;
+      break;
+    }
+  }
+  */
+  string wrong_clause = tokens[lineno - 1];
+  vector<string> words_in_clause;
+  boost::split(words_in_clause, tokens[lineno - 1], boost::is_any_of(" "));
+  int yyget_col_no = yyget_column(pp->yyscan_info_);
+  if (yyget_col_no == 0) {
+    yyget_col_no = 1;
+  }
+  cout << "yyget_col_no = " << yyget_col_no << endl;
+  int column_num = 1;
+  for (int i = 0; i < words_in_clause.size(); i++) {
+    if (i == (yyget_col_no - 1)) {
+      cout << "In clause \'"
+           << "\e[1m" << tokens[lineno - 1] << "\e[0m\'" << endl;
+      ostr << "In clause \'"
+           << "\e[1m" << tokens[lineno - 1] << "\e[0m\'" << endl;
+      for (int j = 0; j < (column_num + 10); j++) {
+        ostr << ".";
+        cout << ".";
+      }
+      cout << "^" << endl;
+      ostr << "^" << endl;
+
+      break;
+    } else {
+      column_num = column_num + words_in_clause[i].size() + 1;
+    }
+  }
+  ostr << "SQL syntax error at \e[1mline: " << lineno << ","
+       << "\e[0m near \'\e[1m";
+  ostr << yyget_text(pp->yyscan_info_);
+  // ostr << "\e[1mLINE: " << lineno << "," << columnno << "\e[0m error: ";
+  // ostr << "near \'\e[1m";
+  // ostr << yyget_text(pp->yyscan_info_);
+  ostr << "\e[0m\'." << endl;
+  pp->error_info_ = ostr.str();
+  cout << "SQL syntax error at \e[1mline: " << lineno << ","
+       << "\e[0m near \'\e[1m";
+  cout << yyget_text(pp->yyscan_info_);
+  cout << "\e[0m\'." << endl;
+  /*
+  cout << "\e[1mLINE: " << lineno << "\e[0m error: ";
+  cout << "near \'\e[1m";
+  cout << yyget_text(pp->yyscan_info_);
+  cout << "\e[0m\'." << endl;
+  */
+  yyset_column(0, pp->yyscan_info_);
+
+  vfprintf(stderr, s, ap);
+  fprintf(stderr, "\n");
 }
 
