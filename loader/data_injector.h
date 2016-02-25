@@ -199,7 +199,7 @@ class DataInjector {
 
   string col_separator_;
   string row_separator_;
-  uint64_t row_id_in_table_;
+  uint64_t& row_id_in_table_;
 
   // support multi-thread
   std::list<LoadTask>* task_lists_ = NULL;

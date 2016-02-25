@@ -49,9 +49,16 @@ using claims::catalog::ProjectionDescriptor;
 using claims::utility::LockGuard;
 
 namespace claims {
-namespace catalog {
 
+namespace loader {
+class DataInjector;
+};
+
+namespace catalog {
 class TableDescriptor {
+ public:
+  friend class claims::loader::DataInjector;
+
  public:
   TableDescriptor() {}
   TableDescriptor(const string& name, const TableID table_id);
