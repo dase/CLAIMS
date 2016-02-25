@@ -16,7 +16,6 @@ endif
 LDADD = ../logical_operator/liblogicalqueryplan.a \
 		../catalog/libcatalog.a \
 		../catalog/stat/libstat.a \
-		../Schema/libschema.a \
 		../Resource/libresource.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \

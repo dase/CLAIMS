@@ -353,25 +353,31 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
 
 void LogicalCrossJoin::Print(int level) const {
   cout << setw(level * kTabSize) << " "
-       << "CrossJoin:" << endl;
+       << "CrossJoin: ";
   ++level;
   switch (join_policy_) {
     case kLeftBroadcast: {
-      cout << setw(level * kTabSize) << " "
-           << "left_broadcast" << endl;
+      cout << "left_broadcast" << endl;
       break;
     }
     case kRightBroadcast: {
-      cout << setw(level * kTabSize) << " "
-           << "right_broadcast" << endl;
+      cout << "right_broadcast" << endl;
       break;
     }
     case kLocalJoin: {
-      cout << setw(level * kTabSize) << " "
-           << "loca_join" << endl;
+      cout << "loca_join" << endl;
       break;
     }
   }
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
   --level;
   left_child_->Print(level);
   right_child_->Print(level);

@@ -1329,7 +1329,7 @@ static yyconst flex_int32_t yy_rule_can_match_eol[293] = {
 #include <stdlib.h>
 #include <stdio.h>
 #include <malloc.h>
-#include "../../sql_parser/parser/sql.tab.hpp"
+#include "sql.tab.hpp"
 #include "../ast_node/ast_node.h"
 int oldstate;
 extern void yyerror(struct ParseResult *pp, const char *s, ...);
@@ -1572,7 +1572,7 @@ YY_DECL
 
 /* keywords */
 
-#line 1741 "lex.yy.c"
+#line 1745 "lex.yy.c"
 
   yylval = yylval_param;
 

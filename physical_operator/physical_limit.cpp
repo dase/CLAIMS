@@ -27,6 +27,7 @@
  */
 
 #include "../physical_operator/physical_limit.h"
+#include "../utility/rdtsc.h"
 
 namespace claims {
 namespace physical_operator {

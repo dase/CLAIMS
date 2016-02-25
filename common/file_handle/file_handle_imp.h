@@ -29,6 +29,8 @@
 #ifndef COMMON_FILE_HANDLE_FILE_HANDLE_IMP_H_
 #define COMMON_FILE_HANDLE_FILE_HANDLE_IMP_H_
 #include <string>
+
+#include "../../utility/lock.h"
 #include "../error_define.h"
 namespace claims {
 namespace common {
@@ -53,6 +55,8 @@ class FileHandleImp {
    * @return rSuccess if wrote length bytes
    */
   virtual RetCode Write(const void* buffer, const size_t length) = 0;
+
+  virtual RetCode AtomicWrite(const void* buffer, const size_t length) = 0;
   virtual RetCode Close() = 0;
   /**
    * @brief Method description: read total file into memory, update length to
@@ -77,6 +81,7 @@ class FileHandleImp {
 
  protected:
   std::string file_name_;
+  Lock write_lock_;
 };
 
 }  // namespace common

@@ -202,7 +202,7 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
                          << std::endl;
               result_flag_ = false;
               // result_set_ = NULL;
-              ret = common::kStmtHandlerTypeNotSupport;
+              ret = common::rStmtHandlerTypeNotSupport;
             }
             break;
           }
@@ -233,33 +233,31 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
             break;
           }
           case 11: {
+            int precision = 10;
+            int scale = 0;
             if (datatype->length_) {
               AstOptLength* l = dynamic_cast<AstOptLength*>(datatype->length_);
-
-              if (column_atts && (column_atts->datatype_ & 01)) {
-                table_desc_->addAttribute(colname, data_type(t_decimal),
-                                          l->data1_, true, false);
-              } else if (column_atts && (column_atts->datatype_ & 02)) {
-                table_desc_->addAttribute(colname, data_type(t_decimal),
-                                          l->data1_, true, true);
-              } else {
-                table_desc_->addAttribute(colname, data_type(t_decimal),
-                                          l->data1_, true);
+              if((l->data1_>0))
+              {
+                precision = l->data1_;
+                scale = l->data2_;
               }
-              LOG(INFO) << colname + " is created" << std::endl;
-            } else {
-              if (column_atts && (column_atts->datatype_ & 01)) {
-                table_desc_->addAttribute(colname, data_type(t_decimal), 0,
-                                          true, false);
-              } else if (column_atts && (column_atts->datatype_ & 02)) {
-                table_desc_->addAttribute(colname, data_type(t_decimal), 0,
-                                          true, true);
-              } else {
-                table_desc_->addAttribute(colname, data_type(t_decimal), 0,
-                                          true);
-              }
-              LOG(INFO) << colname + " is created" << std::endl;
             }
+            /* here 1000 used for separating precision and scale, 
+                 you will always see multiply or divide 1000 during process decimal type  */
+            //TODO: define an marco value of 1000 in global file.
+            int max_length = precision*1000+scale;
+            if (column_atts && (column_atts->datatype_ & 01)) {
+              table_desc_->addAttribute(colname, data_type(t_decimal), max_length,
+                                        true, false);
+            } else if (column_atts && (column_atts->datatype_ & 02)) {
+              table_desc_->addAttribute(colname, data_type(t_decimal), max_length,
+                                        true, true);
+            } else {
+              table_desc_->addAttribute(colname, data_type(t_decimal), max_length,
+                                        true);
+            }
+            LOG(INFO) << colname + " is created" << std::endl;
             break;
           }
           case 12:  // DATE
@@ -312,23 +310,23 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
 
               if (column_atts && (column_atts->datatype_ & 01)) {
                 table_desc_->addAttribute(colname, data_type(t_string),
-                                          l->data1_, true, false);
+                                          l->data1_ + 1, true, false);
               } else if (column_atts && (column_atts->datatype_ & 02)) {
                 table_desc_->addAttribute(colname, data_type(t_string),
-                                          l->data1_, true, true);
+                                          l->data1_ + 1, true, true);
               } else {
                 table_desc_->addAttribute(colname, data_type(t_string),
-                                          l->data1_, true);
+                                          l->data1_ + 1, true);
               }
             } else {
               if (column_atts && (column_atts->datatype_ & 01)) {
-                table_desc_->addAttribute(colname, data_type(t_string), 1, true,
+                table_desc_->addAttribute(colname, data_type(t_string), 2, true,
                                           false);
               } else if (column_atts && (column_atts->datatype_ & 02)) {
-                table_desc_->addAttribute(colname, data_type(t_string), 1, true,
+                table_desc_->addAttribute(colname, data_type(t_string), 2, true,
                                           true);
               } else {
-                table_desc_->addAttribute(colname, data_type(t_string), 1,
+                table_desc_->addAttribute(colname, data_type(t_string), 2,
                                           true);
               }
             }
@@ -344,7 +342,7 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
                 << std::endl;
             exec_result->status_ = false;
             exec_result->result_ = NULL;
-            ret = common::kStmtHandlerTypeNotSupport;
+            ret = common::rStmtHandlerTypeNotSupport;
 #else
             error_msg_ =
                 "This type is not supported now during creating table!";
@@ -353,7 +351,7 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
                 << std::endl;
             result_flag_ = false;
             result_set_ = NULL;
-            ret = common::kStmtHandlerTypeNotSupport;
+            ret = common::rStmtHandlerTypeNotSupport;
 #endif
           }
         }
@@ -375,7 +373,7 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
     } else {
       exec_result->status_ = false;
       exec_result->result_ = NULL;
-      ret = common::kStmtHandlerTypeNotSupport;
+      ret = common::rStmtHandlerTypeNotSupport;
     }
 #endif
 
@@ -388,12 +386,12 @@ RetCode CreateTableExec::Execute(ExecutedResult* exec_result) {
       LOG(INFO) << "create table successfully" << std::endl;
       exec_result->result_ = NULL;
       result_flag_ = true;
-      ret = common::kStmtHandlerCreateTableSuccess;
+      ret = common::rStmtHandlerCreateTableSuccess;
 #else
       info_ = "create table successfully";
       LOG(INFO) << "create table successfully" << std::endl;
       result_set_ = NULL;
-      ret = common::kStmtHandlerCreateTableSuccess;
+      ret = common::rStmtHandlerCreateTableSuccess;
 #endif
     }
 #ifdef sem_cnxt

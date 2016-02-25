@@ -52,6 +52,12 @@ class DeleteStmtExec : public StmtExec {
    * @brief the concrete operation of delete statement.
    */
   RetCode Execute(ExecutedResult *exec_result);
+
+ private:
+  RetCode GenerateSelectStmt(const string table_name,
+                             AstNode *&appended_query_sel_stmt);
+  RetCode GenerateSelectedColumns(const string table_name,
+                                  vector<string> &partition_attributes);
   void InsertDeletedDataIntoTableDEL(string del_table_name,
                                      ExecutedResult *exec_result);
 
