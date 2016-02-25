@@ -360,7 +360,7 @@ void* ExchangeSenderMaterialized::debug(void* arg) {
 
 bool ExchangeSenderMaterialized::CreateWorkerThread() {
   if (true == g_thread_pool_used) {
-    Environment::getInstance()->getThreadPool()->add_task(MaterializeAndSend,
+    Environment::getInstance()->getThreadPool()->AddTask(MaterializeAndSend,
                                                           this);
   } else {
     int error;

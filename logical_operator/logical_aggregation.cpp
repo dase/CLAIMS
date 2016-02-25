@@ -438,30 +438,32 @@ int64_t LogicalAggregation::EstimateGroupByCardinality(
 }
 void LogicalAggregation::Print(int level) const {
   cout << setw(level * kTabSize) << " "
-       << "Aggregation: " << endl;
+       << "Aggregation: ";
   ++level;
   switch (aggregation_style_) {
     case kLocalAgg: {
-      cout << setw(level * kTabSize) << " "
-           << "kLocalAgg" << endl;
+      cout << "kLocalAgg" << endl;
       break;
     }
     case kReparGlobalAgg: {
-      cout << setw(level * kTabSize) << " "
-           << "kReparGlobalAgg" << endl;
+      cout << "kReparGlobalAgg" << endl;
       break;
     }
     case kLocalAggReparGlobalAgg: {
-      cout << setw(level * kTabSize) << " "
-           << "kLocalAggReparGlobalAgg!" << endl;
+      cout << "kLocalAggReparGlobalAgg!" << endl;
       break;
     }
-    default: {
-      cout << setw(level * kTabSize) << " "
-           << "aggregation style is not given!" << endl;
-    }
+    default: { cout << "aggregation style is not given!" << endl; }
   }
-
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
   cout << setw((level - 1) * kTabSize) << " "
        << "## group by attributes:" << endl;
   for (int i = 0; i < group_by_attrs_.size(); ++i) {

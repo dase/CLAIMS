@@ -200,8 +200,8 @@ TEST_F(OperateTest, String) {
 }
 
 TEST_F(OperateTest, Decimal) {
-  OperateDecimal* opt = new OperateDecimal(6, true);
-  OperateDecimal* opf = new OperateDecimal(6, false);
+  OperateDecimal* opt = new OperateDecimal(10, 6, true);
+  OperateDecimal* opf = new OperateDecimal(10, 6, false);
 
   test("", "", rSuccess, opt);
   test("", "", rInvalidNullData, opf);

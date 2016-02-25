@@ -58,16 +58,16 @@ LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
       left_child_(left_input),
       right_child_(right_input),
       join_policy_(kNull),
-      dataflow_(NULL) {
+      plan_context_(NULL) {
   for (unsigned i = 0; i < joinpair_list.size(); ++i) {
     left_join_key_list_.push_back(joinpair_list[i].left_join_attr_);
     right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
   }
 }
 LogicalEqualJoin::~LogicalEqualJoin() {
-  if (NULL != dataflow_) {
-    delete dataflow_;
-    dataflow_ = NULL;
+  if (NULL != plan_context_) {
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   if (NULL != left_child_) {
     delete left_child_;
@@ -116,10 +116,10 @@ void LogicalEqualJoin::DecideJoinPolicy(const PlanContext& left_dataflow,
 }
 PlanContext LogicalEqualJoin::GetPlanContext() {
   lock_->acquire();
-  if (NULL != dataflow_) {
+  if (NULL != plan_context_) {
     // the data flow has been computed*/
     lock_->release();
-    return *dataflow_;
+    return *plan_context_;
   }
 
   /**
@@ -264,8 +264,8 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
     }
   }
 
-  dataflow_ = new PlanContext();
-  *dataflow_ = ret;
+  plan_context_ = new PlanContext();
+  *plan_context_ = ret;
   lock_->release();
   return ret;
 }
@@ -277,6 +277,7 @@ bool LogicalEqualJoin::IsHashOnLeftKey(const Partitioner& part,
   }
   return part.getPartitionKey() == key;
 }
+// TODO(fzh) should consider shadow_partition_keys_
 bool LogicalEqualJoin::CanOmitHashRepartition(
     const std::vector<Attribute>& join_key_list,
     const PlanPartitioner& partitoiner) const {
@@ -311,7 +312,7 @@ LogicalEqualJoin::JoinPolicy LogicalEqualJoin::DecideLeftOrRightRepartition(
 
 PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
     const unsigned& block_size) {
-  if (NULL == dataflow_) {
+  if (NULL == plan_context_) {
     GetPlanContext();
   }
   PhysicalHashJoin* join_iterator;
@@ -340,7 +341,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
    * acceesing overflowing buckets.
    */
   state.hashtable_bucket_size_ = 128;
-  state.output_schema_ = GetSchema(dataflow_->attribute_list_);
+  state.output_schema_ = GetSchema(plan_context_->attribute_list_);
 
   state.join_index_left_ = GetLeftJoinKeyIds();
   state.join_index_right_ = GetRightJoinKeyIds();
@@ -373,7 +374,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
           IDsGenerator::getInstance()->generateUniqueExchangeID();
 
       std::vector<NodeID> upper_id_list =
-          GetInvolvedNodeID(dataflow_->plan_partitioner_);
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
       exchange_state.upper_id_list_ = upper_id_list;
 
       std::vector<NodeID> lower_id_list =
@@ -381,7 +382,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
       exchange_state.lower_id_list_ = lower_id_list;
 
       const Attribute right_partition_key =
-          dataflow_->plan_partitioner_.get_partition_key();
+          plan_context_->plan_partitioner_.get_partition_key();
 
       /* get the left attribute that is corresponding to the partition key.*/
       Attribute left_partition_key =
@@ -418,7 +419,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
           IDsGenerator::getInstance()->generateUniqueExchangeID();
 
       std::vector<NodeID> upper_id_list =
-          GetInvolvedNodeID(dataflow_->plan_partitioner_);
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
       exchange_state.upper_id_list_ = upper_id_list;
 
       std::vector<NodeID> lower_id_list =
@@ -426,15 +427,15 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
       exchange_state.lower_id_list_ = lower_id_list;
 
       const Attribute output_partition_key =
-          dataflow_->plan_partitioner_.get_partition_key();
+          plan_context_->plan_partitioner_.get_partition_key();
 
       /* get the right attribute that is corresponding to the partition key.*/
       Attribute right_repartition_key;
-      if (dataflow_->plan_partitioner_.HasShadowPartitionKey()) {
+      if (plan_context_->plan_partitioner_.HasShadowPartitionKey()) {
         right_repartition_key =
             joinkey_pair_list_[GetIdInLeftJoinKeys(
                                    output_partition_key,
-                                   dataflow_->plan_partitioner_
+                                   plan_context_->plan_partitioner_
                                        .get_shadow_partition_keys())]
                 .right_join_attr_;
       } else {
@@ -476,11 +477,11 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
       l_exchange_state.lower_id_list_ = lower_id_list;
 
       std::vector<NodeID> upper_id_list =
-          GetInvolvedNodeID(dataflow_->plan_partitioner_);
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
       l_exchange_state.upper_id_list_ = upper_id_list;
 
       const Attribute left_partition_key =
-          dataflow_->plan_partitioner_.get_partition_key();
+          plan_context_->plan_partitioner_.get_partition_key();
       l_exchange_state.partition_schema_ =
           partition_schema::set_hash_partition(GetIdInAttributeList(
               dataflow_left.attribute_list_, left_partition_key));
@@ -507,7 +508,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
       lower_id_list = GetInvolvedNodeID(dataflow_right.plan_partitioner_);
       r_exchange_state.lower_id_list_ = lower_id_list;
 
-      upper_id_list = GetInvolvedNodeID(dataflow_->plan_partitioner_);
+      upper_id_list = GetInvolvedNodeID(plan_context_->plan_partitioner_);
       r_exchange_state.upper_id_list_ = upper_id_list;
 
       const Attribute right_partition_key =
@@ -727,39 +728,40 @@ PlanPartitioner LogicalEqualJoin::DecideOutputDataflowProperty(
 }
 void LogicalEqualJoin::Print(int level) const {
   cout << setw(level * kTabSize) << " "
-       << "EqualJoin:" << endl;
+       << "EqualJoin: ";
   ++level;
   switch (join_policy_) {
     case kNoRepartition: {
-      cout << setw(level * kTabSize) << " "
-           << "no_repartition" << endl;
+      cout << "no_repartition!" << endl;
       break;
     }
     case kLeftRepartition: {
-      cout << setw(level * kTabSize) << " "
-           << "left_repartition" << endl;
+      cout << "left_repartition!" << endl;
       break;
     }
     case kRightRepartition: {
-      cout << setw(level * kTabSize) << " "
-           << "right_repartition!" << endl;
+      cout << "right_repartition!" << endl;
       break;
     }
     case kCompleteRepartition: {
-      cout << setw(level * kTabSize) << " "
-           << "complete_repartition!" << endl;
+      cout << "complete_repartition!" << endl;
       break;
     }
-    default: {
-      cout << setw(level * kTabSize) << " "
-           << "not given!" << endl;
-    }
+    default: { cout << "not given!" << endl; }
   }
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
   for (unsigned i = 0; i < this->joinkey_pair_list_.size(); i++) {
     cout << setw(level * kTabSize) << " "
-         << joinkey_pair_list_[i].left_join_attr_.attrName
+         << joinkey_pair_list_[i].left_join_attr_.attrName << " = "
          << joinkey_pair_list_[i].right_join_attr_.attrName << endl;
-    cout << endl;
   }
   --level;
   left_child_->Print(level);
