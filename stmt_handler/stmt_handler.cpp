@@ -107,10 +107,10 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
 RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
   GETCURRENTTIME(start_time);
   RetCode ret = rSuccess;
-  sql_parser_ = new Parser(sql_stmt_);
+  sql_parser_ = new Parser(sql_stmt_, (exec_result->info_));
   AstNode* raw_ast = sql_parser_->GetRawAST();
   if (NULL == raw_ast) {
-    exec_result->error_info_ = "Parser Error";
+    exec_result->error_info_ = "Parser Error\n" + exec_result->info_;
     exec_result->status_ = false;
     exec_result->result_ = NULL;
     return rParserError;
