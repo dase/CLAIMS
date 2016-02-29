@@ -38,12 +38,18 @@
 #include "./file_connector.h"
 
 namespace claims {
-namespace loader {
 
+namespace catalog {
+class TableDescriptor;
+}
+using claims::catalog::TableDescriptor;
+
+namespace loader {
 class TableFileConnector : public FileConnector {
  public:
-  TableFileConnector(common::FilePlatform platform,
-                     std::vector<std::vector<std::string>> writepath);
+  TableFileConnector(common::FilePlatform platform, TableDescriptor* table);
+  //  TableFileConnector(common::FilePlatform platform,
+  //                     std::vector<std::vector<std::string>> writepath);
   virtual ~TableFileConnector();
   virtual RetCode Open(common::FileOpenFlag open_flag_);
   virtual RetCode Close();
@@ -80,6 +86,7 @@ class TableFileConnector : public FileConnector {
  private:
   std::vector<std::vector<common::FileHandleImp*>> file_handles_;
   std::vector<std::vector<std::string>> write_path_name_;
+  TableDescriptor* table_;
 };
 
 } /* namespace loader */

@@ -64,10 +64,17 @@ class TableDescriptor {
   TableDescriptor(const string& name, const TableID table_id);
   virtual ~TableDescriptor();
 
-  void addAttribute(Attribute attr);
-  bool addAttribute(string attname, data_type dt, unsigned max_length = 0,
-                    bool unique = false, bool can_be_null = true);
+  bool isExist(const string& name) const;
+  inline TableID get_table_id() const { return table_id_; }
+  inline string getTableName() const { return tableName; }
 
+  vector<vector<string>> GetAllPartitionsPath();
+
+  ProjectionDescriptor* getProjectoin(ProjectionOffset) const;
+  unsigned getNumberOfProjection() const;
+  vector<ProjectionDescriptor*>* GetProjectionList() {
+    return &projection_list_;
+  }
   //  void addProjection(vector<ColumnOffset> id_list);
   bool createHashPartitionedProjection(vector<ColumnOffset> column_list,
                                        ColumnOffset partition_key_index,
@@ -80,11 +87,13 @@ class TableDescriptor {
                                        unsigned number_of_partitions);
   bool createHashPartitionedProjectionOnAllAttribute(
       std::string partition_attribute_name, unsigned number_of_partitions);
-  bool isExist(const string& name) const;
-  inline string getTableName() const { return tableName; }
-  ColumnOffset getColumnID(const string& attrName) const;
-  map<string, set<string> > getColumnLocations(const string& attrName) const;
 
+  ColumnOffset getColumnID(const string& attrName) const;
+  map<string, set<string>> getColumnLocations(const string& attrName) const;
+
+  void addAttribute(Attribute attr);
+  bool addAttribute(string attname, data_type dt, unsigned max_length = 0,
+                    bool unique = false, bool can_be_null = true);
   vector<Attribute> getAttributes() const { return attributes; }
   vector<Attribute> getAttributes(vector<unsigned> index_list) const {
     vector<Attribute> attribute_list;
@@ -100,26 +109,11 @@ class TableDescriptor {
   }
   Attribute getAttribute(const std::string& name) const;
   Attribute getAttribute2(const std::string& name) const;
-  /* the following methods are considered to be deleted.*/
-  void addColumn(ProjectionDescriptor* column);
-  inline string get_table_name() const { return tableName; }
-  inline TableID get_table_id() const { return table_id_; }
-  ProjectionDescriptor* getProjectoin(ProjectionOffset) const;
-  unsigned getNumberOfProjection() const;
-  vector<ProjectionDescriptor*>* GetProjectionList() {
-    return &projection_list_;
-  }
+  inline unsigned int getNumberOfAttribute() { return attributes.size(); }
 
   Schema* getSchema() const;
-  inline void setRowNumber(unsigned long row_number) {
-    LockGuard<Lock> guard(lock_);
-    row_number_ = row_number;
-  }
   inline unsigned long getRowNumber() { return row_number_; }
   inline unsigned long isEmpty() { return row_number_ == 0; }
-  inline unsigned int getNumberOfAttribute() {
-    return attributes.size();
-  }  // add by Yu
   inline bool HasDeletedTuples() { return has_deleted_tuples_; }
   inline void SetDeletedTuples(bool has_deleted_tuples) {
     has_deleted_tuples_ = has_deleted_tuples;
@@ -132,8 +126,10 @@ class TableDescriptor {
   vector<ProjectionDescriptor*> projection_list_;
   unsigned long row_number_;
   bool has_deleted_tuples_ = false;
+  SpineLock lock_;
 
-  Lock lock_;
+  vector<vector<SpineLock>> partitions_write_lock_;
+
   // delete for debugging
   // hashmap<ColumnID, ColumnDescriptor*> columns;
 

@@ -206,6 +206,21 @@ Attribute TableDescriptor::getAttribute2(const std::string& name) const {
   return NULL;
 }
 
+vector<vector<string>> TableDescriptor::GetAllPartitionsPath() {
+  vector<vector<string>> write_paths;
+  for (int i = 0; i < getNumberOfProjection(); i++) {
+    vector<string> prj_write_path;
+    prj_write_path.clear();
+    for (int j = 0;
+         j < projection_list_[i]->getPartitioner()->getNumberOfPartitions();
+         ++j) {
+      prj_write_path.push_back(
+          PartitionID(getProjectoin(i)->getProjectionID(), j).getPathAndName());
+    }
+    write_paths.push_back(prj_write_path);
+  }
+  return write_paths;
+}
 Schema* TableDescriptor::getSchema() const {
   const vector<Attribute> attributes = getAttributes();
   std::vector<column_type> columns;

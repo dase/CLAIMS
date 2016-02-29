@@ -32,15 +32,12 @@
 #include <hdfs.h>
 
 #include "./file_connector.h"
+#include "../catalog/table.h"
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
 #include "../common/memory_handle.h"
 
 using claims::common::FilePlatform;
-
-namespace claims {
-namespace loader {
-
 using claims::common::FileHandleImpFactory;
 using claims::common::FileOpenFlag;
 using claims::common::rSuccess;
@@ -49,11 +46,24 @@ using claims::common::FilePlatform;
 using std::vector;
 using std::string;
 
+namespace claims {
+namespace loader {
+
 TableFileConnector::TableFileConnector(FilePlatform platform,
-                                       vector<vector<string>> writepath)
-    : FileConnector(platform), write_path_name_(writepath) {
-  imp_ = FileHandleImpFactory::Instance().CreateFileHandleImp(platform_);
-}
+                                       TableDescriptor* table)
+    : FileConnector(platform),
+      table_(table),
+      write_path_name_(table->GetAllPartitionsPath()) {}
+
+// TableFileConnector::TableFileConnector(FilePlatform platform,
+//                                       TableDescriptor* table)
+//    : TableFileConnector(platform, table->GetAllPartitionsPath()) {}
+
+// TableFileConnector::TableFileConnector(FilePlatform platform,
+//                                       vector<vector<string>> writepath)
+//    : FileConnector(platform), write_path_name_(writepath) {
+//  imp_ = FileHandleImpFactory::Instance().CreateFileHandleImp(platform_);
+//}
 
 TableFileConnector::~TableFileConnector() {
   Close();
