@@ -39,7 +39,7 @@ TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
 TableDescriptor::~TableDescriptor() {}
 
 void TableDescriptor::addAttribute(Attribute attr) {
-  LockGuard<Lock> guard(lock_);
+  LockGuard<SpineLock> guard(lock_);
   attributes.push_back(attr);
 }
 
@@ -47,7 +47,7 @@ void TableDescriptor::addAttribute(Attribute attr) {
 bool TableDescriptor::addAttribute(string attname, data_type dt,
                                    unsigned max_length, bool unique,
                                    bool can_be_null) {
-  LockGuard<Lock> guard(lock_);
+  LockGuard<SpineLock> guard(lock_);
   attname = tableName + '.' + attname;
   /*check for attribute rename*/
 
@@ -60,58 +60,28 @@ bool TableDescriptor::addAttribute(string attname, data_type dt,
   return true;
 }
 
-void TableDescriptor::addColumn(ProjectionDescriptor* column) {}
-
-bool TableDescriptor::createHashPartitionedProjection(
+inline bool TableDescriptor::createHashPartitionedProjection(
     vector<ColumnOffset> column_list, ColumnOffset partition_key_index,
     unsigned number_of_partitions) {
-  LockGuard<Lock> guard(lock_);
-  ProjectionID projection_id(table_id_, projection_list_.size());
-  ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
-
-  //  projection->projection_offset_=projection_list_.size();
-  for (unsigned i = 0; i < column_list.size(); i++) {
-    projection->addAttribute(attributes[column_list[i]]);
-  }
-
-  PartitionFunction* hash_function =
-      PartitionFunctionFactory::createGeneralModuloFunction(
-          number_of_partitions);
-  projection->DefinePartitonier(number_of_partitions,
-                                attributes[partition_key_index], hash_function);
-
-  projection_list_.push_back(projection);
-  return true;
+  return createHashPartitionedProjection(
+      column_list, attributes[partition_key_index], number_of_partitions);
 }
-bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute(
-    std::string partition_attribute_name, unsigned number_of_partitions) {
-  LockGuard<Lock> guard(lock_);
-  ProjectionID projection_id(table_id_, projection_list_.size());
-  ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
-  for (unsigned i = 0; i < attributes.size(); i++) {
-    projection->addAttribute(attributes[i]);
-  }
-
-  PartitionFunction* hash_function =
-      PartitionFunctionFactory::createGeneralModuloFunction(
-          number_of_partitions);
-  projection->DefinePartitonier(number_of_partitions,
-                                getAttribute2(partition_attribute_name),
-                                hash_function);
-
-  projection_list_.push_back(projection);
-  return true;
-}
-bool TableDescriptor::createHashPartitionedProjection(
+inline bool TableDescriptor::createHashPartitionedProjection(
     vector<ColumnOffset> column_list, std::string partition_attribute_name,
     unsigned number_of_partitions) {
-  LockGuard<Lock> guard(lock_);
+  return createHashPartitionedProjection(column_list,
+                                         getAttribute(partition_attribute_name),
+                                         number_of_partitions);
+}
+
+bool TableDescriptor::createHashPartitionedProjection(
+    vector<ColumnOffset> column_list, Attribute partition_attribute,
+    unsigned number_of_partitions) {
+  LockGuard<SpineLock> guard(lock_);
   ProjectionID projection_id(table_id_, projection_list_.size());
   ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
-  //  projection->projection_offset_=projection_list_.size();
-  //  projection->addAttribute(attributes[0]);
   for (unsigned i = 0; i < column_list.size(); i++) {
     projection->addAttribute(attributes[column_list[i]]);
   }
@@ -119,24 +89,35 @@ bool TableDescriptor::createHashPartitionedProjection(
   PartitionFunction* hash_function =
       PartitionFunctionFactory::createGeneralModuloFunction(
           number_of_partitions);
-  //  projection->partitioner = new Partitioner(
-  //      number_of_partitions, attributes[partition_key_index], hash_function);
-  projection->DefinePartitonier(number_of_partitions,
-                                getAttribute(partition_attribute_name),
+  projection->DefinePartitonier(number_of_partitions, partition_attribute,
                                 hash_function);
 
   projection_list_.push_back(projection);
+  AddProjectionLocks(number_of_partitions);
   return true;
 }
-bool TableDescriptor::createHashPartitionedProjection(
+
+inline bool TableDescriptor::createHashPartitionedProjection(
     vector<Attribute> attribute_list, std::string partition_attribute_name,
     unsigned number_of_partitions) {
-  LockGuard<Lock> guard(lock_);
+  return createHashPartitionedProjection(attribute_list,
+                                         getAttribute(partition_attribute_name),
+                                         number_of_partitions);
+}
+inline bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute(
+    std::string partition_attribute_name, unsigned number_of_partitions) {
+  return createHashPartitionedProjection(
+      attributes, getAttribute2(partition_attribute_name),
+      number_of_partitions);
+}
+
+bool TableDescriptor::createHashPartitionedProjection(
+    const vector<Attribute>& attribute_list, Attribute partition_attr,
+    unsigned number_of_partitions) {
+  LockGuard<SpineLock> guard(lock_);
   ProjectionID projection_id(table_id_, projection_list_.size());
   ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
-  //  projection->projection_offset_=projection_list_.size();
-  projection->addAttribute(attributes[0]);  // add row_id
   for (unsigned i = 0; i < attribute_list.size(); i++) {
     projection->addAttribute(attribute_list[i]);
   }
@@ -144,12 +125,18 @@ bool TableDescriptor::createHashPartitionedProjection(
   PartitionFunction* hash_function =
       PartitionFunctionFactory::createGeneralModuloFunction(
           number_of_partitions);
-  projection->DefinePartitonier(number_of_partitions,
-                                getAttribute(partition_attribute_name),
+  projection->DefinePartitonier(number_of_partitions, partition_attr,
                                 hash_function);
 
   projection_list_.push_back(projection);
+  AddProjectionLocks(number_of_partitions);
   return true;
+}
+
+void TableDescriptor::AddProjectionLocks(int number_of_partitions) {
+  vector<Lock> locks;
+  for (int i = 0; i < number_of_partitions; ++i) locks.push_back(Lock());
+  partitions_write_lock_.push_back(locks);
 }
 
 bool TableDescriptor::isExist(const string& name) const {

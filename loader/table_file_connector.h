@@ -45,48 +45,35 @@ class TableDescriptor;
 using claims::catalog::TableDescriptor;
 
 namespace loader {
-class TableFileConnector : public FileConnector {
+class TableFileConnector {
  public:
   TableFileConnector(common::FilePlatform platform, TableDescriptor* table);
   //  TableFileConnector(common::FilePlatform platform,
   //                     std::vector<std::vector<std::string>> writepath);
-  virtual ~TableFileConnector();
-  virtual RetCode Open(common::FileOpenFlag open_flag_);
-  virtual RetCode Close();
+  ~TableFileConnector();
+  RetCode Open();
+  RetCode Close();
 
   /**
    * @brief Method description: flush length bytes data from source into file
    *        whose projection id is projection_offset and partition id is
    *        partition_offset
    */
-  virtual RetCode Flush(unsigned projection_offset, unsigned partition_offset,
-                        const void* source, unsigned length);
-  virtual RetCode Flush(const void* source, unsigned length) {
-    assert(false && "not implemented");
-    return common::rFailure;
-  }
-  virtual RetCode AtomicFlush(unsigned projection_offset,
-                              unsigned partition_offset, const void* source,
-                              unsigned length);
-  virtual RetCode AtomicFlush(const void* source, unsigned length) {
-    assert(false && "not implemented");
-    return common::rFailure;
-  }
-  virtual RetCode LoadTotalFile(void*& buffer, uint64_t* length) {
-    assert(false);
-    return common::rFailure;
-  }
-  virtual RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {
-    assert(false);
-    return common::rFailure;
-  }
+  RetCode Flush(unsigned projection_offset, unsigned partition_offset,
+                const void* source, unsigned length, bool overwrite = false);
 
-  RetCode DeleteFiles();
+  RetCode AtomicFlush(unsigned projection_offset, unsigned partition_offset,
+                      const void* source, unsigned length,
+                      function<void()> lock_func, function<void()> unlock_func,
+                      bool overwrite = false);
+
+  RetCode DeleteAllTableFiles();
 
  private:
   std::vector<std::vector<common::FileHandleImp*>> file_handles_;
   std::vector<std::vector<std::string>> write_path_name_;
   TableDescriptor* table_;
+  common::FilePlatform platform_;
 };
 
 } /* namespace loader */

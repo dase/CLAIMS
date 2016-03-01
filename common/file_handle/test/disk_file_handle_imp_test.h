@@ -46,7 +46,8 @@ class DiskFileHandleImpTest : public ::testing::Test {
  public:
   static void SetUpTestCase() {
     //    file_name_ = "DiskFileHandleImpTest";
-    imp_ = FileHandleImpFactory::Instance().CreateFileHandleImp(kDisk);
+    imp_ =
+        FileHandleImpFactory::Instance().CreateFileHandleImp(kDisk, file_name_);
     std::cout << "=============" << std::endl;
   }
   static void TearDownTestCase() { DELETE_PTR(imp_); }
@@ -55,26 +56,33 @@ class DiskFileHandleImpTest : public ::testing::Test {
   static FileHandleImp* imp_;
 
   static string file_name_;
+  char buffer[] = "abc";
 };
 string DiskFileHandleImpTest::file_name_ = "DiskFileHandleImpTest";
 FileHandleImp* DiskFileHandleImpTest::imp_ = NULL;
 
 TEST_F(DiskFileHandleImpTest, TestAccess1) {
+  imp_->DeleteFile();
   bool ret = imp_->CanAccess(file_name_);
   EXPECT_FALSE(ret);
 }
 
 TEST_F(DiskFileHandleImpTest, TestAccess2) {
-  imp_->Open(file_name_, kCreateFile);
+  imp_->Append(buffer, sizeof(buffer));
   bool ret = imp_->CanAccess(file_name_);
   EXPECT_TRUE(ret);
-  int res = imp_->Close();
-  EXPECT_EQ(rSuccess, res);
+}
+
+TEST_F(DiskFileHandleImpTest, Delete) {
+  imp_->OverWrite(buffer, sizeof(buffer));
+  bool ret = imp_->CanAccess(file_name_);
+  EXPECT_TRUE(ret);
+  imp_->DeleteFile();
+  EXPECT_FALSE(imp_->CanAccess(file_name_));
 }
 
 TEST_F(DiskFileHandleImpTest, Write) {
   imp_->Open(file_name_, kCreateFile);
-  char* buffer = "abc";
   char* data = static_cast<char*>(Malloc(4));
   int ret = rSuccess;
   if (rSuccess != (imp_->Write(buffer, 3)) ||

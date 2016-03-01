@@ -28,12 +28,16 @@
 
 #ifndef COMMON_FILE_HANDLE_FILE_HANDLE_IMP_H_
 #define COMMON_FILE_HANDLE_FILE_HANDLE_IMP_H_
+#include <functional>
 #include <string>
 
 #include "../../utility/lock.h"
 #include "../error_define.h"
+
+using std::function;
 namespace claims {
 namespace common {
+using std::string;
 
 class FileHandleImpFactory;
 enum FileOpenFlag { kCreateFile = 0, kAppendFile, kReadFile };
@@ -43,10 +47,13 @@ static const char* file_open_flag_info[3] = {"kCreateFile", "kAppendFile",
 class FileHandleImp {
   friend FileHandleImpFactory;
 
+ protected:
+  enum FileStatus { kInReading, kInOverWriting, kInAppending, kClosed };
+
  public:
-  FileHandleImp() {}
+  explicit FileHandleImp(std::string file_name) : file_name_(file_name) {}
   virtual ~FileHandleImp() {}
-  virtual RetCode Open(std::string file_name, FileOpenFlag open_flag) = 0;
+  //  virtual RetCode Open(std::string file_name, FileOpenFlag open_flag) = 0;
   /**
    * @brief Method description: write buffer into file and make sure write
    *        length char
@@ -54,9 +61,38 @@ class FileHandleImp {
    * @param length: the no. of bytes to write
    * @return rSuccess if wrote length bytes
    */
-  virtual RetCode Write(const void* buffer, const size_t length) = 0;
+  virtual RetCode Append(const void* buffer, const size_t length) = 0;
 
-  virtual RetCode AtomicWrite(const void* buffer, const size_t length) = 0;
+  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
+                               function<void()> lock_func,
+                               function<void()> unlock_func) {
+    lock_func();
+    RetCode ret = Append(buffer, length);
+    unlock_func();
+    if (rSuccess != ret) {
+      return ret;
+    } else {
+      ret = Close();
+    }
+    return ret;
+  }
+
+  virtual RetCode OverWrite(const void* buffer, const size_t length) = 0;
+
+  RetCode AtomicOverWrite(const void* buffer, const size_t length,
+                          function<void()> lock_func,
+                          function<void()> unlock_func) {
+    lock_func();
+    RetCode ret = OverWrite(buffer, length);
+    unlock_func();
+    if (rSuccess != ret) {
+      return ret;
+    } else {
+      ret = Close();
+    }
+    return ret;
+  }
+
   virtual RetCode Close() = 0;
   /**
    * @brief Method description: read total file into memory, update length to
@@ -79,8 +115,11 @@ class FileHandleImp {
 
   virtual RetCode DeleteFile() = 0;
 
+  const string& get_file_name() { return file_name_; }
+
  protected:
   std::string file_name_;
+  FileStatus file_status_ = kClosed;
   Lock write_lock_;
 };
 

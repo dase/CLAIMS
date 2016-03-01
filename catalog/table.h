@@ -119,6 +119,28 @@ class TableDescriptor {
     has_deleted_tuples_ = has_deleted_tuples;
   }
 
+  void LockPartition(int i, int j) {
+    assert(i < partitions_write_lock_.size() && "projection id range over");
+    assert(j < partitions_write_lock_[i].size() && "partition id range over");
+    partitions_write_lock_[i][j].acquire();
+  }
+  void UnlockPartition(int i, int j) {
+    assert(i < partitions_write_lock_.size() && "projection id range over");
+    assert(j < partitions_write_lock_[i].size() && "partition id range over");
+    partitions_write_lock_[i][j].release();
+  }
+
+ private:
+  bool TableDescriptor::createHashPartitionedProjection(
+      const vector<Attribute>& attribute_list, Attribute partition_attr,
+      unsigned number_of_partitions);
+
+  bool TableDescriptor::createHashPartitionedProjection(
+      vector<ColumnOffset> column_list, Attribute partition_attribute,
+      unsigned number_of_partitions);
+
+  void AddProjectionLocks(int number_of_partitions);
+
  protected:
   string tableName;
   vector<Attribute> attributes;
@@ -128,7 +150,7 @@ class TableDescriptor {
   bool has_deleted_tuples_ = false;
   SpineLock lock_;
 
-  vector<vector<SpineLock>> partitions_write_lock_;
+  vector<vector<Lock>> partitions_write_lock_;
 
   // delete for debugging
   // hashmap<ColumnID, ColumnDescriptor*> columns;

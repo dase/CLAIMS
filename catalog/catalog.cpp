@@ -39,10 +39,12 @@
 #include "../common/error_define.h"
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
+#include "../common/file_handle/hdfs_connector.h"
 #include "../common/rename.h"
 #include "../Config.h"
-#include "../loader/file_connector.h"
+//#include "../loader/file_connector.h"
 #include "../loader/single_file_connector.h"
+using claims::common::FileHandleImpFactory;
 using std::vector;
 using std::string;
 using std::endl;
@@ -51,7 +53,7 @@ using claims::common::rCatalogNotFound;
 using claims::common::rDataPathError;
 using claims::common::FileOpenFlag;
 using claims::common::FilePlatform;
-using claims::loader::FileConnector;
+using claims::common::HdfsConnector;
 using claims::loader::SingleFileConnector;
 
 namespace claims {
@@ -62,6 +64,9 @@ Catalog* Catalog::instance_ = NULL;
 Catalog::Catalog() {
   logging = new CatalogLogging();
   binding_ = new ProjectionBinding();
+  connector_ = new SingleFileConnector(
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+      Config::catalog_file);
 }
 
 Catalog::~Catalog() {
@@ -173,20 +178,21 @@ RetCode Catalog::saveCatalog() {
   oa << *this;
 
   int ret = rSuccess;
-  FileConnector* connector = new SingleFileConnector(
-      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      Config::catalog_file);
-
-  EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kCreateFile),
-                          "catalog file name:" << Config::catalog_file);
+  //  SingleFileConnector* connector = new SingleFileConnector(
+  //      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+  //      Config::catalog_file);
+  //
+  //  EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kCreateFile),
+  //                          "catalog file name:" << Config::catalog_file);
 
   EXEC_AND_ONLY_LOG_ERROR(
-      ret, connector->Flush(static_cast<const void*>(oss.str().c_str()),
-                            oss.str().length()),
-      "catalog file name:" << Config::catalog_file);
+      ret, connector_->Flush(static_cast<const void*>(oss.str().c_str()),
+                             oss.str().length()),
+      "flushed into catalog file whose name:" << Config::catalog_file);
 
-  EXEC_AND_ONLY_LOG_ERROR(ret, connector->Close(),
-                          "catalog file name:" << Config::catalog_file);
+  EXEC_AND_ONLY_LOG_ERROR(
+      ret, connector_->Close(),
+      "closed catalog file whose name:" << Config::catalog_file);
   return rSuccess;
 }
 
@@ -211,11 +217,9 @@ bool Catalog::IsDataFileExist() {
     LOG(INFO) << "There are no data file in disk" << endl;
     return false;
   } else {
-    hdfsFS hdfsfs =
-        hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
     int file_num;
-    hdfsFileInfo* file_list =
-        hdfsListDirectory(hdfsfs, Config::data_dir.c_str(), &file_num);
+    hdfsFileInfo* file_list = hdfsListDirectory(
+        HdfsConnector::Instance(), Config::data_dir.c_str(), &file_num);
     for (int cur = 0; cur < file_num; ++cur) {
       LOG(INFO) << "  " << file_list[cur].mName << "----";
       string full_file_name(file_list[cur].mName);
@@ -238,16 +242,16 @@ bool Catalog::IsDataFileExist() {
 RetCode Catalog::restoreCatalog() {
   int ret = rSuccess;
   string catalog_file = Config::catalog_file;
-  SingleFileConnector* connector = new SingleFileConnector(
-      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      catalog_file);
+  //  SingleFileConnector* connector = new SingleFileConnector(
+  //      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+  //      catalog_file);
 
   // check whether there is catalog file if there are data file
-  if (!connector->CanAccess() && IsDataFileExist()) {
+  if (!connector_->CanAccess() && IsDataFileExist()) {
     LOG(ERROR) << "The data file are existed while catalog file "
                << catalog_file << " is not existed!" << endl;
     return rCatalogNotFound;
-  } else if (!connector->CanAccess()) {
+  } else if (!connector_->CanAccess()) {
     LOG(INFO) << "The catalog file and data file all are not existed" << endl;
     return rSuccess;
   } else if (!IsDataFileExist()) {
@@ -257,9 +261,9 @@ RetCode Catalog::restoreCatalog() {
   } else {
     uint64_t file_length = 0;
     void* buffer;
-    EXEC_AND_RETURN_ERROR(ret, connector->Open(FileOpenFlag::kReadFile),
-                          "catalog file name: " << catalog_file);
-    EXEC_AND_RETURN_ERROR(ret, connector->LoadTotalFile(buffer, &file_length),
+    //    EXEC_AND_RETURN_ERROR(ret, connector_->Open(FileOpenFlag::kReadFile),
+    //                          "catalog file name: " << catalog_file);
+    EXEC_AND_RETURN_ERROR(ret, connector_->LoadTotalFile(buffer, &file_length),
                           "catalog file name: " << catalog_file);
 
     LOG(INFO) << "Start to deserialize catalog ..." << endl;

@@ -49,7 +49,6 @@ namespace loader {
 SingleFileConnectorTest::SingleFileConnectorTest() {
   connector_ = NULL;
   path_ = "SingleFileConnectorTest";
-  data_ = "fafasfffffffffffffffdfsfsffsfsfsfs  a.";
   data_length_ = 38;
   //  snprintf(data_, 38, "fafasfffffffffffffffdfsfsffsfsfsfs  a.");
   LOG(INFO) << "data_: " << data_ << std::endl;
@@ -67,11 +66,11 @@ void SingleFileConnectorTest::WriteOrAppendFile(FilePlatform file_platform,
                                                 char* expect,
                                                 int expect_length) {
   connector_ = new SingleFileConnector(file_platform, path_);
-  if (rSuccess != connector_->Open(open_flag)) FAIL();
-  if (rSuccess != connector_->Flush(data_, data_length_)) {
-    LOG(ERROR) << "failed to flush (" << path_ << ")" << std::endl;
-    FAIL();
-  }
+  if (open_flag == kCreateFile)
+    if (rSuccess != connector_->Flush(data_, data_length_)) {
+      LOG(ERROR) << "failed to flush (" << path_ << ")" << std::endl;
+      FAIL();
+    }
   if (rSuccess != connector_->Close()) FAIL();
   DELETE_PTR(connector_);
 
@@ -93,9 +92,6 @@ TEST_F(SingleFileConnectorTest, DiskWrite) {
   WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
 }
 TEST_F(SingleFileConnectorTest, DiskAppend) {
-  char double_data[] =
-      "fafasfffffffffffffffdfsfsffsfsfsfs  a"
-      ".fafasfffffffffffffffdfsfsffsfsfsfs  a.";
   WriteOrAppendFile(kDisk, kAppendFile, double_data, sizeof(double_data) - 1);
 }
 TEST_F(SingleFileConnectorTest, DiskOverWrite) {
@@ -105,9 +101,6 @@ TEST_F(SingleFileConnectorTest, HdfsWrite) {
   WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);
 }
 TEST_F(SingleFileConnectorTest, HdfsAppend) {
-  char double_data[] =
-      "fafasfffffffffffffffdfsfsffsfsfsfs  a"
-      ".fafasfffffffffffffffdfsfsffsfsfsfs  a.";
   WriteOrAppendFile(kHdfs, kAppendFile, double_data, sizeof(double_data) - 1);
 }
 TEST_F(SingleFileConnectorTest, HdfsOverWrite) {

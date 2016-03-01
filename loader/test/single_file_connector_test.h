@@ -59,9 +59,12 @@ class SingleFileConnectorTest : public ::testing::Test {
                          char* expect, int expect_length);
 
  public:
-  FileConnector* connector_;
+  SingleFileConnector* connector_;
   std::string path_;
-  char* data_;
+  char* data_ = "fafasfffffffffffffffdfsfsffsfsfsfs  a.";
+  char double_data[] =
+      "fafasfffffffffffffffdfsfsffsfsfsfs  a"
+      ".fafasfffffffffffffffdfsfsffsfsfsfs  a.";
   int data_length_;
 };
 

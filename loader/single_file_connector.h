@@ -41,38 +41,32 @@ using std::string;
 using claims::common::FileHandleImp;
 using claims::common::FilePlatform;
 
-class SingleFileConnector : public FileConnector {
+class SingleFileConnector {
  public:
   SingleFileConnector(FilePlatform platform, string file_name)
-      : FileConnector(platform), file_name_(file_name) {
-    imp_ =
-        common::FileHandleImpFactory::Instance().CreateFileHandleImp(platform_);
+      : platform_(platform), file_name_(file_name) {
+    imp_ = common::FileHandleImpFactory::Instance().CreateFileHandleImp(
+        platform_, file_name_);
   }
   ~SingleFileConnector() { DELETE_PTR(imp_); }
 
-  virtual RetCode Open(common::FileOpenFlag oepn_flag) {
-    return imp_->Open(file_name_, oepn_flag);
+  RetCode Close() { return imp_->Close(); }
+  RetCode Flush(const void* source, unsigned length, bool overwrite = false) {
+    if (overwrite)
+      return imp_->OverWrite(source, length);
+    else
+      return imp_->Append(source, length);
   }
-  virtual RetCode Close() { return imp_->Close(); }
-  virtual RetCode Flush(const void* source, unsigned length) {
-    return imp_->Write(source, length);
-  }
-  virtual RetCode AtomicFlush(const void* source, unsigned length) {
-    return imp_->AtomicWrite(source, length);
-  }
-  virtual RetCode Flush(unsigned projection_offset, unsigned partition_offset,
-                        const void* source, unsigned length) {
-    assert(false && "not implemented");
-    return common::rFailure;
-  }
-  virtual RetCode AtomicFlush(unsigned projection_offset,
-                              unsigned partition_offset, const void* source,
-                              unsigned length) {
-    assert(false && "not implemented");
-    return common::rFailure;
+  RetCode AtomicFlush(const void* source, unsigned length,
+                      function<void()> lock_func, function<void()> unlock_func,
+                      bool overwrite = false) {
+    if (overwrite)
+      return imp_->AtomicOverWrite(source, length, lock_func, unlock_func);
+    else
+      return imp_->AtomicAppend(source, length, lock_func, unlock_func);
   }
 
-  virtual bool CanAccess() { return imp_->CanAccess(file_name_); }
+  bool CanAccess() { return imp_->CanAccess(file_name_); }
   /**
    * @brief Method description: load total file into memory
    * @param buffer: set buffer point to a new memory allocated by this method,
@@ -80,7 +74,7 @@ class SingleFileConnector : public FileConnector {
    * @return  rSuccess if succeed.
    * @details   (additional) this method will modify buffer, set to a new memory
    */
-  virtual RetCode LoadTotalFile(void*& buffer, uint64_t* length) {
+  RetCode LoadTotalFile(void*& buffer, uint64_t* length) {
     return imp_->ReadTotalFile(buffer, length);
   }
 
@@ -93,7 +87,7 @@ class SingleFileConnector : public FileConnector {
    * @return  rSuccess if OK
    * @details   (additional)
    */
-  virtual RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {
+  RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {
     int ret = imp_->SetPosition(start);
     if (ret != common::rSuccess) {
       LOG(ERROR) << "failed to set postion at " << start << ". ret:" << ret;
@@ -104,6 +98,8 @@ class SingleFileConnector : public FileConnector {
 
  private:
   string file_name_;
+  common::FilePlatform platform_;
+  common::FileHandleImp* imp_;
 };
 
 } /* namespace loader */

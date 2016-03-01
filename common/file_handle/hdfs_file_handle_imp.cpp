@@ -45,78 +45,9 @@ using claims::utility::LockGuard;
 namespace claims {
 namespace common {
 
-HdfsFileHandleImp::HdfsFileHandleImp() : read_start_pos_(-1) {
-  fs_ = hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
-  if (NULL == fs_) {
-    LOG(ERROR) << "failed to connect to HDFS(ip:" << Config::hdfs_master_ip
-               << ", port:" << Config::hdfs_master_port << ")" << endl;
-    assert(false);
-  }
-  LOG(INFO) << "connected to HDFS(ip:" << Config::hdfs_master_ip
-            << ", port:" << Config::hdfs_master_port << ")" << endl;
-}
-
-HdfsFileHandleImp::~HdfsFileHandleImp() {
-  int ret = rSuccess;
-  EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "failed to close ");
-  ret = hdfsDisconnect(fs_);
-  fs_ = NULL;
-  if (ret != 0) LOG(ERROR) << "failed to disconnect to hdfs" << endl;
-}
-
-RetCode HdfsFileHandleImp::Open(std::string file_name, FileOpenFlag open_flag) {
-  assert(NULL != fs_ && "failed to connect hdfs");
-  int ret = rSuccess;
-  open_flag_ = open_flag;
-  file_name_ = file_name;
-  if (kReadFile == open_flag && false == CanAccess(file_name_)) {
-    ret = rAccessHdfsFileFail;
-    ELOG(ret, "File name:" << file_name_
-                           << " open mode:" << file_open_flag_info[open_flag]);
-    return ret;
-  }
-
-  if (kCreateFile == open_flag) {
-    file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY, 0, 0, 0);
-  } else if (kAppendFile == open_flag) {
-    if (!CanAccess(file_name_)) {  // this file doesn't exist, create one
-      file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY, 0, 0, 0);
-      if (NULL == file_) {
-        PLOG(ERROR) << "failed to create hdfs file :" << file_name_;
-        return rOpenHdfsFileFail;
-      } else {
-        LOG(INFO) << "created hdfs file :" << file_name_ << endl;
-        if (0 != hdfsCloseFile(fs_, file_)) {
-          LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
-          return rCloseHdfsFileFail;
-        }
-      }
-    }
-
-    file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY | O_APPEND, 0, 0, 0);
-  } else if (kReadFile == open_flag) {
-    file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_RDONLY, 0, 0, 0);
-  } else {
-    LOG(ERROR) << "parameter flag:" << file_open_flag_info[open_flag]
-               << " is invalid" << endl;
-    return rParamInvalid;
-  }
-  if (NULL == file_) {
-    PLOG(ERROR) << "failed to open hdfs file :" << file_name_
-                << " with mode:" << file_open_flag_info[open_flag];
-    return rOpenHdfsFileFail;
-  } else {
-    LOG(INFO) << "opened hdfs file: " << file_name_
-              << " with mode:" << file_open_flag_info[open_flag] << endl;
-    return rSuccess;
-  }
-}
-
 RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
   assert(NULL != fs_ && "failed to connect hdfs");
   assert(NULL != file_ && "make sure file is opened");
-  assert(open_flag_ != kReadFile &&
-         "It's unavailable to write into a read-only file");
   size_t total_write_num = 0;
   while (total_write_num < length) {
     int32_t write_num = hdfsWrite(
@@ -141,28 +72,6 @@ RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
   return rSuccess;
 }
 
-RetCode HdfsFileHandleImp::AtomicWrite(const void* buffer,
-                                       const size_t length) {
-  assert(NULL != fs_ && "failed to connect hdfs");
-  assert(NULL != file_ && "make sure file is opened");
-  assert(open_flag_ != kReadFile &&
-         "It's unavailable to write into a read-only file");
-  size_t total_write_num = 0;
-  LockGuard<Lock> gurad(write_lock_);
-  while (total_write_num < length) {
-    int32_t write_num = hdfsWrite(
-        fs_, file_, static_cast<const char*>(buffer) + total_write_num,
-        length - total_write_num);
-    if (-1 == write_num) {
-      PLOG(ERROR) << "failed to write buffer(" << buffer
-                  << ") to file: " << file_name_ << endl;
-      return rWriteDiskFileFail;
-    }
-    total_write_num += write_num;
-  }
-  return rSuccess;
-}
-
 RetCode HdfsFileHandleImp::Close() {
   if (NULL == file_) {
     LOG(INFO) << "hdfs file have been closed " << endl;
@@ -170,15 +79,17 @@ RetCode HdfsFileHandleImp::Close() {
   }
   assert(NULL != fs_ && "failed to connect hdfs");
 
-  static char* hdfs_file_type[] = {"UNINITIALIZED", "INPUT", "OUTPUT"};
-  LOG(INFO) << "the type of file_ is " << hdfs_file_type[file_->type] << endl;
+  //  static char* hdfs_file_type[] = {"UNINITIALIZED", "INPUT", "OUTPUT"};
+  //  LOG(INFO) << "the type of file_ is " << hdfs_file_type[file_->type] <<
+  //  endl;
 
   if (0 != hdfsCloseFile(fs_, file_)) {
     LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
     return rCloseHdfsFileFail;
   }
   file_ = NULL;
-  LOG(INFO) << "hdfs file is been closed " << endl;
+  file_status_ = kClosed;
+  LOG(INFO) << "hdfs file is closed " << endl;
   return rSuccess;
 }
 
@@ -191,29 +102,32 @@ RetCode HdfsFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
   int file_length = hdfsfile->mSize;
   LOG(INFO) << "The length of file " << file_name_ << " is " << file_length
             << endl;
+  buffer = Malloc(file_length + 1);
   // set position 0
   if (rSuccess != (ret = SetPosition(0))) {
     return ret;
   }
+  *length = file_length;
 
-  buffer = Malloc(file_length + 1);
-  int read_num = hdfsRead(fs_, file_, buffer, file_length);
-  LOG(INFO) << "read " << read_num << " data from hdfs file " << file_name_
-            << endl;
-
-  if (read_num != file_length) {
-    LOG(ERROR) << "failed to read file [" << file_name_
-               << "] from hdfs , expected read " << file_length
-               << " , actually read " << read_num << endl;
-    return rReadHdfsFileFail;
-  }
-  *length = read_num;
-  return ret;
+  return Read(buffer, file_length);
 }
 
 RetCode HdfsFileHandleImp::Read(void* buffer, size_t length) {
   assert(NULL != fs_ && "failed to connect hdfs");
   assert(NULL != file_ && "make sure file is opened");
+
+  if (kInReading != file_status_) {
+    Close();
+    file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_RDONLY, 0, 0, 0);
+    if (NULL == file_) {
+      PLOG(ERROR) << "failed to open file :" << file_name_ << " in read mode .";
+      return rOpenDiskFileFail;
+    } else {
+      LOG(INFO) << "hdfs file:" << file_name_ << " is opened for reading "
+                << endl;
+      file_status_ = kInReading;
+    }
+  }
 
   int total_read_num = 0;
   while (total_read_num < length) {
@@ -236,7 +150,7 @@ RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
   assert(NULL != fs_ && "failed to connect hdfs");
   assert(NULL != file_ && "make sure file is opened");
 
-  assert(kReadFile == open_flag_ &&
+  assert(kInReading == file_status_ &&
          "Seeking is only work for files opened in read-only mode");
   int ret = hdfsSeek(fs_, file_, pos);
   if (0 != ret) {
@@ -247,6 +161,58 @@ RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
 
   LOG(INFO) << "Seek to " << pos << "in " << file_name_ << " file" << endl;
   return rSuccess;
+}
+
+RetCode HdfsFileHandleImp::Append(const void* buffer, const size_t length) {
+  if (kInAppending != file_status_) {
+    Close();
+
+    if (!CanAccess(file_name_)) {  // this file doesn't exist, create one
+      file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY, 0, 0, 0);
+      if (NULL == file_) {
+        PLOG(ERROR) << "failed to create hdfs file :" << file_name_;
+        return rOpenHdfsFileFail;
+      } else {
+        LOG(INFO) << "created hdfs file :" << file_name_ << endl;
+        if (0 != hdfsCloseFile(fs_, file_)) {
+          LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
+          return rCloseHdfsFileFail;
+        }
+      }
+    }
+
+    file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY | O_APPEND, 0, 0, 0);
+
+    if (NULL == file_) {
+      PLOG(ERROR) << "failed to open hdfs file :" << file_name_
+                  << " with append mode";
+      return rOpenHdfsFileFail;
+    } else {
+      LOG(INFO) << "hdfs file: " << file_name_ << " is opened for appending "
+                << endl;
+      file_status_ = kInAppending;
+    }
+  }
+
+  return Write(buffer, length);
+}
+
+RetCode HdfsFileHandleImp::OverWrite(const void* buffer, const size_t length) {
+  if (kInOverWriting != file_status_) {
+    Close();
+    file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY | O_APPEND, 0, 0, 0);
+
+    if (NULL == file_) {
+      PLOG(ERROR) << "failed to open hdfs file :" << file_name_
+                  << " with overwrite mode";
+      return rOpenHdfsFileFail;
+    } else {
+      LOG(INFO) << "hdfs file: " << file_name_ << " is opened for overwriting "
+                << endl;
+      file_status_ = kInOverWriting;
+    }
+  }
+  return Write(buffer, length);
 }
 
 RetCode HdfsFileHandleImp::DeleteFile() {

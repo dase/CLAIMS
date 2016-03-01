@@ -33,6 +33,7 @@
 #include <string>
 
 #include "./file_handle_imp.h"
+#include "./hdfs_connector.h"
 #include "../../common/rename.h"
 
 namespace claims {
@@ -44,7 +45,8 @@ class HdfsFileHandleImp : public FileHandleImp {
   friend FileHandleImpFactory;
 
  private:
-  HdfsFileHandleImp();
+  explicit HdfsFileHandleImp(std::string file_name)
+      : read_start_pos_(-1), FileHandleImp(file_name) {}
 
   NO_COPY_AND_ASSIGN(HdfsFileHandleImp);
 
@@ -52,11 +54,24 @@ class HdfsFileHandleImp : public FileHandleImp {
   /**
    * @brief Method description: call Close() and disconnect HDFS
    */
-  virtual ~HdfsFileHandleImp();
-  virtual RetCode Open(std::string file_name, FileOpenFlag open_flag);
+  virtual ~HdfsFileHandleImp() {
+    int ret = rSuccess;
+    EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "failed to close ");
+  }
+  //  virtual RetCode Open(std::string file_name, FileOpenFlag open_flag);
   // see more in FileHandleImp class
-  virtual RetCode Write(const void* buffer, const size_t length);
-  virtual RetCode AtomicWrite(const void* buffer, const size_t length);
+  virtual RetCode Append(const void* buffer, const size_t length);
+
+  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
+                               function<void()> lock_func,
+                               function<void()> unlock_func);
+
+  virtual RetCode OverWrite(const void* buffer, const size_t length);
+
+  virtual RetCode AtomicOverWrite(const void* buffer, const size_t length,
+                                  function<void()> lock_func,
+                                  function<void()> unlock_func);
+
   virtual RetCode Close();
   // see more in FileHandleImp class
   virtual RetCode ReadTotalFile(void*& buffer, size_t* length);
@@ -66,15 +81,17 @@ class HdfsFileHandleImp : public FileHandleImp {
     assert(fs_ != NULL && "failed to connect hdfs");
     return 0 == hdfsExists(fs_, file_name.c_str());
   }
-  virtual RetCode SetPosition(size_t pos);
 
   virtual RetCode DeleteFile();
 
  private:
-  hdfsFS fs_ = NULL;
+  virtual RetCode SetPosition(size_t pos);
+  RetCode Write(const void* buffer, const size_t length);
+
+ private:
+  hdfsFS& fs_ = HdfsConnector::Instance();
   hdfsFile file_ = NULL;
   int64_t read_start_pos_;
-  FileOpenFlag open_flag_ = kReadFile;
 };
 }  // namespace common
 } /* namespace claims */

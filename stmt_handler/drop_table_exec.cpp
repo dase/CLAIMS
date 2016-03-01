@@ -216,7 +216,7 @@ RetCode DropTableExec::DeleteTableFiles(const string& table_name) {
   TableFileConnector* connector = new TableFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
       write_path);
-  ret = connector->DeleteFiles();
+  ret = connector->DeleteAllTableFiles();
   if (ret != rSuccess) {
     ELOG(ret,
          "failed to delete the projections, when delete the file on table" +
