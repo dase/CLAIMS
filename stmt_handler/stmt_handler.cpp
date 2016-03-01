@@ -32,6 +32,7 @@
 #include "../stmt_handler/stmt_handler.h"
 
 #include "../stmt_handler/create_projection_exec.h"
+#include "../stmt_handler/desc_exec.h"
 #include "../stmt_handler/drop_table_exec.h"
 #include "../stmt_handler/show_exec.h"
 #include "../utility/Timer.h"
@@ -76,6 +77,10 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
     }
     case AST_SHOW_STMT: {
       stmt_exec_ = new ShowExec(stmt_ast);
+      break;
+    }
+    case AST_DESC_STMT: {
+      stmt_exec_ = new DescExec(stmt_ast);
       break;
     }
     case AST_CREATE_TABLE_LIST:
