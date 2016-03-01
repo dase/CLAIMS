@@ -15,6 +15,9 @@
 #include <string>
 #include <stdio.h>
 #include <malloc.h>
+#include <boost/format.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/algorithm/string.hpp>
 #include <vector>
 using namespace std;
 #include "../ast_node/ast_node.h"
@@ -26,6 +29,7 @@ using namespace std;
 #include "../ast_node/ast_load_stmt.h"
 #include "../ast_node/ast_show_stmt.h"
 #include "../ast_node/ast_delete_stmt.h"
+#include "../ast_node/ast_desc_stmt.h"
 
 void yyerror(struct ParseResult *pp,const char *s, ...);
 void emit(char *s, ...);
@@ -1157,6 +1161,9 @@ opt_trans_level: /* nil */	{ $$ = 0; }
    | GLOBAL					{ $$ = 1; }
    | SESSION				{ $$ = 2; }
    ;
+   /* description clause*/
+stmt: DESC NAME { $$ = new AstDescStmt(AST_DESC_STMT, $2); }
+    ;
    
 stmt: delete_stmt { $$ = $1; }
 	;
