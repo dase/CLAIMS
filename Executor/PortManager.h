@@ -22,6 +22,7 @@ public:
 private:
 	void getConfigure();
 	void generateFreePorts();
+	bool isPortOccupied(unsigned port);
 private:
 	static PortManager* _instance;
 	unsigned start;//the beginning number of the available ports

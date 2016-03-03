@@ -104,6 +104,7 @@ void IteratorExecutorSlave::createNewThreadAndRun(PhysicalQueryPlan* it){
 	logging_->log("A new Running thread is created!");
 }
 void* IteratorExecutorSlave::run_iterator(void* arg){
+	pthread_detach(pthread_self());
 	PhysicalQueryPlan* it=(PhysicalQueryPlan*)(*(void**)arg);
 	IteratorExecutorSlave* Pthis=(IteratorExecutorSlave*)(*((void**)arg+1));
 
