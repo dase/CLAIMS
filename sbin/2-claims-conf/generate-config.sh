@@ -47,7 +47,7 @@ hdfs_master_port = 9000
 max_degree_of_parallelism=10
 
 #初始单机算子并行度
-initial_degree_of_parallelism=8
+initial_degree_of_parallelism=2
 
 expander_adaptivity_check_frequency=1000
 

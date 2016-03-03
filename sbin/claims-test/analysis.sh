@@ -1,4 +1,5 @@
 #!/bin/sh
 
+testname=concert
 num=$2
-vimdiff concert-$1-$num.result concert-$1-$[num+1].result concert-$1-$[num+2].result concert-$1-$[num+3].result
+vimdiff $testname-$1-$num.result $testname-$1-$[num+1].result $testname-$1-$[num+2].result $testname-$1-$[num+3].result
