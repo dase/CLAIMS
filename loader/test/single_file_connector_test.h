@@ -46,11 +46,19 @@ namespace loader {
 using claims::common::FilePlatform;
 using claims::common::FileOpenFlag;
 
-class FileConnector;
+class SingleFileConnector;
 
 class SingleFileConnectorTest : public ::testing::Test {
  public:
-  SingleFileConnectorTest();
+  SingleFileConnectorTest()
+      : connector_(NULL), path_("SingleFileConnectorTest") {
+    double_data =
+        "fafasfffffffffffffffdfsfsffsfsfsfs  a"
+        ".fafasfffffffffffffffdfsfsffsfsfsfs  a.";
+    data_length_ = 38;
+    //  snprintf(data_, 38, "fafasfffffffffffffffdfsfsffsfsfsfs  a.");
+    LOG(INFO) << "data_: " << data_ << std::endl;
+  }
 
   static void SetUpTestCase();
   static void TearDownTestCase();
@@ -59,13 +67,11 @@ class SingleFileConnectorTest : public ::testing::Test {
                          char* expect, int expect_length);
 
  public:
-  SingleFileConnector* connector_;
+  SingleFileConnector* connector_ = NULL;
   std::string path_;
   char* data_ = "fafasfffffffffffffffdfsfsffsfsfsfs  a.";
-  char double_data[] =
-      "fafasfffffffffffffffdfsfsffsfsfsfs  a"
-      ".fafasfffffffffffffffdfsfsffsfsfsfs  a.";
-  int data_length_;
+  char* double_data;
+  int data_length_ = 38;
 };
 
 }  // namespace loader

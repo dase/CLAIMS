@@ -78,15 +78,30 @@ class TableDescriptor {
   //  void addProjection(vector<ColumnOffset> id_list);
   bool createHashPartitionedProjection(vector<ColumnOffset> column_list,
                                        ColumnOffset partition_key_index,
-                                       unsigned number_of_partitions);
+                                       unsigned number_of_partitions) {
+    return createHashPartitionedProjection(
+        column_list, attributes[partition_key_index], number_of_partitions);
+  }
   bool createHashPartitionedProjection(vector<ColumnOffset> column_list,
                                        std::string partition_attribute_name,
-                                       unsigned number_of_partitions);
-  bool createHashPartitionedProjection(vector<Attribute> column_list,
+                                       unsigned number_of_partitions) {
+    return createHashPartitionedProjection(
+        column_list, getAttribute(partition_attribute_name),
+        number_of_partitions);
+  }
+  bool createHashPartitionedProjection(vector<Attribute> attribute_list,
                                        std::string partition_attribute_name,
-                                       unsigned number_of_partitions);
+                                       unsigned number_of_partitions) {
+    return createHashPartitionedProjection(
+        attribute_list, getAttribute(partition_attribute_name),
+        number_of_partitions);
+  }
   bool createHashPartitionedProjectionOnAllAttribute(
-      std::string partition_attribute_name, unsigned number_of_partitions);
+      std::string partition_attribute_name, unsigned number_of_partitions) {
+    return createHashPartitionedProjection(
+        attributes, getAttribute2(partition_attribute_name),
+        number_of_partitions);
+  }
 
   ColumnOffset getColumnID(const string& attrName) const;
   map<string, set<string>> getColumnLocations(const string& attrName) const;
@@ -131,15 +146,24 @@ class TableDescriptor {
   }
 
  private:
-  bool TableDescriptor::createHashPartitionedProjection(
-      const vector<Attribute>& attribute_list, Attribute partition_attr,
-      unsigned number_of_partitions);
+  bool createHashPartitionedProjection(const vector<Attribute>& attribute_list,
+                                       Attribute partition_attr,
+                                       unsigned number_of_partitions);
 
-  bool TableDescriptor::createHashPartitionedProjection(
-      vector<ColumnOffset> column_list, Attribute partition_attribute,
-      unsigned number_of_partitions);
+  bool createHashPartitionedProjection(vector<ColumnOffset> column_list,
+                                       Attribute partition_attribute,
+                                       unsigned number_of_partitions);
 
   void AddProjectionLocks(int number_of_partitions);
+
+  void InitLocks() {
+    if (partitions_write_lock_.size() != getNumberOfProjection()) {
+      partitions_write_lock_.clear();
+      for (auto it : projection_list_) {
+        AddProjectionLocks(it->getPartitioner()->getNumberOfPartitions());
+      }
+    }
+  }
 
  protected:
   string tableName;
@@ -160,6 +184,7 @@ class TableDescriptor {
   void serialize(Archive& ar, const unsigned int version) {
     ar& tableName& attributes& table_id_& projection_list_& row_number_&
         has_deleted_tuples_;
+    InitLocks();
   }
 };
 

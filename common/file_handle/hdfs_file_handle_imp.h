@@ -46,7 +46,10 @@ class HdfsFileHandleImp : public FileHandleImp {
 
  private:
   explicit HdfsFileHandleImp(std::string file_name)
-      : read_start_pos_(-1), FileHandleImp(file_name) {}
+      : read_start_pos_(-1),
+        file_(NULL),
+        FileHandleImp(file_name),
+        fs_(HdfsConnector::Instance()) {}
 
   NO_COPY_AND_ASSIGN(HdfsFileHandleImp);
 
@@ -62,15 +65,15 @@ class HdfsFileHandleImp : public FileHandleImp {
   // see more in FileHandleImp class
   virtual RetCode Append(const void* buffer, const size_t length);
 
-  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
-                               function<void()> lock_func,
-                               function<void()> unlock_func);
+  //  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
+  //                               function<void()> lock_func,
+  //                               function<void()> unlock_func);
 
   virtual RetCode OverWrite(const void* buffer, const size_t length);
 
-  virtual RetCode AtomicOverWrite(const void* buffer, const size_t length,
-                                  function<void()> lock_func,
-                                  function<void()> unlock_func);
+  //  virtual RetCode AtomicOverWrite(const void* buffer, const size_t length,
+  //                                  function<void()> lock_func,
+  //                                  function<void()> unlock_func);
 
   virtual RetCode Close();
   // see more in FileHandleImp class
@@ -84,13 +87,16 @@ class HdfsFileHandleImp : public FileHandleImp {
 
   virtual RetCode DeleteFile();
 
- private:
+ protected:
   virtual RetCode SetPosition(size_t pos);
+  virtual RetCode SwitchStatus(FileStatus status_to_be);
+
+ private:
   RetCode Write(const void* buffer, const size_t length);
 
  private:
-  hdfsFS& fs_ = HdfsConnector::Instance();
-  hdfsFile file_ = NULL;
+  hdfsFS fs_;
+  hdfsFile file_;
   int64_t read_start_pos_;
 };
 }  // namespace common

@@ -88,12 +88,7 @@ class SingleFileConnector {
    * @details   (additional)
    */
   RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {
-    int ret = imp_->SetPosition(start);
-    if (ret != common::rSuccess) {
-      LOG(ERROR) << "failed to set postion at " << start << ". ret:" << ret;
-      return ret;
-    }
-    return imp_->Read(buffer, length);
+    return imp_->PRead(buffer, length, start);
   }
 
  private:

@@ -191,38 +191,15 @@ RetCode DropTableExec::DropTableFromCatalog(const string& table_name) {
  */
 RetCode DropTableExec::DeleteTableFiles(const string& table_name) {
   RetCode ret = rSuccess;
-  Catalog* local_catalog = Environment::getInstance()->getCatalog();
-  TableDescriptor* table_desc = local_catalog->getTable(table_name);
   // start to delete the files
-  vector<vector<string>> write_path;
-  for (int i = 0; i < table_desc->getNumberOfProjection(); i++) {
-    vector<string> prj_write_path;
-    prj_write_path.clear();
-    for (int j = 0; j < table_desc->getProjectoin(i)
-                            ->getPartitioner()
-                            ->getNumberOfPartitions();
-         ++j) {
-      string path = PartitionID(table_desc->getProjectoin(i)->getProjectionID(),
-                                j).getPathAndName();
-      prj_write_path.push_back(path);
-    }
-    write_path.push_back(prj_write_path);
-    // unbound the file in memory
-    if (table_desc->getProjectoin(i)->getPartitioner()->allPartitionBound()) {
-      Catalog::getInstance()->getBindingModele()->UnbindingEntireProjection(
-          table_desc->getProjectoin(i)->getPartitioner());
-    }
-  }
   TableFileConnector* connector = new TableFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      write_path);
-  ret = connector->DeleteAllTableFiles();
-  if (ret != rSuccess) {
-    ELOG(ret,
-         "failed to delete the projections, when delete the file on table" +
-             table_name);
-    return ret;
-  }
+      Environment::getInstance()->getCatalog()->getTable(table_name));
+  EXEC_AND_RETURN_ERROR(
+      ret, connector->DeleteAllTableFiles(),
+      "failed to delete the projections, when delete the file on table" +
+          table_name);
+
   return ret;
 }
 } /* namespace stmt_handler */

@@ -42,7 +42,6 @@
 #include "../common/file_handle/hdfs_connector.h"
 #include "../common/rename.h"
 #include "../Config.h"
-//#include "../loader/file_connector.h"
 #include "../loader/single_file_connector.h"
 using claims::common::FileHandleImpFactory;
 using std::vector;

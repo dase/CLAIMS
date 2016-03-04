@@ -914,6 +914,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
 // flush the last block which is not full of 64*1024Byte
 RetCode DataInjector::FlushNotFullBlock(
     Block* block_to_write, vector<vector<BlockStreamBase*>>& pj_buffer) {
+  TableDescriptor* table = table_;
   int ret = rSuccess;
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
     for (
@@ -927,8 +928,8 @@ RetCode DataInjector::FlushNotFullBlock(
             ret,
             connector_->AtomicFlush(
                 i, j, block_to_write->getBlock(), block_to_write->getsize(),
-                [i, j, table_]() { table_->LockPartition(i, j); },
-                [i, j, table_]() { table_->UnlockPartition(i, j); }),
+                [i, j, table]() { table->LockPartition(i, j); },
+                [i, j, table]() { table->UnlockPartition(i, j); }),
             "flushed the last block from buffer(" << i << "," << j
                                                   << ") into file",
             "failed to flush the last block from buffer(" << i << "," << j
@@ -1012,16 +1013,18 @@ RetCode DataInjector::InsertTupleIntoProjection(
                        << " tuples");
   void* block_tuple_addr =
       local_pj_buffer[i][part]->allocateTuple(tuple_max_length);
+  TableDescriptor* table = table_;
+
   if (NULL == block_tuple_addr) {
     // if buffer is full, write buffer(64K) to HDFS/disk
     local_pj_buffer[i][part]->serialize(*block_to_write);
 #ifdef DATA_DO_LOAD
-    EXEC_AND_ONLY_LOG_ERROR(
+    EXEC_AND_LOG(
         ret, connector_->AtomicFlush(
                  i, part, block_to_write->getBlock(), block_to_write->getsize(),
-                 [i, part, table_]() { table_->LockPartition(i, part); },
-                 [i, part, table_]() { table_->UnlockPartition(i, part); }),
-        "failed to write to data file. ");
+                 [i, part, table]() { table->LockPartition(i, part); },
+                 [i, part, table]() { table->UnlockPartition(i, part); }),
+        "writen to data file", "failed to write to data file. ");
 #endif
     __sync_add_and_fetch(&blocks_per_partition_[i][part], 1);
     local_pj_buffer[i][part]->setEmpty();

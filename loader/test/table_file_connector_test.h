@@ -41,7 +41,7 @@ namespace loader {
 using std::vector;
 using std::endl;
 using std::string;
-class FileConnector;
+class TableFileConnector;
 
 class TableFileConnectorTest : public ::testing::Test {
  public:
@@ -55,9 +55,10 @@ class TableFileConnectorTest : public ::testing::Test {
                          int expect_length);
 
  public:
-  FileConnector* connector_;
+  TableFileConnector* connector_;
   vector<vector<string>> paths_;
 
+  string table_name = "sfdfsf";
   char* data_;
   int data_length_;
 };

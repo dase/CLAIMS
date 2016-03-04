@@ -68,9 +68,12 @@ class DiskFileHandleImp : public FileHandleImp {
   virtual bool CanAccess(std::string file_name) {
     return 0 == access(file_name.c_str(), 0);
   }
-  virtual RetCode SetPosition(size_t pos);
 
   virtual RetCode DeleteFile();
+
+ protected:
+  virtual RetCode SetPosition(size_t pos);
+  virtual RetCode SwitchStatus(FileStatus status_to_be);
 
  private:
   RetCode Write(const void* buffer, const size_t length);

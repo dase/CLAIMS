@@ -46,14 +46,6 @@ namespace claims {
 
 namespace loader {
 
-SingleFileConnectorTest::SingleFileConnectorTest() {
-  connector_ = NULL;
-  path_ = "SingleFileConnectorTest";
-  data_length_ = 38;
-  //  snprintf(data_, 38, "fafasfffffffffffffffdfsfsffsfsfsfs  a.");
-  LOG(INFO) << "data_: " << data_ << std::endl;
-}
-
 void SingleFileConnectorTest::SetUpTestCase() {
   std::cout << "=============" << std::endl;
   LOG(INFO) << "=============" << std::endl;
@@ -66,19 +58,19 @@ void SingleFileConnectorTest::WriteOrAppendFile(FilePlatform file_platform,
                                                 char* expect,
                                                 int expect_length) {
   connector_ = new SingleFileConnector(file_platform, path_);
-  if (open_flag == kCreateFile)
+  if (open_flag == kCreateFile) {
     if (rSuccess != connector_->Flush(data_, data_length_)) {
       LOG(ERROR) << "failed to flush (" << path_ << ")" << std::endl;
       FAIL();
     }
+  }
   if (rSuccess != connector_->Close()) FAIL();
   DELETE_PTR(connector_);
 
   void* read_buffer = NULL;
   uint64_t length = 0;
-  FileConnector* reader = NULL;
+  SingleFileConnector* reader = NULL;
   reader = new SingleFileConnector(file_platform, path_);
-  reader->Open(kReadFile);
   if (rSuccess != reader->LoadTotalFile(read_buffer, &length)) {
     FAIL();
   }
@@ -92,7 +84,7 @@ TEST_F(SingleFileConnectorTest, DiskWrite) {
   WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
 }
 TEST_F(SingleFileConnectorTest, DiskAppend) {
-  WriteOrAppendFile(kDisk, kAppendFile, double_data, sizeof(double_data) - 1);
+  WriteOrAppendFile(kDisk, kAppendFile, double_data, data_length_ * 2 - 1);
 }
 TEST_F(SingleFileConnectorTest, DiskOverWrite) {
   WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
@@ -101,7 +93,7 @@ TEST_F(SingleFileConnectorTest, HdfsWrite) {
   WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);
 }
 TEST_F(SingleFileConnectorTest, HdfsAppend) {
-  WriteOrAppendFile(kHdfs, kAppendFile, double_data, sizeof(double_data) - 1);
+  WriteOrAppendFile(kHdfs, kAppendFile, double_data, data_length_ * 2 - 1);
 }
 TEST_F(SingleFileConnectorTest, HdfsOverWrite) {
   WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);

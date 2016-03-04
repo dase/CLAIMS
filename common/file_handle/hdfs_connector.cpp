@@ -31,7 +31,7 @@
 namespace claims {
 namespace common {
 
-hdfsFS* HdfsConnector::fs_ = NULL;
+hdfsFS HdfsConnector::fs_ = NULL;
 
 } /* namespace common */
 } /* namespace claims */

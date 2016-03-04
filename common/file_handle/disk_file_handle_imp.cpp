@@ -53,7 +53,39 @@ DiskFileHandleImp::~DiskFileHandleImp() {
   EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "failed to close ");
 }
 
+RetCode DiskFileHandleImp::SwitchStatus(FileStatus status_to_be) {
+  if (kInReading == status_to_be && kInReading != file_status_) {
+    Close();
+    fd_ = FileOpen(file_name_.c_str(), O_RDONLY, S_IWUSR | S_IRUSR);
+  } else if (kInOverWriting == status_to_be && kInOverWriting != file_status_) {
+    Close();
+    fd_ = FileOpen(file_name_.c_str(), O_RDWR | O_TRUNC | O_CREAT,
+                   S_IWUSR | S_IRUSR);
+  } else if (kInAppending == status_to_be && kInAppending != file_status_) {
+    Close();
+    fd_ = FileOpen(file_name_.c_str(), O_RDWR | O_CREAT | O_APPEND,
+                   S_IWUSR | S_IRUSR);
+  } else {
+    return rSuccess;
+  }
+  if (-1 == fd_) {
+    PLOG(ERROR) << "failed to reopen file:" << file_name_ << "("
+                << file_status_info[file_status_] << ")  in mode "
+                << file_status_info[status_to_be] << " .";
+    return rOpenDiskFileFail;
+  } else {
+    LOG(INFO) << "disk file:" << file_name_ << "("
+              << file_status_info[file_status_] << ") is reopened for "
+              << file_status_info[status_to_be] << endl;
+    file_status_ = status_to_be;
+    return rSuccess;
+  }
+}
+
 RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
+  assert(fd_ >= 3);
+  assert((kInOverWriting == file_status_ || kInAppending == file_status_) &&
+         " files is not opened in writing mode");
   size_t total_write_num = 0;
   while (total_write_num < length) {
     ssize_t write_num =
@@ -94,10 +126,15 @@ RetCode DiskFileHandleImp::Close() {
 
 RetCode DiskFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
   int ret = rSuccess;
+  EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInReading),
+                        "failed to switch status");
+
+  assert(fd_ >= 3);
+  assert(kInReading == file_status_ && " files is not opened in reading mode");
   ssize_t file_length = lseek(fd_, 0, SEEK_END);
   if (-1 == file_length) {
-    PLOG(ERROR) << "lseek called on fd to set pos to the end of file " << fd_
-                << " failed : ";
+    PLOG(ERROR) << "failed to set pos at the end of (fd: " << fd_
+                << ", name: " << file_name_ << ").";
     return rLSeekDiskFileFail;
   }
   LOG(INFO) << "The length of file " << file_name_ << "is " << file_length
@@ -114,24 +151,16 @@ RetCode DiskFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
 }
 
 RetCode DiskFileHandleImp::Read(void* buffer, size_t length) {
-  if (kInReading != file_status_) {
-    Close();
-    fd_ = FileOpen(file_name_.c_str(), O_RDONLY, S_IWUSR | S_IRUSR);
-    if (-1 == fd_) {
-      PLOG(ERROR) << "failed to open file :" << file_name_ << ".";
-      return rOpenDiskFileFail;
-    } else {
-      LOG(INFO) << "disk file:" << file_name_ << " is opened for reading "
-                << endl;
-      file_status_ = kInReading;
-    }
-  }
+  int ret = rSuccess;
+  EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInReading),
+                        "failed to switch status");
 
+  assert(fd_ >= 3);
+  assert(kInReading == file_status_ && " files is not opened in reading mode");
   ssize_t total_read_num = 0;
   while (total_read_num < length) {
     ssize_t read_num = read(fd_, static_cast<char*>(buffer) + total_read_num,
                             length - total_read_num);
-
     if (-1 == read_num) {
       LOG(ERROR) << "read file [" << file_name_
                  << "] from disk failed, expected read " << length
@@ -145,7 +174,7 @@ RetCode DiskFileHandleImp::Read(void* buffer, size_t length) {
   }
   LOG(INFO) << "read total " << total_read_num << " from disk file "
             << file_name_ << endl;
-  return rSuccess;
+  return ret;
 }
 
 RetCode DiskFileHandleImp::SetPosition(size_t pos) {
@@ -161,48 +190,40 @@ RetCode DiskFileHandleImp::SetPosition(size_t pos) {
 }
 
 RetCode DiskFileHandleImp::Append(const void* buffer, const size_t length) {
-  if (kInAppending != file_status_) {
-    Close();
-    fd_ = FileOpen(file_name_.c_str(), O_RDWR | O_CREAT | O_APPEND,
-                   S_IWUSR | S_IRUSR);
-    if (-1 == fd_) {
-      PLOG(ERROR) << "failed to open file :" << file_name_ << ".";
-      return rOpenDiskFileFail;
-    } else {
-      LOG(INFO) << "disk file:" << file_name_ << " is opened for appending "
-                << endl;
-      file_status_ = kInAppending;
-    }
-  }
-
+  int ret = rSuccess;
+  EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInAppending),
+                        "failed to switch status");
+  assert(fd_ >= 3);
+  assert(kInAppending == file_status_ &&
+         " files is not opened in appending mode");
   return Write(buffer, length);
 }
 
 RetCode DiskFileHandleImp::OverWrite(const void* buffer, const size_t length) {
-  if (kInOverWriting != file_status_) {
-    Close();
-    fd_ = FileOpen(file_name_.c_str(), O_RDWR | O_TRUNC | O_CREAT,
-                   S_IWUSR | S_IRUSR);
-    if (-1 == fd_) {
-      PLOG(ERROR) << "failed to open file :" << file_name_ << ".";
-      return rOpenDiskFileFail;
-    } else {
-      LOG(INFO) << "disk file:" << file_name_ << " is opened for overwriting "
-                << endl;
-      file_status_ = kInOverWriting;
-    }
-  }
+  int ret = rSuccess;
+  EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInOverWriting),
+                        "failed to switch status");
+  assert(fd_ >= 3);
+  assert(kInOverWriting == file_status_ &&
+         " files is not opened in overwriting mode");
 
   return Write(buffer, length);
 }
 
 RetCode DiskFileHandleImp::DeleteFile() {
   int ret = rSuccess;
-  EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "file name: " << file_name_);
-  if (0 != remove(file_name_.c_str())) {
-    LOG(ERROR) << "Cannot delete disk file : [" + file_name_ + "] ! Reason: " +
-                      strerror(errno) << std::endl;
-    return rFailure;
+  EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "closed file name: " << file_name_);
+  if (CanAccess(file_name_)) {
+    if (0 != remove(file_name_.c_str())) {
+      LOG(ERROR) << "Cannot delete disk file : [" + file_name_ +
+                        "] ! Reason: " + strerror(errno) << std::endl;
+      return rFailure;
+    } else {
+      fd_ = -1;
+      file_status_ = kClosed;
+      LOG(WARNING) << "The file " << file_name_ << "is not exits!\n"
+                   << std::endl;
+    }
   }
   return rSuccess;
 }

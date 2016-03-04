@@ -60,21 +60,6 @@ bool TableDescriptor::addAttribute(string attname, data_type dt,
   return true;
 }
 
-inline bool TableDescriptor::createHashPartitionedProjection(
-    vector<ColumnOffset> column_list, ColumnOffset partition_key_index,
-    unsigned number_of_partitions) {
-  return createHashPartitionedProjection(
-      column_list, attributes[partition_key_index], number_of_partitions);
-}
-
-inline bool TableDescriptor::createHashPartitionedProjection(
-    vector<ColumnOffset> column_list, std::string partition_attribute_name,
-    unsigned number_of_partitions) {
-  return createHashPartitionedProjection(column_list,
-                                         getAttribute(partition_attribute_name),
-                                         number_of_partitions);
-}
-
 bool TableDescriptor::createHashPartitionedProjection(
     vector<ColumnOffset> column_list, Attribute partition_attribute,
     unsigned number_of_partitions) {
@@ -95,20 +80,6 @@ bool TableDescriptor::createHashPartitionedProjection(
   projection_list_.push_back(projection);
   AddProjectionLocks(number_of_partitions);
   return true;
-}
-
-inline bool TableDescriptor::createHashPartitionedProjection(
-    vector<Attribute> attribute_list, std::string partition_attribute_name,
-    unsigned number_of_partitions) {
-  return createHashPartitionedProjection(attribute_list,
-                                         getAttribute(partition_attribute_name),
-                                         number_of_partitions);
-}
-inline bool TableDescriptor::createHashPartitionedProjectionOnAllAttribute(
-    std::string partition_attribute_name, unsigned number_of_partitions) {
-  return createHashPartitionedProjection(
-      attributes, getAttribute2(partition_attribute_name),
-      number_of_partitions);
 }
 
 bool TableDescriptor::createHashPartitionedProjection(

@@ -43,12 +43,14 @@ class FileHandleImpFactory;
 enum FileOpenFlag { kCreateFile = 0, kAppendFile, kReadFile };
 static const char* file_open_flag_info[3] = {"kCreateFile", "kAppendFile",
                                              "kReadFile"};
+static const char* file_status_info[4] = {"Reading", "Writing", "Appending",
+                                          "Closed"};
 
 class FileHandleImp {
   friend FileHandleImpFactory;
 
  protected:
-  enum FileStatus { kInReading, kInOverWriting, kInAppending, kClosed };
+  enum FileStatus { kInReading = 0, kInOverWriting, kInAppending, kClosed };
 
  public:
   explicit FileHandleImp(std::string file_name) : file_name_(file_name) {}
@@ -63,35 +65,15 @@ class FileHandleImp {
    */
   virtual RetCode Append(const void* buffer, const size_t length) = 0;
 
-  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
-                               function<void()> lock_func,
-                               function<void()> unlock_func) {
-    lock_func();
-    RetCode ret = Append(buffer, length);
-    unlock_func();
-    if (rSuccess != ret) {
-      return ret;
-    } else {
-      ret = Close();
-    }
-    return ret;
-  }
+  RetCode AtomicAppend(const void* buffer, const size_t length,
+                       function<void()> lock_func,
+                       function<void()> unlock_func);
 
   virtual RetCode OverWrite(const void* buffer, const size_t length) = 0;
 
   RetCode AtomicOverWrite(const void* buffer, const size_t length,
                           function<void()> lock_func,
-                          function<void()> unlock_func) {
-    lock_func();
-    RetCode ret = OverWrite(buffer, length);
-    unlock_func();
-    if (rSuccess != ret) {
-      return ret;
-    } else {
-      ret = Close();
-    }
-    return ret;
-  }
+                          function<void()> unlock_func);
 
   virtual RetCode Close() = 0;
   /**
@@ -110,16 +92,20 @@ class FileHandleImp {
    * @return rSuccess if succeed
    */
   virtual RetCode Read(void* buffer, size_t length) = 0;
+  RetCode PRead(void* buffer, size_t length, size_t start_pos);
   virtual bool CanAccess(std::string file_name) = 0;
-  virtual RetCode SetPosition(size_t pos) = 0;
 
   virtual RetCode DeleteFile() = 0;
 
   const string& get_file_name() { return file_name_; }
 
  protected:
+  virtual RetCode SetPosition(size_t pos) = 0;
+  virtual RetCode SwitchStatus(FileStatus status_to_be) = 0;
+
+ protected:
   std::string file_name_;
-  FileStatus file_status_ = kClosed;
+  volatile FileStatus file_status_ = kClosed;
   Lock write_lock_;
 };
 

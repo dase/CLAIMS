@@ -42,12 +42,12 @@ namespace common {
 
 class HdfsConnector {
  public:
-  static hdfsFS& Instance() {
-    if (nullptr == fs_) {
-      fs_ = new hdfsFS();
-      *fs_ =
+  static hdfsFS Instance() {
+    if (NULL == fs_) {
+      Config::getInstance();
+      fs_ =
           hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
-      if (nullptr == fs_) {
+      if (NULL == fs_) {
         LOG(ERROR) << "failed to connect to HDFS(ip:" << Config::hdfs_master_ip
                    << ", port:" << Config::hdfs_master_port << ")" << std::endl;
         assert(false);
@@ -55,14 +55,14 @@ class HdfsConnector {
       LOG(INFO) << "connected to HDFS(ip:" << Config::hdfs_master_ip
                 << ", port:" << Config::hdfs_master_port << ")" << std::endl;
     }
-    return *fs_;
+    return fs_;
   }
 
   NO_COPY_AND_ASSIGN(HdfsConnector);
 
  private:
   HdfsConnector() {}
-  static hdfsFS* fs_;
+  static hdfsFS fs_;
 };
 
 } /* namespace common */

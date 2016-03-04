@@ -51,7 +51,7 @@ namespace loader {
 
 TableFileConnector::TableFileConnector(FilePlatform platform,
                                        TableDescriptor* table)
-    : FileConnector(platform),
+    : platform_(platform),
       table_(table),
       write_path_name_(table->GetAllPartitionsPath()) {}
 

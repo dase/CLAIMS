@@ -46,7 +46,8 @@ class HdfsFileHandleImpTest : public ::testing::Test {
  public:
   static void SetUpTestCase() {
     Config::getInstance();
-    imp_ = FileHandleImpFactory::Instance().CreateFileHandleImp(kHdfs);
+    imp_ =
+        FileHandleImpFactory::Instance().CreateFileHandleImp(kHdfs, file_name_);
     std::cout << "=============" << std::endl;
   }
   static void TearDownTestCase() { DELETE_PTR(imp_); }
@@ -54,110 +55,118 @@ class HdfsFileHandleImpTest : public ::testing::Test {
  public:
   static FileHandleImp* imp_;
   static string file_name_;
+  char* buffer = "abc";
 };
 
-string HdfsFileHandleImpTest::file_name_ = "HdfsFileHandleImpTest";
+string HdfsFileHandleImpTest::file_name_ =
+    "/home/imdb/data/yk/HdfsFileHandleImpTest";
 FileHandleImp* HdfsFileHandleImpTest::imp_ = NULL;
-
 TEST_F(HdfsFileHandleImpTest, TestAccess1) {
-  bool ret = imp_->CanAccess(file_name_);
+  int ret = rSuccess;
+  EXEC_AND_LOG(ret, imp_->DeleteFile(), "deleted file ",
+               "failed to delete file");
+  ret = imp_->CanAccess(file_name_);
   EXPECT_FALSE(ret);
 }
 
 TEST_F(HdfsFileHandleImpTest, TestAccess2) {
-  imp_->Open(file_name_, kCreateFile);
+  imp_->Append(buffer, 3);
   bool ret = imp_->CanAccess(file_name_);
   EXPECT_TRUE(ret);
-  int res = imp_->Close();
-  EXPECT_EQ(rSuccess, res);
+}
+
+TEST_F(HdfsFileHandleImpTest, Delete) {
+  imp_->OverWrite(buffer, 3);
+  bool ret = imp_->CanAccess(file_name_);
+  EXPECT_TRUE(ret);
+  EXPECT_EQ(rSuccess, imp_->DeleteFile());
+  EXPECT_FALSE(imp_->CanAccess(file_name_));
+}
+
+TEST_F(HdfsFileHandleImpTest, DeleteNonExistFile) {
+  EXPECT_EQ(rSuccess, imp_->DeleteFile());
+}
+
+TEST_F(HdfsFileHandleImpTest, ReadNonExistFile) {
+  void* data = NULL;
+  size_t length = 0;
+  EXPECT_EQ(rSuccess, imp_->DeleteFile());
+  EXPECT_EQ(rOpenHdfsFileFail, imp_->ReadTotalFile(data, &length));
 }
 
 TEST_F(HdfsFileHandleImpTest, Write) {
-  imp_->Open(file_name_, kCreateFile);
-  char* buffer = "abc";
   char* data = static_cast<char*>(Malloc(4));
   int ret = rSuccess;
-  if (rSuccess != (imp_->Write(buffer, 3)) || rSuccess != (imp_->Close()) ||
-      rSuccess != (imp_->Open(file_name_, kReadFile)) ||
-      rSuccess != (imp_->SetPosition(0)) ||
-      rSuccess != (ret = imp_->Read(data, 3)) ||
-      rSuccess != (ret = imp_->Close())) {
-    FAIL();
-  }
+  EXPECT_EQ(rSuccess, imp_->OverWrite(buffer, 3));
+  EXPECT_EQ(rSuccess, imp_->PRead(data, 3, 0));
+  EXPECT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abc", data);
 }
 
 TEST_F(HdfsFileHandleImpTest, Append) {
-  imp_->Open(file_name_, kAppendFile);
-  char* buffer = "abc";
-  char* data = static_cast<char*>(Malloc(7));
+  void* data = static_cast<char*>(Malloc(7));
+  uint64_t length;
   int ret = rSuccess;
-  if (rSuccess != (imp_->Write(buffer, 3)) || rSuccess != (imp_->Close()) ||
-      rSuccess != (imp_->Open(file_name_, kReadFile)) ||
-      rSuccess != (imp_->SetPosition(0)) ||
-      rSuccess != (ret = imp_->Read(data, 6)) ||
-      rSuccess != (ret = imp_->Close())) {
-    FAIL();
-  }
-  EXPECT_STREQ("abcabc", data);
+  EXPECT_EQ(rSuccess, imp_->Append(buffer, 3));
+  EXPECT_EQ(rSuccess, imp_->ReadTotalFile(data, &length));
+  EXPECT_EQ(rSuccess, imp_->Close());
+  EXPECT_STREQ("abcabc", (char*)data);
 }
 
 TEST_F(HdfsFileHandleImpTest, Read) {
-  imp_->Open(file_name_, kReadFile);
   char* data = static_cast<char*>(Malloc(7));
   int ret = rSuccess;
-  if (rSuccess != (ret = imp_->Read(data, 6)) ||
-      rSuccess != (ret = imp_->Close())) {
-    FAIL();
-  }
+  EXPECT_EQ(rSuccess, imp_->Read(data, 6));
+  EXPECT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abcabc", data);
 }
 
 TEST_F(HdfsFileHandleImpTest, ReadTotalFile) {
-  imp_->Open(file_name_, kAppendFile);
-  char* buffer = "abc";
   void* data = NULL;
   size_t a = 0;
   int ret = rSuccess;
-  if (rSuccess != (imp_->Write(buffer, 3)) || rSuccess != (imp_->Close()) ||
-      rSuccess != (imp_->Open(file_name_, kReadFile)) ||
-      rSuccess != (ret = imp_->ReadTotalFile(data, &a)) ||
-      rSuccess != (ret = imp_->Close())) {
-    FAIL();
-  }
+  EXPECT_EQ(rSuccess, imp_->Append(buffer, 3));
+  EXPECT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
+  EXPECT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abcabcabc", static_cast<char*>(data));
 }
 
 TEST_F(HdfsFileHandleImpTest, PositionalRead) {
-  imp_->Open(file_name_, kReadFile);
-  char* buffer = "abc";
   char* data = static_cast<char*>(Malloc(4));
   size_t a = 0;
   int ret = rSuccess;
-  if (rSuccess != (ret = imp_->SetPosition(5)) ||
-      rSuccess != (ret = imp_->Read(data, 3)) ||
-      rSuccess != (ret = imp_->Close())) {
-    FAIL();
-  }
+  EXPECT_EQ(rSuccess, imp_->PRead(data, 3, 5));
+  EXPECT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("cab", data);
 }
 
 TEST_F(HdfsFileHandleImpTest, OverWrite) {
-  imp_->Open(file_name_, kCreateFile);
-  char* buffer = "abc";
   void* data = NULL;
   size_t a = 0;
   int ret = rSuccess;
-  if (rSuccess != (imp_->Write(buffer, 3)) || rSuccess != (imp_->Close()) ||
-      rSuccess != (imp_->Open(file_name_, kReadFile)) ||
-      rSuccess != (ret = imp_->ReadTotalFile(data, &a)) ||
-      rSuccess != (ret = imp_->Close())) {
-    FAIL();
-  }
+  EXPECT_EQ(rSuccess, imp_->OverWrite(buffer, 3));
+  EXPECT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
+  EXPECT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abc", static_cast<char*>(data));
 }
-}  // namespace common
 
+TEST_F(HdfsFileHandleImpTest, AppendIntoNonExistFile) {
+  void* data = NULL;
+  size_t a = 0;
+  int ret = rSuccess;
+  EXPECT_EQ(rSuccess, imp_->DeleteFile());
+  EXPECT_EQ(rSuccess, imp_->Append(buffer, 3));
+  EXPECT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
+  EXPECT_STREQ("abc", static_cast<char*>(data));
+}
+
+TEST_F(HdfsFileHandleImpTest, GetName) {
+  EXPECT_STREQ(file_name_.c_str(), imp_->get_file_name().c_str());
+}
+
+TEST_F(HdfsFileHandleImpTest, AtomicAppend) {}
+
+}  // namespace common
 }  // namespace claims
 
 #endif  // COMMON_FILE_HANDLE_TEST_HDFS_FILE_HANDLE_IMP_TEST_H_
