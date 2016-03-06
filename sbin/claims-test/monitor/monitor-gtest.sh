@@ -10,6 +10,9 @@ do
   echo "claimsserver is aborted. Try to restart..."
   cd $CLAIMS_HOME/sbin
   ./4-stop-all.sh
+  if [ "$local_disk_mode" = "1" ]; then
+  rm $data*
+  fi
   if [ -d "$CLAIMS_HOME/install" ]; then
     cd $CLAIMS_HOME/install
     if [ ! -f "claimsserver" ]; then
