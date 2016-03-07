@@ -49,6 +49,7 @@ AC_CONFIG_FILES([
   utility/Makefile
   codegen/Makefile 
   stmt_handler/Makefile
+  node_manager/Makefile
 ])
 AC_OUTPUT
 

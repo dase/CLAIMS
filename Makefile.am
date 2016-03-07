@@ -5,12 +5,14 @@ AM_CPPFLAGS=-fPIC  -DTHERON_XS\
 -I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
--I${GTEST_HOME}/include
-
+-I${GTEST_HOME}/include \
+-I${CAF_HOME}/libcaf_io	\
+-I${CAF_HOME}/libcaf_core
 #-L/usr/local/lib \
 #-I/usr/local/include
-AM_LDFLAGS=  -lc -lm -lrt -lpthread -lboost_serialization -lboost_date_time -lboost_system \
-	-lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic -lglog
+AM_LDFLAGS=  -lc -lm -lrt -lcaf_core -lcaf_io -lpthread -lboost_serialization -lboost_date_time -lboost_system  \
+	-lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic -lglog 
+	
 
 if OPT_TCMALLOC
 AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free
@@ -18,6 +20,7 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD =  \
+	node_manager/libnodemanager.a \
 	Test/libtest.a \
 	Test/common/libcommon.a \
 	Test/utility/libutility.a \
@@ -56,6 +59,8 @@ LDADD =  \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
 	${THERON_HOME}/Lib/libtherond.a \
+	${CAF_HOME}/build/lib/libcaf_core.so \
+	${CAF_HOME}/build/lib/libcaf_io.so \
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
@@ -79,7 +84,8 @@ include_HEADERS = Config.h \
 				
 bin_PROGRAMS =  claimsserver \
 				client \
-				test	
+				test	\
+				node
 				
 client_SOURCES = Client.cpp \
 					Environment.cpp \
@@ -96,13 +102,14 @@ test_SOURCES = Test/gtest_main.cpp\
 				IDsGenerator.cpp \
 				Config.cpp
 				
-
-
+node_SOURCES =	Config.cpp	\
+				node_manager/node_main.cpp
+				
 SUBDIRS=  catalog Client common Daemon Executor IndexManager\
 loader physical_operator logical_operator  Resource \
-storage Test utility codegen sql_parser stmt_handler
+storage Test utility codegen sql_parser stmt_handler  node_manager
 
 DIST_SUBDIRS =  catalog Client common Daemon Executor IndexManager\
 loader physical_operator logical_operator  Resource \
-storage Test utility codegen sql_parser stmt_handler
+storage Test utility codegen sql_parser stmt_handler node_manager
 

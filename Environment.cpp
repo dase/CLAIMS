@@ -24,6 +24,7 @@
 #include "common/expression/expr_type_cast.h"
 #include "common/expression/type_conversion_matrix.h"
 
+using claims::catalog::Catalog;
 using claims::common::InitAggAvgDivide;
 using claims::common::InitOperatorFunc;
 using claims::common::InitTypeCastFunc;

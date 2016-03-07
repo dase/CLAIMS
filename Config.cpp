@@ -19,7 +19,7 @@ using namespace std;
 string gete() {
   char *p = getenv("CLAIMS_HOME");
   stringstream sp;
-  sp << string(p).c_str() << "/conf/config";
+  sp << string(p).c_str() << "conf/config";
   return sp.str();
   //	return "/home/imdb/config/wangli/config";
 }
