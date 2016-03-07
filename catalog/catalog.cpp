@@ -177,22 +177,15 @@ RetCode Catalog::saveCatalog() {
   oa << *this;
 
   int ret = rSuccess;
-  //  SingleFileConnector* connector = new SingleFileConnector(
-  //      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-  //      Config::catalog_file);
-  //
-  //  EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kCreateFile),
-  //                          "catalog file name:" << Config::catalog_file);
-
-  EXEC_AND_ONLY_LOG_ERROR(
+  EXEC_AND_RETURN_ERROR(
       ret, connector_->Flush(static_cast<const void*>(oss.str().c_str()),
-                             oss.str().length()),
-      "flushed into catalog file whose name:" << Config::catalog_file);
+                             oss.str().length(), true),
+      "failed to flush into catalog file: " << Config::catalog_file);
 
   EXEC_AND_ONLY_LOG_ERROR(
       ret, connector_->Close(),
       "closed catalog file whose name:" << Config::catalog_file);
-  return rSuccess;
+  return ret;
 }
 
 bool Catalog::IsDataFileExist() {
@@ -241,9 +234,6 @@ bool Catalog::IsDataFileExist() {
 RetCode Catalog::restoreCatalog() {
   int ret = rSuccess;
   string catalog_file = Config::catalog_file;
-  //  SingleFileConnector* connector = new SingleFileConnector(
-  //      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-  //      catalog_file);
 
   // check whether there is catalog file if there are data file
   if (!connector_->CanAccess() && IsDataFileExist()) {
@@ -260,8 +250,6 @@ RetCode Catalog::restoreCatalog() {
   } else {
     uint64_t file_length = 0;
     void* buffer;
-    //    EXEC_AND_RETURN_ERROR(ret, connector_->Open(FileOpenFlag::kReadFile),
-    //                          "catalog file name: " << catalog_file);
     EXEC_AND_RETURN_ERROR(ret, connector_->LoadTotalFile(buffer, &file_length),
                           "catalog file name: " << catalog_file);
 
@@ -270,7 +258,7 @@ RetCode Catalog::restoreCatalog() {
     std::istringstream iss(temp);
     boost::archive::text_iarchive ia(iss);
     ia >> *this;
-    return rSuccess;
+    return ret;
   }
 }
 
@@ -299,7 +287,6 @@ bool Catalog::DropTable(const std::string table_name, const TableID id) {
   }
 
   if (isnamedrop && istableIDdrop) {
-    // table_id_allocator.decrease_table_id();
     isdropped = true;
   } else {
     if (!isnamedrop) {

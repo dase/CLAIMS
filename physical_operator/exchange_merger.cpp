@@ -412,14 +412,15 @@ bool ExchangeMerger::CreateReceiverThread() {
   int error = 0;
   error = pthread_create(&receiver_thread_id_, NULL, Receiver, this);
   if (0 != error) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_
-               << " merger Failed to create receiver thread." << endl;
+    PLOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                << " partition_offset = " << partition_offset_
+                << " merger Failed to create receiver thread." << endl;
     return false;
   }
   return true;
 }
 void ExchangeMerger::CancelReceiverThread() {
+  assert(receiver_thread_id_ != 0);
   pthread_cancel(receiver_thread_id_);
   void* res = 0;
   while (res != PTHREAD_CANCELED) {

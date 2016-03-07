@@ -151,8 +151,7 @@ TEST_F(ElasticIteratorModelTest, CrossJoinWithSubquery) {
   ResultSet rs;
   std::string message;
   client_.submit(
-      "select count(*) from (select row_id from NATION where row_id<3) as a, "
-      "(select row_id from REGION where row_id=2) as b;",
+      "select count(*) from (select row_id from NATION where row_id<3) as a, (select row_id from REGION where row_id=2) as b;",
       message, rs);
   DynamicBlockBuffer::Iterator it = rs.createIterator();
   BlockStreamBase::BlockStreamTraverseIterator *b_it =
@@ -201,8 +200,7 @@ TEST_F(ElasticIteratorModelTest, FilteredJoin) {
   ResultSet rs;
   std::string message;
   client_.submit(
-      "select count(*) from PART,LINEITEM where PART.row_id%10=1 and "
-      "LINEITEM.row_id % 10 =1 and PART.row_id = LINEITEM.row_id;",
+      "select count(*) from PART,LINEITEM where PART.row_id%10=1 and  LINEITEM.row_id % 10 =1 and PART.row_id = LINEITEM.row_id;",
       message, rs);
   DynamicBlockBuffer::Iterator it = rs.createIterator();
   BlockStreamBase::BlockStreamTraverseIterator *b_it =

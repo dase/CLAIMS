@@ -82,3 +82,4 @@ sbin/claims-test/claims_log/
 sbin/claims-test/test_for_DI_GetTuple
 sbin/claims-test/testresult/*.result
 sbin/logs/
+test_for_DI_GetTuple

@@ -172,12 +172,9 @@ class TableDescriptor {
   vector<ProjectionDescriptor*> projection_list_;
   unsigned long row_number_;
   bool has_deleted_tuples_ = false;
+
   SpineLock lock_;
-
   vector<vector<Lock>> partitions_write_lock_;
-
-  // delete for debugging
-  // hashmap<ColumnID, ColumnDescriptor*> columns;
 
   friend class boost::serialization::access;
   template <class Archive>

@@ -120,7 +120,6 @@ class Catalog {
   static Catalog* instance_;
   SingleFileConnector* connector_ = NULL;
 
-  // 2014-3-20---add serialize function---by Yu
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
