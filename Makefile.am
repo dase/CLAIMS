@@ -20,10 +20,10 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD =  \
-	node_manager/libnodemanager.a \
 	Test/libtest.a \
 	Test/common/libcommon.a \
 	Test/utility/libutility.a \
+	node_manager/libnodemanager.a \
 	common/serialization/libserialization.a \
 	Client/libclient.a \
 	Client/Test/libtest.a \
@@ -84,8 +84,7 @@ include_HEADERS = Config.h \
 				
 bin_PROGRAMS =  claimsserver \
 				client \
-				test	\
-				node
+				test
 				
 client_SOURCES = Client.cpp \
 					Environment.cpp \
@@ -102,8 +101,8 @@ test_SOURCES = Test/gtest_main.cpp\
 				IDsGenerator.cpp \
 				Config.cpp
 				
-node_SOURCES =	Config.cpp	\
-				node_manager/node_main.cpp
+#node_SOURCES =	Config.cpp	\
+#				node_manager/node_main.cpp
 				
 SUBDIRS=  catalog Client common Daemon Executor IndexManager\
 loader physical_operator logical_operator  Resource \

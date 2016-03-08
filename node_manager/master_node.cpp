@@ -38,7 +38,7 @@
 using caf::io::remote_actor;
 using std::make_pair;
 namespace claims {
-
+MasterNode* MasterNode::instance_ = 0;
 class MasterNodeActor : public event_based_actor {
  public:
   MasterNodeActor(MasterNode* master_node) : master_node_(master_node) {}
@@ -65,8 +65,14 @@ class MasterNodeActor : public event_based_actor {
   }
   MasterNode* master_node_;
 };
+MasterNode* MasterNode::GetInstance() {
+  if (NULL == instance_) {
+    instance_ = new MasterNode();
+  }
+  return instance_;
+}
 
-MasterNode::MasterNode() {
+MasterNode::MasterNode() : node_id_gen_(0) {
   set_node_id(0);
   ReadMasterAddr();
   node_addr_ = master_addr_;
@@ -74,7 +80,7 @@ MasterNode::MasterNode() {
 }
 
 MasterNode::MasterNode(string node_ip, uint16_t node_port)
-    : BaseNode(node_ip, node_port) {
+    : BaseNode(node_ip, node_port), node_id_gen_(0) {
   CreateActor();
 }
 
@@ -96,15 +102,22 @@ void MasterNode::PrintNodeList() {
               << it->second.second << " )" << std::endl;
   }
 }
-
+// should be atomic
 unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
-  ++node_id_gen_;
-  node_id_to_addr_.insert(
-      make_pair((unsigned int)node_id_gen_, make_pair(node_ip, node_port)));
+  unsigned int node_id = 0;
+  if (node_ip != master_addr_.first) {
+    ++node_id_gen_;
+    node_id = (unsigned int)node_id_gen_;
+  }
+  node_id_to_addr_.insert(make_pair(node_id, make_pair(node_ip, node_port)));
   std::cout << "slave : add one node( " << node_id_gen_ << " < " << node_ip
             << " " << node_port << " > )" << std::endl;
   return node_id_gen_;
 }
+NodeAddr MasterNode::GetNodeAddrFromId(const unsigned int id) {
+  return node_id_to_addr_[id];
+}
+
 void MasterNode::FinishAllNode() {
   caf::scoped_actor self;
   for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {

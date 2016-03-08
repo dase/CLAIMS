@@ -22,9 +22,13 @@
 #include "Client/ClaimsServer.h"
 #include "Executor/exchange_tracker.h"
 #include "Executor/expander_tracker.h"
+#include "node_manager/master_node.h"
+#include "node_manager/slave_node.h"
 #include "Resource/BufferManager.h"
 
 using claims::catalog::Catalog;
+using claims::MasterNode;
+using claims::SlaveNode;
 class Catalog;
 
 class Environment {
@@ -42,6 +46,8 @@ class Environment {
   ThreadPool* getThreadPool() const;
   IteratorExecutorSlave* getIteratorExecutorSlave() const;
   Environment(bool ismaster = false);
+  MasterNode* get_master_node() { return master_node_; }
+  SlaveNode* get_slave_node() { return slave_node_; }
 
  private:
   void readConfigFile();
@@ -81,7 +87,8 @@ class Environment {
   ClientListener* listener_;
 
   ThreadPool* thread_pool_;
-
+  MasterNode* master_node_;
+  SlaveNode* slave_node_;
   /**
    * TODO: the master and slave pair, such as ResouceManagerMaster and
    * ResourceManagerSlave, should have a

@@ -18,6 +18,8 @@ LDADD = 	../BlockStreamIterator/libblockstreamiterator.a \
 		../common/libcommon.a \
 		../utility/libutility.a \
 		${THERON_HOME}/Lib/libtherond.a \
+		${CAF_HOME}/build/lib/libcaf_core.so \
+		${CAF_HOME}/build/lib/libcaf_io.so \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.so
 
@@ -33,6 +35,8 @@ libexecutor_a_SOURCES = \
 	PortManager.h
 	
 libexecutor_a_LIBADD = 	${THERON_HOME}/Lib/libtherond.a \
+	${CAF_HOME}/build/lib/libcaf_core.so \
+	${CAF_HOME}/build/lib/libcaf_io.so \
 				${BOOST_HOME}/stage/lib/libboost_serialization.a \
 				${BOOST_HOME}/stage/lib/libboost_serialization.so
 

@@ -30,12 +30,14 @@
 #include <utility>
 #include <iostream>
 #include "./slave_node.h"
-
+#include "../common/Message.h"
 #include "caf/io/all.hpp"
+
+#include "../Environment.h"
 using std::make_pair;
 
 namespace claims {
-
+SlaveNode* SlaveNode::instance_ = 0;
 class SlaveNodeActor : public event_based_actor {
  public:
   SlaveNodeActor(SlaveNode* slave_node) : slave_node_(slave_node) {}
@@ -48,6 +50,17 @@ class SlaveNodeActor : public event_based_actor {
           cout << "slave " << slave_node_->get_node_id() << " finish!" << endl;
           quit();
         },
+        [=](SendPlanAtom, Message4K str) {
+          PhysicalQueryPlan* new_plan =
+              new PhysicalQueryPlan(PhysicalQueryPlan::deserialize4K(str));
+          Environment::getInstance()
+              ->getIteratorExecutorSlave()
+              ->createNewThreadAndRun(new_plan);
+          string log_message =
+              "Slave: received plan segment and create new thread and run it!";
+          cout << log_message << endl;
+          LOG(INFO) << log_message;
+        },
         caf::others >> [=]() { cout << "unkown message" << endl; }
 
     };
@@ -55,6 +68,13 @@ class SlaveNodeActor : public event_based_actor {
 
   SlaveNode* slave_node_;
 };
+
+SlaveNode* SlaveNode::GetInstance() {
+  if (NULL == instance_) {
+    instance_ = new SlaveNode();
+  }
+  return instance_;
+}
 
 SlaveNode::SlaveNode() : BaseNode() { CreateActor(); }
 SlaveNode::SlaveNode(string node_ip, uint16_t node_port)

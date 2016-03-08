@@ -42,7 +42,7 @@ namespace claims {
 using OkAtom = caf::atom_constant<caf::atom("ok")>;
 using RegisterAtom = caf::atom_constant<caf::atom("register")>;
 using ExitAtom = caf::atom_constant<caf::atom("exit")>;
-
+using SendPlanAtom = caf::atom_constant<caf::atom("send_plan")>;
 const int kTimeout = 3;
 class MemoryInfo {};
 class DiskInfo {};

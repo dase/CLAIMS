@@ -27,6 +27,7 @@ AC_CONFIG_FILES([
   common/types/Makefile 
   common/types/Test/Makefile 
   common/types/ttmath/Makefile 
+  node_manager/Makefile
   Daemon/Makefile 
   Executor/Makefile 
   Executor/Test/Makefile 
@@ -49,7 +50,6 @@ AC_CONFIG_FILES([
   utility/Makefile
   codegen/Makefile 
   stmt_handler/Makefile
-  node_manager/Makefile
 ])
 AC_OUTPUT
 

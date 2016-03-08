@@ -155,6 +155,7 @@ struct Message256 {
   static unsigned Capacity() { return 256 - sizeof(unsigned); }
 };
 THERON_DECLARE_REGISTERED_MESSAGE(Message256)
+
 struct Message4K  // temporary ways to expand the the serialization capacity
     {
   unsigned length;
@@ -163,7 +164,7 @@ struct Message4K  // temporary ways to expand the the serialization capacity
 };
 THERON_DECLARE_REGISTERED_MESSAGE(Message4K)
 THERON_DECLARE_REGISTERED_MESSAGE(int)
-THERON_DECLARE_REGISTERED_MESSAGE(unsigned long long int)
+THERON_DECLARE_REGISTERED_MESSAGE(unsigned long long int);
 template <typename T>
 static T Deserialize(Message256 input) {
   std::string received(input.message, input.length);

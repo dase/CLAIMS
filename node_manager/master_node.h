@@ -51,17 +51,21 @@ class MasterNode : public BaseNode {
  public:
   friend class MasterNodeActor;
   //  class MasterNodeActor;
-  MasterNode();
-  MasterNode(string node_ip, uint16_t node_port);
-  void CreateActor();
+  static MasterNode* GetInstance();
   virtual ~MasterNode();
   void PrintNodeList();
   void FinishAllNode();
-
- private:
+  NodeAddr GetNodeAddrFromId(const unsigned int id);
   unsigned int AddOneNode(string node_ip, uint16_t node_port);
 
+  MasterNode();
+  MasterNode(string node_ip, uint16_t node_port);
+
  private:
+  void CreateActor();
+
+ private:
+  static MasterNode* instance_;
   atomic_uint node_id_gen_;
   map<unsigned int, NodeAddr> node_id_to_addr_;
 };

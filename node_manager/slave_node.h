@@ -38,7 +38,6 @@ using std::string;
 using caf::behavior;
 
 namespace claims {
-
 class SlaveNode : public BaseNode {
  public:
   friend class SlaveNodeActor;
@@ -48,8 +47,10 @@ class SlaveNode : public BaseNode {
   void CreateActor();
   virtual ~SlaveNode();
   RetCode RegisterToMaster();
+  static SlaveNode* GetInstance();
 
  private:
+  static SlaveNode* instance_;
 };
 
 }  // namespace claims
