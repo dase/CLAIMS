@@ -63,6 +63,8 @@ void BaseNode::ReadMasterAddr() {
   cfg.readFile(Config::config_file.c_str());
   std::string master_ip = (const char *)cfg.lookup("coordinator.ip");
   std::string master_port = (const char *)cfg.lookup("coordinator.port");
+  /// NOTE:
+  master_port = "18913";
   master_addr_ = make_pair(master_ip, std::atoi(master_port.c_str()));
 }
 

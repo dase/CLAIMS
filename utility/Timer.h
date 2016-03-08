@@ -40,8 +40,14 @@ static inline double GetElapsedTime(double start) {
 static inline double GetElapsedTime(struct timeval start) {
   timeval end;
   gettimeofday(&end, NULL);
-  return (double)(end.tv_usec - start.tv_usec) / 1000 +
+  return (end.tv_usec - start.tv_usec) / 1000.0 +
          (end.tv_sec - start.tv_sec) * 1000.0;
+}
+
+static inline uint64_t GetElapsedTimeInUs(struct timeval start) {
+  timeval end;
+  gettimeofday(&end, NULL);
+  return end.tv_usec - start.tv_usec + (end.tv_sec - start.tv_sec) * 1000000;
 }
 
 #endif /* TIMER_H_ */

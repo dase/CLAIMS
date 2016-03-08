@@ -11,7 +11,7 @@
 #include "../Resource/CPUResource.h"
 #include "../utility/print_tool.h"
 #include <iosfwd>
-
+#define THERON
 IteratorExecutorSlave::IteratorExecutorSlave() {
   logging_ = new IteratorExecutorSlaveLogging();
   endpoint = Environment::getInstance()->getEndPoint();
@@ -48,7 +48,7 @@ IteratorExecutorSlave::ExecuteIteratorActor::ExecuteIteratorActor(
 
 void IteratorExecutorSlave::ExecuteIteratorActor::Handler256(
     const Message256& message, const Theron::Address from) {
-#ifdef Theron
+#ifdef THERON
   ies->logging_->log("New iterator tree received!\n");
   Message256 msg;
   Send(msg, from);
@@ -61,7 +61,7 @@ void IteratorExecutorSlave::ExecuteIteratorActor::Handler256(
 }
 void IteratorExecutorSlave::ExecuteIteratorActor::Handler4K(
     const Message4K& message, const Theron::Address from) {
-#ifdef Theron
+#ifdef THERON
   //	ies->logging_->log("New iterator tree received!\n");
   //
   //	Send(int(0),from);

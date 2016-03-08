@@ -7,7 +7,7 @@ AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS\
 
 AM_LDFLAGS=-lc -lm -lrt -lconfig++ -lpthread -lboost_serialization -lxs
 
-LDADD = 	../../Catalog/libcatalog.a \
+LDADD = 	../../catalog/libcatalog.a \
 		../../common/libcommon.a \
 		../../common/Schema/libschema.a \
 		../../utility/libutility.a \

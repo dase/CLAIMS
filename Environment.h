@@ -18,7 +18,7 @@
 #include "Executor/AdaptiveEndPoint.h"
 #include "Executor/PortManager.h"
 #include "common/Logging.h"
-#include "utility/ThreadPool.h"
+#include "utility/thread_pool.h"
 #include "Client/ClaimsServer.h"
 #include "Executor/exchange_tracker.h"
 #include "Executor/expander_tracker.h"
@@ -42,7 +42,7 @@ class Environment {
   ResourceManagerMaster* getResourceManagerMaster();
   InstanceResourceManager* getResourceManagerSlave();
   NodeID getNodeID() const;
-  Catalog* getCatalog() const;
+  claims::catalog::Catalog* getCatalog() const;
   ThreadPool* getThreadPool() const;
   IteratorExecutorSlave* getIteratorExecutorSlave() const;
   Environment(bool ismaster = false);

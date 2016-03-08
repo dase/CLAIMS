@@ -1,0 +1,659 @@
+[;31m      ______  __           ___       __  .___  ___.      _______.
+     /      ||  |         /   \     |  | |   \/   |     /       |
+    |  ,----'|  |        /  ^  \    |  | |  \  /  |    |   (----`
+    |  |     |  |       /  /_\  \   |  | |  |\/|  |     \   \   
+    |  `----.|  `----. /  _____  \  |  | |  |  |  | .----)   |   
+     \______||_______|/__/     \__\ |__| |__|  |__| |_______/    
+[0m
+    -----------CLuster-Aware In-Memory Sql query engine----------
+
+
+[?1034hCLAIMS>﻿create table PART(
+     > P_PARTKEY bigint unsigned,
+     > P_NAME varchar(55),
+     > P_MFGR varchar(25),
+     > P_BRAND varchar(10),
+     > P_TYPE varchar(25),
+     > P_SIZE int,
+     > P_CONTAINER varchar(10),
+     > P_RETAILPRICE  decimal(20,4),
+     > P_COMMENT varchar(23)
+     > );
+create table successfully
+CLAIMS>create projection on PART(
+     > P_PARTKEY,
+     > P_NAME,
+     > P_MFGR,
+     > P_BRAND,
+     > P_TYPE,
+     > P_SIZE,
+     > P_CONTAINER,
+     > P_RETAILPRICE,
+     > P_COMMENT
+     > ) number =  8 partitioned on P_PARTKEY;
+create projection successfully
+CLAIMS>load table PART from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl " with '|','\n';
+load data successfully (7.80764 sec) 
+
+WARNINGS:
+Line: 5 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 29 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 53 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 77 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 101 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 125 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 149 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 173 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 197 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 221 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 245 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 269 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 293 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 317 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 341 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 365 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 389 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 413 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 437 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 461 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 485 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 509 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 533 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 557 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 581 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 605 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 629 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 653 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 677 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 701 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 725 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 749 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 773 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 797 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 821 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 845 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 869 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 893 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 917 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 941 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 965 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 989 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1013 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1037 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1061 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1085 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1109 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1133 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1157 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1181 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1205 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1229 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1253 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1277 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1301 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1325 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1349 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1373 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1397 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1421 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1445 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1469 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+Line: 1493 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/part.tbl was truncated; it contained more data than there were input columns
+
+
+CLAIMS>
+     > create table SUPPLIER(
+     > S_SUPPKEY bigint unsigned,
+     > S_NAME varchar(25),
+     > S_ADDRESS varchar(40),
+     > S_NATIONKEY bigint unsigned,
+     > S_PHONE varchar(15),
+     > S_ACCTBAL decimal(20,4),
+     > S_COMMENT varchar(101)
+     > );
+create table successfully
+CLAIMS>create projection on SUPPLIER(
+     > S_SUPPKEY,
+     > S_NAME,
+     > S_ADDRESS,
+     > S_NATIONKEY,
+     > S_PHONE,
+     > S_ACCTBAL,
+     > S_COMMENT
+     > ) number = 8 partitioned on S_SUPPKEY;
+create projection successfully
+CLAIMS>load table SUPPLIER from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/supp lier.tbl" with '|','\n';
+load data successfully (2.583 sec) 
+
+WARNINGS:
+Line: 3 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 27 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 51 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 75 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 99 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 123 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 147 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 171 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 195 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 219 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 243 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 267 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 291 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 315 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 339 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 363 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 387 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 411 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 435 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 459 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 483 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 507 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 531 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 555 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 579 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 603 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 627 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 651 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 675 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 699 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 723 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 747 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 771 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 795 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 819 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 843 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 867 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 891 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 915 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 939 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 963 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 987 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1011 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1035 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1059 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1083 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1107 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1131 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1155 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1179 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1203 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1227 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1251 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1275 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1299 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1323 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1347 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1371 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1395 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1419 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1443 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1467 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+Line: 1491 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/supplier.tbl was truncated; it contained more data than there were input columns
+
+
+CLAIMS>
+     > create table PARTSUPP(
+     > PS_PARTKEY bigint unsigned,
+     > PS_SUPPKEY bigint unsigned,
+     > PS_AVAILQTY int,
+     > PS_SUPPLYCOST decimal(20,2),
+     > PS_COMMENT varchar(199)
+     > );
+create table successfully
+CLAIMS>
+     > 
+     > 
+     > create projection on PARTSUPP(
+     > PS_PARTKEY,
+     > PS_SUPPKEY,
+     > PS_AVAILQTY,
+     > PS_SUPPLYCOST,
+     > PS_COMMENT
+     > ) number = 8 partitioned on PS_PARTKEY;
+create projection successfully
+CLAIMS>load table PARTSUPP from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/part supp.tbl" with '|','\n';
+load data successfully (76.2355 sec) 
+
+WARNINGS:
+Line: 1 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 25 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 49 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 73 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 97 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 121 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 145 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 169 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 193 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 217 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 241 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 265 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 289 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 313 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 337 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 361 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 385 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 409 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 433 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 457 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 481 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 505 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 529 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 553 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 577 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 601 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 625 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 649 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 673 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 697 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 721 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 745 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 769 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 793 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 817 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 841 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 865 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 889 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 913 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 937 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 961 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 985 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1009 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1033 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1057 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1081 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1105 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1129 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1153 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1177 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1201 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1225 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1249 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1273 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1297 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1321 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1345 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1369 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1393 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1417 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1441 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1465 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+Line: 1489 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/partsupp.tbl was truncated; it contained more data than there were input columns
+
+
+CLAIMS>
+     > create table CUSTOMER(
+     > C_CUSTKEY bigint unsigned,
+     > C_NAME varchar(25),
+     > C_ADDRESS varchar(40),
+     > C_NATIONKEY bigint unsigned,
+     > C_PHONE varchar(15),
+     > C_ACCTBAL decimal(20,4),
+     > C_MKTSEGMENT varchar(10),
+     > C_COMMENT varchar(117)
+     > );
+create table successfully
+CLAIMS>create projection on CUSTOMER(
+     > C_CUSTKEY,
+     > C_NAME,
+     > C_ADDRESS,
+     > C_NATIONKEY,
+     > C_PHONE,
+     > C_ACCTBAL,
+     > C_MKTSEGMENT,
+     > C_COMMENT
+     > ) number = 8 partitioned on C_CUSTKEY;
+create projection successfully
+CLAIMS>load table CUSTOMER from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/cust omer.tbl" with '|','\n';
+load data successfully (22.6057 sec) 
+
+WARNINGS:
+Line: 24 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 48 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 72 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 14 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 38 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 62 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 96 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 86 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 110 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 120 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 134 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 144 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 158 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 168 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 182 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 192 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 206 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 216 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 230 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 240 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 254 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 264 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 278 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 288 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 302 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 312 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 326 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 336 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 350 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 360 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 374 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 384 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 398 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 408 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 422 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 432 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 446 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 456 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 470 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 480 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 504 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 494 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 518 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 528 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 542 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 552 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 566 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 576 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 590 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 600 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 614 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 624 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 638 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 648 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 662 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 672 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 686 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 696 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 710 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 720 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 734 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 744 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+Line: 758 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/customer.tbl was truncated; it contained more data than there were input columns
+
+
+CLAIMS>
+     > 
+     > create table ORDERS(
+     > O_ORDERKEY bigint unsigned,
+     > O_CUSTKEY bigint unsigned,
+     > O_ORDERSTATUS varchar(1),
+     > O_TOTALPRICE decimal(20,4),
+     > O_ORDERDATE date,
+     > O_ORDERPRIORITY varchar(15),
+     > O_CLERK varchar(15),
+     > O_SHIPPRIORITY int,
+     > O_COMMENT varchar(79)
+     > );
+create table successfully
+CLAIMS>create projection on ORDERS(
+     > O_ORDERKEY,
+     > O_CUSTKEY,
+     > O_ORDERSTATUS,
+     > O_TOTALPRICE,
+     > O_ORDERDATE,
+     > O_ORDERPRIORITY,
+     > O_CLERK,
+     > O_SHIPPRIORITY,
+     > O_COMMENT
+     > ) number = 8 partitioned on O_ORDERKEY;
+create projection successfully
+CLAIMS>load table ORDERS from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/orders .tbl" with '|','\n';
+load data successfully (77.1838 sec) 
+
+WARNINGS:
+Line: 2 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 26 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 50 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 74 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 98 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 122 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 146 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 170 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 194 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 218 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 242 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 266 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 290 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 314 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 338 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 362 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 386 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 410 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 434 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 458 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 482 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 506 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 530 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 554 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 578 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 602 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 626 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 650 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 674 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 698 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 722 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 746 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 770 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 794 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 818 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 842 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 866 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 890 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 914 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 938 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 962 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 986 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1010 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1034 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1058 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1082 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1106 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1130 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1154 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1178 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1202 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1226 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1250 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1274 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1298 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1322 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1346 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1370 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1394 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1418 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1442 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1466 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+Line: 1490 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/orders.tbl was truncated; it contained more data than there were input columns
+
+
+CLAIMS>
+     > 
+     > create table LINEITEM(
+     > L_ORDERKEY bigint unsigned,
+     > L_PARTKEY bigint unsigned,
+     > L_SUPPKEY bigint unsigned,
+     > L_LINENUMBER int, 
+     > L_QUANTITY decimal(20,4),
+     > L_EXTENDEDPRICE decimal(20,4),
+     > L_DISCOUNT decimal(20,4),
+     > L_TAX decimal(20,4),
+     > L_RETURNFLAG varchar(1),
+     > L_LINESTATUS varchar(1),
+     > L_SHIPDATE date,
+     > L_COMMITDATE date,
+     > L_RECEIPTDATE date,
+     > L_SHIPINSTRUCT varchar(25),
+     > L_SHIPMODE varchar(10),
+     > L_COMMENT varchar(44)
+     > );
+create table successfully
+CLAIMS>
+     > create projection on LINEITEM(
+     > L_ORDERKEY,
+     > L_PARTKEY,
+     > L_SUPPKEY,
+     > L_LINENUMBER,
+     > L_QUANTITY,
+     > L_EXTENDEDPRICE,
+     > L_DISCOUNT,
+     > L_TAX,
+     > L_RETURNFLAG,
+     > L_LINESTATUS,
+     > L_SHIPDATE,
+     > L_COMMITDATE,
+     > L_RECEIPTDATE,
+     > L_SHIPINSTRUCT,
+     > L_SHIPMODE,
+     > L_COMMENT
+     > ) number = 8 partitioned on L_ORDERKEY;
+create projection successfully
+CLAIMS>
+     > load table LINEITEM from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/line item.tbl" with '|','\n';
+load data successfully (942.684 sec) 
+
+WARNINGS:
+Line: 24 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 48 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 72 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 96 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 120 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 144 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 168 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 192 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 216 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 240 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 264 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 288 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 312 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 336 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 360 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 384 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 408 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 432 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 456 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 480 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 504 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 528 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 552 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 576 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 600 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 624 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 648 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 672 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 696 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 720 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 744 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 768 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 792 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 816 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 840 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 864 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 888 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 912 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 936 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 960 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 984 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1008 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1032 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1056 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1080 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1104 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1128 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1152 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1176 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1200 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1224 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1248 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1272 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1296 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1320 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1344 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1368 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1392 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1416 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1440 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1464 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1488 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+Line: 1512 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/lineitem.tbl was truncated; it contained more data than there were input columns
+
+
+CLAIMS>
+     > 
+     > create table NATION(
+     > N_NATIONKEY bigint unsigned,
+     > N_NAME varchar(25),
+     > N_REGIONKEY bigint unsigned,
+     > N_COMMENT varchar(152)
+     > );
+create table successfully
+CLAIMS>
+     > create projection on NATION(
+     > N_NATIONKEY,
+     > N_NAME,
+     > N_REGIONKEY,
+     > N_COMMENT
+     > ) number = 8 partitioned on N_NATIONKEY;
+create projection successfully
+CLAIMS>
+     > load table NATION from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/nation .tbl" with '|','\n';
+load data successfully (0.299075 sec) 
+
+WARNINGS:
+Line: 16 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 7 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 1 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 25 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 12 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 9 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 24 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 2 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 5 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 22 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 4 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 14 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 8 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 23 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 17 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 6 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 18 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 19 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 20 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 3 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 21 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 11 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 10 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 13 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+Line: 15 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/nation.tbl was truncated; it contained more data than there were input columns
+
+
+CLAIMS>
+     > 
+     > 
+     > 
+     > create table REGION(
+     > R_REGIONKEY bigint unsigned,
+     > R_NAME varchar(25),
+     > R_COMMENT varchar(152)
+     > );
+create table successfully
+CLAIMS>
+     > create projection on REGION(
+     > R_REGIONKEY,
+     > R_NAME,
+     > R_COMMENT
+     > ) number = 8 partitioned on R_REGIONKEY;
+create projection successfully
+CLAIMS>load table REGION from "/home/imdb/rawData/tpch-raw-data/tpch_sf10/region .tbl" with '|','\n';
+load data successfully (0.34907 sec) 
+
+WARNINGS:
+Line: 4 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/region.tbl was truncated; it contained more data than there were input columns
+Line: 5 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/region.tbl was truncated; it contained more data than there were input columns
+Line: 3 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/region.tbl was truncated; it contained more data than there were input columns
+Line: 2 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/region.tbl was truncated; it contained more data than there were input columns
+Line: 1 in file: /home/imdb/rawData/tpch-raw-data/tpch_sf10/region.tbl was truncated; it contained more data than there were input columns
+
+
+CLAIMS>
+     > exit;

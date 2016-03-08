@@ -47,7 +47,7 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
   if (ismaster) {
     logging_->log("Initializing the Coordinator...");
     initializeCoordinator();
-    catalog_ = Catalog::getInstance();
+    catalog_ = claims::catalog::Catalog::getInstance();
     if (rSuccess != catalog_->restoreCatalog()) {
       LOG(ERROR) << "failed to restore catalog" << std::endl;
       cerr << "ERROR: restore catalog failed" << endl;
@@ -201,7 +201,7 @@ InstanceResourceManager* Environment::getResourceManagerSlave() {
   return resourceManagerSlave_;
 }
 NodeID Environment::getNodeID() const { return nodeid; }
-Catalog* Environment::getCatalog() const { return catalog_; }
+claims::catalog::Catalog* Environment::getCatalog() const { return catalog_; }
 
 void Environment::initializeClientListener() {
   listener_ = new ClientListener(Config::client_listener_port);
@@ -222,8 +222,7 @@ void Environment::destoryClientListener() {
 
 bool Environment::initializeThreadPool() {
   thread_pool_ = new ThreadPool();
-  //	return thread_pool_->Thread_Pool_init(2*sysconf(_SC_NPROCESSORS_CONF));
-  return thread_pool_->Thread_Pool_init(Config::thread_pool_init_thread_num);
+  return thread_pool_->Init(Config::thread_pool_init_thread_num);
 }
 
 IteratorExecutorSlave* Environment::getIteratorExecutorSlave() const {

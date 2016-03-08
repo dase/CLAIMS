@@ -15,7 +15,7 @@
 using caf::io::remote_actor;
 using claims::SendPlanAtom;
 IteratorExecutorMaster* IteratorExecutorMaster::_instance = 0;
-//#define THERON
+#define THERON
 
 IteratorExecutorMaster::IteratorExecutorMaster() {
   _instance = this;
@@ -125,7 +125,7 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(
           target_id);
   auto target_actor = remote_actor(node_addr.first.c_str(), node_addr.second);
   self->send(target_actor, SendPlanAtom::value, str);
-
+  return true;
 #endif
 }
 bool IteratorExecutorMaster::Propogation(const int count, std::string target) {
