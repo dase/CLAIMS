@@ -118,7 +118,9 @@ class Catalog {
   Logging* logging;
   ProjectionBinding* binding_;
   static Catalog* instance_;
-  SingleFileConnector* connector_ = NULL;
+  SingleFileConnector* write_connector_ = NULL;
+  SingleFileConnector* read_connector_ = NULL;
+  Lock write_lock_;
 
   friend class boost::serialization::access;
   template <class Archive>

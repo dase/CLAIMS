@@ -928,8 +928,8 @@ RetCode DataInjector::FlushNotFullBlock(
             ret,
             connector_->AtomicFlush(
                 i, j, block_to_write->getBlock(), block_to_write->getsize(),
-                [i, j, table]() { table->LockPartition(i, j); },
-                [i, j, table]() { table->UnlockPartition(i, j); }),
+                [i, j, this]() { table_->LockPartition(i, j); },
+                [i, j, this]() { table_->UnlockPartition(i, j); }),
             "flushed the last block from buffer(" << i << "," << j
                                                   << ") into file",
             "failed to flush the last block from buffer(" << i << "," << j
@@ -1019,12 +1019,12 @@ RetCode DataInjector::InsertTupleIntoProjection(
     // if buffer is full, write buffer(64K) to HDFS/disk
     local_pj_buffer[i][part]->serialize(*block_to_write);
 #ifdef DATA_DO_LOAD
-    EXEC_AND_LOG(
+    EXEC_AND_ONLY_LOG_ERROR(
         ret, connector_->AtomicFlush(
                  i, part, block_to_write->getBlock(), block_to_write->getsize(),
-                 [i, part, table]() { table->LockPartition(i, part); },
-                 [i, part, table]() { table->UnlockPartition(i, part); }),
-        "writen to data file", "failed to write to data file. ");
+                 [i, part, this]() { table_->LockPartition(i, part); },
+                 [i, part, this]() { table_->UnlockPartition(i, part); }),
+        /* "written to data file", */ "failed to write to data file. ");
 #endif
     __sync_add_and_fetch(&blocks_per_partition_[i][part], 1);
     local_pj_buffer[i][part]->setEmpty();

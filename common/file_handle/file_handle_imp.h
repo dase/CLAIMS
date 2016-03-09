@@ -28,6 +28,8 @@
 
 #ifndef COMMON_FILE_HANDLE_FILE_HANDLE_IMP_H_
 #define COMMON_FILE_HANDLE_FILE_HANDLE_IMP_H_
+#include <glog/logging.h>
+#include <atomic>
 #include <functional>
 #include <string>
 
@@ -38,7 +40,7 @@ using std::function;
 namespace claims {
 namespace common {
 using std::string;
-
+using std::atomic;
 class FileHandleImpFactory;
 enum FileOpenFlag { kCreateFile = 0, kAppendFile, kReadFile };
 static const char* file_open_flag_info[3] = {"kCreateFile", "kAppendFile",
@@ -51,6 +53,22 @@ class FileHandleImp {
 
  protected:
   enum FileStatus { kInReading = 0, kInOverWriting, kInAppending, kClosed };
+
+ protected:
+  class RefHolder {
+   public:
+    explicit RefHolder(atomic<int>& ref) : ref_(ref) {
+      ++ref_;
+      LOG(INFO) << "ref post:" << ref_ << std::endl;
+    }
+    ~RefHolder() {
+      --ref_;
+      LOG(INFO) << "ref wait:" << ref_;
+    }
+
+   private:
+    atomic<int>& ref_;
+  };
 
  public:
   explicit FileHandleImp(std::string file_name) : file_name_(file_name) {}
@@ -106,7 +124,10 @@ class FileHandleImp {
  protected:
   std::string file_name_;
   volatile FileStatus file_status_ = kClosed;
-  Lock write_lock_;
+  //  Lock write_lock_;
+  //  atomic<int> reference_count_;
+  //  SpineLock i_win_to_close_;
+  //  semaphore can_close_;
 };
 
 }  // namespace common

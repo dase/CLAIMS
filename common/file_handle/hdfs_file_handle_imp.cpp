@@ -46,10 +46,11 @@ namespace claims {
 namespace common {
 
 RetCode HdfsFileHandleImp::SwitchStatus(FileStatus status_to_be) {
+  int old_file_status = file_status_;
   if (kInReading == status_to_be && kInReading != file_status_) {
     Close();
     file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_RDONLY, 0, 0, 0);
-  } else if (kInOverWriting == status_to_be && kInOverWriting != file_status_) {
+  } else if (kInOverWriting == status_to_be) {
     Close();
     file_ = hdfsOpenFile(fs_, file_name_.c_str(), O_WRONLY, 0, 0, 0);
   } else if (kInAppending == status_to_be && kInAppending != file_status_) {
@@ -78,10 +79,11 @@ RetCode HdfsFileHandleImp::SwitchStatus(FileStatus status_to_be) {
                 << file_status_info[status_to_be] << " .";
     return rOpenHdfsFileFail;
   } else {
-    LOG(INFO) << "HDFS file:" << file_name_ << "("
-              << file_status_info[file_status_] << ") is reopened for "
-              << file_status_info[status_to_be] << endl;
+    //    can_close_.set_value(1);
     file_status_ = status_to_be;
+    LOG(INFO) << "HDFS file:" << file_name_ << "("
+              << file_status_info[old_file_status] << ") is reopened for "
+              << file_status_info[file_status_] << endl;
     return rSuccess;
   }
 }
@@ -89,6 +91,8 @@ RetCode HdfsFileHandleImp::SwitchStatus(FileStatus status_to_be) {
 RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
   assert(NULL != fs_ && "failed to connect hdfs");
   assert(NULL != file_ && "make sure file is opened");
+  //  RefHolder holder(reference_count_);
+
   size_t total_write_num = 0;
   while (total_write_num < length) {
     int32_t write_num = hdfsWrite(
@@ -115,27 +119,27 @@ RetCode HdfsFileHandleImp::Write(const void* buffer, const size_t length) {
 
 RetCode HdfsFileHandleImp::Close() {
   if (NULL == file_) {
-    LOG(INFO) << "hdfs file have been closed " << endl;
+    LOG(INFO) << "hdfs file:" << file_name_ << " have been closed " << endl;
     return rSuccess;
   }
   assert(NULL != fs_ && "failed to connect hdfs");
-
-  //  static char* hdfs_file_type[] = {"UNINITIALIZED", "INPUT", "OUTPUT"};
-  //  LOG(INFO) << "the type of file_ is " << hdfs_file_type[file_->type] <<
-  //  endl;
+  //  if (0 != reference_count_  // someone are still using this file descriptor
+  //      || !i_win_to_close_.try_lock())  // someone win the lock to close
+  //    return rSuccess;
 
   if (0 != hdfsCloseFile(fs_, file_)) {
-    LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
+    PLOG(ERROR) << "failed to close hdfs file: " << file_name_;
     return rCloseHdfsFileFail;
   }
   file_ = NULL;
   file_status_ = kClosed;
-  LOG(INFO) << "hdfs file is closed " << endl;
+  LOG(INFO) << "hdfs file: " << file_name_ << " is closed " << endl;
   return rSuccess;
 }
 
 RetCode HdfsFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
   assert(NULL != fs_ && "failed to connect hdfs");
+  //  RefHolder holder(reference_count_);
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInReading),
                         "failed to switch status");
@@ -164,6 +168,7 @@ RetCode HdfsFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
 
 RetCode HdfsFileHandleImp::Read(void* buffer, size_t length) {
   assert(NULL != fs_ && "failed to connect hdfs");
+  //  RefHolder holder(reference_count_);
 
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInReading),
@@ -206,6 +211,8 @@ RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
 }
 
 RetCode HdfsFileHandleImp::Append(const void* buffer, const size_t length) {
+  //  RefHolder holder(reference_count_);
+
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInAppending),
                         "failed to switch status");
@@ -214,6 +221,7 @@ RetCode HdfsFileHandleImp::Append(const void* buffer, const size_t length) {
 }
 
 RetCode HdfsFileHandleImp::OverWrite(const void* buffer, const size_t length) {
+  //  RefHolder holder(reference_count_);
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInOverWriting),
                         "failed to switch status");

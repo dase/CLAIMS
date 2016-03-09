@@ -63,7 +63,10 @@ Catalog* Catalog::instance_ = NULL;
 Catalog::Catalog() {
   logging = new CatalogLogging();
   binding_ = new ProjectionBinding();
-  connector_ = new SingleFileConnector(
+  write_connector_ = new SingleFileConnector(
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+      Config::catalog_file);
+  read_connector_ = new SingleFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
       Config::catalog_file);
 }
@@ -172,19 +175,20 @@ void Catalog::outPut() {
 
 // 2014-3-20---save as a file---by Yu
 RetCode Catalog::saveCatalog() {
+  LockGuard<Lock> guard(write_lock_);
   std::ostringstream oss;
   boost::archive::text_oarchive oa(oss);
   oa << *this;
 
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(
-      ret, connector_->Flush(static_cast<const void*>(oss.str().c_str()),
-                             oss.str().length(), true),
+      ret, write_connector_->Flush(static_cast<const void*>(oss.str().c_str()),
+                                   oss.str().length(), true),
       "failed to flush into catalog file: " << Config::catalog_file);
 
-  EXEC_AND_ONLY_LOG_ERROR(
-      ret, connector_->Close(),
-      "closed catalog file whose name:" << Config::catalog_file);
+  //  EXEC_AND_ONLY_LOG_ERROR(
+  //      ret, write_connector_->Close(),
+  //      "failed to close catalog file: " << Config::catalog_file);
   return ret;
 }
 
@@ -236,11 +240,11 @@ RetCode Catalog::restoreCatalog() {
   string catalog_file = Config::catalog_file;
 
   // check whether there is catalog file if there are data file
-  if (!connector_->CanAccess() && IsDataFileExist()) {
+  if (!read_connector_->CanAccess() && IsDataFileExist()) {
     LOG(ERROR) << "The data file are existed while catalog file "
                << catalog_file << " is not existed!" << endl;
     return rCatalogNotFound;
-  } else if (!connector_->CanAccess()) {
+  } else if (!read_connector_->CanAccess()) {
     LOG(INFO) << "The catalog file and data file all are not existed" << endl;
     return rSuccess;
   } else if (!IsDataFileExist()) {
@@ -250,7 +254,8 @@ RetCode Catalog::restoreCatalog() {
   } else {
     uint64_t file_length = 0;
     void* buffer;
-    EXEC_AND_RETURN_ERROR(ret, connector_->LoadTotalFile(buffer, &file_length),
+    EXEC_AND_RETURN_ERROR(ret,
+                          read_connector_->LoadTotalFile(buffer, &file_length),
                           "catalog file name: " << catalog_file);
 
     LOG(INFO) << "Start to deserialize catalog ..." << endl;

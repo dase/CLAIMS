@@ -54,10 +54,11 @@ DiskFileHandleImp::~DiskFileHandleImp() {
 }
 
 RetCode DiskFileHandleImp::SwitchStatus(FileStatus status_to_be) {
+  int old_file_status = file_status_;
   if (kInReading == status_to_be && kInReading != file_status_) {
     Close();
     fd_ = FileOpen(file_name_.c_str(), O_RDONLY, S_IWUSR | S_IRUSR);
-  } else if (kInOverWriting == status_to_be && kInOverWriting != file_status_) {
+  } else if (kInOverWriting == status_to_be) {
     Close();
     fd_ = FileOpen(file_name_.c_str(), O_RDWR | O_TRUNC | O_CREAT,
                    S_IWUSR | S_IRUSR);
@@ -74,10 +75,11 @@ RetCode DiskFileHandleImp::SwitchStatus(FileStatus status_to_be) {
                 << file_status_info[status_to_be] << " .";
     return rOpenDiskFileFail;
   } else {
-    LOG(INFO) << "disk file:" << file_name_ << "("
-              << file_status_info[file_status_] << ") is reopened for "
-              << file_status_info[status_to_be] << endl;
+    //    can_close_.set_value(1);
     file_status_ = status_to_be;
+    LOG(INFO) << "disk file:" << file_name_ << "("
+              << file_status_info[old_file_status] << ") is reopened for "
+              << file_status_info[file_status_] << endl;
     return rSuccess;
   }
 }
@@ -86,6 +88,8 @@ RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
   assert(fd_ >= 3);
   assert((kInOverWriting == file_status_ || kInAppending == file_status_) &&
          " files is not opened in writing mode");
+  //  RefHolder holder(reference_count_);
+
   size_t total_write_num = 0;
   while (total_write_num < length) {
     ssize_t write_num =
@@ -93,7 +97,7 @@ RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
               length - total_write_num);
     if (-1 == write_num) {
       PLOG(ERROR) << "failed to write buffer(" << buffer << ") to file(" << fd_
-                  << "): " << file_name_ << endl;
+                  << "): " << file_name_;
       return rWriteDiskFileFail;
     }
     total_write_num += write_num;
@@ -111,21 +115,32 @@ RetCode DiskFileHandleImp::Write(const void* buffer, const size_t length) {
 }
 
 RetCode DiskFileHandleImp::Close() {
+  //  LOG(INFO) << "ref: " << can_close_.get_value();
+  //  if (-1 == fd_ || 0 != reference_count_.load()  // someone are still using
+  //  this
+  //                                                 // file descriptor
+  //      || !i_win_to_close_.try_lock()) {  // someone win the lock to close
   if (-1 == fd_) {
     return rSuccess;
   } else if (0 == FileClose(fd_)) {
     LOG(INFO) << "closed file: " << file_name_ << " whose fd is " << fd_
               << endl;
+    //    i_win_to_close_.release();
     fd_ = -1;
     file_status_ = kClosed;
     return rSuccess;
   } else {
-    return rCloseDiskFileFail;
+    //    i_win_to_close_.release();
+    int ret = rCloseDiskFileFail;
+    EXEC_AND_PLOG(ret, ret, "", "failed to close file:" << file_name_);
+    return ret;
   }
 }
 
 RetCode DiskFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
   int ret = rSuccess;
+  //  RefHolder holder(reference_count_);
+
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInReading),
                         "failed to switch status");
 
@@ -152,6 +167,8 @@ RetCode DiskFileHandleImp::ReadTotalFile(void*& buffer, size_t* length) {
 
 RetCode DiskFileHandleImp::Read(void* buffer, size_t length) {
   int ret = rSuccess;
+  //  RefHolder holder(reference_count_);
+
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInReading),
                         "failed to switch status");
 
@@ -191,6 +208,8 @@ RetCode DiskFileHandleImp::SetPosition(size_t pos) {
 
 RetCode DiskFileHandleImp::Append(const void* buffer, const size_t length) {
   int ret = rSuccess;
+  //  RefHolder holder(reference_count_);
+
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInAppending),
                         "failed to switch status");
   assert(fd_ >= 3);
@@ -201,6 +220,8 @@ RetCode DiskFileHandleImp::Append(const void* buffer, const size_t length) {
 
 RetCode DiskFileHandleImp::OverWrite(const void* buffer, const size_t length) {
   int ret = rSuccess;
+  //  RefHolder holder(reference_count_);
+
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInOverWriting),
                         "failed to switch status");
   assert(fd_ >= 3);
