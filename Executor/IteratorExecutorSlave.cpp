@@ -11,7 +11,7 @@
 #include "../Resource/CPUResource.h"
 #include "../utility/print_tool.h"
 #include <iosfwd>
-#define THERON
+//#define THERON
 IteratorExecutorSlave::IteratorExecutorSlave() {
   logging_ = new IteratorExecutorSlaveLogging();
   endpoint = Environment::getInstance()->getEndPoint();

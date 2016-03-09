@@ -52,12 +52,8 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
       LOG(ERROR) << "failed to restore catalog" << std::endl;
       cerr << "ERROR: restore catalog failed" << endl;
     }
-    ////////////////// should be sigtion
-    master_node_ = MasterNode::GetInstance();
   }
-  slave_node_ = SlaveNode::GetInstance();
-  slave_node_->RegisterToMaster();
-  //////////////////
+
   if (true == g_thread_pool_used) {
     logging_->log("Initializing the ThreadPool...");
     if (false == initializeThreadPool()) {
@@ -80,6 +76,8 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
    * decided.*/
 
   initializeResourceManager();
+
+  InitMembership();
 
   initializeStorage();
 
@@ -182,7 +180,15 @@ void Environment::initializeResourceManager() {
     resourceManagerMaster_ = new ResourceManagerMaster();
   }
   resourceManagerSlave_ = new InstanceResourceManager();
-  nodeid = resourceManagerSlave_->Register();
+  //  nodeid = resourceManagerSlave_->Register();
+}
+void Environment::InitMembership() {
+  if (ismaster_) {
+    master_node_ = MasterNode::GetInstance();
+  }
+  slave_node_ = SlaveNode::GetInstance();
+  slave_node_->RegisterToMaster();
+  nodeid = slave_node_->get_node_id();
 }
 void Environment::initializeBufferManager() {
   bufferManager_ = BufferManager::getInstance();

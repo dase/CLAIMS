@@ -15,7 +15,7 @@
 using caf::io::remote_actor;
 using claims::SendPlanAtom;
 IteratorExecutorMaster* IteratorExecutorMaster::_instance = 0;
-#define THERON
+//#define THERON
 
 IteratorExecutorMaster::IteratorExecutorMaster() {
   _instance = this;

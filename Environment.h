@@ -48,6 +48,7 @@ class Environment {
   Environment(bool ismaster = false);
   MasterNode* get_master_node() { return master_node_; }
   SlaveNode* get_slave_node() { return slave_node_; }
+  BlockManager* get_block_manager() { return blockManager_; }
 
  private:
   void readConfigFile();
@@ -61,6 +62,7 @@ class Environment {
   void initializeExpressionSystem();
   void destoryClientListener();
   bool initializeThreadPool();
+  void InitMembership();
 
  private:
   static Environment* _instance;

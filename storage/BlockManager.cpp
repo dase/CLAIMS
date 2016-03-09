@@ -179,7 +179,7 @@ bool BlockManager::put(string blockId, storageLevel level, void* value) {
 //	else{
 //		hdfsFS fs=hdfsConnect(HDFS_N,9000);
 //		hdfsFile
-//readFile=hdfsOpenFile(fs,file_name.c_str(),O_RDONLY,0,0,0);
+// readFile=hdfsOpenFile(fs,file_name.c_str(),O_RDONLY,0,0,0);
 //		hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,file_name.c_str());
 ////		char
 ///***path=hdfsGetHosts(fs,"/home/hayue/input/3_64m",0,201326592+12);
@@ -193,7 +193,7 @@ bool BlockManager::put(string blockId, storageLevel level, void* value) {
 //			ChunkInfo ci;
 //			void *rt=malloc(CHUNK_SIZE);		//newmalloc
 //			tSize
-//bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
+// bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
 //			cout<<"split interface: "<<bytes_num<<endl;
 //			ostringstream chunkid;
 //			chunkid<<file_name.c_str()<<"_"<<offset++;
@@ -385,7 +385,7 @@ bool BlockManager::BlockManagerWorkerActor::_reigisterToMaster(
   //	cout<<"in the worker actor to register"<<endl;
   //	//
   //在注册的时候，就有receiverId的构造，也就是用这个string来作为所有的stroage
-  //node的标志，
+  // node的标志，
   //	// 不会出现冲突，是因为传输的message是不一样的，
   //	receiverId_=bMId->blockManagerId;
   //	StorageBudgetMessage rsm(receiverId_.c_str());
@@ -464,13 +464,17 @@ string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,
 }
 void BlockManager::BlockManagerWorkerActor::BindingPartition(
     const PartitionBindingMessage& message, const Theron::Address from) {
+#ifdef THERON
   bm_->addPartition(message.partition_id, message.number_of_chunks,
                     message.storage_level);
   Send(int(0), from);
+#endif
 }
 
 void BlockManager::BlockManagerWorkerActor::UnbindingPartition(
     const PartitionUnbindingMessage& message, const Theron::Address from) {
+#ifdef THERON
   bm_->removePartition(message.partition_id);
   Send(int(0), from);
+#endif
 }

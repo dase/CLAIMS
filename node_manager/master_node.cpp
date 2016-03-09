@@ -35,7 +35,13 @@
 #include <iostream>
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
+#include <vector>
+
+#include "../common/ids.h"
+#include "../common/Message.h"
+#include "../Environment.h"
 using caf::io::remote_actor;
+using caf::make_message;
 using std::make_pair;
 namespace claims {
 MasterNode* MasterNode::instance_ = 0;
@@ -52,7 +58,22 @@ class MasterNodeActor : public event_based_actor {
 
         [=](RegisterAtom, string ip, uint16_t port) -> caf::message {
           unsigned id = master_node_->AddOneNode(ip, port);
+          Environment::getInstance()
+              ->getResourceManagerMaster()
+              ->RegisterNewSlave(id);
           return make_message(OkAtom::value, id);
+        },
+        [=](StorageBudgetAtom, const StorageBudgetMessage message) {
+          Environment::getInstance()
+              ->getResourceManagerMaster()
+              ->RegisterDiskBuget(message.nodeid, message.disk_budget);
+          Environment::getInstance()
+              ->getResourceManagerMaster()
+              ->RegisterMemoryBuget(message.nodeid, message.memory_budget);
+          cout << "receive storage budget message!! node: " << message.nodeid
+               << " : disk = " << message.disk_budget
+               << " , mem = " << message.memory_budget << endl;
+          return make_message(OkAtom::value);
         },
         [=](ExitAtom) {
           cout << "master " << master_node_->get_node_id() << " finish!"
@@ -115,7 +136,20 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
   return node_id_gen_;
 }
 NodeAddr MasterNode::GetNodeAddrFromId(const unsigned int id) {
-  return node_id_to_addr_[id];
+  if (node_id_to_addr_.find(id) != node_id_to_addr_.end()) {
+    return node_id_to_addr_[id];
+  } else {
+    return NodeAddr("0", 0);
+  }
+}
+
+vector<NodeID> MasterNode::GetAllNodeID() {
+  vector<NodeID> all_node_id;
+  all_node_id.clear();
+  for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
+    all_node_id.push_back(it->first);
+  }
+  return all_node_id;
 }
 
 void MasterNode::FinishAllNode() {

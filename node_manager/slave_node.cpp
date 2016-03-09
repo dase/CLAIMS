@@ -33,7 +33,12 @@
 #include "../common/Message.h"
 #include "caf/io/all.hpp"
 
+#include "./base_node.h"
+#include "../common/ids.h"
 #include "../Environment.h"
+#include "../storage/StorageLevel.h"
+#include "caf/all.hpp"
+using caf::make_message;
 using std::make_pair;
 
 namespace claims {
@@ -43,11 +48,12 @@ class SlaveNodeActor : public event_based_actor {
   SlaveNodeActor(SlaveNode* slave_node) : slave_node_(slave_node) {}
 
   behavior make_behavior() override {
-    std::cout << "slave node actor is OK!" << std::endl;
+    LOG(INFO) << "slave node actor is OK!" << std::endl;
     return {
 
         [=](ExitAtom) {
-          cout << "slave " << slave_node_->get_node_id() << " finish!" << endl;
+          LOG(INFO) << "slave " << slave_node_->get_node_id() << " finish!"
+                    << endl;
           quit();
         },
         [=](SendPlanAtom, Message4K str) {
@@ -58,10 +64,29 @@ class SlaveNodeActor : public event_based_actor {
               ->createNewThreadAndRun(new_plan);
           string log_message =
               "Slave: received plan segment and create new thread and run it!";
-          cout << log_message << endl;
           LOG(INFO) << log_message;
         },
-        caf::others >> [=]() { cout << "unkown message" << endl; }
+        [=](AskExchAtom, ExchangeID exch_id) {
+          return Environment::getInstance()->getExchangeTracker()->GetExchAddr(
+              exch_id);
+        },
+        [=](BindingAtom, const PartitionID partition_id,
+            const unsigned number_of_chunks,
+            const StorageLevel desirable_storage_level) {
+          LOG(INFO) << "receive binding message!" << endl;
+          Environment::getInstance()->get_block_manager()->addPartition(
+              partition_id, number_of_chunks, desirable_storage_level);
+          return make_message(OkAtom::value);
+        },
+        [=](UnBindingAtom, const PartitionID partition_id) {
+          LOG(INFO) << "receive unbinding message~!" << endl;
+          Environment::getInstance()->get_block_manager()->removePartition(
+              partition_id);
+          return make_message(OkAtom::value);
+        },
+
+        caf::others >>
+            [=]() { LOG(WARNING) << "unkown message at slave node!!!" << endl; }
 
     };
   }

@@ -36,15 +36,18 @@
 #include <utility>
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
+#include <vector>
 
 #include "./base_node.h"
 #include "../common/error_define.h"
+#include "../common/ids.h"
 using caf::behavior;
 using caf::event_based_actor;
 using std::atomic_uint;
 using std::map;
 using std::pair;
 using std::string;
+using std::vector;
 namespace claims {
 
 class MasterNode : public BaseNode {
@@ -57,7 +60,7 @@ class MasterNode : public BaseNode {
   void FinishAllNode();
   NodeAddr GetNodeAddrFromId(const unsigned int id);
   unsigned int AddOneNode(string node_ip, uint16_t node_port);
-
+  vector<NodeID> GetAllNodeID();
   MasterNode();
   MasterNode(string node_ip, uint16_t node_port);
 
@@ -67,7 +70,7 @@ class MasterNode : public BaseNode {
  private:
   static MasterNode* instance_;
   atomic_uint node_id_gen_;
-  map<unsigned int, NodeAddr> node_id_to_addr_;
+  map<NodeID, NodeAddr> node_id_to_addr_;
 };
 
 }  // namespace claims
