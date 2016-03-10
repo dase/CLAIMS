@@ -101,12 +101,16 @@ SlaveNode* SlaveNode::GetInstance() {
   return instance_;
 }
 
-SlaveNode::SlaveNode() : BaseNode() { CreateActor(); }
-SlaveNode::SlaveNode(string node_ip, uint16_t node_port)
-    : BaseNode(node_ip, node_port) {
+SlaveNode::SlaveNode() : BaseNode() {
+  instance_ = this;
   CreateActor();
 }
-SlaveNode::~SlaveNode() {}
+SlaveNode::SlaveNode(string node_ip, uint16_t node_port)
+    : BaseNode(node_ip, node_port) {
+  instance_ = this;
+  CreateActor();
+}
+SlaveNode::~SlaveNode() { instance_ = NULL; }
 void SlaveNode::CreateActor() {
   auto slave_actor = caf::spawn<SlaveNodeActor>(this);
   try {

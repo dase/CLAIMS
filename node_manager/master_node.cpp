@@ -94,6 +94,7 @@ MasterNode* MasterNode::GetInstance() {
 }
 
 MasterNode::MasterNode() : node_id_gen_(0) {
+  instance_ = this;
   set_node_id(0);
   ReadMasterAddr();
   node_addr_ = master_addr_;
@@ -105,7 +106,7 @@ MasterNode::MasterNode(string node_ip, uint16_t node_port)
   CreateActor();
 }
 
-MasterNode::~MasterNode() {}
+MasterNode::~MasterNode() { instance_ = NULL; }
 void MasterNode::CreateActor() {
   auto master_actor = caf::spawn<MasterNodeActor>(this);
   try {

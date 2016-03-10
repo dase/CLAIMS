@@ -8,8 +8,6 @@
 #ifndef ITERATOREXECUTORMASTER_H_
 #define ITERATOREXECUTORMASTER_H_
 
-#include <Theron/Theron.h>
-#include <Theron/Defines.h>
 #include <libconfig.h++>
 #include <vector>
 #include <string>
@@ -31,9 +29,6 @@ class IteratorExecutorMaster {
 
  private:
   static IteratorExecutorMaster* _instance;
-  Theron::EndPoint* endpoint;
-  Theron::Framework* framework;
-  Logging* logging_;
 };
 
 #endif /* ITERATOREXECUTORMASTER_H_ */
