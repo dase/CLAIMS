@@ -212,12 +212,25 @@ RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
 
 RetCode HdfsFileHandleImp::Append(const void* buffer, const size_t length) {
   //  RefHolder holder(reference_count_);
-
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInAppending),
                         "failed to switch status");
 
   return Write(buffer, length);
+}
+
+RetCode HdfsFileHandleImp::AtomicAppend(const void* buffer, const size_t length,
+                                        function<void()> lock_func,
+                                        function<void()> unlock_func) {
+  lock_func();
+  RetCode ret = Append(buffer, length);
+  if (ret != rSuccess) {
+    unlock_func();
+    return ret;
+  }
+  ret = Close();
+  unlock_func();
+  return ret;
 }
 
 RetCode HdfsFileHandleImp::OverWrite(const void* buffer, const size_t length) {
@@ -226,6 +239,21 @@ RetCode HdfsFileHandleImp::OverWrite(const void* buffer, const size_t length) {
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInOverWriting),
                         "failed to switch status");
   return Write(buffer, length);
+}
+
+RetCode HdfsFileHandleImp::AtomicOverWrite(const void* buffer,
+                                           const size_t length,
+                                           function<void()> lock_func,
+                                           function<void()> unlock_func) {
+  lock_func();
+  RetCode ret = OverWrite(buffer, length);
+  if (ret != rSuccess) {
+    unlock_func();
+    return ret;
+  }
+  ret = Close();
+  unlock_func();
+  return ret;
 }
 
 RetCode HdfsFileHandleImp::DeleteFile() {

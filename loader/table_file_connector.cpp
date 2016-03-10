@@ -53,7 +53,24 @@ TableFileConnector::TableFileConnector(FilePlatform platform,
                                        TableDescriptor* table)
     : platform_(platform),
       table_(table),
-      write_path_name_(table->GetAllPartitionsPath()) {}
+      write_path_name_(table->GetAllPartitionsPath()) {
+  for (auto projection_iter : write_path_name_) {
+    vector<FileHandleImp*> projection_files;
+    projection_files.clear();
+    for (auto partition_iter : projection_iter) {
+      FileHandleImp* file =
+          FileHandleImpFactory::Instance().CreateFileHandleImp(platform_,
+                                                               partition_iter);
+      projection_files.push_back(file);
+      LOG(INFO)
+          << "push file handler which handles " << partition_iter
+          << " into projection_files. Now the size of projection_files is "
+          << projection_files.size() << std::endl;
+    }
+    file_handles_.push_back(projection_files);
+  }
+  LOG(INFO) << "open all  file successfully" << std::endl;
+}
 
 // TableFileConnector::TableFileConnector(FilePlatform platform,
 //                                       TableDescriptor* table)
@@ -76,16 +93,11 @@ TableFileConnector::~TableFileConnector() {
   //  DELETE_PTR(imp_);
 }
 
-RetCode TableFileConnector::Open() {
+/*RetCode TableFileConnector::Open() {
   for (auto projection_iter : write_path_name_) {
     vector<FileHandleImp*> projection_files;
     projection_files.clear();
     for (auto partition_iter : projection_iter) {
-      //      if (FileOpenFlag::kCreateFile == open_flag_ &&
-      //          rSuccess != imp_->CanAccess(partition_iter)) {
-      //        LOG(WARNING) << "The  file " << partition_iter
-      //                     << " is already exits! It will be override!\n";
-      //      }
       FileHandleImp* file =
           FileHandleImpFactory::Instance().CreateFileHandleImp(platform_,
                                                                partition_iter);
@@ -99,7 +111,7 @@ RetCode TableFileConnector::Open() {
   }
   LOG(INFO) << "open all  file successfully" << std::endl;
   return rSuccess;
-}
+}*/
 
 RetCode TableFileConnector::Flush(unsigned projection_offset,
                                   unsigned partition_offset, const void* source,
@@ -142,6 +154,8 @@ RetCode TableFileConnector::AtomicFlush(unsigned projection_offset,
 }
 
 RetCode TableFileConnector::Close() {
+  assert(file_handles_.size() != 0 && "make sure file handles is not empty");
+
   int ret = rSuccess;
   for (int i = 0; i < file_handles_.size(); ++i)
     for (int j = 0; j < file_handles_[i].size(); ++j)
@@ -153,6 +167,8 @@ RetCode TableFileConnector::Close() {
 }
 
 RetCode TableFileConnector::DeleteAllTableFiles() {
+  assert(file_handles_.size() != 0 && "make sure file handles is not empty");
+
   RetCode ret = rSuccess;
   for (auto prj_files : file_handles_)
     for (auto file : prj_files)

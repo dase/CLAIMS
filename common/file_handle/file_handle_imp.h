@@ -83,15 +83,15 @@ class FileHandleImp {
    */
   virtual RetCode Append(const void* buffer, const size_t length) = 0;
 
-  RetCode AtomicAppend(const void* buffer, const size_t length,
-                       function<void()> lock_func,
-                       function<void()> unlock_func);
+  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
+                               function<void()> lock_func,
+                               function<void()> unlock_func) = 0;
 
   virtual RetCode OverWrite(const void* buffer, const size_t length) = 0;
 
-  RetCode AtomicOverWrite(const void* buffer, const size_t length,
-                          function<void()> lock_func,
-                          function<void()> unlock_func);
+  virtual RetCode AtomicOverWrite(const void* buffer, const size_t length,
+                                  function<void()> lock_func,
+                                  function<void()> unlock_func) = 0;
 
   virtual RetCode Close() = 0;
   /**

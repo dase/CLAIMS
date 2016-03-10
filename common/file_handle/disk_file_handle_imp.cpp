@@ -217,6 +217,14 @@ RetCode DiskFileHandleImp::Append(const void* buffer, const size_t length) {
          " files is not opened in appending mode");
   return Write(buffer, length);
 }
+RetCode DiskFileHandleImp::AtomicAppend(const void* buffer, const size_t length,
+                                        function<void()> lock_func,
+                                        function<void()> unlock_func) {
+  lock_func();
+  RetCode ret = OverWrite(buffer, length);
+  unlock_func();
+  return ret;
+}
 
 RetCode DiskFileHandleImp::OverWrite(const void* buffer, const size_t length) {
   int ret = rSuccess;
@@ -231,9 +239,20 @@ RetCode DiskFileHandleImp::OverWrite(const void* buffer, const size_t length) {
   return Write(buffer, length);
 }
 
+RetCode DiskFileHandleImp::AtomicOverWrite(const void* buffer,
+                                           const size_t length,
+                                           function<void()> lock_func,
+                                           function<void()> unlock_func) {
+  lock_func();
+  RetCode ret = OverWrite(buffer, length);
+  unlock_func();
+  return ret;
+}
+
 RetCode DiskFileHandleImp::DeleteFile() {
   int ret = rSuccess;
-  EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "closed file name: " << file_name_);
+  EXEC_AND_LOG(ret, Close(), "closed file name: " << file_name_,
+               "failed to close file:" << file_name_);
   if (CanAccess(file_name_)) {
     if (0 != remove(file_name_.c_str())) {
       LOG(ERROR) << "Cannot delete disk file : [" + file_name_ +

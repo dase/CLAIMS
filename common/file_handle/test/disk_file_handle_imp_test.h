@@ -45,7 +45,6 @@ namespace common {
 class DiskFileHandleImpTest : public ::testing::Test {
  public:
   static void SetUpTestCase() {
-    //    file_name_ = "DiskFileHandleImpTest";
     imp_ =
         FileHandleImpFactory::Instance().CreateFileHandleImp(kDisk, file_name_);
     std::cout << "=============" << std::endl;

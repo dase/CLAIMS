@@ -51,7 +51,7 @@ class TableFileConnector {
   //  TableFileConnector(common::FilePlatform platform,
   //                     std::vector<std::vector<std::string>> writepath);
   ~TableFileConnector();
-  RetCode Open();
+  //  RetCode Open();
   RetCode Close();
 
   /**

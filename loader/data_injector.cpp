@@ -196,7 +196,7 @@ DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
 #ifdef DATA_DO_LOAD
   connector_ = new TableFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      table);
+      table_);
 #endif
 }
 
@@ -241,10 +241,8 @@ RetCode DataInjector::PrepareInitInfo(FileOpenFlag open_flag) {
         tmp_tuple_count.push_back(0);
         tmp_block_num.push_back(0);
       }
-      LOG(INFO)
-          << "init number of partitions " << i << "\t" << j << "\t:"
-          << table_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j)
-          << endl;
+      LOG(INFO) << "init number of partitions (" << i << "," << j
+                << "):" << tmp_block_num[j];
     }
     pj_buffer_.push_back(temp_v);
     blocks_per_partition_.push_back(tmp_block_num);
@@ -429,8 +427,11 @@ RetCode DataInjector::PrepareEverythingForLoading(
   // open files
   GET_TIME_DI(open_start_time);
 #ifdef DATA_DO_LOAD
-  if (kCreateFile == open_flag) connector_->DeleteAllTableFiles();
-  EXEC_AND_RETURN_ERROR(ret, connector_->Open(), " failed to open connector");
+  //  EXEC_AND_RETURN_ERROR(ret, connector_->Open(), " failed to open
+  //  connector");
+  if (kCreateFile == open_flag)
+    EXEC_AND_LOG(ret, connector_->DeleteAllTableFiles(),
+                 "deleted all table files", "failed to delete all table files");
 #endif
   PLOG_DI("open connector time: " << GetElapsedTimeInUs(open_start_time) /
                                          1000000.0);
@@ -835,9 +836,10 @@ RetCode DataInjector::InsertFromString(const string tuples,
   }
   EXEC_AND_RETURN_ERROR(ret, PrepareInitInfo(kAppendFile),
                         "failed to prepare initialization info");
-#ifdef DATA_DO_LOAD
-  EXEC_AND_RETURN_ERROR(ret, connector_->Open(), " failed to open connector");
-#endif
+  //#ifdef DATA_DO_LOAD
+  //  EXEC_AND_RETURN_ERROR(ret, connector_->Open(), " failed to open
+  //  connector");
+  //#endif
 
   LOG(INFO) << "\n------------------Insert  Begin!-----------------------\n";
 

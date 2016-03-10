@@ -34,27 +34,28 @@
 using std::endl;
 namespace claims {
 namespace common {
-RetCode FileHandleImp::AtomicAppend(const void* buffer, const size_t length,
-                                    function<void()> lock_func,
-                                    function<void()> unlock_func) {
-  lock_func();
-  RetCode ret = Append(buffer, length);
-  unlock_func();
-  return ret;
-}
-RetCode FileHandleImp::AtomicOverWrite(const void* buffer, const size_t length,
-                                       function<void()> lock_func,
-                                       function<void()> unlock_func) {
-  lock_func();
-  RetCode ret = OverWrite(buffer, length);
-  unlock_func();
-  //  if (rSuccess != ret) {
-  //    return ret;
-  //  } else {
-  //    ret = Close();
-  //  }
-  return ret;
-}
+// RetCode FileHandleImp::AtomicAppend(const void* buffer, const size_t length,
+//                                    function<void()> lock_func,
+//                                    function<void()> unlock_func) {
+//  lock_func();
+//  RetCode ret = Append(buffer, length);
+//  unlock_func();
+//  return ret;
+//}
+// RetCode FileHandleImp::AtomicOverWrite(const void* buffer, const size_t
+// length,
+//                                       function<void()> lock_func,
+//                                       function<void()> unlock_func) {
+//  lock_func();
+//  RetCode ret = OverWrite(buffer, length);
+//  unlock_func();
+//  //  if (rSuccess != ret) {
+//  //    return ret;
+//  //  } else {
+//  //    ret = Close();
+//  //  }
+//  return ret;
+//}
 RetCode FileHandleImp::PRead(void* buffer, size_t length, size_t start_pos) {
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(ret, this->SwitchStatus(kInReading),

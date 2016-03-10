@@ -50,15 +50,15 @@ class DiskFileHandleImp : public FileHandleImp {
   // see more in FileHandleImp class
   virtual RetCode Append(const void* buffer, const size_t length);
 
-  //  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
-  //                               function<void()> lock_func,
-  //                               function<void()> unlock_func);
+  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
+                               function<void()> lock_func,
+                               function<void()> unlock_func);
 
   virtual RetCode OverWrite(const void* buffer, const size_t length);
 
-  //  virtual RetCode AtomicOverWrite(const void* buffer, const size_t length,
-  //                                  function<void()> lock_func,
-  //                                  function<void()> unlock_func);
+  virtual RetCode AtomicOverWrite(const void* buffer, const size_t length,
+                                  function<void()> lock_func,
+                                  function<void()> unlock_func);
 
   virtual RetCode Close();
   // see more in FileHandleImp class
