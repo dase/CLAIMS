@@ -2,7 +2,6 @@ AM_CPPFLAGS= -fPIC -fpermissive\
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
--I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization
 
@@ -17,7 +16,6 @@ LDADD = 	../BufferManager/libbuffermanager.a \
 		../common/libcommon.a \
 		../common/Block/libblock.a \
 		../utility/libutility.a \
-		${THERON_HOME}/Lib/libtherond.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a
 

@@ -21,8 +21,6 @@
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <sstream>
 #include <assert.h>
-#include "Theron/Defines.h"
-#include "Theron/Theron.h"
 #include "serialization/RegisterDerivedClass.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../Debug.h"
@@ -32,7 +30,6 @@
 using claims::physical_operator::PhysicalOperatorBase;
 
 // It's better to use fixed length information for implementation concern.
-THERON_DECLARE_REGISTERED_MESSAGE(ExchangeID)
 struct StorageBudgetMessage {
   explicit StorageBudgetMessage(const int& disk_budget,
                                 const int& memory_budget, const int& nodeid)
@@ -43,7 +40,6 @@ struct StorageBudgetMessage {
   int memory_budget;
   int nodeid;
 };
-THERON_DECLARE_REGISTERED_MESSAGE(StorageBudgetMessage)
 
 struct PartitionBindingMessage {
   PartitionBindingMessage(const PartitionID& pid, const unsigned& num,
@@ -53,13 +49,11 @@ struct PartitionBindingMessage {
   unsigned number_of_chunks;
   StorageLevel storage_level;
 };
-THERON_DECLARE_REGISTERED_MESSAGE(PartitionBindingMessage)
 
 struct PartitionUnbindingMessage {
   PartitionUnbindingMessage(const PartitionID& pid) : partition_id(pid){};
   PartitionID partition_id;
 };
-THERON_DECLARE_REGISTERED_MESSAGE(PartitionUnbindingMessage)
 
 struct RegisterStorageRespond {
   explicit RegisterStorageRespond(const char* const text) {
@@ -68,7 +62,6 @@ struct RegisterStorageRespond {
   }
   char mText[REGISTER_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(RegisterStorageRespond)
 
 struct HeartBeatMessage {
   explicit HeartBeatMessage(const char* const text) {
@@ -77,7 +70,6 @@ struct HeartBeatMessage {
   }
   char mText[HEARTBEAT_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(HeartBeatMessage)
 
 struct HeartBeatRespond {
   explicit HeartBeatRespond(const char* const text) {
@@ -86,7 +78,6 @@ struct HeartBeatRespond {
   }
   char mText[HEARTBEAT_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(HeartBeatRespond)
 
 struct BlockStatusMessage {
   explicit BlockStatusMessage(const char* const text) {
@@ -95,7 +86,6 @@ struct BlockStatusMessage {
   }
   char mText[BLOCK_STATUS_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(BlockStatusMessage)
 
 struct BlockStatusRespond {
   explicit BlockStatusRespond(const char* const text) {
@@ -104,7 +94,6 @@ struct BlockStatusRespond {
   }
   char mText[BLOCK_STATUS_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(BlockStatusRespond)
 
 struct MatcherMessage {
   explicit MatcherMessage(const char* const filename, const char* const bmi) {
@@ -116,7 +105,6 @@ struct MatcherMessage {
   char filenameText[MATCHER_MESSAGE_FILENAME_LEN];
   char bmiText[MATCHER_MESSAGE_BMI_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(MatcherMessage)
 
 struct MatcherRespond {
   explicit MatcherRespond(const char* const text) {
@@ -125,7 +113,6 @@ struct MatcherRespond {
   }
   char mText[MATCHER_MESSAGE_PROJECT_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(MatcherRespond)
 
 /* NodeRegisterMessage has the same function compared with NodeConnectionMessage
  * except for that
@@ -148,13 +135,11 @@ struct NodeRegisterMessage {
   unsigned ip;
   unsigned port;
 };
-THERON_DECLARE_REGISTERED_MESSAGE(NodeRegisterMessage)
 struct Message256 {
   unsigned length;
   char message[256 - sizeof(unsigned)];
   static unsigned Capacity() { return 256 - sizeof(unsigned); }
 };
-THERON_DECLARE_REGISTERED_MESSAGE(Message256)
 
 struct Message4K  // temporary ways to expand the the serialization capacity
     {
@@ -162,9 +147,6 @@ struct Message4K  // temporary ways to expand the the serialization capacity
   char message[4096 * 50 - sizeof(unsigned)];
   static unsigned Capacity() { return 4096 * 50 - sizeof(unsigned); }
 };
-THERON_DECLARE_REGISTERED_MESSAGE(Message4K)
-THERON_DECLARE_REGISTERED_MESSAGE(int)
-THERON_DECLARE_REGISTERED_MESSAGE(unsigned long long int);
 template <typename T>
 static T Deserialize(Message256 input) {
   std::string received(input.message, input.length);

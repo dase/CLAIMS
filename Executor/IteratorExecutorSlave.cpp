@@ -10,11 +10,8 @@
 #include "../Environment.h"
 #include "../Resource/CPUResource.h"
 #include "../utility/print_tool.h"
-
 IteratorExecutorSlave::IteratorExecutorSlave() {}
-
 IteratorExecutorSlave::~IteratorExecutorSlave() {}
-
 void IteratorExecutorSlave::createNewThreadAndRun(PhysicalQueryPlan* it) {
   pthread_t thread;
   void** arg = new void* [2];

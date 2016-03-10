@@ -2,7 +2,6 @@ AM_CPPFLAGS=-fPIC  -DTHERON_XS\
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
--I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
 -I${GTEST_HOME}/include \
@@ -58,7 +57,6 @@ LDADD =  \
 	common/types/Test/libtest.a \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
-	${THERON_HOME}/Lib/libtherond.a \
 	${CAF_HOME}/build/lib/libcaf_core.so \
 	${CAF_HOME}/build/lib/libcaf_io.so \
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \

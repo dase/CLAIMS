@@ -2,7 +2,6 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 -I${HADOOP_HOME}/src/c++/libhdfs\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
--I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization	\
 -I${CAF_HOME}/libcaf_io	\

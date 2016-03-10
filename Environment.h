@@ -7,7 +7,6 @@
 
 #ifndef ENVIRONMENT_H_
 #define ENVIRONMENT_H_
-#include "Executor/Coordinator.h"
 #include "Executor/IteratorExecutorMaster.h"
 #include "Executor/IteratorExecutorSlave.h"
 #include "storage/BlockManager.h"
@@ -15,7 +14,6 @@
 #include "Resource/ResourceManagerMaster.h"
 #include "Resource/ResourceManagerSlave.h"
 #include "IndexManager/IndexManager.h"
-#include "Executor/AdaptiveEndPoint.h"
 #include "Executor/PortManager.h"
 #include "common/Logging.h"
 #include "utility/thread_pool.h"
@@ -37,7 +35,6 @@ class Environment {
   static Environment* getInstance(bool ismaster = 0);
   std::string getIp();
   unsigned getPort();
-  AdaptiveEndPoint* getEndPoint();
   ExchangeTracker* getExchangeTracker();
   ResourceManagerMaster* getResourceManagerMaster();
   InstanceResourceManager* getResourceManagerSlave();
@@ -52,8 +49,6 @@ class Environment {
 
  private:
   void readConfigFile();
-  void initializeEndPoint();
-  void initializeCoordinator();
   void initializeStorage();
   void initializeResourceManager();
   void initializeBufferManager();
@@ -67,8 +62,6 @@ class Environment {
  private:
   static Environment* _instance;
   PortManager* portManager;
-  AdaptiveEndPoint* endpoint;
-  Coordinator* coordinator;
   std::string ip;
   unsigned port;
   IteratorExecutorSlave* iteratorExecutorSlave;

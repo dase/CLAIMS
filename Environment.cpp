@@ -45,8 +45,6 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
   portManager = PortManager::getInstance();
 
   if (ismaster) {
-    logging_->log("Initializing the Coordinator...");
-    initializeCoordinator();
     catalog_ = claims::catalog::Catalog::getInstance();
     if (rSuccess != catalog_->restoreCatalog()) {
       LOG(ERROR) << "failed to restore catalog" << std::endl;
@@ -60,8 +58,6 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
       logging_->elog("initialize ThreadPool failed");
     }
   }
-  logging_->log("Initializing the AdaptiveEndPoint...");
-  initializeEndPoint();
   /**
    * TODO:
    * DO something in AdaptiveEndPoint such that the construction function does
@@ -76,7 +72,7 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
    * decided.*/
 
   initializeResourceManager();
-
+  // should after above
   InitMembership();
 
   initializeStorage();
@@ -104,7 +100,6 @@ Environment::~Environment() {
   delete logging_;
   delete portManager;
   delete catalog_;
-  delete coordinator;
   if (ismaster_) {
     delete iteratorExecutorMaster;
     delete resourceManagerMaster_;
@@ -118,7 +113,6 @@ Environment::~Environment() {
   delete resourceManagerSlave_;
   delete blockManager_;
   delete bufferManager_;
-  delete endpoint;
 }
 Environment* Environment::getInstance(bool ismaster) {
   if (_instance == 0) {
@@ -136,27 +130,6 @@ void Environment::readConfigFile() {
   cfg.readFile(Config::config_file.c_str());
   ip = (const char*)cfg.lookup("ip");
 }
-void Environment::initializeEndPoint() {
-  //	libconfig::Config cfg;
-  //	cfg.readFile("/home/claims/config/wangli/config");
-  //	std::string endpoint_ip=(const char*)cfg.lookup("ip");
-  //	std::string endpoint_port=(const char*)cfg.lookup("port");
-  std::string endpoint_ip = ip;
-  int endpoint_port;
-  if ((endpoint_port = portManager->applyPort()) == -1) {
-    logging_->elog("The ports in the PortManager is exhausted!");
-  }
-  port = endpoint_port;
-  logging_->log("Initializing the AdaptiveEndPoint as EndPoint://%s:%d.",
-                endpoint_ip.c_str(), endpoint_port);
-  std::ostringstream name, port_str;
-  port_str << endpoint_port;
-  name << "EndPoint://" << endpoint_ip << ":" << endpoint_port;
-
-  endpoint =
-      new AdaptiveEndPoint(name.str().c_str(), endpoint_ip, port_str.str());
-}
-void Environment::initializeCoordinator() { coordinator = new Coordinator(); }
 void Environment::initializeStorage() {
   if (ismaster_) {
     blockManagerMaster_ = BlockManagerMaster::getInstance();
@@ -198,7 +171,6 @@ void Environment::initializeIndexManager() {
   indexManager_ = IndexManager::getInstance();
 }
 
-AdaptiveEndPoint* Environment::getEndPoint() { return endpoint; }
 ExchangeTracker* Environment::getExchangeTracker() { return exchangeTracker; }
 ResourceManagerMaster* Environment::getResourceManagerMaster() {
   return resourceManagerMaster_;
