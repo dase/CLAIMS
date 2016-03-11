@@ -57,7 +57,7 @@ bool BufferManager::applyStorageDedget(unsigned long size) {
   }
   logging_->log("%d MB applied, %d MB left!", size / 1024 / 1024,
                 (storage_budget_max_ - storage_used_) / 1024 / 1024);
-  logging_->log("%d actucl left free memory", actucl_free_memory / 1024 / 1024);
+  logging_->log("%d MB actucl left free memory", actucl_free_memory / 1024 / 1024);
   lock_.release();
   return ret;
 }
