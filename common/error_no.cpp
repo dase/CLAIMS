@@ -200,7 +200,7 @@ ErrorInit::ErrorInit() {
   /* errorno for loader -2001 ~ -3000  */
   DefineErrorAndMessage(rUnbindEntireProjectionFail,
                         "failed to unbind entire projection");
-  DefineErrorAndMessage(rInvalidInsertData,"The Insert Data is Invalid");
+  DefineErrorAndMessage(rInvalidInsertData, "The Insert Data is Invalid");
   DefineErrorAndMessage(rTooLargeData, "Load Too Large Data");
   DefineErrorAndMessage(rTooSmallData, "Load Too Small Data");
   DefineErrorAndMessage(rTooLongData, "Load Too Long Data");
@@ -232,10 +232,25 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rNoProjection, "No Projection on this table.");
   DefineErrorAndMessage(rLimitNotStandardized, "limit not standard.");
   DefineErrorAndMessage(rLimitZero, "limit zero.");
-  DefineErrorAndMessage(rLimitParaCouldnotLessZero,
-                        "limit parameter couldn't zero.");
-  DefineErrorAndMessage(rLimitParaShouldNaturalNumber,
-                        "limit parameter should be natural number.");
+
+  /*errorno for the layor of storage -6001 ~ -7000 */
+
+  DefineErrorAndMessage(rMemoryPoolMallocFail,
+                        "fail to malloc for the pool memory.");
+  DefineErrorAndMessage(rNoEnoughMemory, "not enough memory!!");
+  DefineErrorAndMessage(rReturnFailFindTargetChunkId,
+                        "fail to find the target chunk id !");
+  DefineErrorAndMessage(rUnkownStroageLevel, "current storage level: unknown!");
+  DefineErrorAndMessage(rFailOpenFileInDiskChunkReaderIterator,
+                        "Failed to open file");
+  DefineErrorAndMessage(rFailReadOneBlockInDiskChunkReaderIterator,
+                        "failed to read one block,only a little bytes ");
+  DefineErrorAndMessage(rFailOpenHDFSFileInStorage, "fails to open HDFS file");
+  DefineErrorAndMessage(rFailSetStartOffsetInStorage,
+                        "fails to set the start offset");
+  DefineErrorAndMessage(rLoadFromHdfsOpenFailed, "Fail to open file from Hdfs");
+  DefineErrorAndMessage(rLoadFromDiskOpenFailed, "Fail to open file from Disk");
+  DefineErrorAndMessage(rUnbindPartitionFailed, "Fail to unbinding partition");
 
   /* errorno for stmt_handler -14001 ~ -15000*/
   DefineErrorAndMessage(rStmtHandlerCreateTableExisted,
@@ -296,6 +311,11 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rTableNotExisted, "table not exist");
   DefineErrorAndMessage(rNULLDropTableName,
                         "The table name in the drop table statment is NULL");
+
+  DefineErrorAndMessage(rLimitParaCouldnotLessZero,
+                        "limit parameter couldn't zero.");
+  DefineErrorAndMessage(rLimitParaShouldNaturalNumber,
+                        "limit parameter should be natural number.");
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common

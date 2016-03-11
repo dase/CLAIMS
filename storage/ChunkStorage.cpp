@@ -1,19 +1,50 @@
 /*
- * ChunkStorage.cpp
+ * Copyright [2012-2015] DaSE@ECNU
  *
- *  Created on: Nov 14, 2013
- *      Author: wangli
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * /CLAIMS/storage/ChunkStorage.cpp
+ *
+ *  Created on: NOV 14, 2013
+ *  Modified on: NOV 29, 2015
+ *      Author: Hanzhang,wangli
+ *       Email:
+ *
+ * Description:
+ *
  */
 #include <hdfs.h>
-#include "ChunkStorage.h"
-#include "BlockManager.h"
-
+#include "./ChunkStorage.h"
+#include <glog/logging.h>
+#include "./BlockManager.h"
 #include "../Debug.h"
 #include "../utility/warmup.h"
 #include "../utility/rdtsc.h"
 #include "../Config.h"
+#include "../common/error_define.h"
+#include "../common/error_no.h"
 
-bool ChunkReaderIterator::nextBlock() {
+using claims::common::CStrError;
+using claims::common::rUnkownStroageLevel;
+using claims::common::rFailOpenFileInDiskChunkReaderIterator;
+using claims::common::rFailReadOneBlockInDiskChunkReaderIterator;
+using claims::common::rFailOpenHDFSFileInStorage;
+using claims::common::rFailSetStartOffsetInStorage;
+
+bool ChunkReaderIterator::NextBlock() {
   lock_.acquire();
   if (this->cur_block_ >= this->number_of_blocks_) {
     lock_.release();
@@ -23,35 +54,45 @@ bool ChunkReaderIterator::nextBlock() {
   lock_.release();
   return true;
 }
+
 ChunkStorage::ChunkStorage(const ChunkID& chunk_id, const unsigned& block_size,
-                           const StorageLevel& desirable_level)
+                           const StorageLevel& desirable_storage_level)
     : chunk_id_(chunk_id),
       block_size_(block_size),
-      desirable_storage_level_(desirable_level),
+      desirable_storage_level_(desirable_storage_level),
       current_storage_level_(HDFS),
-      chunk_size_(CHUNK_SIZE) {
-  // printf("CHUNKSTORAGE****:level=%d\n",desirable_storage_level_);
-}
+      chunk_size_(CHUNK_SIZE) {}
 
 ChunkStorage::~ChunkStorage() {
-  // TODO Auto-generated destructor stub
+  // TODO(wangli): Auto-generated destructor stub
 }
-
-ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
-  //	printf("level value:%d\n",current_storage_level_);
+/**
+ * The function create the chunk iterator. Meantime, according to the storage
+ * level, create the chunk reader iterator in which storage level. It is a
+ * optimization that memory store data as a buffer. The granularity of reading
+ * file is chunk.
+ */
+ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
   ChunkReaderIterator* ret;
+
   lock_.acquire();
+  HdfsInMemoryChunk chunk_info;
+  if (current_storage_level_ == MEMORY &&
+      !BlockManager::getInstance()->getMemoryChunkStore()->GetChunk(
+          chunk_id_, chunk_info)) {
+    current_storage_level_ = HDFS;
+    DLOG(INFO) << "clean dirty data" << endl;
+    DLOG(INFO) << "the chunk has be freed : " << chunk_id_.chunk_off << endl;
+  }
   switch (current_storage_level_) {
     case MEMORY: {
-      //			printf("current storage level: MEMORY\n");
-      HdfsInMemoryChunk chunk_info;
-      if (BlockManager::getInstance()->getMemoryChunkStore()->getChunk(
+      if (BlockManager::getInstance()->getMemoryChunkStore()->GetChunk(
               chunk_id_, chunk_info))
         ret = new InMemoryChunkReaderItetaor(chunk_info.hook, chunk_info.length,
                                              chunk_info.length / block_size_,
                                              block_size_, chunk_id_);
       else
-        ret = 0;
+        ret = NULL;
       break;
     }
     case DISK: {
@@ -60,73 +101,66 @@ ChunkReaderIterator* ChunkStorage::createChunkReaderIterator() {
       break;
     }
     case HDFS: {
-      //			printf("%lx current storage level for %d %d:
-      // HDFS\n",this,this->chunk_id_.partition_id.partition_off,this->chunk_id_.chunk_off);
       if (desirable_storage_level_ == MEMORY) {
-        HdfsInMemoryChunk chunk_info;
         chunk_info.length = CHUNK_SIZE;
-        if (BlockManager::getInstance()->getMemoryChunkStore()->applyChunk(
+        if (BlockManager::getInstance()->getMemoryChunkStore()->ApplyChunk(
                 chunk_id_, chunk_info.hook)) {
           /* there is enough memory storage space, so the storage level can be
            * shifted.*/
           if (Config::local_disk_mode) {
-            chunk_info.length = BlockManager::getInstance()->loadFromDisk(
+            chunk_info.length = BlockManager::getInstance()->LoadFromDisk(
                 chunk_id_, chunk_info.hook, chunk_info.length);
           } else {
-            chunk_info.length = BlockManager::getInstance()->loadFromHdfs(
+            chunk_info.length = BlockManager::getInstance()->LoadFromHdfs(
                 chunk_id_, chunk_info.hook, chunk_info.length);
           }
           if (chunk_info.length <= 0) {
-            /*chunk_info.length<=0 means that either the file does not exist or
-             * the current chunk_id exceeds the actual size of the file.
-             * *
+            /**
+          * chunk_info.length<=0 means that either the file does not exist or
+          * the current chunk_id exceeds the actual size of the file.
              */
-            BlockManager::getInstance()->getMemoryChunkStore()->returnChunk(
+            BlockManager::getInstance()->getMemoryChunkStore()->ReturnChunk(
                 chunk_id_);
-            ret = 0;
+            ret = NULL;
             break;
-            //						return 0;
           }
-          //					BlockManager::getInstance()->getMemoryChunkStore()->putChunk(chunk_id_,chunk_info);
           current_storage_level_ = MEMORY;
 
           /* update the chunk info in the Chunk store in case that the
            * chunk_info is updated.*/
-          BlockManager::getInstance()->getMemoryChunkStore()->updateChunkInfo(
+          BlockManager::getInstance()->getMemoryChunkStore()->UpdateChunkInfo(
               chunk_id_, chunk_info);
-          //					printf("%lx current is set to
-          // memory!\n");
           ret = new InMemoryChunkReaderItetaor(
               chunk_info.hook, chunk_info.length,
               chunk_info.length / block_size_, block_size_, chunk_id_);
           break;
         } else {
-          /*
-           * The storage memory is full, some swap algorithm is needed here.
-           * TODO: swap algorithm.
-           */
-          printf("Failed to get memory chunk budege!\n");
+          /*The storage memory is full, some swap algorithm is needed here.
+           * TODO: swap algorithm. I finish in applychunk().*/
+          LOG(WARNING) << "Failed to get memory chunk budege!" << endl;
           assert(false);
         }
       }
-      //			return new
-      // HDFSChunkReaderIterator(chunk_id_,chunk_size_,block_size_);
+
       ret = new DiskChunkReaderIteraror(chunk_id_, chunk_size_, block_size_);
       break;
     }
-    default: { printf("current storage level: unknown!\n"); }
+    default: { WLOG(rUnkownStroageLevel, "current storage level: unknown!"); }
   }
   lock_.release();
   return ret;
 }
-std::string ChunkStorage::printCurrentStorageLevel() const { return ""; }
+
+std::string ChunkStorage::PrintCurrentStorageLevel() const { return ""; }
+
 InMemoryChunkReaderItetaor::InMemoryChunkReaderItetaor(
     void* const& start, const unsigned& chunk_size,
     const unsigned& number_of_blocks, const unsigned& block_size,
     const ChunkID& chunk_id)
     : start_(start),
       ChunkReaderIterator(chunk_id, block_size, chunk_size, number_of_blocks) {}
-bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase*& block) {
+
+bool InMemoryChunkReaderItetaor::NextBlock(BlockStreamBase*& block) {
   lock_.acquire();
   if (cur_block_ >= number_of_blocks_) {
     lock_.release();
@@ -134,7 +168,7 @@ bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase*& block) {
   }
   cur_block_++;
   lock_.release();
-  //	printf("Read Block:%d:%d\n",chunk_id_.chunk_off,cur_block_);
+
   /* calculate the block start address.*/
   const char* block_start_address = (char*)start_ + cur_block_ * block_size_;
 
@@ -142,12 +176,9 @@ bool InMemoryChunkReaderItetaor::nextBlock(BlockStreamBase*& block) {
   Block temp_block(block_size_, block_start_address);
 
   /*construct the block stream from temp_block. In the current version, the
-   * memory copy
-   * is used for simplicity.
-   * TODO: avoid memory copy.
-   */
+   * memory copy is used for simplicity.
+   * TODO(wangli): avoid memory copy.*/
   block->constructFromBlock(temp_block);
-
   return true;
 }
 InMemoryChunkReaderItetaor::~InMemoryChunkReaderItetaor() {}
@@ -159,14 +190,14 @@ DiskChunkReaderIteraror::DiskChunkReaderIteraror(const ChunkID& chunk_id,
   block_buffer_ = new Block(block_size_);
   fd_ = FileOpen(chunk_id_.partition_id.getPathAndName().c_str(), O_RDONLY);
   if (fd_ == -1) {
-    printf("Failed to open file [%s], reason:%s\n",
-           chunk_id_.partition_id.getPathAndName().c_str(), strerror(errno));
+    ELOG(rFailOpenFileInDiskChunkReaderIterator,
+         chunk_id_.partition_id.getPathAndName().c_str());
     number_of_blocks_ = 0;
   } else {
     const unsigned start_pos = CHUNK_SIZE * chunk_id_.chunk_off;
-    const long length = lseek(fd_, 0, SEEK_END);
+    const unsigned long length = lseek(fd_, 0, SEEK_END);
 
-    if (length < 0 && length <= start_pos) {
+    if (length <= start_pos) {
       printf("fails to set the start offset %d for [%s]\n", start_pos,
              chunk_id.partition_id.getName().c_str());
       number_of_blocks_ = 0;
@@ -178,7 +209,8 @@ DiskChunkReaderIteraror::DiskChunkReaderIteraror(const ChunkID& chunk_id,
         number_of_blocks_ = CHUNK_SIZE / block_size_;
       } else {
         number_of_blocks_ = (length - start_pos) / block_size_;
-        printf("This chunk has only %d blocks!\n", number_of_blocks_);
+        LOG(INFO) << "This chunk has only" << number_of_blocks_ << "blocks!"
+                  << endl;
       }
     }
   }
@@ -187,38 +219,34 @@ DiskChunkReaderIteraror::~DiskChunkReaderIteraror() {
   block_buffer_->~Block();
   FileClose(fd_);
 }
-bool DiskChunkReaderIteraror::nextBlock(BlockStreamBase*& block) {
+
+bool DiskChunkReaderIteraror::NextBlock(BlockStreamBase*& block) {
   lock_.acquire();
   if (cur_block_ >= number_of_blocks_) {
     lock_.release();
     return false;
   }
   const unsigned posistion = lseek(fd_, 0, SEEK_CUR);
-  //	printf("***** the data is read from position:[ %d MB %d KB
-  //]*******\n",posistion/1024/1024,(posistion/1024)%1024);
-  //	sleep(1);
   /*
    * the read function will automatically move the read position, so the lseek
    * is not needed here.
    */
   tSize bytes_num =
       read(fd_, block_buffer_->getBlock(), block_buffer_->getsize());
-  //	printf("Tuple
-  // count=%d\n",*(int*)((char*)block_buffer_->getBlock()+65532));
   if (bytes_num == block_size_) {
     cur_block_++;
-    //		lseek(fd_,64*1024,SEEK_CUR);
     block->constructFromBlock(*block_buffer_);
     lock_.release();
     return true;
   } else {
     cur_block_++;
-    printf("failed to read one block, only %d bytes are read!,error=%s\n",
-           bytes_num, strerror(errno));
+    ELOG(rFailReadOneBlockInDiskChunkReaderIterator,
+         "failed to read one block");
     lock_.release();
     return false;
   }
 }
+
 HDFSChunkReaderIterator::HDFSChunkReaderIterator(const ChunkID& chunk_id,
                                                  unsigned& chunk_size,
                                                  const unsigned& block_size)
@@ -228,15 +256,16 @@ HDFSChunkReaderIterator::HDFSChunkReaderIterator(const ChunkID& chunk_id,
   hdfs_fd_ = hdfsOpenFile(fs_, chunk_id.partition_id.getName().c_str(),
                           O_RDONLY, 0, 0, 0);
   if (!hdfs_fd_) {
-    printf("fails to open HDFS file [%s]\n",
-           chunk_id.partition_id.getName().c_str());
+    ELOG(rFailOpenHDFSFileInStorage, chunk_id.partition_id.getName().c_str());
     number_of_blocks_ = 0;
   }
 
   const unsigned start_pos = start_pos + CHUNK_SIZE * chunk_id_.chunk_off;
   if (hdfsSeek(fs_, hdfs_fd_, start_pos) == -1) {
-    printf("fails to set the start offset %d for [%s]\n", start_pos,
-           chunk_id.partition_id.getName().c_str());
+    LOG(WARNING) << "[" << rFailSetStartOffsetInStorage << " , "
+                 << CStrError(rFailSetStartOffsetInStorage) << "]"
+                 << "fails to set the start offset" << start_pos << "for "
+                 << chunk_id.partition_id.getName().c_str() << endl;
     number_of_blocks_ = 0;
   }
   hdfsFileInfo* file_info = hdfsGetPathInfo(
@@ -253,7 +282,7 @@ HDFSChunkReaderIterator::~HDFSChunkReaderIterator() {
   hdfsCloseFile(fs_, hdfs_fd_);
   hdfsDisconnect(fs_);
 }
-bool HDFSChunkReaderIterator::nextBlock(BlockStreamBase*& block) {
+bool HDFSChunkReaderIterator::NextBlock(BlockStreamBase*& block) {
   if (cur_block_ >= number_of_blocks_) {
     lock_.acquire();
     return false;
@@ -272,22 +301,11 @@ bool HDFSChunkReaderIterator::nextBlock(BlockStreamBase*& block) {
     return false;
   }
 }
-
-// bool InMemoryChunkReaderItetaor::getNextBlockAccessor(block_accessor & ba) {
-//	if(cur_block_>=number_of_blocks_){
-//		lock_.release();
-//		return false;
-//	}
-//	ba.target_block_start_address=(char*)start_+cur_block_*block_size_;
-//	ba.block_size=block_size_;
-//	return true;
-//
-//}
-//
-// void ChunkReaderIterator::getBlock(const block_accessor& ba) const {
-//}
-
-bool InMemoryChunkReaderItetaor::getNextBlockAccessor(block_accessor*& ba) {
+/**
+ * Generate the block_accessor and get information from block_accessor to
+ * acquire blocks.
+ */
+bool InMemoryChunkReaderItetaor::GetNextBlockAccessor(block_accessor*& ba) {
   lock_.acquire();
   if (cur_block_ >= number_of_blocks_) {
     lock_.release();
@@ -298,12 +316,18 @@ bool InMemoryChunkReaderItetaor::getNextBlockAccessor(block_accessor*& ba) {
   lock_.release();
   ba = new InMemeryBlockAccessor();
   InMemeryBlockAccessor* imba = (InMemeryBlockAccessor*)ba;
-  imba->setBlockSize(block_size_);
-  imba->setTargetBlockStartAddress((char*)start_ + cur_block * block_size_);
+
+  imba->SetBlockSize(block_size_);
+
+  imba->SetTargetBlockStartAddress((char*)start_ + cur_block * block_size_);
   return true;
 }
 
-bool DiskChunkReaderIteraror::getNextBlockAccessor(block_accessor*& ba) {
+/**
+ * Generate the block_accessor and get information from block_accessor to
+ * acquire blocks.
+ */
+bool DiskChunkReaderIteraror::GetNextBlockAccessor(block_accessor*& ba) {
   lock_.acquire();
   if (cur_block_ >= number_of_blocks_) {
     lock_.release();
@@ -314,14 +338,20 @@ bool DiskChunkReaderIteraror::getNextBlockAccessor(block_accessor*& ba) {
   lock_.release();
   ba = new InDiskBlockAccessor();
   InDiskBlockAccessor* idba = (InDiskBlockAccessor*)ba;
-  idba->setBlockCur(cur_block);
-  idba->setBlockSize(block_size_);
-  idba->setChunkId(chunk_id_);
-  idba->setBlockSize(chunk_size_);
+  idba->SetBlockCur(cur_block);
+
+  idba->SetBlockSize(block_size_);
+  idba->SetChunkId(chunk_id_);
+  idba->SetBlockSize(chunk_size_);
+
   return true;
 }
 
-bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
+/**
+ * Generate the block_accessor and get information from block_accessor to
+ * acquire blocks.
+ */
+bool HDFSChunkReaderIterator::GetNextBlockAccessor(block_accessor*& ba) {
   lock_.acquire();
   if (cur_block_ >= number_of_blocks_) {
     lock_.release();
@@ -332,14 +362,15 @@ bool HDFSChunkReaderIterator::getNextBlockAccessor(block_accessor*& ba) {
   lock_.release();
   ba = new InHDFSBlockAccessor();
   InHDFSBlockAccessor* ihba = (InHDFSBlockAccessor*)ba;
-  ihba->setBlockCur(cur_block);
-  ihba->setBlockSize(block_size_);
-  ihba->setChunkId(chunk_id_);
-  ihba->setBlockSize(chunk_size_);
+  ihba->SetBlockCur(cur_block);
+  ihba->SetBlockSize(block_size_);
+  ihba->SetChunkId(chunk_id_);
+  ihba->SetBlockSize(chunk_size_);
   return true;
 }
 
-void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(
+void ChunkReaderIterator::InMemeryBlockAccessor::GetBlock(
+
     BlockStreamBase*& block) const {
 //#define MEMORY_COPY
 #ifdef MEMORY_COPY
@@ -354,9 +385,9 @@ void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(
    * avoiding the memory copy here */
 
   block->setIsReference(true);
-  block->setBlock(target_block_start_address);
+  block->setBlock(target_block_start_address_);
   int tuple_count =
-      *(unsigned*)((char*)target_block_start_address +
+      *(unsigned*)((char*)target_block_start_address_ +
                    block->getSerializedBlockSize() - sizeof(unsigned));
   dynamic_cast<BlockStreamFix*>(block)->setTuplesInBlock(tuple_count);
 //  ((BlockStreamFix*)block)->free_ =
@@ -366,13 +397,14 @@ void ChunkReaderIterator::InMemeryBlockAccessor::getBlock(
 #endif
 }
 
-void ChunkReaderIterator::InDiskBlockAccessor::getBlock(
+void ChunkReaderIterator::InDiskBlockAccessor::GetBlock(
     BlockStreamBase*& block) const {
   printf("InDiskBlockAccessor::getBlock() is not implemented!\n");
   assert(false);
 }
 
-void ChunkReaderIterator::InHDFSBlockAccessor::getBlock(
+void ChunkReaderIterator::InHDFSBlockAccessor::GetBlock(
+
     BlockStreamBase*& block) const {
   printf("InHDFSBlockAccessor::getBlock() is not implemented!\n");
   assert(false);

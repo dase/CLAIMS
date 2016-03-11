@@ -105,7 +105,7 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     return true;  // the
   }
   BarrierArrive(1);  // ??ERROR
-                     //	join_thread_context* jtc=new join_thread_context();
+  //	join_thread_context* jtc=new join_thread_context();
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_right_);
   jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
   jtc->buffer_iterator_ = block_buffer_->createIterator();

@@ -86,9 +86,13 @@ bool Config::enable_codegen;
 
 std::string Config::catalog_file;
 
+<<<<<<< HEAD
 int Config::thread_pool_init_thread_num;
 
 int Config::load_thread_num;
+=======
+int Config::memory_utilization;
+>>>>>>> storage
 
 Config *Config::getInstance() {
   if (instance_ == 0) {
@@ -150,6 +154,8 @@ void Config::initialize() {
   thread_pool_init_thread_num = getInt("thread_pool_init_thread_num", 100);
 
   load_thread_num = getInt("load_thread_num", sysconf(_SC_NPROCESSORS_CONF));
+
+  memory_utilization = getInt("memory_utilization", 100);
 
 #ifdef DEBUG_Config
   print_configure();

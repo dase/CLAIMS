@@ -28,11 +28,10 @@ libstorage_a_SOURCES = \
 	BlockManager.cpp 			BlockManager.h \
 	BlockManagerId.cpp 		BlockManagerId.h \
 	BlockManagerMaster.cpp 		BlockManagerMaster.h \
-	BlockMessage.cpp 			BlockMessage.h \
 	BlockStore.cpp 			BlockStore.h \
 	ChunkStorage.cpp 			ChunkStorage.h \
 	DiskStore.cpp 			DiskStore.h \
-	MemoryStore.cpp 			MemoryStore.h \
+	MemoryManager.cpp 			MemoryManager.h \
+   PartitionStorage.cpp 		PartitionStorage.h \
 	PartitionReaderIterator.cpp 	PartitionReaderIterator.h \
-	PartitionStorage.cpp 		PartitionStorage.h \
 	StorageLevel.h

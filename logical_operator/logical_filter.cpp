@@ -86,6 +86,7 @@ PlanContext LogicalFilter::GetPlanContext() {
                  *               of the input data, which may be maintained in the
                  *               catalog module.
                  */
+
         const unsigned before_filter_cardinality =
             plan_context.plan_partitioner_.GetPartition(i)->get_cardinality();
         const unsigned after_filter_cardinality =

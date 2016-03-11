@@ -255,6 +255,19 @@ const int rCodegenFailed =
 const int rCatalogRestoreInvild = -5004;
 const int rCatalogNotFound = -5005;
 
+/* errorno for storage -6001 ~ -7000 */
+const int rMemoryPoolMallocFail = -6001;
+const int rNoEnoughMemory = -6002;
+const int rReturnFailFindTargetChunkId = -6003;
+const int rUnkownStroageLevel = -6004;
+const int rFailOpenFileInDiskChunkReaderIterator = -6005;
+const int rFailReadOneBlockInDiskChunkReaderIterator = -6006;
+const int rFailOpenHDFSFileInStorage = -6007;
+const int rFailSetStartOffsetInStorage = -6008;
+const int rLoadFromHdfsOpenFailed = -6009;
+const int rUnbindPartitionFailed = -6010;
+const int rLoadFromDiskOpenFailed = -6011;
+
 /* errorno for stmt_handler -14001 ~ -15000*/
 const int rStmtHandlerCreateTableExisted = -14002;
 const int rStmtHandlerTypeNotSupport = -14003;

@@ -44,6 +44,7 @@
 #include "../physical_operator/physical_operator_base.h"
 #include "../common/Schema/Schema.h"
 #include "../storage/ChunkStorage.h"
+#include "../storage/PartitionReaderIterator.h"
 #include "../storage/PartitionStorage.h"
 #include "../physical_operator/physical_operator.h"
 #include "../common/ExpandedThreadTracker.h"
@@ -140,7 +141,7 @@ class PhysicalProjectionScan : public PhysicalOperator {
 
  private:
   State state_;
-  PartitionStorage::PartitionReaderItetaor* partition_reader_iterator_;
+  PartitionStorage::PartitionReaderIterator* partition_reader_iterator_;
   std::list<ChunkReaderIterator*> remaining_chunk_iterator_list_;
   Lock chunk_reader_container_lock_;
   // like a buffer

@@ -6,15 +6,22 @@
  */
 #include <sstream>
 #include "BlockManager.h"
+
 #include "../Environment.h"
 #include "../common/rename.h"
 #include "../common/Message.h"
 #include "../common/Logging.h"
 #include "../Config.h"
-BlockManager* BlockManager::blockmanager_ = 0;
+#include "../common/error_define.h"
+#include "../common/error_no.h"
+using claims::common::rLoadFromHdfsOpenFailed;
+using claims::common::rLoadFromDiskOpenFailed;
+using claims::common::rUnbindPartitionFailed;
+
+BlockManager* BlockManager::blockmanager_ = NULL;
 
 BlockManager* BlockManager::getInstance() {
-  if (blockmanager_ == 0) {
+  if (NULL == blockmanager_) {
     blockmanager_ = new BlockManager();
   }
   return blockmanager_;
@@ -31,10 +38,11 @@ BlockManager::BlockManager() {
   logging_ = new StorageManagerLogging();
   logging_->log("BlockManagerSlave is initialized. The ActorName=%s",
                 actor_name.str().c_str());
-  memstore_ = MemoryChunkStore::getInstance();
+
+  memstore_ = MemoryChunkStore::GetInstance();
 }
 BlockManager::~BlockManager() {
-  blockmanager_ = 0;
+  blockmanager_ = NULL;
   delete actor_;
   delete framework_;
   delete logging_;
@@ -48,7 +56,8 @@ void BlockManager::initialize() {
   // 读配置文件中的配置，然后根据是否是master注册
   // 1，建两个存储，一个是内存的，一个磁盘的
   diskstore_ = new DiskStore(DISKDIR);
-  memstore_ = MemoryChunkStore::getInstance();
+
+  memstore_ = MemoryChunkStore::GetInstance();
 
   /// the version written by zhanglei/////////////////////////////////
   //	blockManagerId_=new BlockManagerId();
@@ -118,7 +127,7 @@ bool BlockManager::tryToReportBlockStatus(string blockId) {
 void BlockManager::get(string blockId) { getLocal(blockId); }
 
 void* BlockManager::getLocal(string blockId) {
-  void* rt = 0;
+  void* rt = NULL;
   bool exists = false;
   map<string, BlockInfo*>::iterator it_;
   it_ = blockInfoPool_.find(blockId);
@@ -128,7 +137,7 @@ void* BlockManager::getLocal(string blockId) {
   if (exists) {
     // 如果存在就代表文件从hdfs上已经被拉到local了
     if ((*it_).second->level_ == BlockManager::memory) {
-      // spark中的storageLevel是磁盘和内存中都有的，在storageLevel.scala中
+      // spark中的storageLevel是磁盘和内存中都有的，在stor ageLevel.scala中
       // 我们有那样的应用吗？todo:
       // 在此预留的序列化和反序列化接口，序列化与否也是
       // 在storageLevel中的，是否备份也是在storageLevel中
@@ -165,55 +174,6 @@ bool BlockManager::put(string blockId, storageLevel level, void* value) {
   return true;
 }
 
-//// 这个函数返回一个构造好的chunkid和每个chunk的指针
-//// 这个里面的chunkId肯定是要在blockManager注册然后汇报信息的
-//// put的话也是会这样的，可以将这个函数中调用put然后统一汇报信息的接口
-// vector<ChunkInfo> BlockManager::loadFromHdfs(string file_name){
-//	// 由此函数得到的<blockId,指针>
-//	vector<ChunkInfo> vci;
-//	map<string, void *>::iterator it_;
-//	it_=bufferpool_.find(file_name);
-//	if(it_!=bufferpool_.end()){
-////		rt=bufferpool_[file_name];
-//	}
-//	else{
-//		hdfsFS fs=hdfsConnect(HDFS_N,9000);
-//		hdfsFile
-//readFile=hdfsOpenFile(fs,file_name.c_str(),O_RDONLY,0,0,0);
-//		hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,file_name.c_str());
-////		char
-///***path=hdfsGetHosts(fs,"/home/hayue/input/3_64m",0,201326592+12);
-//		cout<<"file size: "<<hdfsfile->mSize<<endl;
-//		if(!readFile){
-//			cout<<"open file error"<<endl;
-//		}
-//		unsigned length=0;
-//		int offset=0;
-//		while(length<hdfsfile->mSize){
-//			ChunkInfo ci;
-//			void *rt=malloc(CHUNK_SIZE);		//newmalloc
-//			tSize
-//bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
-//			cout<<"split interface: "<<bytes_num<<endl;
-//			ostringstream chunkid;
-//			chunkid<<file_name.c_str()<<"_"<<offset++;
-//			ci.chunkId=chunkid.str().c_str();
-//			ci.hook=rt;
-//			vci.push_back(ci);
-//			cout<<ci.chunkId.c_str()<<"---"<<length<<endl;
-//			length=length+CHUNK_SIZE;
-//		}
-////		hdfsSeek(fs,readFile,CHUNK_SIZE);
-//		hdfsCloseFile(fs,readFile);
-////		cout<<bytes_num<<endl;
-////		bufferpool_[file_name]=rt;
-//	}
-//	return vci;
-//}
-
-// 这个函数返回一个构造好的chunkid和每个chunk的指针
-// 这个里面的chunkId肯定是要在blockManager注册然后汇报信息的
-// put的话也是会这样的，可以将这个函数中调用put然后统一汇报信息的接口
 ChunkInfo BlockManager::loadFromHdfs(string file_name) {
   // 由此函数得到的<blockId,指针>
   ChunkInfo ci;
@@ -249,7 +209,8 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name) {
   hdfsDisconnect(fs);
   return ci;
 }
-int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const& desc,
+
+int BlockManager::LoadFromHdfs(const ChunkID& chunk_id, void* const& desc,
                                const unsigned& length) {
   lock.acquire();
   int ret;
@@ -262,17 +223,23 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const& desc,
       fs, chunk_id.partition_id.getPathAndName()
               .c_str());  // to be refined after communicating with Zhang Lei
   if (!readFile) {
-    logging_->elog("Fail to open file [%s].Reason:%s",
-                   chunk_id.partition_id.getPathAndName().c_str(),
-                   strerror(errno));
+    //    logging_->elog("Fail to open file [%s].Reason:%s",
+    //                   chunk_id.partition_id.getPathAndName().c_str(),
+    //                   strerror(errno));
+    ELOG(rLoadFromHdfsOpenFailed,
+         chunk_id.partition_id.getPathAndName().c_str());
     hdfsDisconnect(fs);
     lock.release();
     return -1;
-  } else {
-    logging_->log("file [%s] is opened for offset[%d]\n",
-                  chunk_id.partition_id.getPathAndName().c_str(), offset);
+  }  //加错误码;
+  else {
+    //    logging_->log("file [%s] is opened for offset[%d]\n",
+    //                  chunk_id.partition_id.getPathAndName().c_str(), offset);
+    DLOG(INFO) << "file [" << chunk_id.partition_id.getPathAndName().c_str()
+               << "] is opened for offset [" << offset << "]" << endl;
   }
   uint64_t start_pos = CHUNK_SIZE * offset;
+  if (start_pos < 0) assert(false);
   if (start_pos < hdfsfile->mSize) {
     ret = hdfsPread(fs, readFile, start_pos, desc, length);
   } else {
@@ -284,24 +251,31 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const& desc,
   lock.release();
   return ret;
 }
-int BlockManager::loadFromDisk(const ChunkID& chunk_id, void* const& desc,
+
+int BlockManager::LoadFromDisk(const ChunkID& chunk_id, void* const& desc,
                                const unsigned& length) const {
-  int ret;
+  int ret = 0;
   unsigned offset = chunk_id.chunk_off;
   int fd = FileOpen(chunk_id.partition_id.getPathAndName().c_str(), O_RDONLY);
   if (fd == -1) {
-    logging_->elog("Fail to open file [%s].Reason:%s",
-                   chunk_id.partition_id.getPathAndName().c_str(),
-                   strerror(errno));
+    //    logging_->elog("Fail to open file [%s].Reason:%s",
+    //                   chunk_id.partition_id.getPathAndName().c_str(),
+    //                   strerror(errno));
+    ELOG(rLoadFromDiskOpenFailed,
+         chunk_id.partition_id.getPathAndName().c_str());
     return -1;
   } else {
-    logging_->log("file [%s] is opened for offset[%d]\n",
-                  chunk_id.partition_id.getPathAndName().c_str(), offset);
+    //    logging_->log("file [%s] is opened for offset[%d]\n",
+    //                  chunk_id.partition_id.getPathAndName().c_str(), offset);
+    DLOG(INFO) << "file [" << chunk_id.partition_id.getPathAndName().c_str()
+               << "] is opened for offset [" << offset << "]" << endl;
   }
   long int file_length = lseek(fd, 0, SEEK_END);
 
   long start_pos = CHUNK_SIZE * offset;
-  logging_->log("start_pos=%ld**********\n", start_pos);
+
+  //  logging_->log("start_pos=%ld**********\n", start_pos);
+  DLOG(INFO) << "start_pos=" << start_pos << "*********" << endl;
 
   lseek(fd, start_pos, SEEK_SET);
   if (start_pos < file_length) {
@@ -322,50 +296,63 @@ string BlockManager::askForMatch(string filename, BlockManagerId bmi) {
   }
   return file_proj_[filename.c_str()];
 }
-bool BlockManager::containsPartition(const PartitionID& part) const {
+
+bool BlockManager::ContainsPartition(const PartitionID& part) const {
   boost::unordered_map<PartitionID, PartitionStorage*>::const_iterator it =
       partition_id_to_storage_.find(part);
   return !(it == partition_id_to_storage_.cend());
 }
-bool BlockManager::addPartition(const PartitionID& partition_id,
+
+bool BlockManager::AddPartition(const PartitionID& partition_id,
                                 const unsigned& number_of_chunks,
                                 const StorageLevel& desirable_storage_level) {
   boost::unordered_map<PartitionID, PartitionStorage*>::const_iterator it =
       partition_id_to_storage_.find(partition_id);
   if (it != partition_id_to_storage_.cend()) {
-    partition_id_to_storage_[partition_id]->updateChunksWithInsertOrAppend(
+    partition_id_to_storage_[partition_id]->UpdateChunksWithInsertOrAppend(
         partition_id, number_of_chunks, desirable_storage_level);
-    logging_->log(
-        "Successfully updated partition[%s](desriable_storage_level = %d)!",
-        partition_id.getName().c_str(), desirable_storage_level);
+    //    logging_->log(
+    //        "Successfully updated partition[%s](desriable_storage_level =
+    //        %d)!",
+    //        partition_id.getName().c_str(), desirable_storage_level);
+    DLOG(INFO) << "Successfully updated partition["
+               << partition_id.getName().c_str()
+               << "](desriable_storage_level =" << desirable_storage_level
+               << endl;
     return true;
   }
   partition_id_to_storage_[partition_id] = new PartitionStorage(
       partition_id, number_of_chunks, desirable_storage_level);
-  logging_->log("Successfully added partition[%s](desriable_storage_level=%d)!",
-                partition_id.getName().c_str(), desirable_storage_level);
+  //  logging_->log("Successfully added
+  //  partition[%s](desriable_storage_level=%d)!",
+  //                partition_id.getName().c_str(), desirable_storage_level);
+  DLOG(INFO) << "Successfully updated partition["
+             << partition_id.getName().c_str()
+             << "](desriable_storage_level =" << desirable_storage_level
+             << endl;
   return true;
 }
 
-bool BlockManager::removePartition(const PartitionID& partition_id) {
+bool BlockManager::RemovePartition(const PartitionID& partition_id) {
   boost::unordered_map<PartitionID, PartitionStorage*>::iterator it =
       partition_id_to_storage_.find(partition_id);
   if (it == partition_id_to_storage_.cend()) {
-    logging_->elog("Fail to unbinding partition [%s].",
-                   partition_id.getName().c_str());
+    //    logging_->elog("Fail to unbinding partition [%s].",
+    //                   partition_id.getName().c_str());
+    ELOG(rUnbindPartitionFailed, partition_id.getName().c_str());
     return false;
   }
-  it->second->removeAllChunks(it->first);
+  it->second->RemoveAllChunks(it->first);
   partition_id_to_storage_.erase(it);
   return true;
 }
 
-PartitionStorage* BlockManager::getPartitionHandle(
+PartitionStorage* BlockManager::GetPartitionHandle(
     const PartitionID& partition_id) const {
   boost::unordered_map<PartitionID, PartitionStorage*>::const_iterator it =
       partition_id_to_storage_.find(partition_id);
   if (it == partition_id_to_storage_.cend()) {
-    return 0;
+    return NULL;
   }
   return it->second;
 }
@@ -382,95 +369,29 @@ BlockManager::BlockManagerWorkerActor::~BlockManagerWorkerActor() {}
 
 bool BlockManager::BlockManagerWorkerActor::_reigisterToMaster(
     BlockManagerId* bMId) {
-  //	cout<<"in the worker actor to register"<<endl;
-  //	//
-  //在注册的时候，就有receiverId的构造，也就是用这个string来作为所有的stroage
-  //node的标志，
-  //	// 不会出现冲突，是因为传输的message是不一样的，
-  //	receiverId_=bMId->blockManagerId;
-  //	StorageBudgetMessage rsm(receiverId_.c_str());
-  //
-  //	tor_=new TimeOutReceiver(endpoint_,receiverId_.c_str());
-  //	Theron::Catcher<RegisterStorageRespond> resultCatcher;
-  //	tor_->RegisterHandler(&resultCatcher,
-  //&Theron::Catcher<RegisterStorageRespond>::Push);
-  //	framework_->Send(rsm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
-  //	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
-  //	if(tor_->TimeOutWait(1,1000)==1){
-  //		cout<<"register respond"<<endl;
-  //		return true;
-  //	}else{
-  //		cout<<"not receive the register respond"<<endl;
-  //		return false;
-  //	}
   return true;
 }
 
-bool BlockManager::BlockManagerWorkerActor::_sendHeartBeat() {
-  //	string alive="I am ok";
-  //	HeartBeatMessage hbm(alive.c_str());
-  //	Theron::Catcher<HeartBeatRespond> resultCatcher;
-  //	tor_->RegisterHandler(&resultCatcher,
-  //&Theron::Catcher<HeartBeatRespond>::Push);
-  //	framework_->Send(hbm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
-  //	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
-  //	if(tor_->TimeOutWait(1,1000)==1){
-  //		cout<<"heartbeat respond"<<endl;
-  //		return true;
-  //	}else{
-  //		cout<<"not receive heartbeat respond"<<endl;
-  //		return false;
-  //	}
-  return true;
-}
+bool BlockManager::BlockManagerWorkerActor::_sendHeartBeat() { return true; }
 
 bool BlockManager::BlockManagerWorkerActor::_reportBlockStatus(string blockId) {
-  //	BlockStatusMessage bsm(blockId.c_str());
-  //	Theron::Catcher<BlockStatusRespond> resultCatcher;
-  //	tor_->RegisterHandler(&resultCatcher,
-  //&Theron::Catcher<BlockStatusRespond>::Push);
-  //	framework_->Send(bsm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
-  //	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
-  //	if(tor_->TimeOutWait(1,1000)==1){
-  //		cout<<"block status respond"<<endl;
-  //		return true;
-  //	}else{
-  //		cout<<"not receive block status respond"<<endl;
-  //		return false;
-  //	}
   return true;
 }
 
 string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,
                                                            BlockManagerId bmi) {
-  //	MatcherMessage mm(filename.c_str(),bmi.blockManagerId.c_str());
-  //	Theron::Catcher<MatcherRespond> resultCatcher;
-  //	tor_->RegisterHandler(&resultCatcher,
-  //&Theron::Catcher<MatcherRespond>::Push);
-  //	framework_->Send(mm,tor_->GetAddress(),Theron::Address("blockManagerMasterActor"));
-  //	// TimeOutWait(count,time_out),如果返回的数值小于count,那就是超时了
-  //	cout<<"already send the message of matcher out"<<endl;
-  //	if(tor_->TimeOutWait(1,1000)==1){
-  //		cout<<"matcher respond"<<endl;
-  //		MatcherRespond mr("");
-  //		Theron::Address addr("blockManagerMasterActor");
-  //		resultCatcher.Pop(mr,addr);
-  //		cout<<"the receiver string is: "<<mr.mText<<endl;
-  //		return mr.mText;
-  //	}else{
-  //		cout<<"not receive matcher respond"<<endl;
-  //	}
   return string("Hello~");
 }
 void BlockManager::BlockManagerWorkerActor::BindingPartition(
     const PartitionBindingMessage& message, const Theron::Address from) {
-  bm_->addPartition(message.partition_id, message.number_of_chunks,
+  bm_->AddPartition(message.partition_id, message.number_of_chunks,
                     message.storage_level);
   Send(int(0), from);
 }
 
 void BlockManager::BlockManagerWorkerActor::UnbindingPartition(
     const PartitionUnbindingMessage& message, const Theron::Address from) {
-  bm_->removePartition(message.partition_id);
+  bm_->RemovePartition(message.partition_id);
+
   Send(int(0), from);
 }

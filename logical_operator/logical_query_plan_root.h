@@ -70,6 +70,7 @@ class LogicalQueryPlanRoot : public LogicalOperator {
                        const OutputStyle& fashion = kPerformance);
   LogicalQueryPlanRoot(NodeID collecter_node_id, LogicalOperator* child,
                        const OutputStyle& fashion = kPerformance);
+
   virtual ~LogicalQueryPlanRoot();
   PlanContext GetPlanContext();
   /**
