@@ -159,7 +159,8 @@ bool MemoryChunkStore::PutChunk(const ChunkID& chunk_id,
 // TODO(han)：LIRS is the optimization of LRU.
 void MemoryChunkStore::FreeChunkLRU::WayOfFreeChunk() {
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator target_ =
-      MemoryChunkStore::GetInstance()->chunk_list_.begin();
+      chunk_list_.begin();
+  if (NULL == target_) std::cout << "chunk lost" << endl;
   for (boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator mei_ =
            target_;
        mei_ != MemoryChunkStore::GetInstance()->chunk_list_.end(); mei_++) {
@@ -167,21 +168,22 @@ void MemoryChunkStore::FreeChunkLRU::WayOfFreeChunk() {
       target_ = mei_;
     }
   }
-  DLOG(INFO) << "The way is LRU: the free chunk: " << target_->first.chunk_off
-             << endl;
+  LOG(INFO) << "The way is LRU: the free chunk: " << target_->first.chunk_off
+            << endl;
   MemoryChunkStore::GetInstance()->chunk_pool_.free(target_->second.hook);
   MemoryChunkStore::GetInstance()->chunk_list_.erase(target_);
 }
 
 void MemoryChunkStore::FreeChunkRandom::WayOfFreeChunk() {
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator it_ =
-      MemoryChunkStore::GetInstance()->chunk_list_.begin();
+      chunk_list_.begin();
   int count = (int)MemoryChunkStore::GetInstance()->chunk_list_.size();
   srand((unsigned)time(NULL));
   int size = rand() % count;
   for (int i = 0; i < size; i++) it_++;
-  DLOG(INFO) << "The way is Random: the free chunk: " << it_->first.chunk_off
-             << endl;
+  if (NULL == it_) std::cout << "chunk lost" << endl;
+  LOG(INFO) << "The way is Random: the free chunk: " << it_->first.chunk_off
+            << endl;
   MemoryChunkStore::GetInstance()->chunk_pool_.free(it_->second.hook);
   MemoryChunkStore::GetInstance()->chunk_list_.erase(it_);
 }
