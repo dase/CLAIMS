@@ -86,13 +86,10 @@ bool Config::enable_codegen;
 
 std::string Config::catalog_file;
 
-<<<<<<< HEAD
 int Config::thread_pool_init_thread_num;
 
 int Config::load_thread_num;
-=======
 int Config::memory_utilization;
->>>>>>> storage
 
 Config *Config::getInstance() {
   if (instance_ == 0) {
