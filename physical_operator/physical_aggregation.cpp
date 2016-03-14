@@ -31,6 +31,7 @@
 
 #include "../physical_operator/physical_aggregation.h"
 #include <glog/logging.h>
+#include <stack>
 #include <vector>
 #include "../common/expression/expr_node.h"
 #include "../common/expression/data_type_oper.h"
@@ -53,12 +54,14 @@ PhysicalAggregation::PhysicalAggregation(State state)
       hashtable_(NULL),
       hash_(NULL),
       bucket_cur_(0) {
+  set_phy_oper_type(kPhysicalAggregation);
   InitExpandedStatus();
   assert(state_.hash_schema_);
 }
 
 PhysicalAggregation::PhysicalAggregation()
     : PhysicalOperator(4, 3), hashtable_(NULL), hash_(NULL), bucket_cur_(0) {
+  set_phy_oper_type(kPhysicalAggregation);
   InitExpandedStatus();
 }
 
@@ -485,6 +488,13 @@ void PhysicalAggregation::Print() {
   }
   cout << "---------------" << std::endl;
   state_.child_->Print();
+}
+RetCode PhysicalAggregation::GetAllSegments(stack<Segment *> *all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    return state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 
 }  // namespace physical_operator

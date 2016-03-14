@@ -22,6 +22,8 @@
  *      Author: wangli
  *       Email: wangli1426@gmail.com
  */
+#include <stack>
+
 
 #ifndef PHYSICAL_QUERY_PLAN_BLOCKSTREAMRESULTCOLLECTOR_H_
 #define PHYSICAL_QUERY_PLAN_BLOCKSTREAMRESULTCOLLECTOR_H_
@@ -32,6 +34,7 @@
 #include "../common/Schema/Schema.h"
 #include "../common/Block/DynamicBlockBuffer.h"
 #include "../Environment.h"
+
 
 using std::string;
 using std::vector;
@@ -48,8 +51,7 @@ class ResultCollector : public PhysicalOperatorBase {
     friend class ResultCollector;
 
    public:
-    State(Schema* input, PhysicalOperatorBase* child,
-          const unsigned block_size,
+    State(Schema* input, PhysicalOperatorBase* child, const unsigned block_size,
           vector<string> column_header = vector<string>(),
           const PartitionOffset partitoin_offset = 0);
     State();
@@ -80,6 +82,7 @@ class ResultCollector : public PhysicalOperatorBase {
   bool Next(BlockStreamBase* block);
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
   /**
    * @brief Get query result data set.
@@ -126,8 +129,7 @@ class ResultCollector : public PhysicalOperatorBase {
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar& boost::serialization::base_object<PhysicalOperatorBase>(*this) &
-        state_;
+    ar& boost::serialization::base_object<PhysicalOperatorBase>(*this) & state_;
   }
 };
 

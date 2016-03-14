@@ -46,6 +46,9 @@ class Environment {
   MasterNode* get_master_node() { return master_node_; }
   SlaveNode* get_slave_node() { return slave_node_; }
   BlockManager* get_block_manager() { return blockManager_; }
+  IteratorExecutorMaster* get_iterator_executor_master() {
+    return iteratorExecutorMaster;
+  }
 
  private:
   void readConfigFile();

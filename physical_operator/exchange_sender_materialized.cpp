@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <iosfwd>
 #include <sstream>
+#include <stack>
 #include <string>
 #include "../configure.h"
 #include "../common/rename.h"
@@ -46,14 +47,19 @@
 #include "../Environment.h"
 #include "../Executor/exchange_tracker.h"
 #include "../physical_operator/exchange_sender.h"
+
 namespace claims {
 namespace physical_operator {
 ExchangeSenderMaterialized::ExchangeSenderMaterialized(State state)
-    : state_(state), ExchangeSender() {}
+    : state_(state), ExchangeSender() {
+  set_phy_oper_type(kphysicalExchangeSender);
+}
 
 ExchangeSenderMaterialized::~ExchangeSenderMaterialized() {}
 
-ExchangeSenderMaterialized::ExchangeSenderMaterialized() {}
+ExchangeSenderMaterialized::ExchangeSenderMaterialized() {
+  set_phy_oper_type(kphysicalExchangeSender);
+}
 bool ExchangeSenderMaterialized::Open(const PartitionOffset&) {
   state_.child_->Open(state_.partition_offset_);
 
@@ -361,7 +367,7 @@ void* ExchangeSenderMaterialized::debug(void* arg) {
 bool ExchangeSenderMaterialized::CreateWorkerThread() {
   if (true == g_thread_pool_used) {
     Environment::getInstance()->getThreadPool()->AddTask(MaterializeAndSend,
-                                                          this);
+                                                         this);
   } else {
     int error;
     error = pthread_create(&sender_thread_id_, NULL, MaterializeAndSend, this);
@@ -403,6 +409,14 @@ std::string ExchangeSenderMaterialized::GetPartititionedFileName(
   file_name << temp_file_dir << "exchange_" << state_.exchange_id_ << "_"
             << state_.partition_offset_ << "_" << partition_index;
   return file_name.str();
+}
+RetCode ExchangeSenderMaterialized::GetAllSegments(
+    stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    return state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  // namespace physical_operator
 }  // namespace claims

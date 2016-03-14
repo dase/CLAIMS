@@ -33,12 +33,18 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <stack>
+
 #include "../../common/hash.h"
 #include "../../common/hashtable.h"
 #include "../utility/rdtsc.h"
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/error_define.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
+
+
+
 
 namespace claims {
 namespace physical_operator {
@@ -113,6 +119,7 @@ class PhysicalDeleteFilter : public PhysicalOperator {
   bool Next(BlockStreamBase* block);
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   ThreadContext* CreateContext();

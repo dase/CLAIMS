@@ -38,14 +38,20 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <stack>
+
 #include "../Debug.h"
 #include "../utility/rdtsc.h"
 #include "../common/hash.h"
 #include "../common/hashtable.h"
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/error_define.h"
 #include "../common/expression/expr_node.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
+
+
+
 namespace claims {
 namespace physical_operator {
 
@@ -141,6 +147,7 @@ class PhysicalHashJoin : public PhysicalOperator {
    */
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   /**

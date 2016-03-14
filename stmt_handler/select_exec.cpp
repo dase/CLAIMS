@@ -28,16 +28,31 @@
 
 #include "../stmt_handler/select_exec.h"
 #include <glog/logging.h>
+#include <pthread.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <iostream>
+#include <stack>
 #include <vector>
 #include <string>
 
 #include "../common/error_define.h"
+#include "../common/ids.h"
+#include "../Environment.h"
 #include "../logical_operator/logical_query_plan_root.h"
+#include "../physical_operator/exchange_sender.h"
+#include "../physical_operator/exchange_sender_pipeline.h"
+#include "../physical_operator/physical_aggregation.h"
+#include "../physical_operator/physical_nest_loop_join.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../stmt_handler/stmt_handler.h"
 using claims::logical_operator::LogicalQueryPlanRoot;
+using claims::physical_operator::ExchangeSender;
+using claims::physical_operator::ExchangeSenderPipeline;
+using claims::physical_operator::PhysicalAggregation;
+using claims::physical_operator::PhysicalNestLoopJoin;
 using claims::physical_operator::PhysicalOperatorBase;
+using claims::physical_operator::PhysicalOperatorType;
 using std::endl;
 using std::vector;
 using std::string;
@@ -59,7 +74,6 @@ SelectExec::~SelectExec() {
   //    select_ast_ = NULL;
   //  }
 }
-
 RetCode SelectExec::Execute(ExecutedResult* exec_result) {
 #ifdef PRINTCONTEXT
   select_ast_->Print();
@@ -116,16 +130,78 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   physical_plan->Print();
   cout << "--------------begin output result -------------------" << endl;
 #endif
+  // collect all plan segments
+  physical_plan->GetAllSegments(&all_segments_);
+  // create thread to send all segments
+  pthread_t tid = 0;
+  if (all_segments_.size() > 0) {
+    int ret = pthread_create(&tid, NULL, SendAllSegments, this);
+  }
 
   physical_plan->Open();
+
   while (physical_plan->Next(NULL)) {
   }
   exec_result->result_ = physical_plan->GetResultSet();
   physical_plan->Close();
 
+  if (tid != 0) {
+    pthread_join(tid, NULL);
+  }
   delete logic_plan;
   delete physical_plan;
   return rSuccess;
 }
+//!!!return ret by global variant
+void* SelectExec::SendAllSegments(void* arg) {
+  RetCode ret = 0;
+  SelectExec* select_exec = reinterpret_cast<SelectExec*>(arg);
+  while (!select_exec->all_segments_.empty()) {
+    auto a_plan_segment = select_exec->all_segments_.top();
+    // make sure upper exchanges are prepared
+    ret = select_exec->IsUpperExchangeRegistered(
+        a_plan_segment->upper_node_id_list_, a_plan_segment->exchange_id_);
+    if (rSuccess == ret) {
+      auto physical_sender_oper = a_plan_segment->get_plan_segment();
+      for (int i = 0; i < a_plan_segment->lower_node_id_list_.size(); ++i) {
+        // set partition offset for each segment
+        reinterpret_cast<ExchangeSender*>(physical_sender_oper)
+            ->SetPartitionOffset(i);
+        if (Environment::getInstance()
+                ->get_iterator_executor_master()
+                ->ExecuteBlockStreamIteratorsOnSite(
+                    physical_sender_oper,
+                    a_plan_segment->lower_node_id_list_[i]) == false) {
+          LOG(ERROR) << "send plan error!!" << endl;
+          ret = -1;
+          return &ret;
+        }
+        LOG(INFO) << "send plan succeed!!!" << endl;
+      }
+    } else {
+      LOG(ERROR) << "asking upper exchange failed!" << endl;
+      return &ret;
+    }
+    select_exec->all_segments_.pop();
+  }
+  return &ret;
+}
+RetCode SelectExec::IsUpperExchangeRegistered(
+    vector<NodeID>& upper_node_id_list, const u_int64_t exchange_id) {
+  RetCode ret = rSuccess;
+  NodeAddress node_addr;
+  /// TODO(fzh)should release the strong synchronization
+  for (int i = 0; i < upper_node_id_list.size(); ++i) {
+    while (Environment::getInstance()
+               ->getExchangeTracker()
+               ->AskForSocketConnectionInfo(ExchangeID(exchange_id, i),
+                                            upper_node_id_list[i],
+                                            node_addr) != true) {
+      usleep(200);
+    }
+  }
+  return ret;
+}
+
 }  // namespace stmt_handler
 }  // namespace claims

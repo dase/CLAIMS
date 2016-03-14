@@ -34,6 +34,8 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <limits.h>
+#include <stack>
+
 #include "../common/rename.h"
 #include "../storage/BlockManager.h"
 #include "../Config.h"
@@ -49,11 +51,13 @@ namespace claims {
 namespace physical_operator {
 PhysicalProjectionScan::PhysicalProjectionScan(State state)
     : state_(state), partition_reader_iterator_(NULL), perf_info_(NULL) {
+  set_phy_oper_type(kPhysicalScan);
   InitExpandedStatus();
 }
 
 PhysicalProjectionScan::PhysicalProjectionScan()
     : partition_reader_iterator_(NULL), perf_info_(NULL) {
+  set_phy_oper_type(kPhysicalScan);
   InitExpandedStatus();
 }
 
@@ -204,6 +208,8 @@ bool PhysicalProjectionScan::PassSample() const {
   if ((rand() / (float)RAND_MAX) < state_.sample_rate_) return true;
   return false;
 }
-
+RetCode PhysicalProjectionScan::GetAllSegments(stack<Segment*>* all_segments) {
+  return rSuccess;
+}
 }  // namespace physical_operator
 }  // namespace claims

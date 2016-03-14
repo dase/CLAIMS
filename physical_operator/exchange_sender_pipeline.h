@@ -43,6 +43,8 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <stack>
+
 #include "../../common/Schema/Schema.h"
 #include "../../Executor/IteratorExecutorMaster.h"
 #include "../../common/Block/PartitionedBlockBuffer.h"
@@ -52,6 +54,7 @@
 #include "../../common/hash.h"
 #include "../../common/Logging.h"
 #include "../../common/partition_functions.h"
+#include "../common/error_define.h"
 #include "../physical_operator/exchange_sender.h"
 #include "../physical_operator/physical_operator_base.h"
 
@@ -107,6 +110,10 @@ class ExchangeSenderPipeline : public ExchangeSender {
    */
   bool Next(BlockStreamBase* no_block);
   bool Close();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
+  void SetPartitionOffset(const int par_off) {
+    state_.partition_offset_ = par_off;
+  }
 
  private:
   /**

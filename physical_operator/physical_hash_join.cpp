@@ -32,6 +32,8 @@
 
 #include "../physical_operator/physical_hash_join.h"
 #include <glog/logging.h>
+#include <stack>
+
 #include "../codegen/ExpressionGenerator.h"
 #include "../Config.h"
 #include "../Executor/expander_tracker.h"
@@ -50,6 +52,7 @@ PhysicalHashJoin::PhysicalHashJoin(State state)
       eftt_(0),
       memcpy_(0),
       memcat_(0) {
+  set_phy_oper_type(kPhysicalHashJoin);
   // sema_open_.set_value(1);
   InitExpandedStatus();
 }
@@ -61,6 +64,8 @@ PhysicalHashJoin::PhysicalHashJoin()
       eftt_(0),
       memcpy_(0),
       memcat_(0) {
+  set_phy_oper_type(kPhysicalHashJoin);
+
   // sema_open_.set_value(1);
   InitExpandedStatus();
 }
@@ -393,6 +398,15 @@ ThreadContext* PhysicalHashJoin::CreateContext() {
 
   return jtc;
 }
-
+RetCode PhysicalHashJoin::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_right_) {
+    ret = state_.child_right_->GetAllSegments(all_segments);
+  }
+  if (NULL != state_.child_left_) {
+    ret = state_.child_left_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
 }  // namespace physical_operator
 }  // namespace claims

@@ -18,7 +18,8 @@ LDADD = ../Executor/libexecutor.a \
 		../common/Schema/libschema.a \
 		../common/Block/libblock.a	\
 		../utility/libutility.a \
-		../codegen/codegen.a\
+		../codegen/codegen.a \
+		../stmt_handler/libstmthandler.a	\
 		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
@@ -46,7 +47,8 @@ libphysicalqueryplan_a_SOURCES = \
 	physical_filter.cpp 					physical_filter.h \
 	physical_projection_scan.cpp 			physical_projection_scan.h \
 	physical_nest_loop_join.h				physical_nest_loop_join.cpp	\
-	physical_delete_filter.h                physical_delete_filter.cpp
+	physical_delete_filter.h                physical_delete_filter.cpp	\
+	segment.cpp 							segment.h
 			
 SUBDIRS = 
 DIST_SUBDIRS = 

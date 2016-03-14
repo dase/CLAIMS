@@ -21,11 +21,18 @@
  *      Author: wangli
  */
 
+#include "../common/error_define.h"
 #include "../physical_operator/result_printer.h"
+#include <stack>
+using claims::common::rSuccess;
 namespace claims {
 namespace physical_operator {
-ResultPrinter::ResultPrinter() : block_buffer_(0) {}
-ResultPrinter::ResultPrinter(State state) : state_(state), block_buffer_(0) {}
+ResultPrinter::ResultPrinter() : block_buffer_(0) {
+  set_phy_oper_type(kPhysicalResult);
+}
+ResultPrinter::ResultPrinter(State state) : state_(state), block_buffer_(0) {
+  set_phy_oper_type(kPhysicalResult);
+}
 
 ResultPrinter::~ResultPrinter() {}
 bool ResultPrinter::Open(const PartitionOffset& offset) {
@@ -80,6 +87,14 @@ void ResultPrinter::Print() {
 ResultPrinter::State::~State() {
   delete schema_;
   if (child_ > 0) delete child_;
+}
+
+RetCode ResultPrinter::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  // namespace physical_operator
 }  // namespace claims

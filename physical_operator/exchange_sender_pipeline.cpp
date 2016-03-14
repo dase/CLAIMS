@@ -28,6 +28,8 @@
 #include "../physical_operator/exchange_sender_pipeline.h"
 
 #include <malloc.h>
+#include <stack>
+
 #include "../../configure.h"
 #include "../../common/rename.h"
 #include "../../common/Logging.h"
@@ -41,10 +43,13 @@ namespace claims {
 namespace physical_operator {
 
 ExchangeSenderPipeline::ExchangeSenderPipeline(State state) : state_(state) {
+  set_phy_oper_type(kphysicalExchangeSender);
   assert(state.partition_schema_.partition_key_index < 100);
 }
 
-ExchangeSenderPipeline::ExchangeSenderPipeline() {}
+ExchangeSenderPipeline::ExchangeSenderPipeline() {
+  set_phy_oper_type(kphysicalExchangeSender);
+}
 
 ExchangeSenderPipeline::~ExchangeSenderPipeline() {
   if (NULL != state_.schema_) {
@@ -457,6 +462,13 @@ void ExchangeSenderPipeline::CancelSenderThread() {
             << " , partition_offset = " << state_.partition_offset_
             << " ) thread is canceled!" << std::endl;
   sender_thread_id_ = 0;
+}
+RetCode ExchangeSenderPipeline::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    return state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  // namespace physical_operator
 }  // namespace claims

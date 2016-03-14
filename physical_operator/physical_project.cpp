@@ -28,17 +28,22 @@
 
 #include "../physical_operator/physical_project.h"
 
+#include <stack>
 #include <vector>
 using claims::common::ExprNode;
 
 #include "../common/expression/expr_node.h"
 namespace claims {
 namespace physical_operator {
-PhysicalProject::PhysicalProject() { InitExpandedStatus(); }
+PhysicalProject::PhysicalProject() {
+  set_phy_oper_type(kPhysicalProject);
+  InitExpandedStatus();
+}
 
 PhysicalProject::~PhysicalProject() {}
 
 PhysicalProject::PhysicalProject(State state) : state_(state) {
+  set_phy_oper_type(kPhysicalProject);
   InitExpandedStatus();
 }
 
@@ -197,6 +202,12 @@ ThreadContext* PhysicalProject::CreateContext() {
 #endif
   return ptc;
 }
-
+RetCode PhysicalProject::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
 }  // namespace physical_operator
 }  // namespace claims

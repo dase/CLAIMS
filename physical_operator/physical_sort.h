@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <stack>
 #include <utility>
 #include <vector>
 
@@ -41,6 +42,7 @@
 #include "../common/Block/BlockStream.h"
 #include "../common/Block/DynamicBlockBuffer.h"
 #include "../common/expression/expr_node.h"
+
 #include "../utility/lock.h"
 #include "../utility/rdtsc.h"
 using claims::common::DataTypeOperFunc;
@@ -48,6 +50,7 @@ using std::vector;
 using std::pair;
 using claims::common::ExprNode;
 using claims::common::OperFuncInfo;
+
 namespace claims {
 namespace physical_operator {
 #define NEWCONDI
@@ -143,6 +146,7 @@ class PhysicalSort : public PhysicalOperator {
    *                            state_.block_size_.
    */
   bool CreateBlock(BlockStreamBase*&) const;
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   State state_;

@@ -43,13 +43,17 @@ Expander::Expander(State state)
       block_stream_buffer_(0),
       finished_thread_count_(0),
       thread_count_(0),
-      coordinate_pid_(0) {}
+      coordinate_pid_(0) {
+  set_phy_oper_type(kphysicalExpander);
+}
 
 Expander::Expander()
     : block_stream_buffer_(0),
       finished_thread_count_(0),
       thread_count_(0),
-      coordinate_pid_(0) {}
+      coordinate_pid_(0) {
+  set_phy_oper_type(kphysicalExpander);
+}
 
 Expander::~Expander() {
   if (NULL != state_.child_) {
@@ -309,8 +313,7 @@ bool Expander::CreateWorkingThread() {
   ticks start = curtick();
   if (exclusive_expanding_.try_acquire()) {
     if (true == g_thread_pool_used) {
-      Environment::getInstance()->getThreadPool()->AddTask(ExpandedWork,
-                                                            &para);
+      Environment::getInstance()->getThreadPool()->AddTask(ExpandedWork, &para);
     } else {
       const int error = pthread_create(&tid, NULL, ExpandedWork, &para);
       if (error != 0) {
@@ -442,6 +445,13 @@ bool Expander::Shrink() {
 
     return true;
   }
+}
+RetCode Expander::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    return state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  // namespace physical_operator
 }  // namespace claims

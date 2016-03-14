@@ -36,6 +36,8 @@
 #include <boost/serialization/utility.hpp>
 #include <string>
 #include <map>
+#include <stack>
+
 #include "../physical_operator/physical_operator_base.h"
 #include "../utility/lock.h"
 #include "../Executor/IteratorExecutorMaster.h"
@@ -48,6 +50,9 @@
 #include "../common/Block/BlockStream.h"
 #include "../common/Block/BlockStreamBuffer.h"
 #include "../physical_operator/physical_operator.h"
+
+
+
 namespace claims {
 namespace physical_operator {
 /**
@@ -107,6 +112,7 @@ class ExchangeMerger : public PhysicalOperator {
   bool Next(BlockStreamBase* block);
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   /// prepare socket at this node, waiting senders connect it

@@ -33,7 +33,9 @@
 
 #include <vector>
 #include <map>
+#include <stack>
 
+#include "../common/error_define.h"
 #include "../common/expression/expr_node.h"
 #include "../common/expression/expr_unary.h"
 #include "../physical_operator/physical_operator_base.h"
@@ -45,8 +47,10 @@
 #include "../common/Schema/Schema.h"
 #include "../common/Expression/queryfunc.h"
 #include "../physical_operator/physical_operator.h"
+
 using claims::common::ExprUnary;
 using claims::common::ExprNode;
+
 namespace claims {
 namespace physical_operator {
 #define NEWCONDI
@@ -104,6 +108,7 @@ class PhysicalAggregation : public PhysicalOperator {
   bool Next(BlockStreamBase *block);
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment *> *all_segments);
 
  public:
   State state_;

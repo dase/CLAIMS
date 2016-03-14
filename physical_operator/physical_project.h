@@ -33,6 +33,7 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <stack>
 
 #include "../common/expression/expr_node.h"
 #include "../common/Mapping.h"
@@ -42,6 +43,7 @@
 #include "../common/Expression/execfunc.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
+
 using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
@@ -144,6 +146,7 @@ class PhysicalProject : public PhysicalOperator {
    */
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment *> *all_segments);
 
  private:
   /**

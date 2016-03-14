@@ -30,9 +30,14 @@
 #include "../physical_operator/physical_nest_loop_join.h"
 
 #include <boost/serialization/base_object.hpp>
+#include <stack>
+
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
 #include "../Debug.h"
+
+
+
 
 namespace claims {
 namespace physical_operator {
@@ -101,6 +106,9 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   bool Next(BlockStreamBase *block);
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment *> *all_segments);
+
+  State state_;
 
  private:
   bool CreateBlockStream(BlockStreamBase *&, Schema *&schema) const;
@@ -118,7 +126,6 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   /* payload_right map to the output*/
   std::map<unsigned, unsigned> payload_right_to_output_;
 
-  State state_;
   Lock lock_;
   unsigned produced_tuples_;
   unsigned consumed_tuples_from_right_;

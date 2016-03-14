@@ -27,6 +27,8 @@
 #include <string>
 #include <vector>
 #include <iostream>  // NOLINT
+#include <stack>
+
 #include "../utility/rdtsc.h"
 using std::vector;
 using std::string;
@@ -37,12 +39,14 @@ namespace claims {
 namespace physical_operator {
 ResultCollector::ResultCollector()
     : finished_thread_count_(0), registered_thread_count_(0) {
+  set_phy_oper_type(kPhysicalResult);
   sema_open_.set_value(1);
   sema_open_finished_.set_value(0);
   sema_input_complete_.set_value(0);
 }
 ResultCollector::ResultCollector(State state)
     : finished_thread_count_(0), registered_thread_count_(0), state_(state) {
+  set_phy_oper_type(kPhysicalResult);
   sema_open_.set_value(1);
   sema_open_finished_.set_value(0);
   sema_input_complete_.set_value(0);
@@ -178,6 +182,13 @@ unsigned long ResultCollector::GetNumberOftuples() const {
 ResultCollector::State::~State() {
   //  delete input_;
   //  delete child_;
+}
+RetCode ResultCollector::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  //  namespace physical_operator
 }  //  namespace claims

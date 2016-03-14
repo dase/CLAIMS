@@ -33,6 +33,7 @@
 
 #ifndef PHYSICAL_OPERATOR_PHYSICAL_PROJECTION_SCAN_H_
 #define PHYSICAL_OPERATOR_PHYSICAL_PROJECTION_SCAN_H_
+#include <stack>
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <boost/archive/text_iarchive.hpp>
@@ -134,6 +135,7 @@ class PhysicalProjectionScan : public PhysicalOperator {
    */
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   bool PassSample() const;

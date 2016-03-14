@@ -28,6 +28,10 @@
 
 #ifndef PHYSICAL_OPERATOR_PHYSICAL_FILTER_H_
 #define PHYSICAL_OPERATOR_PHYSICAL_FILTER_H_
+#include <stack>
+
+#include "../common/error_define.h"
+
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <boost/serialization/map.hpp>
@@ -52,6 +56,7 @@
 #include "../common/error_no.h"
 #include "../common/expression/expr_node.h"
 using claims::common::ExprNode;
+
 namespace claims {
 namespace physical_operator {
 /**
@@ -131,6 +136,7 @@ class PhysicalFilter : public PhysicalOperator {
    */
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   /**

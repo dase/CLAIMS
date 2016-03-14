@@ -27,14 +27,25 @@
  */
 
 #include "../physical_operator/physical_limit.h"
+
+#include <stack>
+
+#include "../common/error_define.h"
+#include "../physical_operator/physical_operator_base.h"
+
 #include "../utility/rdtsc.h"
+using claims::common::rSuccess;
 
 namespace claims {
 namespace physical_operator {
 
-PhysicalLimit::PhysicalLimit() : received_tuples_(0), block_for_asking_(NULL) {}
+PhysicalLimit::PhysicalLimit() : received_tuples_(0), block_for_asking_(NULL) {
+  set_phy_oper_type(kPhysicalLimit);
+}
 PhysicalLimit::PhysicalLimit(State state)
-    : state_(state), received_tuples_(0), block_for_asking_(NULL) {}
+    : state_(state), received_tuples_(0), block_for_asking_(NULL) {
+  set_phy_oper_type(kPhysicalLimit);
+}
 
 PhysicalLimit::State::State(Schema* schema, PhysicalOperatorBase* child,
                             unsigned long limits, unsigned block_size,
@@ -114,6 +125,12 @@ void PhysicalLimit::Print() {
          state_.limit_tuples_);
   state_.child_->Print();
 }
-
+RetCode PhysicalLimit::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
 }  // namespace physical_operator
 }  // namespace claims

@@ -28,12 +28,18 @@
 
 #ifndef STMT_HANDLER_SELECT_EXEC_H_
 #define STMT_HANDLER_SELECT_EXEC_H_
+#include <stack>
 #include <string>
+#include <vector>
 
+#include "../physical_operator/physical_operator_base.h"
+#include "../physical_operator/segment.h"
 #include "../stmt_handler/delete_stmt_exec.h"
 #include "../stmt_handler/stmt_exec.h"
 #include "../stmt_handler/stmt_handler.h"
-
+using std::stack;
+using claims::physical_operator::PhysicalOperatorBase;
+using claims::physical_operator::Segment;
 using std::string;
 namespace claims {
 namespace stmt_handler {
@@ -47,8 +53,14 @@ class SelectExec : public StmtExec {
   RetCode Execute(ExecutedResult* exec_result);
 
  private:
+  static void* SendAllSegments(void* arg);
+  RetCode IsUpperExchangeRegistered(vector<NodeID>& upper_node_id_list,
+                                    const u_int64_t exchange_id);
+
+ private:
   AstSelectStmt* select_ast_;
   string raw_sql_;
+  stack<Segment*> all_segments_;
 };
 }  // namespace stmt_handler
 }  // namespace claims

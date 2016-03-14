@@ -35,6 +35,7 @@
 #include "../../common/error_no.h"
 #include "./physical_delete_filter.h"
 
+#include <stack>
 using namespace claims::common;
 namespace claims {
 namespace physical_operator {
@@ -47,6 +48,7 @@ PhysicalDeleteFilter::PhysicalDeleteFilter()
       eftt_(NULL),
       memcpy_(NULL),
       memcat_(NULL) {
+  set_phy_oper_type(kPhysicalDeleteFilter);
   InitExpandedStatus();
 }
 
@@ -59,6 +61,7 @@ PhysicalDeleteFilter::PhysicalDeleteFilter(State state)
       eftt_(NULL),
       memcpy_(NULL),
       memcat_(NULL) {
+  set_phy_oper_type(kPhysicalDeleteFilter);
   InitExpandedStatus();
 }
 
@@ -439,6 +442,15 @@ ThreadContext* PhysicalDeleteFilter::CreateContext() {
   dftc->r_block_stream_iterator_ = dftc->r_block_for_asking_->createIterator();
   return dftc;
 }
-
+RetCode PhysicalDeleteFilter::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_right_) {
+    ret = state_.child_right_->GetAllSegments(all_segments);
+  }
+  if (NULL != state_.child_left_) {
+    ret = state_.child_left_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
 } /* namespace physical_operator */
 } /* namespace claims */

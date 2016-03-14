@@ -32,6 +32,7 @@
 
 #include "../physical_operator/physical_sort.h"
 #include <glog/logging.h>
+#include <stack>
 #include <utility>
 #include <vector>
 
@@ -50,12 +51,14 @@ unsigned PhysicalSort::order_by_pos_ = 0;
 PhysicalSort::State *PhysicalSort::cmp_state_ = NULL;
 OperFuncInfo PhysicalSort::fcinfo = NULL;
 PhysicalSort::PhysicalSort() : PhysicalOperator(3, 2) {
+  set_phy_oper_type(kPhysicalSort);
   lock_ = new Lock();
   InitExpandedStatus();
 }
 
 PhysicalSort::PhysicalSort(State state)
     : PhysicalOperator(3, 2), state_(state) {
+  set_phy_oper_type(kPhysicalSort);
   cmp_state_ = &state_;
   lock_ = new Lock();
   InitExpandedStatus();
@@ -271,5 +274,13 @@ bool PhysicalSort::CreateBlock(BlockStreamBase *&target) const {
       BlockStreamBase::createBlock(state_.input_schema_, state_.block_size_);
   return target != 0;
 }
+RetCode PhysicalSort::GetAllSegments(stack<Segment *> *all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
+
 }  // namespace physical_operator
 }  // namespace claims

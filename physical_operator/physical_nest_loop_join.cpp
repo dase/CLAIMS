@@ -28,8 +28,10 @@
 
 #include "../physical_operator/physical_nest_loop_join.h"
 
+#include <stack>
 #include "../Executor/expander_tracker.h"
 #include "../common/Block/BlockStream.h"
+#include "../physical_operator/physical_operator_base.h"
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "../common/log/logging.h"
 
@@ -37,6 +39,7 @@ namespace claims {
 namespace physical_operator {
 
 PhysicalNestLoopJoin::PhysicalNestLoopJoin() : PhysicalOperator(2, 2) {
+  set_phy_oper_type(kPhysicalNestLoopJoin);
   InitExpandedStatus();
 }
 
@@ -45,6 +48,7 @@ PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
 }
 PhysicalNestLoopJoin::PhysicalNestLoopJoin(State state)
     : PhysicalOperator(2, 2), state_(state) {
+  set_phy_oper_type(kPhysicalNestLoopJoin);
   InitExpandedStatus();
 }
 PhysicalNestLoopJoin::State::State(PhysicalOperatorBase *child_left,
@@ -248,6 +252,16 @@ void PhysicalNestLoopJoin::Print() {
   state_.child_left_->Print();
   printf("------Join Right-------\n");
   state_.child_right_->Print();
+}
+RetCode PhysicalNestLoopJoin::GetAllSegments(stack<Segment *> *all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_right_) {
+    ret = state_.child_right_->GetAllSegments(all_segments);
+  }
+  if (NULL != state_.child_left_) {
+    ret = state_.child_left_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 
 }  // namespace physical_operator

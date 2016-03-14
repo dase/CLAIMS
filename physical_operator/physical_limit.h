@@ -29,7 +29,12 @@
 #ifndef PHYSICAL_OPERATOR_PHYSICAL_LIMIT_H_
 #define PHYSICAL_OPERATOR_PHYSICAL_LIMIT_H_
 
+#include <stack>
+#include "../common/error_define.h"
 #include "../physical_operator/physical_operator_base.h"
+
+
+
 
 namespace claims {
 namespace physical_operator {
@@ -85,6 +90,7 @@ class PhysicalLimit : public PhysicalOperatorBase {
    */
   bool Close();
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   /**

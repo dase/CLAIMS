@@ -198,7 +198,8 @@ PlanContext LogicalAggregation::GetPlanContext() {
         ret.plan_partitioner_.set_partition_key(
             group_by_attrs_[0]->ExprNodeToAttr(0));
       }
-
+      /// set location of this coordinator, should invoke
+      /// coordinator.get_location()
       NodeID location = 0;
       int64_t data_cardinality = EstimateGroupByCardinality(child_context);
       PartitionOffset offset = 0;

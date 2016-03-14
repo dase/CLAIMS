@@ -30,6 +30,8 @@
 
 #include <assert.h>
 #include <limits>
+#include <stack>
+
 #include "../utility/warmup.h"
 #include "../utility/rdtsc.h"
 #include "../common/Expression/execfunc.h"
@@ -53,6 +55,7 @@ PhysicalFilter::PhysicalFilter(State state)
       state_(state),
       generated_filter_function_(NULL),
       generated_filter_processing_fucntoin_(NULL) {
+  set_phy_oper_type(kPhysicalFilter);
   InitExpandedStatus();
 }
 
@@ -60,6 +63,7 @@ PhysicalFilter::PhysicalFilter()
     : PhysicalOperator(1, 1),
       generated_filter_function_(NULL),
       generated_filter_processing_fucntoin_(NULL) {
+  set_phy_oper_type(kPhysicalFilter);
   InitExpandedStatus();
 }
 
@@ -336,6 +340,12 @@ int PhysicalFilter::DecideFilterFunction(
     return rCodegenFailed;
   }
 }
-
+RetCode PhysicalFilter::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
 }  // namespace claims
 }  // namespace physical_operator

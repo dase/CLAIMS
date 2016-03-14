@@ -1,4 +1,8 @@
+#include <stack>
 
+#include "../common/error_define.h"
+#include "../common/Logging.h"
+#include "../physical_operator/segment.h"
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -63,10 +67,14 @@ namespace claims {
 namespace physical_operator {
 const int kBufferSizeInExchange = 1000;
 ExchangeMerger::ExchangeMerger(State state) : state_(state) {
+  set_phy_oper_type(kPhysicalExchangeMerger);
   InitExpandedStatus();
   assert(state.partition_schema_.partition_key_index < 100);
 }
-ExchangeMerger::ExchangeMerger() { InitExpandedStatus(); }
+ExchangeMerger::ExchangeMerger() {
+  InitExpandedStatus();
+  set_phy_oper_type(kPhysicalExchangeMerger);
+}
 ExchangeMerger::~ExchangeMerger() {
   if (NULL != state_.schema_) {
     delete state_.schema_;
@@ -125,7 +133,7 @@ bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
       LOG(ERROR) << "Register Exchange with ID = " << state_.exchange_id_
                  << " fails!" << endl;
     }
-
+#ifdef ExchangeSender
     if (IsMaster()) {
       /*  According to a bug reported by dsc, the master exchange upper should
        * check whether other uppers have registered to exchangeTracker.
@@ -143,6 +151,7 @@ bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
                    "plan to all its lower senders" << endl;
       if (SerializeAndSendPlan() == false) return false;
     }
+#endif
     if (CreateReceiverThread() == false) {
       return false;
     }
@@ -717,6 +726,30 @@ void ExchangeMerger::ResetStatus() {
 
   lower_sock_fd_to_id_.clear();
   lower_ip_list_.clear();
+}
+RetCode ExchangeMerger::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  PhysicalOperatorBase* ret_plan = NULL;
+  if (NULL != state_.child_) {
+    state_.child_->GetAllSegments(all_segments);
+    if (Config::pipelined_exchange) {
+      ExchangeSenderPipeline::State EIELstate(
+          state_.schema_->duplicateSchema(), state_.child_,
+          state_.upper_id_list_, state_.block_size_, state_.exchange_id_,
+          state_.partition_schema_);
+      ret_plan = new ExchangeSenderPipeline(EIELstate);
+    } else {
+      ExchangeSenderMaterialized::State EIELstate(
+          state_.schema_->duplicateSchema(), state_.child_,
+          state_.upper_id_list_, state_.block_size_, state_.exchange_id_,
+          state_.partition_schema_);
+      ret_plan = new ExchangeSenderMaterialized(EIELstate);
+    }
+    all_segments->push(new Segment(ret_plan, state_.lower_id_list_,
+                                   state_.upper_id_list_, state_.exchange_id_));
+    state_.child_ = NULL;
+  }
+  return ret;
 }
 }  // namespace physical_operator
 }  // namespace claims
