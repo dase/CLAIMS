@@ -25,7 +25,7 @@
 #include "../physical_operator/physical_operator.h"
 
 #include <glog/logging.h>
-#include "../utility/CpuScheduler.h"
+#include "../utility/cpu_scheduler.h"
 #include "../Executor/expander_tracker.h"
 namespace claims {
 namespace physical_operator {
@@ -122,7 +122,7 @@ void PhysicalOperator::InitContext(ThreadContext* tc) {
   /* assert that no context is available for current thread*/
   pthread_t pid = pthread_self();
   // BUG(FZH):NOTE thread could be reused!!!!!!!!!!
-  assert(context_list_.find(pid) == context_list_.cend());
+  //  assert(context_list_.find(pid) == context_list_.cend());
 
   context_list_[pid] = tc;
   //	printf("Thread %llx is inited! context:%llx\n",pthread_self(),tc);
@@ -156,7 +156,7 @@ ThreadContext* PhysicalOperator::CreateOrReuseContext(context_reuse_mode crm) {
   }
 
   target = CreateContext();
-  target->set_locality_(getCurrentCpuAffility());
+  target->set_locality_(GetCurrentCpuAffinity());
   InitContext(target);
   return target;
 }
@@ -164,7 +164,7 @@ ThreadContext* PhysicalOperator::CreateOrReuseContext(context_reuse_mode crm) {
 bool PhysicalOperator::GetReturnStatus() const { return open_ret_; }
 
 ThreadContext* PhysicalOperator::GetFreeContext(context_reuse_mode crm) {
-  int32_t locality = getCurrentCpuAffility();
+  vector<int32_t> locality = GetCurrentCpuAffinity();
   for (int i = 0; i < free_context_list_.size(); ++i) {
     switch (crm) {
       case crm_no_reuse:
@@ -174,8 +174,8 @@ ThreadContext* PhysicalOperator::GetFreeContext(context_reuse_mode crm) {
           return free_context_list_[i];
         break;
       case crm_numa_sensitive:
-        if (getCurrentSocketAffility() ==
-            getSocketAffility(free_context_list_[i]->get_locality_()))
+        if (GetCurrentSocketAffinity() ==
+            GetSocketAffinity(free_context_list_[i]->get_locality_()))
           return free_context_list_[i];
         break;
       case crm_anyway:

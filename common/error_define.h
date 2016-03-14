@@ -32,6 +32,8 @@
 #include "./error_no.h"
 using claims::common::CStrError;
 
+#define CLAIMS_DEBUG_LOG
+
 typedef int RetCode;  // means return code
 #define ELOG(ret, err_info)                                              \
   LOG(ERROR) << "[" << ret << ", " << CStrError(ret) << "] " << err_info \
@@ -66,6 +68,14 @@ typedef int RetCode;  // means return code
                   << err_info << std::endl;                         \
     }                                                               \
   } while (0)
+
+#define EXEC_AND_RETURN_ERROR(ret, f, err_info) \
+  if (rSuccess != (ret = f)) {                  \
+    ELOG(ret, err_info)                         \
+    return ret;                                 \
+  }
+
+#define C_DLOGI(info) DLOG_IF(INFO, kClaimsDebugLog) << info << std::endl;
 
 namespace claims {
 namespace common {
@@ -182,6 +192,7 @@ const int rDataPathError = -101;
 
 // schema associated
 const int rEmptyAttributeName = -501;
+const int rEmptyTableAlias = -502;
 
 /* errorno for SQL parser -1001 ~ -2000  */
 const int rInitSQLParserErr = -1001;
@@ -259,15 +270,15 @@ const int rLoadFromDiskOpenFailed = -6011;
 
 /* errorno for stmt_handler -14001 ~ -15000*/
 const int rStmtHandlerCreateTableExisted = -14002;
-const int kStmtHandlerTypeNotSupport = -14003;
-const int kStmtHandlerCreateTableSuccess = -14004;
-const int kStmtHandlerTableNotExistDuringLoad = -14005;
-const int kStmtHandlerLoadDataSuccess = -14006;
-const int kStmtHandlerTableNotExistDuringInsert = -14007;
-const int kStmtHandlerInsertDataSuccess = -14008;
+const int rStmtHandlerTypeNotSupport = -14003;
+const int rStmtHandlerCreateTableSuccess = -14004;
+const int rStmtHandlerTableNotExistDuringLoad = -14005;
+const int rStmtHandlerLoadDataSuccess = -14006;
+const int rStmtHandlerTableNotExistDuringInsert = -14007;
+const int rStmtHandlerInsertDataSuccess = -14008;
 const int rStmtHandlerInsertNoValue = -14009;
 const int rStmtHandlerCreateTableFailed = -14010;
-const int rStmtHandlerCreateProjectionWithEmptyColumn = 14011;
+const int rStmtHandlerCreateProjectionWithEmptyColumn = -14011;
 
 const int rTableNotExisted = -14100;
 const int rTableillegal = -14101;
@@ -307,6 +318,8 @@ const int rLimitNotStandardized = -14135;
 const int rLimitZero = -14136;
 const int rLimitParaCouldnotLessZero = -14137;
 const int rLimitParaShouldNaturalNumber = -14138;
+const int rCreateProjectionOnDelTableFailed = -14138;
+const int rNULLDropTableName = -14139;
 }  // end namespace common
 }  // end namespace claims
 

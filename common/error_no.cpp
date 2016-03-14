@@ -161,6 +161,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rEmptyAttributeName,
                         "the given attribute associated with empty name");
 
+  DefineErrorAndMessage(rEmptyTableAlias,
+                        "the given attribute alias associated with empty name");
   /* errorno for SQL parser -1001 ~ -2000  */
   DefineErrorAndMessage(rNoTableFound, "No such table found");
   DefineErrorAndMessage(rInitSQLParserErr, "Failed to init SQL parser");
@@ -198,6 +200,7 @@ ErrorInit::ErrorInit() {
   /* errorno for loader -2001 ~ -3000  */
   DefineErrorAndMessage(rUnbindEntireProjectionFail,
                         "failed to unbind entire projection");
+  DefineErrorAndMessage(rInvalidInsertData, "The Insert Data is Invalid");
   DefineErrorAndMessage(rTooLargeData, "Load Too Large Data");
   DefineErrorAndMessage(rTooSmallData, "Load Too Small Data");
   DefineErrorAndMessage(rTooLongData, "Load Too Long Data");
@@ -256,6 +259,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(
       rStmtHandlerCreateProjectionWithEmptyColumn,
       "Creating projection on table given with empty columns");
+  DefineErrorAndMessage(rCreateProjectionOnDelTableFailed,
+                        "Create projections on del table failed");
   DefineErrorAndMessage(rNoTalbeFound, "no table found");
   DefineErrorAndMessage(rTableAlreadyExist, "table already exist");
   DefineErrorAndMessage(rEqualJoinCondiNotMatch,
@@ -304,6 +309,9 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rColumnNotExist, "column not exist");
   DefineErrorAndMessage(rTableillegal, "table is illegal");
   DefineErrorAndMessage(rTableNotExisted, "table not exist");
+  DefineErrorAndMessage(rNULLDropTableName,
+                        "The table name in the drop table statment is NULL");
+
   DefineErrorAndMessage(rLimitParaCouldnotLessZero,
                         "limit parameter couldn't zero.");
   DefineErrorAndMessage(rLimitParaShouldNaturalNumber,

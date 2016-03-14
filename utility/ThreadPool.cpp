@@ -10,7 +10,7 @@
  *		如果每个线程需要分配内存，为了节省内存，可以设置线程第一次运行才分配内存，优先让已经分配到内存的线程运行
  *
  */
-#include "ThreadPool.h"
+#include "thread_pool.h"
 #include <unistd.h>
 #include <sys/syscall.h>
 

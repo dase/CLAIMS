@@ -256,11 +256,11 @@ RetCode Catalog::restoreCatalog() {
     return rSuccess;
   } else {
     uint64_t file_length = 0;
-    void* buffer=NULL;
-    EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kReadFile),
-                            "catalog file name: " << catalog_file);
-    EXEC_AND_ONLY_LOG_ERROR(ret, connector->LoadTotalFile(buffer, &file_length),
-                            "catalog file name: " << catalog_file);
+    void* buffer;
+    EXEC_AND_RETURN_ERROR(ret, connector->Open(FileOpenFlag::kReadFile),
+                          "catalog file name: " << catalog_file);
+    EXEC_AND_RETURN_ERROR(ret, connector->LoadTotalFile(buffer, &file_length),
+                          "catalog file name: " << catalog_file);
 
     LOG(INFO) << "Start to deserialize catalog ..." << endl;
     string temp(static_cast<char*>(buffer), file_length);

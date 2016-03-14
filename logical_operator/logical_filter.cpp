@@ -355,6 +355,15 @@ float LogicalFilter::PredictSelectivity() const {
 void LogicalFilter::Print(int level) const {
   cout << setw(level * kTabSize) << " "
        << "Filter:" << endl;
+  GetPlanContext();
+  cout << setw(level * kTabSize) << " "
+       << "[Partition info: "
+       << plan_context_->plan_partitioner_.get_partition_key().attrName
+       << " table_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().table_id_
+       << " column_id= "
+       << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
+       << endl;
 #ifdef NEWCONDI
 
   for (int i = 0; i < condi_.size(); ++i) {

@@ -99,6 +99,10 @@ class TableDescriptor {
   inline TableID get_table_id() const { return table_id_; }
   ProjectionDescriptor* getProjectoin(ProjectionOffset) const;
   unsigned getNumberOfProjection() const;
+  vector<ProjectionDescriptor*>* GetProjectionList() {
+    return &projection_list_;
+  }
+
   Schema* getSchema() const;
   inline void setRowNumber(unsigned long row_number) {
     LockGuard<Lock> guard(lock_);
