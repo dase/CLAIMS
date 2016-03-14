@@ -75,7 +75,7 @@ RetCode HdfsFileHandleImp::SwitchStatus(FileStatus status_to_be) {
 
   if (NULL == file_) {
     PLOG(ERROR) << "failed to reopen file:" << file_name_ << "("
-                << file_status_info[file_status_] << ")  in mode "
+                << file_status_info[old_file_status] << ")  in mode "
                 << file_status_info[status_to_be] << " .";
     return rOpenHdfsFileFail;
   } else {
@@ -224,12 +224,10 @@ RetCode HdfsFileHandleImp::AtomicAppend(const void* buffer, const size_t length,
                                         function<void()> unlock_func) {
   lock_func();
   RetCode ret = Append(buffer, length);
-  if (ret != rSuccess) {
-    unlock_func();
-    return ret;
-  }
-  ret = Close();
+  // must close because another imp may want to open this file
+  RetCode ret2 = Close();
   unlock_func();
+  if (ret == rSuccess) ret = ret2;
   return ret;
 }
 
@@ -247,12 +245,10 @@ RetCode HdfsFileHandleImp::AtomicOverWrite(const void* buffer,
                                            function<void()> unlock_func) {
   lock_func();
   RetCode ret = OverWrite(buffer, length);
-  if (ret != rSuccess) {
-    unlock_func();
-    return ret;
-  }
-  ret = Close();
+  // must close because another imp may want to open this file
+  RetCode ret2 = Close();
   unlock_func();
+  if (ret == rSuccess) ret = ret2;
   return ret;
 }
 

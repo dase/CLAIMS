@@ -71,7 +71,7 @@ RetCode DiskFileHandleImp::SwitchStatus(FileStatus status_to_be) {
   }
   if (-1 == fd_) {
     PLOG(ERROR) << "failed to reopen file:" << file_name_ << "("
-                << file_status_info[file_status_] << ")  in mode "
+                << file_status_info[old_file_status] << ")  in mode "
                 << file_status_info[status_to_be] << " .";
     return rOpenDiskFileFail;
   } else {
@@ -221,7 +221,7 @@ RetCode DiskFileHandleImp::AtomicAppend(const void* buffer, const size_t length,
                                         function<void()> lock_func,
                                         function<void()> unlock_func) {
   lock_func();
-  RetCode ret = OverWrite(buffer, length);
+  RetCode ret = Append(buffer, length);
   unlock_func();
   return ret;
 }

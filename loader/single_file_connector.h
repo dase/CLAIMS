@@ -40,6 +40,7 @@ namespace loader {
 using std::string;
 using claims::common::FileHandleImp;
 using claims::common::FilePlatform;
+using claims::common::rSuccess;
 
 class SingleFileConnector {
  public:
@@ -67,6 +68,14 @@ class SingleFileConnector {
   }
 
   bool CanAccess() { return imp_->CanAccess(file_name_); }
+
+  RetCode Delete() {
+    RetCode ret = rSuccess;
+    EXEC_AND_ONLY_LOG_ERROR(ret, imp_->DeleteFile(), "failed to delete file "
+                                                         << file_name_);
+
+    return ret;
+  }
   /**
    * @brief Method description: load total file into memory
    * @param buffer: set buffer point to a new memory allocated by this method,

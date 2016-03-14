@@ -278,9 +278,9 @@ bool ExchangeMerger::PrepareSocket() {
 
   if (bind(sock_fd_, (struct sockaddr*)&my_addr, sizeof(struct sockaddr)) ==
       -1) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_ << " bind errors!"
-               << endl;
+    PLOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                << " partition_offset = " << partition_offset_
+                << " bind errors!" << endl;
     return false;
   }
 

@@ -181,6 +181,9 @@ RetCode Catalog::saveCatalog() {
   oa << *this;
 
   int ret = rSuccess;
+  //  EXEC_AND_ONLY_LOG_ERROR(ret, write_connector_->Delete(),
+  //                          "failed to delete catalog file");
+  //  FileHandleImp* write_handler =
   EXEC_AND_RETURN_ERROR(
       ret, write_connector_->Flush(static_cast<const void*>(oss.str().c_str()),
                                    oss.str().length(), true),
@@ -238,6 +241,7 @@ bool Catalog::IsDataFileExist() {
 RetCode Catalog::restoreCatalog() {
   int ret = rSuccess;
   string catalog_file = Config::catalog_file;
+  LockGuard<Lock> guard(write_lock_);
 
   // check whether there is catalog file if there are data file
   if (!read_connector_->CanAccess() && IsDataFileExist()) {
