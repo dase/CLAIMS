@@ -9,20 +9,12 @@ source ./load-config.sh
 source ./generate-config.sh
 cd ../
 
-if [ "$1" = "all" ]; then 
 for slave in $slaves
 do
-  ssh $user@$slave "$deploypath/stop-slave.sh>/dev/null 2>&1 &"
+  ssh -f -n -l $user $slave "cd $claimshome; if [ ! -d 'install' ]; then mkdir install; fi; ./stop-node.sh"
   
-  scp $CLAIMS_HOME/install/claimsserver $user@$slave:$deploypath
-  scp $CLAIMS_HOME/sbin/2-claims-conf/config-$slave $user@$slave:$deploypath
-  scp $CLAIMS_HOME/sbin/slave-scripts/start-slave.sh $user@$slave:$deploypath
-  scp $CLAIMS_HOME/sbin/slave-scripts/stop-slave.sh $user@$slave:$deploypath
+  scp $CLAIMS_HOME/install/claimsserver $user@$slave:$claimshome/install
+  scp $CLAIMS_HOME/install/client $user@$slave:$claimshome/install
+  scp $CLAIMS_HOME/install/test $user@$slave:$claimshome/install
+  scp -r $CLAIMS_HOME/sbin $user@$slave:$claimshome
 done
-else
-for slave in $slaves
-do
-  scp $CLAIMS_HOME/sbin/2-claims-conf/config-$slave $user@$slave:$deploypath
-done
-fi
-
