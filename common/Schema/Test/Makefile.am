@@ -3,7 +3,7 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
 -I${THERON_HOME}/Include \
--I${HADOOP_HDFS_HOME}/include\
+-I${HADOOP_HDFS_HOME}/usr/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
 -I${GTEST_HOME}/include
@@ -23,9 +23,9 @@ LDADD = 	../libschema.a \
 		../../../logical_operator/liblogicalqueryplan.a \
 		../../../common/Block/libblock.a \
 		../../libcommon.a \
-		${HADOOP_HDFS_HOME}/lib/native/libhdfs.a\
+		${HADOOP_HDFS_HOME}/hadoop/lib/native/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
-		${HADOOP_HDFS_HOME}/lib/native/libhdfs.so\
+		${HADOOP_HDFS_HOME}/usr/lib/libhdfs.so\
 		${THERON_HOME}/Lib/libtherond.a	\
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.so \
