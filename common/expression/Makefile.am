@@ -1,7 +1,7 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS\
 -I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
--I${HADOOP_HOME}/include\
+-I${HADOOP_HDFS_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
 
