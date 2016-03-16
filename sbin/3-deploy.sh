@@ -9,12 +9,13 @@ source ./load-config.sh
 source ./generate-config.sh
 cd ../
 
-for slave in $slaves
+for node in $slaves $master
 do
-  ssh -f -n -l $user $slave "cd $claimshome; if [ ! -d 'install' ]; then mkdir install; fi; ./stop-node.sh"
+  echo "<-$node->"
+  ssh -f -n -l $user $node "cd $claimshome; if [ ! -d 'install' ]; then mkdir install; fi; ./sbin/stop-node.sh"
   
-  scp $CLAIMS_HOME/install/claimsserver $user@$slave:$claimshome/install
-  scp $CLAIMS_HOME/install/client $user@$slave:$claimshome/install
-  scp $CLAIMS_HOME/install/test $user@$slave:$claimshome/install
-  scp -r $CLAIMS_HOME/sbin $user@$slave:$claimshome
+  scp $CLAIMS_HOME/install/claimsserver $user@$node:$claimshome/install
+  scp $CLAIMS_HOME/install/client $user@$node:$claimshome/install
+  scp $CLAIMS_HOME/install/test $user@$node:$claimshome/install
+  scp -r $CLAIMS_HOME/sbin $user@$node:$claimshome
 done
