@@ -63,6 +63,8 @@ enable_codegen = 0
 
 load_thread_num = 12
 
+memory_utilization = 50
+
 EOF
 done
 
