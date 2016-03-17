@@ -23,6 +23,7 @@ using caf::io::remote_actor;
 using caf::response_handle;
 
 using claims::AskExchAtom;
+using claims::OkAtom;
 ExchangeTracker::ExchangeTracker() {}
 
 ExchangeTracker::~ExchangeTracker() {}
@@ -51,23 +52,24 @@ void ExchangeTracker::LogoutExchange(const ExchangeID& id) {
             << id.partition_offset << " ) is logged out!";
 }
 
-bool ExchangeTracker::AskForSocketConnectionInfo(ExchangeID exchange_id,
-                                                 NodeID target_id,
+bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
+                                                 const NodeID& target_id,
                                                  NodeAddress& node_addr) {
   caf::scoped_actor self;
   auto target_node_addr =
-      Environment::getInstance()->get_master_node()->GetNodeAddrFromId(
+      Environment::getInstance()->get_slave_node()->GetNodeAddrFromId(
           target_id);
+  assert(target_node_addr.second != 0);
   auto target_actor =
       remote_actor(target_node_addr.first.c_str(), target_node_addr.second);
 
   self->sync_send(target_actor, AskExchAtom::value, exchange_id).await(
       /// should add overtime!
-      [&](const NodeAddress exch_node) {
-        LOG(INFO) << "exchange tracker received node addr < " << exch_node.ip
-                  << " , " << exch_node.port << " >" << endl;
-        node_addr.ip = exch_node.ip;
-        node_addr.port = exch_node.port;
+      [&](OkAtom, const string& ip, const string& port) {
+        LOG(INFO) << "exchange tracker received node addr < " << ip << " , "
+                  << port << " >" << endl;
+        node_addr.ip = ip;
+        node_addr.port = port;
       },
       after(std::chrono::seconds(30)) >>
           [=]() {

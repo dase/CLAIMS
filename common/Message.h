@@ -21,6 +21,11 @@
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <sstream>
 #include <assert.h>
+#include <string.h>
+#include <iosfwd>
+#include <string>
+#include <utility>
+
 #include "serialization/RegisterDerivedClass.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../Debug.h"
@@ -31,14 +36,19 @@ using claims::physical_operator::PhysicalOperatorBase;
 
 // It's better to use fixed length information for implementation concern.
 struct StorageBudgetMessage {
-  explicit StorageBudgetMessage(const int& disk_budget,
-                                const int& memory_budget, const int& nodeid)
+  StorageBudgetMessage(const int& disk_budget, const int& memory_budget,
+                       const int& nodeid)
       : disk_budget(disk_budget),
         memory_budget(memory_budget),
         nodeid(nodeid) {}
+  StorageBudgetMessage() : nodeid(1000000), disk_budget(0), memory_budget(0) {}
   int disk_budget;
   int memory_budget;
   int nodeid;
+  bool operator==(const StorageBudgetMessage& lhs) const {
+    return lhs.nodeid == nodeid && lhs.memory_budget == memory_budget &&
+           disk_budget == lhs.disk_budget;
+  }
 };
 
 struct PartitionBindingMessage {
@@ -270,6 +280,21 @@ static Message4K Serialize4K(T& object) {
   //
   //	return ret;
 }
+template <typename T>
+string TextSerialize(const T& obj) {
+  stringstream ss;
+  boost::archive::text_oarchive oa(ss);
+  oa << obj;
+  return ss.str();
+}
+template <typename T>
+T TextDeserialize(const string& obj) {
+  T ret;
+  stringstream ss(obj);
+  boost::archive::text_iarchive ia(ss);
+  ia >> ret;
+  return ret;
+}
 
 class CreateTableRespond {
  public:
@@ -384,6 +409,13 @@ class PhysicalQueryPlan {
   static Message4K serialize4K(PhysicalQueryPlan& input) {
     //		std::cout<<"in the serialize4K func!"<<std::endl;
     return Serialize4K<PhysicalQueryPlan>(input);
+  }
+
+  static string TextSerializePlan(const PhysicalQueryPlan& input) {
+    return TextSerialize<PhysicalQueryPlan>(input);
+  }
+  static PhysicalQueryPlan TextDeserializePlan(const string& message) {
+    return TextDeserialize<PhysicalQueryPlan>(message);
   }
 
  private:

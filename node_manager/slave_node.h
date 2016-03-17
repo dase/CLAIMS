@@ -33,6 +33,7 @@
 #include "../common/error_define.h"
 #include "caf/all.hpp"
 #include "caf/behavior.hpp"
+#include <string>
 using caf::event_based_actor;
 using std::string;
 using caf::behavior;
@@ -48,6 +49,8 @@ class SlaveNode : public BaseNode {
   virtual ~SlaveNode();
   RetCode RegisterToMaster();
   static SlaveNode* GetInstance();
+  RetCode AddOneNode(const unsigned int& node_id, const string& node_ip,
+                     const uint16_t& node_port);
 
  private:
   static SlaveNode* instance_;

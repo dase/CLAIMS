@@ -38,6 +38,7 @@
 #include "../Environment.h"
 #include "../storage/StorageLevel.h"
 #include "caf/all.hpp"
+#include <map>
 using caf::make_message;
 using std::make_pair;
 
@@ -56,9 +57,9 @@ class SlaveNodeActor : public event_based_actor {
                     << endl;
           quit();
         },
-        [=](SendPlanAtom, Message4K str) {
-          PhysicalQueryPlan* new_plan =
-              new PhysicalQueryPlan(PhysicalQueryPlan::deserialize4K(str));
+        [=](SendPlanAtom, string str) {
+          PhysicalQueryPlan* new_plan = new PhysicalQueryPlan(
+              PhysicalQueryPlan::TextDeserializePlan(str));
           Environment::getInstance()
               ->getIteratorExecutorSlave()
               ->createNewThreadAndRun(new_plan);
@@ -67,8 +68,10 @@ class SlaveNodeActor : public event_based_actor {
           LOG(INFO) << log_message;
         },
         [=](AskExchAtom, ExchangeID exch_id) {
-          return Environment::getInstance()->getExchangeTracker()->GetExchAddr(
-              exch_id);
+          auto addr =
+              Environment::getInstance()->getExchangeTracker()->GetExchAddr(
+                  exch_id);
+          return make_message(OkAtom::value, addr.ip, addr.port);
         },
         [=](BindingAtom, const PartitionID partition_id,
             const unsigned number_of_chunks,
@@ -84,7 +87,11 @@ class SlaveNodeActor : public event_based_actor {
               partition_id);
           return make_message(OkAtom::value);
         },
-
+        [&](BroadcastNodeAtom, const unsigned int& node_id,
+            const string& node_ip, const uint16_t& node_port) {
+          slave_node_->node_id_to_addr_.insert(
+              make_pair(node_id, make_pair(node_ip, node_port)));
+        },
         caf::others >>
             [=]() { LOG(WARNING) << "unkown message at slave node!!!" << endl; }
 
@@ -100,7 +107,14 @@ SlaveNode* SlaveNode::GetInstance() {
   }
   return instance_;
 }
-
+RetCode SlaveNode::AddOneNode(const unsigned int& node_id,
+                              const string& node_ip,
+                              const uint16_t& node_port) {
+  node_id_to_addr_.insert(make_pair(node_id, make_pair(node_ip, node_port)));
+  LOG(INFO) << "slave : get broadested node( " << node_id << " < " << node_ip
+            << " " << node_port << " > )" << std::endl;
+  return rSuccess;
+}
 SlaveNode::SlaveNode() : BaseNode() {
   instance_ = this;
   CreateActor();
@@ -128,9 +142,12 @@ RetCode SlaveNode::RegisterToMaster() {
         caf::io::remote_actor(master_addr_.first, master_addr_.second);
     self->sync_send(master_actor, RegisterAtom::value, get_node_ip(),
                     get_node_port())
-        .await([&](OkAtom, unsigned int id) {
+        .await([=](OkAtom, const unsigned int& id, const BaseNode& node) {
                  set_node_id(id);
-                 LOG(INFO) << "register node succeed!";
+                 node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
+                                         node.node_id_to_addr_.end());
+                 LOG(INFO) << "register node succeed! intsert "
+                           << node.node_id_to_addr_.size() << " nodes";
                },
                [&](const caf::sync_exited_msg& msg) {
                  LOG(WARNING) << "register link fail";

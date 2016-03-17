@@ -8,6 +8,7 @@
 #include "NodeTracker.h"
 
 #include <assert.h>
+#include <vector>
 
 #include "../Environment.h"
 NodeTracker* NodeTracker::instance_ = 0;
@@ -61,7 +62,7 @@ std::vector<NodeID> NodeTracker::GetNodeIDList() const {
     it++;
   }
 #else
-  ret = Environment::getInstance()->get_master_node()->GetAllNodeID();
+  ret = Environment::getInstance()->get_slave_node()->GetAllNodeID();
 #endif
   return ret;
 }

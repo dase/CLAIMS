@@ -38,7 +38,7 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(
 bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(
     PhysicalOperatorBase* it, NodeID target_id) {
   PhysicalQueryPlan* im = new PhysicalQueryPlan(it);
-  Message4K str = PhysicalQueryPlan::serialize4K(*im);
+  string str = PhysicalQueryPlan::TextSerializePlan(*im);
   caf::scoped_actor self;
   auto node_addr =
       Environment::getInstance()->get_master_node()->GetNodeAddrFromId(

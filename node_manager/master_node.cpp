@@ -61,26 +61,29 @@ class MasterNodeActor : public event_based_actor {
           Environment::getInstance()
               ->getResourceManagerMaster()
               ->RegisterNewSlave(id);
-          return make_message(OkAtom::value, id);
+          return make_message(OkAtom::value, id, *((BaseNode*)master_node_));
         },
-        [=](StorageBudgetAtom, const StorageBudgetMessage message) {
+        [&](StorageBudgetAtom, const StorageBudgetMessage& message) {
           Environment::getInstance()
               ->getResourceManagerMaster()
               ->RegisterDiskBuget(message.nodeid, message.disk_budget);
           Environment::getInstance()
               ->getResourceManagerMaster()
               ->RegisterMemoryBuget(message.nodeid, message.memory_budget);
-          cout << "receive storage budget message!! node: " << message.nodeid
-               << " : disk = " << message.disk_budget
-               << " , mem = " << message.memory_budget << endl;
+          LOG(INFO) << "receive storage budget message!! node: "
+                    << message.nodeid << " : disk = " << message.disk_budget
+                    << " , mem = " << message.memory_budget << endl;
           return make_message(OkAtom::value);
         },
         [=](ExitAtom) {
-          cout << "master " << master_node_->get_node_id() << " finish!"
-               << endl;
+          LOG(INFO) << "master " << master_node_->get_node_id() << " finish!"
+                    << endl;
           quit();
         },
-        caf::others >> [=]() { cout << "unkown message" << endl; }
+        caf::others >> [=]() {
+                         LOG(WARNING) << "master node receives unkown message"
+                                      << endl;
+                       }
 
     };
   }
@@ -93,7 +96,7 @@ MasterNode* MasterNode::GetInstance() {
   return instance_;
 }
 
-MasterNode::MasterNode() : node_id_gen_(0) {
+MasterNode::MasterNode() : node_id_gen_(-1) {
   instance_ = this;
   set_node_id(0);
   ReadMasterAddr();
@@ -102,7 +105,7 @@ MasterNode::MasterNode() : node_id_gen_(0) {
 }
 
 MasterNode::MasterNode(string node_ip, uint16_t node_port)
-    : BaseNode(node_ip, node_port), node_id_gen_(0) {
+    : BaseNode(node_ip, node_port), node_id_gen_(-1) {
   CreateActor();
 }
 
@@ -124,33 +127,26 @@ void MasterNode::PrintNodeList() {
               << it->second.second << " )" << std::endl;
   }
 }
+RetCode MasterNode::BroastNodeInfo(const unsigned int& node_id,
+                                   const string& node_ip,
+                                   const uint16_t& node_port) {
+  caf::scoped_actor self;
+  for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
+    auto node_actor = remote_actor(it->second.first, it->second.second);
+    self->send(node_actor, BroadcastNodeAtom::value, node_id, node_ip,
+               node_port);
+  }
+  return rSuccess;
+}
 // should be atomic
 unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
-  unsigned int node_id = 0;
-  if (node_ip != master_addr_.first) {
-    ++node_id_gen_;
-    node_id = (unsigned int)node_id_gen_;
-  }
-  node_id_to_addr_.insert(make_pair(node_id, make_pair(node_ip, node_port)));
-  std::cout << "slave : add one node( " << node_id_gen_ << " < " << node_ip
+  node_id_gen_++;
+  BroastNodeInfo((unsigned int)node_id_gen_, node_ip, node_port);
+  node_id_to_addr_.insert(
+      make_pair((unsigned int)node_id_gen_, make_pair(node_ip, node_port)));
+  LOG(INFO) << "slave : register one node( " << node_id_gen_ << " < " << node_ip
             << " " << node_port << " > )" << std::endl;
   return node_id_gen_;
-}
-NodeAddr MasterNode::GetNodeAddrFromId(const unsigned int id) {
-  if (node_id_to_addr_.find(id) != node_id_to_addr_.end()) {
-    return node_id_to_addr_[id];
-  } else {
-    return NodeAddr("0", 0);
-  }
-}
-
-vector<NodeID> MasterNode::GetAllNodeID() {
-  vector<NodeID> all_node_id;
-  all_node_id.clear();
-  for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
-    all_node_id.push_back(it->first);
-  }
-  return all_node_id;
 }
 
 void MasterNode::FinishAllNode() {

@@ -49,8 +49,10 @@ class Environment {
   IteratorExecutorMaster* get_iterator_executor_master() {
     return iteratorExecutorMaster;
   }
+  BlockManagerMaster* get_block_manager_master() { return blockManagerMaster_; }
 
  private:
+  void AnnounceCafMessage();
   void readConfigFile();
   void initializeStorage();
   void initializeResourceManager();

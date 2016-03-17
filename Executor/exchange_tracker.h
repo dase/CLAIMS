@@ -27,7 +27,8 @@ class ExchangeTracker {
   virtual ~ExchangeTracker();
   bool RegisterExchange(ExchangeID exchange_id, std::string port);
   void LogoutExchange(const ExchangeID& exchange_id);
-  bool AskForSocketConnectionInfo(ExchangeID exchange_id, NodeID target_id,
+  bool AskForSocketConnectionInfo(const ExchangeID& exchange_id,
+                                  const NodeID& target_id,
                                   NodeAddress& node_addr);
   void printAllExchangeId() const;
   NodeAddress GetExchAddr(ExchangeID exch_id);

@@ -28,16 +28,22 @@
 
 #ifndef NODE_MANAGER_BASE_NODE_H_
 #define NODE_MANAGER_BASE_NODE_H_
+#include "./base_node.h"
+
 #include <string>
 #include <utility>
 #include <vector>
+#include <map>
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
+
+#include "../common/ids.h"
 using std::pair;
 using std::string;
 using std::cout;
 using std::endl;
-
+using std::map;
+using std::vector;
 namespace claims {
 using OkAtom = caf::atom_constant<caf::atom("ok")>;
 using RegisterAtom = caf::atom_constant<caf::atom("register")>;
@@ -47,7 +53,9 @@ using AskExchAtom = caf::atom_constant<caf::atom("ask_exch")>;
 using BindingAtom = caf::atom_constant<caf::atom("binding")>;
 using UnBindingAtom = caf::atom_constant<caf::atom("unbinding")>;
 using StorageBudgetAtom = caf::atom_constant<caf::atom("storage")>;
-const int kTimeout = 3;
+using BroadcastNodeAtom = caf::atom_constant<caf::atom("brdst_node")>;
+
+const int kTimeout = 30;
 class MemoryInfo {};
 class DiskInfo {};
 typedef pair<string, uint16_t> NodeAddr;
@@ -64,11 +72,31 @@ class BaseNode {
   void ReadNodeAddr();
   NodeAddr GetMasterAddr();
   void ReadMasterAddr();
+  NodeAddr GetNodeAddrFromId(const unsigned int& id);
+  vector<NodeID> GetAllNodeID();
+
+  bool operator==(const BaseNode& r) const {
+    if (r.node_id_to_addr_.size() != node_id_to_addr_.size()) {
+      return false;
+    }
+    auto ita = r.node_id_to_addr_.begin();
+    auto itb = node_id_to_addr_.begin();
+    for (; itb != node_id_to_addr_.end(); ++ita, ++itb) {
+      if (ita->first != itb->first || ita->second.first != itb->second.first ||
+          ita->second.second != itb->second.second) {
+        return false;
+      }
+    }
+    return true;
+  }
 
  protected:
   unsigned int node_id_;
   NodeAddr node_addr_;
   NodeAddr master_addr_;
+
+ public:
+  map<int, pair<string, uint16_t>> node_id_to_addr_;
 };
 
 }  // namespace claims

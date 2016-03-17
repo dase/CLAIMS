@@ -37,6 +37,7 @@
 #include "../Executor/PortManager.h"
 using std::make_pair;
 using std::string;
+using std::vector;
 namespace claims {
 
 BaseNode::BaseNode() : node_id_(-1) {
@@ -63,9 +64,21 @@ void BaseNode::ReadMasterAddr() {
   cfg.readFile(Config::config_file.c_str());
   std::string master_ip = (const char *)cfg.lookup("coordinator.ip");
   std::string master_port = (const char *)cfg.lookup("coordinator.port");
-  /// NOTE:
-  master_port = "18913";
   master_addr_ = make_pair(master_ip, std::atoi(master_port.c_str()));
 }
-
+NodeAddr BaseNode::GetNodeAddrFromId(const unsigned int &id) {
+  if (node_id_to_addr_.find(id) != node_id_to_addr_.end()) {
+    return node_id_to_addr_[id];
+  } else {
+    return NodeAddr("0", 0);
+  }
+}
+vector<NodeID> BaseNode::GetAllNodeID() {
+  vector<NodeID> all_node_id;
+  all_node_id.clear();
+  for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
+    all_node_id.push_back(it->first);
+  }
+  return all_node_id;
+}
 }  // namespace claims

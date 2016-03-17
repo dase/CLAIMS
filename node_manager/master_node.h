@@ -58,9 +58,9 @@ class MasterNode : public BaseNode {
   virtual ~MasterNode();
   void PrintNodeList();
   void FinishAllNode();
-  NodeAddr GetNodeAddrFromId(const unsigned int id);
   unsigned int AddOneNode(string node_ip, uint16_t node_port);
-  vector<NodeID> GetAllNodeID();
+  RetCode BroastNodeInfo(const unsigned int& node_id, const string& node_ip,
+                         const uint16_t& node_port);
   MasterNode();
   MasterNode(string node_ip, uint16_t node_port);
 
@@ -70,7 +70,6 @@ class MasterNode : public BaseNode {
  private:
   static MasterNode* instance_;
   atomic_uint node_id_gen_;
-  map<NodeID, NodeAddr> node_id_to_addr_;
 };
 
 }  // namespace claims

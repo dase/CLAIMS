@@ -6,6 +6,13 @@
  */
 
 #include "Environment.h"
+
+#include "caf/all.hpp"
+#include <map>
+#include <utility>
+
+#include "common/Message.h"
+#include "node_manager/base_node.h"
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
 #undef GLOG_NO_ABBREVIATED_SEVERITIES
@@ -24,6 +31,8 @@
 #include "common/expression/expr_type_cast.h"
 #include "common/expression/type_conversion_matrix.h"
 
+using caf::announce;
+using claims::BaseNode;
 using claims::catalog::Catalog;
 using claims::common::InitAggAvgDivide;
 using claims::common::InitOperatorFunc;
@@ -32,6 +41,7 @@ using claims::common::InitTypeConversionMatrix;
 //#define DEBUG_MODE
 #include "catalog/catalog.h"
 using claims::common::rSuccess;
+using claims::NodeAddr;
 
 Environment* Environment::_instance = 0;
 
@@ -70,7 +80,7 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
 
   /*Before initializing Resource Manager, the instance ip and port should be
    * decided.*/
-
+  AnnounceCafMessage();
   initializeResourceManager();
   // should after above
   InitMembership();
@@ -129,6 +139,19 @@ void Environment::readConfigFile() {
   libconfig::Config cfg;
   cfg.readFile(Config::config_file.c_str());
   ip = (const char*)cfg.lookup("ip");
+}
+
+void Environment::AnnounceCafMessage() {
+  announce<StorageBudgetMessage>(
+      "StorageBudgetMessage", &StorageBudgetMessage::nodeid,
+      &StorageBudgetMessage::memory_budget, &StorageBudgetMessage::disk_budget);
+  announce<ProjectionID>("ProjectionID", &ProjectionID::table_id,
+                         &ProjectionID::projection_off);
+  announce<PartitionID>("PartitionID", &PartitionID::projection_id,
+                        &PartitionID::partition_off);
+  announce<ExchangeID>("ExchangeID", &ExchangeID::exchange_id,
+                       &ExchangeID::partition_offset);
+  announce<BaseNode>("BaseNode", &BaseNode::node_id_to_addr_);
 }
 void Environment::initializeStorage() {
   if (ismaster_) {
