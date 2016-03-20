@@ -12,15 +12,21 @@ cd ../
 for node in $slaves $master
 do
   echo "<-$node->"
-  ssh -f -n -l $user $node "cd $claimshome; if [ ! -d 'install' ]; then mkdir install; fi; ./sbin/stop-node.sh"
+  ssh -f -n -l $user $node "if [ ! -d '$claimshome' ]; then mkdir -p $claimshome; fi; $claimshome/sbin/stop-node.sh"
   
+  ssh -f -n -l $user $node "if [ ! -d '$claimshome/install' ]; then mkdir -p $claimshome/install; fi"
   scp $CLAIMS_HOME/install/claimsserver $user@$node:$claimshome/install
   scp $CLAIMS_HOME/install/client $user@$node:$claimshome/install
   scp $CLAIMS_HOME/install/test $user@$node:$claimshome/install
-  scp -r $CLAIMS_HOME/sbin/2-claims-conf $user@$node:$claimshome/sbin
+  ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin' ]; then mkdir -p $claimshome/sbin; fi"
   scp $CLAIMS_HOME/sbin/*.sh $user@$node:$claimshome/sbin
-  scp -r $CLAIMS_HOME/sbin/claims-test/testcase $user@$node:$claimshome/sbin/claims-test
-  scp -r $CLAIMS_HOME/sbin/claims-test/monitor $user@$node:$claimshome/sbin/claims-test
+  ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin/2-claims-conf' ]; then mkdir -p $claimshome/sbin/2-claims-conf; fi"
+  scp -r $CLAIMS_HOME/sbin/2-claims-conf/* $user@$node:$claimshome/sbin/2-claims-conf
+  ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin/claims-test' ]; then mkdir -p $claimshome/sbin/claims-test; fi"
   scp -r $CLAIMS_HOME/sbin/claims-test/*.sh $user@$node:$claimshome/sbin/claims-test
+  ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin/claims-test/testcase' ]; then mkdir -p $claimshome/sbin/claims-test/testcase; fi"
+  scp -r $CLAIMS_HOME/sbin/claims-test/testcase/* $user@$node:$claimshome/sbin/claims-test/testcase
+  ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin/claims-test/monitor' ]; then mkdir -p $claimshome/sbin/claims-test/monitor; fi"
+  scp -r $CLAIMS_HOME/sbin/claims-test/monitor/* $user@$node:$claimshome/sbin/claims-test/monitor
 
 done
