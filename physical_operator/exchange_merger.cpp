@@ -420,11 +420,13 @@ bool ExchangeMerger::CreateReceiverThread() {
   return true;
 }
 void ExchangeMerger::CancelReceiverThread() {
+  //  if (receiver_thread_id_ != 0) {
   pthread_cancel(receiver_thread_id_);
   void* res = 0;
-  while (res != PTHREAD_CANCELED) {
-    pthread_join(receiver_thread_id_, &res);
-  }
+  pthread_join(receiver_thread_id_, &res);
+  //  } else {
+  //    LOG(ERROR) << "exchange merger cancel thread error" << endl;
+  //  }
 }
 
 /**
@@ -543,7 +545,7 @@ void* ExchangeMerger::Receiver(void* arg) {
                   Pthis->block_for_socket_[socket_fd_index]->GetCurSize(),
               Pthis->block_for_socket_[socket_fd_index]->GetRestSizeToHandle());
           if (byte_received == -1) {
-            if (errno == EAGAIN) {
+            if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
               /*We have read all the data,so go back to the loop.*/
               break;
             }
