@@ -90,6 +90,7 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   }
   //  the last block is created without storing the results from the left
   // child
+
   if (NULL != jtc->block_for_asking_) {
     delete jtc->block_for_asking_;
     jtc->block_for_asking_ = NULL;
@@ -117,9 +118,9 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
 
   InitContext(jtc);  // rename this function, here means to store the thread
                      // context in the operator context
-  if (block_buffer_->GetBufferSize() > 0) {
-    state_.child_right_->Open(partition_offset);
-  }
+
+  state_.child_right_->Open(partition_offset);
+
   return true;
 }
 
@@ -189,7 +190,10 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
     // if buffer is empty, return false directly
     jtc->buffer_iterator_.ResetCur();
     if (NULL == (buffer_block = jtc->buffer_iterator_.nextBlock())) {
-      LOG(INFO) << "[NestloopJoin]: the buffer is empty in nest loop join!";
+      LOG(WARNING) << "[NestloopJoin]: the buffer is empty in nest loop join!";
+      // for getting all right child's data
+      while (state_.child_right_->Next(jtc->block_for_asking_)) {
+      }
       return false;
     }
     jtc->buffer_stream_iterator_ = buffer_block->createIterator();
