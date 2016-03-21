@@ -157,8 +157,9 @@ RetCode HdfsFileHandleImp::Close() {
   }
   assert(NULL != fs_ && "failed to connect hdfs");
 
-  static char* hdfs_file_type[] = {"UNINITIALIZED", "INPUT", "OUTPUT"};
-  LOG(INFO) << "the type of file_ is" << hdfs_file_type[file_->type] << endl;
+  //  static char* hdfs_file_type[] = {"UNINITIALIZED", "INPUT", "OUTPUT"};
+  //  LOG(INFO) << "the type of file_ is" << hdfs_file_type[file_->type] <<
+  //  endl;
 
   if (0 != hdfsCloseFile(fs_, file_)) {
     LOG(ERROR) << "failed to close hdfs file: " << file_name_ << endl;
@@ -240,7 +241,7 @@ RetCode HdfsFileHandleImp::DeleteFile() {
   int ret = rSuccess;
   EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "file name: " << file_name_);
   if (0 == hdfsExists(fs_, file_name_.c_str())) {
-    if (0 != hdfsDelete(fs_, file_name_.c_str())) {
+    if (0 != hdfsDelete(fs_, file_name_.c_str(), 0)) {
       LOG(ERROR) << "Failed to delete file : [" + file_name_ + "]."
                  << std::endl;
       return rFailure;
