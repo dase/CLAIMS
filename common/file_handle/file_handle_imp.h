@@ -42,16 +42,21 @@ namespace common {
 using std::string;
 using std::atomic;
 class FileHandleImpFactory;
-enum FileOpenFlag { kCreateFile = 0, kAppendFile, kReadFile };
-static const char* file_open_flag_info[3] = {"kCreateFile", "kAppendFile",
-                                             "kReadFile"};
+enum FileOpenFlag {
+  kReadFile = 0,
+  kCreateFile,
+  kAppendFile,
+};
+static const char* file_open_flag_info[3] = {"kReadFile", "kCreateFile",
+                                             "kAppendFile"};
+
 static const char* file_status_info[4] = {"Reading", "Writing", "Appending",
                                           "Closed"};
 
 class FileHandleImp {
   friend FileHandleImpFactory;
 
- protected:
+ public:
   enum FileStatus { kInReading = 0, kInOverWriting, kInAppending, kClosed };
 
  protected:
@@ -117,9 +122,10 @@ class FileHandleImp {
 
   const string& get_file_name() { return file_name_; }
 
+  virtual RetCode SwitchStatus(FileStatus status_to_be) = 0;
+
  protected:
   virtual RetCode SetPosition(size_t pos) = 0;
-  virtual RetCode SwitchStatus(FileStatus status_to_be) = 0;
 
  protected:
   std::string file_name_;

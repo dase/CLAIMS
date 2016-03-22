@@ -120,7 +120,7 @@ class Catalog {
   static Catalog* instance_;
   SingleFileConnector* write_connector_ = NULL;
   SingleFileConnector* read_connector_ = NULL;
-  Lock write_lock_;
+  //  Lock write_lock_;
 
   friend class boost::serialization::access;
   template <class Archive>

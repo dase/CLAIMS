@@ -71,9 +71,10 @@ class DiskFileHandleImp : public FileHandleImp {
 
   virtual RetCode DeleteFile();
 
+  virtual RetCode SwitchStatus(FileStatus status_to_be);
+
  protected:
   virtual RetCode SetPosition(size_t pos);
-  virtual RetCode SwitchStatus(FileStatus status_to_be);
 
  private:
   RetCode Write(const void* buffer, const size_t length);

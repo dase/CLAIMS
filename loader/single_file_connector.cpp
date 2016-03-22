@@ -26,8 +26,69 @@
  *
  */
 
-#include "single_file_connector.h"
+#include "./single_file_connector.h"
+#include "../utility/lock_guard.h"
+
+using claims::utility::LockGuard;
 
 namespace claims {
-namespace loader {} /* namespace loader */
+namespace loader {
+
+RetCode SingleFileConnector::Open(common::FileOpenFlag open_flag) {
+  RetCode ret = rSuccess;
+  open_flag_ = open_flag;
+  if (0 != ref_) {
+    ++ref_;
+  } else {
+    LockGuard<SpineLock> guard(open_close_lcok_);
+    if (0 == ref_) {
+      EXEC_AND_RETURN_ERROR(
+          ret, imp_->SwitchStatus(
+                   static_cast<FileHandleImp::FileStatus>(open_flag_)),
+          "failed to open file:" << file_name_);
+      ++ref_;
+      is_closed = false;
+    }
+  }
+  return ret;
+}
+
+RetCode SingleFileConnector::Close() {
+  RetCode ret = rSuccess;
+  if (0 == (--ref_)) {
+    LockGuard<SpineLock> guard(open_close_lcok_);
+    if (0 == ref_ && !is_closed) {
+      EXEC_AND_RETURN_ERROR(ret, imp_->Close(), "file name: " << file_name_);
+      is_closed = true;
+    }
+  }
+  return ret;
+}
+
+RetCode SingleFileConnector::AtomicFlush(const void* source, unsigned length) {
+  LockGuard<Lock> guard(write_lock_);
+  if (common::FileOpenFlag::kCreateFile == open_flag_) {
+    return imp_->OverWrite(source, length);
+  } else if (common::FileOpenFlag::kAppendFile == open_flag_) {
+    return imp_->Append(source, length);
+  } else {
+    assert(false && "Can't flush a file opened with read mode");
+    return common::rFailure;
+  }
+}
+
+RetCode SingleFileConnector::Delete() {
+  RetCode ret = rSuccess;
+  if (0 != ref_) {
+    ret = common::rFileIsUsing;
+    EXEC_AND_RETURN_ERROR(ret, ret, "file name: " << file_name_);
+  }
+  LockGuard<SpineLock> guard(open_close_lcok_);
+  EXEC_AND_RETURN_ERROR(ret, imp_->DeleteFile(), "failed to delete file "
+                                                     << file_name_);
+  is_closed = true;
+  return ret;
+}
+
+} /* namespace loader */
 } /* namespace claims */

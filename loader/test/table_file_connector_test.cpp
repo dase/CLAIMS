@@ -108,7 +108,7 @@ void TableFileConnectorTest::WriteOrAppendFile(
                             ->getPartitioner()
                             ->getNumberOfPartitions();
          ++j) {
-      if (rSuccess != connector_->Flush(i, j, data_, data_length_)) {
+      if (rSuccess != connector_->AtomicFlush(i, j, data_, data_length_)) {
         LOG(ERROR) << "failed to flush (" << i << "," << j << ")" << endl;
         FAIL();
       }

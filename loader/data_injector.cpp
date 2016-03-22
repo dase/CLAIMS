@@ -153,7 +153,8 @@ DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
     : table_(table),
       col_separator_(col_separator),
       row_separator_(row_separator),
-      row_id_in_table_(table_->row_number_) {
+      row_id_in_table_(table_->row_number_),
+      connector_(table_->get_connector()) {
   sub_tuple_generator_.clear();
   table_schema_ = table_->getSchema();
   for (int i = 0; i < table_->getNumberOfProjection(); i++) {
@@ -193,16 +194,14 @@ DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
 
   sblock_ = new Block(BLOCK_SIZE);
 
-#ifdef DATA_DO_LOAD
-  connector_ = new TableFileConnector(
-      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      table_);
-#endif
+  //#ifdef DATA_DO_LOAD
+  //  connector_ = table_->get_connector();
+  //#endif
 }
 
 DataInjector::~DataInjector() {
   DELETE_PTR(table_schema_);
-  DELETE_PTR(connector_);
+  //  DELETE_PTR(connector_);
   DELETE_PTR(sblock_);
   for (auto it : pj_buffer_) {
     for (auto iter : it) {
@@ -427,11 +426,11 @@ RetCode DataInjector::PrepareEverythingForLoading(
   // open files
   GET_TIME_DI(open_start_time);
 #ifdef DATA_DO_LOAD
-  //  EXEC_AND_RETURN_ERROR(ret, connector_->Open(), " failed to open
-  //  connector");
   if (kCreateFile == open_flag)
-    EXEC_AND_LOG(ret, connector_->DeleteAllTableFiles(),
+    EXEC_AND_LOG(ret, connector_.DeleteAllTableFiles(),
                  "deleted all table files", "failed to delete all table files");
+  EXEC_AND_RETURN_ERROR(ret, connector_.Open(FileOpenFlag::kAppendFile),
+                        " failed to open connector");
 #endif
   PLOG_DI("open connector time: " << GetElapsedTimeInUs(open_start_time) /
                                          1000000.0);
@@ -455,7 +454,7 @@ RetCode DataInjector::FinishJobAfterLoading(FileOpenFlag open_flag) {
   int ret = rSuccess;
 
 #ifdef DATA_DO_LOAD
-  EXEC_AND_LOG(ret, connector_->Close(), "closed connector.",
+  EXEC_AND_LOG(ret, connector_.Close(), "closed connector.",
                "Failed to close connector. ret:" << ret);
 #endif
 
@@ -836,11 +835,10 @@ RetCode DataInjector::InsertFromString(const string tuples,
   }
   EXEC_AND_RETURN_ERROR(ret, PrepareInitInfo(kAppendFile),
                         "failed to prepare initialization info");
-  //#ifdef DATA_DO_LOAD
-  //  EXEC_AND_RETURN_ERROR(ret, connector_->Open(), " failed to open
-  //  connector");
-  //#endif
-
+#ifdef DATA_DO_LOAD
+  EXEC_AND_RETURN_ERROR(ret, connector_.Open(FileOpenFlag::kAppendFile),
+                        " failed to open connector");
+#endif
   LOG(INFO) << "\n------------------Insert  Begin!-----------------------\n";
 
   string::size_type cur = 0;
@@ -903,7 +901,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
                "flush all last block that are not full",
                "failed to flush all last block");
 #ifdef DATA_DO_LOAD
-  EXEC_AND_LOG(ret, connector_->Close(), "closed connector.",
+  EXEC_AND_LOG(ret, connector_.Close(), "closed connector.",
                "Failed to close connector.");
 #endif
   EXEC_AND_ONLY_LOG_ERROR(ret, UpdateCatalog(kAppendFile),
@@ -926,16 +924,13 @@ RetCode DataInjector::FlushNotFullBlock(
       if (!pj_buffer[i][j]->Empty()) {
         pj_buffer[i][j]->serialize(*block_to_write);
 #ifdef DATA_DO_LOAD
-        EXEC_AND_LOG(
-            ret,
-            connector_->AtomicFlush(
-                i, j, block_to_write->getBlock(), block_to_write->getsize(),
-                [i, j, this]() { table_->LockPartition(i, j); },
-                [i, j, this]() { table_->UnlockPartition(i, j); }),
-            "flushed the last block from buffer(" << i << "," << j
-                                                  << ") into file",
-            "failed to flush the last block from buffer(" << i << "," << j
-                                                          << "). ret:" << ret);
+        EXEC_AND_LOG(ret,
+                     connector_.AtomicFlush(i, j, block_to_write->getBlock(),
+                                            block_to_write->getsize()),
+                     "flushed the last block from buffer(" << i << "," << j
+                                                           << ") into file",
+                     "failed to flush the last block from buffer("
+                         << i << "," << j << "). ret:" << ret);
 #endif
         __sync_add_and_fetch(&blocks_per_partition_[i][j], 1);
         pj_buffer[i][j]->setEmpty();
@@ -1022,10 +1017,8 @@ RetCode DataInjector::InsertTupleIntoProjection(
     local_pj_buffer[i][part]->serialize(*block_to_write);
 #ifdef DATA_DO_LOAD
     EXEC_AND_ONLY_LOG_ERROR(
-        ret, connector_->AtomicFlush(
-                 i, part, block_to_write->getBlock(), block_to_write->getsize(),
-                 [i, part, this]() { table_->LockPartition(i, part); },
-                 [i, part, this]() { table_->UnlockPartition(i, part); }),
+        ret, connector_.AtomicFlush(i, part, block_to_write->getBlock(),
+                                    block_to_write->getsize()),
         /* "written to data file", */ "failed to write to data file. ");
 #endif
     __sync_add_and_fetch(&blocks_per_partition_[i][part], 1);

@@ -180,7 +180,7 @@ class DataInjector {
 
  private:
   TableDescriptor* table_;
-  TableFileConnector* connector_;
+  TableFileConnector& connector_;
 
   Schema* table_schema_;
   vector<Schema*> projections_schema_;

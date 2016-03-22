@@ -29,6 +29,7 @@
 #ifndef LOADER_TABLE_FILE_CONNECTOR_H_
 #define LOADER_TABLE_FILE_CONNECTOR_H_
 
+#include <atomic>
 #include <vector>
 #include <string>
 
@@ -36,9 +37,13 @@
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
 #include "./file_connector.h"
+#include "../common/rename.h"
+
+using std::vector;
+using std::string;
+using std::atomic;
 
 namespace claims {
-
 namespace catalog {
 class TableDescriptor;
 }
@@ -46,12 +51,14 @@ using claims::catalog::TableDescriptor;
 
 namespace loader {
 class TableFileConnector {
+  NO_COPY_AND_ASSIGN(TableFileConnector);
+
  public:
   TableFileConnector(common::FilePlatform platform, TableDescriptor* table);
   //  TableFileConnector(common::FilePlatform platform,
   //                     std::vector<std::vector<std::string>> writepath);
   ~TableFileConnector();
-  //  RetCode Open();
+  RetCode Open(common::FileOpenFlag open_flag);
   RetCode Close();
 
   /**
@@ -59,21 +66,35 @@ class TableFileConnector {
    *        whose projection id is projection_offset and partition id is
    *        partition_offset
    */
-  RetCode Flush(unsigned projection_offset, unsigned partition_offset,
-                const void* source, unsigned length, bool overwrite = false);
+  /*
+    RetCode Flush(unsigned projection_offset, unsigned partition_offset,
+                  const void* source, unsigned length, bool overwrite = false);
 
+    RetCode AtomicFlush(unsigned projection_offset, unsigned partition_offset,
+                        const void* source, unsigned length,
+                        function<void()> lock_func, function<void()>
+    unlock_func,
+                        bool overwrite = false);
+   */
   RetCode AtomicFlush(unsigned projection_offset, unsigned partition_offset,
-                      const void* source, unsigned length,
-                      function<void()> lock_func, function<void()> unlock_func,
-                      bool overwrite = false);
-
+                      const void* source, unsigned length);
   RetCode DeleteAllTableFiles();
 
+  RetCode UpdateWithNewProj();
+
  private:
-  std::vector<std::vector<common::FileHandleImp*>> file_handles_;
-  std::vector<std::vector<std::string>> write_path_name_;
-  TableDescriptor* table_;
   common::FilePlatform platform_;
+  vector<vector<common::FileHandleImp*>> file_handles_;
+  vector<vector<string>> write_path_name_;
+  TableDescriptor* table_;
+
+  common::FileOpenFlag open_flag_ = -1;
+
+  vector<vector<Lock>> write_locks_;
+
+  atomic<int> ref_;
+  bool is_closed;
+  Lock open_close_lock_;
 };
 
 } /* namespace loader */

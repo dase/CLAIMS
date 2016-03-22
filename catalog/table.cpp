@@ -29,17 +29,28 @@
 
 #include <string>
 #include <vector>
+
+#include "../common/file_handle/file_handle_imp_factory.h"
 #include "../common/Schema/SchemaFix.h"
+#include "../loader/table_file_connector.h"
+using claims::common::FilePlatform;
 using claims::utility::LockGuard;
 namespace claims {
 namespace catalog {
+
+TableDescriptor::TableDescriptor() {
+  write_connector_ = new TableFileConnector(
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+      this);
+}
+
 TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
     : tableName(name), table_id_(table_id), row_number_(0) {}
 
 TableDescriptor::~TableDescriptor() {}
 
 void TableDescriptor::addAttribute(Attribute attr) {
-  LockGuard<SpineLock> guard(lock_);
+  LockGuard<SpineLock> guard(update_lock_);
   attributes.push_back(attr);
 }
 
@@ -47,7 +58,7 @@ void TableDescriptor::addAttribute(Attribute attr) {
 bool TableDescriptor::addAttribute(string attname, data_type dt,
                                    unsigned max_length, bool unique,
                                    bool can_be_null) {
-  LockGuard<SpineLock> guard(lock_);
+  LockGuard<SpineLock> guard(update_lock_);
   attname = tableName + '.' + attname;
   /*check for attribute rename*/
 
@@ -60,10 +71,15 @@ bool TableDescriptor::addAttribute(string attname, data_type dt,
   return true;
 }
 
-bool TableDescriptor::createHashPartitionedProjection(
-    vector<ColumnOffset> column_list, Attribute partition_attribute,
+RetCode TableDescriptor::createHashPartitionedProjection(
+    const vector<ColumnOffset>& column_list, Attribute partition_attribute,
     unsigned number_of_partitions) {
-  LockGuard<SpineLock> guard(lock_);
+  //  LockGuard<SpineLock> guard(update_lock_);
+  if (!update_lock_.try_lock()) {
+    LOG(WARNING) << "failed to lock update_lock, may someone is loading or "
+                    "inserting data";
+    return common::rResourceIsLocked;
+  }
   ProjectionID projection_id(table_id_, projection_list_.size());
   ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
@@ -78,14 +94,22 @@ bool TableDescriptor::createHashPartitionedProjection(
                                 hash_function);
 
   projection_list_.push_back(projection);
-  AddProjectionLocks(number_of_partitions);
+  //  AddProjectionLocks(number_of_partitions);
+  //  UpdateConnectorWithNewProj(number_of_partitions);
+  write_connector_->UpdateWithNewProj();
+  update_lock_.release();
   return true;
 }
 
-bool TableDescriptor::createHashPartitionedProjection(
+RetCode TableDescriptor::createHashPartitionedProjection(
     const vector<Attribute>& attribute_list, Attribute partition_attr,
     unsigned number_of_partitions) {
-  LockGuard<SpineLock> guard(lock_);
+  //  LockGuard<SpineLock> guard(update_lock_);
+  if (!update_lock_.try_lock()) {
+    LOG(WARNING) << "failed to lock update_lock, may someone is loading or "
+                    "inserting data";
+    return common::rResourceIsLocked;
+  }
   ProjectionID projection_id(table_id_, projection_list_.size());
   ProjectionDescriptor* projection = new ProjectionDescriptor(projection_id);
 
@@ -100,15 +124,17 @@ bool TableDescriptor::createHashPartitionedProjection(
                                 hash_function);
 
   projection_list_.push_back(projection);
-  AddProjectionLocks(number_of_partitions);
+  //  AddProjectionLocks(number_of_partitions);
+  write_connector_->UpdateWithNewProj();
+  update_lock_.release();
   return true;
 }
 
-void TableDescriptor::AddProjectionLocks(int number_of_partitions) {
-  vector<Lock> locks;
-  for (int i = 0; i < number_of_partitions; ++i) locks.push_back(Lock());
-  partitions_write_lock_.push_back(locks);
-}
+// void TableDescriptor::AddProjectionLocks(int number_of_partitions) {
+//  vector<Lock> locks;
+//  for (int i = 0; i < number_of_partitions; ++i) locks.push_back(Lock());
+//  partitions_write_lock_.push_back(locks);
+//}
 
 bool TableDescriptor::isExist(const string& name) const {
   for (unsigned i = 0; i < attributes.size(); i++) {
@@ -164,7 +190,7 @@ Attribute TableDescriptor::getAttribute2(const std::string& name) const {
   return NULL;
 }
 
-vector<vector<string>> TableDescriptor::GetAllPartitionsPath() {
+vector<vector<string>> TableDescriptor::GetAllPartitionsPath() const {
   vector<vector<string>> write_paths;
   for (int i = 0; i < getNumberOfProjection(); i++) {
     vector<string> prj_write_path;

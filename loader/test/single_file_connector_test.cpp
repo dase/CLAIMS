@@ -59,7 +59,7 @@ void SingleFileConnectorTest::WriteOrAppendFile(FilePlatform file_platform,
                                                 int expect_length) {
   connector_ = new SingleFileConnector(file_platform, path_);
   if (open_flag == kCreateFile) {
-    if (rSuccess != connector_->Flush(data_, data_length_)) {
+    if (rSuccess != connector_->AtomicFlush(data_, data_length_)) {
       LOG(ERROR) << "failed to flush (" << path_ << ")" << std::endl;
       FAIL();
     }

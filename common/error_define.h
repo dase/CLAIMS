@@ -189,6 +189,9 @@ const int rAccessDiskFileFail = -98;
 const int rAccessHdfsFileFail = -99;
 const int rNoMemory = -100;
 const int rDataPathError = -101;
+const int rFileIsUsing = -102;
+
+const int rResourceIsLocked = -103;
 
 // schema associated
 const int rEmptyAttributeName = -501;

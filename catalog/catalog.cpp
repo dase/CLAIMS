@@ -66,9 +66,19 @@ Catalog::Catalog() {
   write_connector_ = new SingleFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
       Config::catalog_file);
+  RetCode ret = rSuccess;
+  EXEC_AND_ONLY_LOG_ERROR(
+      ret, write_connector_->Open(FileOpenFlag::kCreateFile),
+      "failed to open catalog file: " << Config::catalog_file
+                                      << " with Overwrite mode");
+  assert(ret == rSuccess && "failed to open catalog ");
   read_connector_ = new SingleFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
       Config::catalog_file);
+  EXEC_AND_ONLY_LOG_ERROR(ret, read_connector_->Open(FileOpenFlag::kReadFile),
+                          "failed to open catalog file: "
+                              << Config::catalog_file << " with Read mode");
+  assert(ret == rSuccess && "failed to open catalog ");
 }
 
 Catalog::~Catalog() {
@@ -175,7 +185,7 @@ void Catalog::outPut() {
 
 // 2014-3-20---save as a file---by Yu
 RetCode Catalog::saveCatalog() {
-  LockGuard<Lock> guard(write_lock_);
+  //  LockGuard<Lock> guard(write_lock_);
   std::ostringstream oss;
   boost::archive::text_oarchive oa(oss);
   oa << *this;
@@ -185,8 +195,8 @@ RetCode Catalog::saveCatalog() {
   //                          "failed to delete catalog file");
   //  FileHandleImp* write_handler =
   EXEC_AND_RETURN_ERROR(
-      ret, write_connector_->Flush(static_cast<const void*>(oss.str().c_str()),
-                                   oss.str().length(), true),
+      ret, write_connector_->AtomicFlush(
+               static_cast<const void*>(oss.str().c_str()), oss.str().length()),
       "failed to flush into catalog file: " << Config::catalog_file);
 
   //  EXEC_AND_ONLY_LOG_ERROR(
@@ -241,7 +251,7 @@ bool Catalog::IsDataFileExist() {
 RetCode Catalog::restoreCatalog() {
   int ret = rSuccess;
   string catalog_file = Config::catalog_file;
-  LockGuard<Lock> guard(write_lock_);
+  //  LockGuard<Lock> guard(write_lock_);
 
   // check whether there is catalog file if there are data file
   if (!read_connector_->CanAccess() && IsDataFileExist()) {
