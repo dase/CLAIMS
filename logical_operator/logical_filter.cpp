@@ -110,8 +110,10 @@ PlanContext LogicalFilter::GetPlanContext() {
 #endif
   plan_context_ = new PlanContext();
   *plan_context_ = plan_context;
+  plan_context_->attribute_list_.assign(plan_context.attribute_list_.begin(),
+                                        plan_context.attribute_list_.end());
   lock_->release();
-  return plan_context;
+  return *plan_context_;
 }
 
 PhysicalOperatorBase* LogicalFilter::GetPhysicalPlan(
