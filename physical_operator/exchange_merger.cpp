@@ -248,7 +248,8 @@ void ExchangeMerger::Print() {
 }
 bool ExchangeMerger::PrepareSocket() {
   struct sockaddr_in my_addr;
-
+  struct sockaddr_in my_addr2;
+  socklen_t len = sizeof(my_addr2);
   // sock_fd_ is the socket of this node
   if ((sock_fd_ = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     LOG(ERROR) << "socket creation error!" << endl;
@@ -257,7 +258,7 @@ bool ExchangeMerger::PrepareSocket() {
   my_addr.sin_family = AF_INET;
 
   /* apply for the port dynamically.*/
-  if ((socket_port_ = PortManager::getInstance()->applyPort()) == 0) {
+/*  if ((socket_port_ = PortManager::getInstance()->applyPort()) == 0) {
     LOG(ERROR) << " exchange_id = " << state_.exchange_id_
                << " partition_offset = " << partition_offset_
                << " Fails to apply a port for the socket. Reason: the "
@@ -267,8 +268,8 @@ bool ExchangeMerger::PrepareSocket() {
   LOG(INFO) << " exchange_id = " << state_.exchange_id_
             << " partition_offset = " << partition_offset_
             << " succeed applying one port !" << endl;
-
-  my_addr.sin_port = htons(socket_port_);
+*/
+  my_addr.sin_port = htons(0);
   my_addr.sin_addr.s_addr = INADDR_ANY;
   bzero(&(my_addr.sin_zero), 8);
 
@@ -283,6 +284,15 @@ bool ExchangeMerger::PrepareSocket() {
                << endl;
     return false;
   }
+
+  if(getsockname(sock_fd_, (struct sockaddr*)&my_addr2, &len) == -1)
+  {
+      LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+               << " partition_offset = " << partition_offset_ << " getsockname error!"
+               << endl;
+	  return false;
+  }
+  socket_port_ = ntohs(my_addr2.sin_port);
 
   if (listen(sock_fd_, lower_num_) == -1) {
     LOG(ERROR) << " exchange_id = " << state_.exchange_id_
