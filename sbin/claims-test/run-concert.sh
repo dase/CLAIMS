@@ -11,8 +11,8 @@ do
   starttime=$(date '+%Y-%m-%d %H:%M:%S')
 #  ./claimstest.sh 1 1 concertdroptable
 #  ./claimstest.sh 1 1 concertcreatetable
-#  ./claimstest.sh 1 1 concertload50wdata
-  ./claimstest.sh 1 100 concert
+  ./claimstest.sh 1 1 concertload50wdata
+  ./claimstest.sh 100 20 concert
   echo "start time:$starttime"
   echo "end time:$(date '+%Y-%m-%d %H:%M:%S')"
 done
