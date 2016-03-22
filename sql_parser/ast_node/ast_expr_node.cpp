@@ -594,6 +594,10 @@ void AstExprCmpBinary::Print(int level) const {
 }
 RetCode AstExprCmpBinary::SemanticAnalisys(SemanticContext* sem_cnxt) {
   RetCode ret = rSuccess;
+  if (expr_type_ == "EXPR_IN_SELECT") {
+    ret = claims::common::rNotSupport;
+    return ret;
+  }
   if (NULL != arg0_) {
     ret = arg0_->SemanticAnalisys(sem_cnxt);
     if (rSuccess != ret) {
