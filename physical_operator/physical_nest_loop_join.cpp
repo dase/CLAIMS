@@ -108,6 +108,7 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   BarrierArrive(1);  // ??ERROR
                      //	join_thread_context* jtc=new join_thread_context();
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_right_);
+  jtc->block_for_asking_->setEmpty();
   jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
   jtc->buffer_iterator_ = block_buffer_->createIterator();
 
@@ -192,7 +193,9 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
     if (NULL == (buffer_block = jtc->buffer_iterator_.nextBlock())) {
       LOG(WARNING) << "[NestloopJoin]: the buffer is empty in nest loop join!";
       // for getting all right child's data
+      jtc->block_for_asking_->setEmpty();
       while (state_.child_right_->Next(jtc->block_for_asking_)) {
+        jtc->block_for_asking_->setEmpty();
       }
       return false;
     }
