@@ -29,11 +29,12 @@ Parser::Parser() {
     }
   }
   sql_stmt_ = string(InputStr);
-  CreateRawAST(sql_stmt_);
+  string result = "";
+  CreateRawAST(sql_stmt_, result);
 }
 
-Parser::Parser(string sql_stmt) : sql_stmt_(sql_stmt) {
-  CreateRawAST(sql_stmt_);
+Parser::Parser(string sql_stmt, string& result_info) : sql_stmt_(sql_stmt) {
+  CreateRawAST(sql_stmt_, result_info);
   // CreateAst();
 }
 
@@ -41,9 +42,10 @@ Parser::~Parser() { delete ast_root_; }
 
 AstNode* Parser::GetRawAST() { return ast_root_; }
 
-AstNode* Parser::CreateRawAST(string SQL_statement) {
-  struct ParseResult presult = {NULL, NULL, SQL_statement.c_str(), 0};
+AstNode* Parser::CreateRawAST(string SQL_statement, string& result_info) {
+  struct ParseResult presult = {NULL, NULL, SQL_statement.c_str(), 0, ""};
   if (yylex_init_extra(&presult, &presult.yyscan_info_)) {
+    // if (yylex_init(&presult.yyscan_info_)) {
     perror("init alloc failed");
     ast_root_ = NULL;
   } else {
@@ -56,18 +58,17 @@ AstNode* Parser::CreateRawAST(string SQL_statement) {
         ast_root_ = presult.ast;
       } else {
         printf("SQL parse failed, ast is null!\n");
+        result_info = presult.error_info_;
         ast_root_ = NULL;
       }
     } else {
       printf("SQL parse failed\n");
       ast_root_ = NULL;
     }
+    yy_flush_buffer(bp, presult.yyscan_info_);
     yy_delete_buffer(bp, presult.yyscan_info_);
+    // yylex_destroy(presult.yyscan_info_);
   }
   return ast_root_;
 }
-/*
- * @brief TODO(yuyang):for dml/query, add semantic analysis and recover
- * expression string
- */
 // AstNode* Parser::CreateAst() { AstNode* entire_AST = AST_root_; }

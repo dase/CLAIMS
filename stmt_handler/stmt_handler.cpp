@@ -32,6 +32,7 @@
 #include "../stmt_handler/stmt_handler.h"
 
 #include "../stmt_handler/create_projection_exec.h"
+#include "../stmt_handler/desc_exec.h"
 #include "../stmt_handler/drop_table_exec.h"
 #include "../stmt_handler/show_exec.h"
 #include "../utility/Timer.h"
@@ -78,6 +79,10 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
       stmt_exec_ = new ShowExec(stmt_ast);
       break;
     }
+    case AST_DESC_STMT: {
+      stmt_exec_ = new DescExec(stmt_ast);
+      break;
+    }
     case AST_CREATE_TABLE_LIST:
     case AST_CREATE_TABLE_LIST_SEL:
     case AST_CREATE_TABLE_SEL: {
@@ -107,10 +112,10 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
 RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
   GETCURRENTTIME(start_time);
   RetCode ret = rSuccess;
-  sql_parser_ = new Parser(sql_stmt_);
+  sql_parser_ = new Parser(sql_stmt_, (exec_result->info_));
   AstNode* raw_ast = sql_parser_->GetRawAST();
   if (NULL == raw_ast) {
-    exec_result->error_info_ = "Parser Error";
+    exec_result->error_info_ = "Parser Error\n" + exec_result->info_;
     exec_result->status_ = false;
     exec_result->result_ = NULL;
     return rParserError;
