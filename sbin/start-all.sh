@@ -1,10 +1,5 @@
 #!/bin/sh  
 
-if [ ! -f "${0##*/}" ]; then
- echo "please run script in sbin/ directory!"
- exit 1
-fi
-
 cd $CLAIMS_HOME/sbin/2-claims-conf/
 source ./load-config.sh
 source ./generate-config.sh
