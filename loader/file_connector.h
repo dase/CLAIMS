@@ -46,7 +46,12 @@ class FileConnector {
   virtual RetCode Close() = 0;
   virtual RetCode Flush(unsigned projection_offset, unsigned partition_offset,
                         const void* source, unsigned length) = 0;
+  virtual RetCode AtomicFlush(unsigned projection_offset,
+                              unsigned partition_offset, const void* source,
+                              unsigned length) = 0;
   virtual RetCode Flush(const void* source, unsigned length) = 0;
+  virtual RetCode AtomicFlush(const void* source, unsigned length) = 0;
+
   virtual RetCode LoadTotalFile(void*& buffer, uint64_t* length) = 0;
   virtual RetCode LoadFile(void* buffer, int64_t start, uint64_t length) = 0;
 

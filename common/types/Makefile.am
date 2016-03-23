@@ -23,7 +23,8 @@ noinst_LIBRARIES=libtypes.a
 
 libtypes_a_SOURCES = 	\
 	ExportSerializeIo.h 		NValue.cpp \
-	NValue.hpp 		value_defs.h
+	NValue.hpp 		value_defs.h \
+	decimal.cpp	decimal.h
 	
 SUBDIRS = Test ttmath
 DIST_SUBDIRS = Test ttmath

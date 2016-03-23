@@ -377,6 +377,8 @@ RetCode AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
       Environment::getInstance()->getCatalog()->getTable(table_name_);
   if (NULL == tbl) {
     LOG(ERROR) << "table: " << table_name_ << " dosen't exist!" << endl;
+    sem_cnxt->error_msg_ =
+        "table: '\e[1m" + table_name_ + "\e[0m' dosen't exist ";
     return rTableNotExisted;
   }
   if (table_alias_ == "NULL") {
@@ -415,15 +417,15 @@ RetCode AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
                                                       ->getProjectoin(0),
                                                   table_alias_);
     Attribute filter_base =
-        base_table->GetPlanContext().GetAttribute(table_alias_ + ".row_id");
+        base_table->GetPlanContext().plan_partitioner_.get_partition_key();
     LogicalOperator* del_table =
         new LogicalScan(Environment::getInstance()
                             ->getCatalog()
                             ->getTable(table_name_ + "_DEL")
                             ->getProjectoin(0),
                         table_alias_ + "_DEL");
-    Attribute filter_del = del_table->GetPlanContext().GetAttribute(
-        table_alias_ + "_DEL.row_id_DEL");
+    Attribute filter_del =
+        del_table->GetPlanContext().plan_partitioner_.get_partition_key();
 
     assert(filter_base.attrName != "NULL");
     assert(filter_del.attrName != "NULL");
@@ -1232,6 +1234,8 @@ RetCode AstColumn::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (rSuccess != ret) {
     LOG(ERROR) << "There are errors in ( " << relation_name_ << " , "
                << column_name_ << " )" << endl;
+    sem_cnxt->error_msg_ =
+        "column: '\e[1m" + column_name_ + "\e[0m' is invalid";
     return ret;
   }
   if (NULL != next_) {

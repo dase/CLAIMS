@@ -36,7 +36,7 @@
 #include "../utility/ExpandabilityShrinkability.h"
 #include "../common/Logging.h"
 #include "../utility/lock.h"
-#include "../utility/ThreadPool.h"
+#include "../utility/thread_pool.h"
 #include "../Environment.h"
 namespace claims {
 namespace physical_operator {

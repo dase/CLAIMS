@@ -1,5 +1,5 @@
 AM_CPPFLAGS= -fPIC -fpermissive \
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
 -I${THERON_HOME}/Include \
@@ -13,7 +13,9 @@ AM_CPPFLAGS+=-fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-b
 AM_LDFLAGS+=-ltcmalloc 
 endif
 
-LDADD =	../Loader/libloader.a \
+LDADD = ../catalog/libcatalog.a \
+		../catalog/stat/libstat.a \
+		../loader/libloader.a \
 		../common/libcommon.a \
 		../common/expression/libexpression.a \
 		../utility/libutility.a \
@@ -36,7 +38,8 @@ libstmthandler_a_SOURCES = \
 	select_exec.cpp	select_exec.h \
 	insert_exec.cpp insert_exec.h \
 	load_exec.cpp	load_exec.h \
-	create_table_exec.cpp create_table_exec.h
+	create_table_exec.cpp create_table_exec.h \
+	desc_exec.cpp desc_exec.h
 	
 
 	

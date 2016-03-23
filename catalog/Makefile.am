@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME}/boost/serialization \
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux\
 -I${THERON_HOME}/Include \
@@ -15,7 +15,6 @@ endif
 
 LDADD =	../storage/libstorage.a \
 		../Resource/libresource.a \
-		../Schema/libschema.a \
 		../utility/libutility.a \
 		../common/Schema/libschema.a \
 		../loader/libloader.a \

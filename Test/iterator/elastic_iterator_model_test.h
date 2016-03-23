@@ -11,6 +11,7 @@
 #include <iosfwd>
 
 #include "../../common/types/NValue.hpp"
+#include "../../common/types/decimal.h"
 
 #include "../../Client/Client.h"
 
@@ -97,10 +98,11 @@ TEST_F(ElasticIteratorModelTest, ScalaAggregation) {
   BlockStreamBase::BlockStreamTraverseIterator *b_it =
       it.nextBlock()->createIterator();
   EXPECT_EQ(6001215, *(long *)b_it->currentTuple());
-  NValue v;
-  v.createDecimalFromString("153078795.0000");
+  //NValue v;
+  //v.createDecimalFromString("153078795.0000");
+  Decimal v(65, 30, "153078795.0000");
   EXPECT_TRUE(
-      v.op_equals(*(NValue *)((char *)b_it->currentTuple() + sizeof(long))));
+      v.op_equals(*(Decimal *)((char *)b_it->currentTuple() + sizeof(long))));
 }
 TEST_F(ElasticIteratorModelTest, AggregationLargeGroups) {
   ResultSet rs;

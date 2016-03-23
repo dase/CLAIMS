@@ -15,10 +15,14 @@ libutility_a_SOURCES = \
 	ExpandabilityShrinkability.cpp 		ExpandabilityShrinkability.h \
 	ThreadSafe.cpp 						ThreadSafe.h \
 	Timer.h 							atomics.h \
-	generator.h 						lock.h \
-	rdtsc.h 							test_tool.h \
-	warmup.h \
-	ThreadPool.h					ThreadPool.cpp \
-	data_distribution_generator.cpp 	data_distribution_generator.h \
-	command_line.cpp 					command_line.h\
-	string_process.cpp					string_process.h
+	command_line.cpp 		command_line.h \
+	cpu_scheduler.h 		data_distribution_generator.cpp \
+	data_distribution_generator.h 		generator.h \
+	lock.h 			lock_guard.h \
+	maths.h 		print_tool.h \
+	rdtsc.h 		string_process.cpp \
+	string_process.h 		task.cpp \
+	task.h 					test_tool.h \
+	thread_pool.cpp 		thread_pool.h \
+	warmup.h
+	

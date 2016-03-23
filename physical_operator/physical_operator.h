@@ -42,12 +42,12 @@ namespace physical_operator {
 class ThreadContext {
  public:
   virtual ~ThreadContext() {}
-  int32_t get_locality_() const { return locality_; }
-  void set_locality_(int32_t locality) { locality_ = locality; }
+  vector<int32_t> get_locality_() const { return locality_; }
+  void set_locality_(vector<int32_t> locality) { locality_ = locality; }
 
  private:
   /* the id of the core who creates the context*/
-  int32_t locality_;
+  vector<int32_t> locality_;
 };
 typedef int barrier_number;
 typedef int serialized_section_number;

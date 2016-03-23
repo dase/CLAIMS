@@ -27,6 +27,7 @@
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 //#include "../codegen/codegen_test.h"
 #include "../common/log/logging.h"
+#include "../common/types/Test/data_type_test.h"
 #include "../loader/test/data_injector_test.h"
 //#include "../common/file_handle/test/disk_file_handle_imp_test.h"
 //#include "../common/file_handle/test/hdfs_file_handle_imp_test.h"

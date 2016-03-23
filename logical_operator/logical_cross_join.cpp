@@ -312,7 +312,7 @@ int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(
       expander_state.block_size_ = blocksize;
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = right_child_->GetPhysicalPlan(blocksize);
-      expander_state.schema_ = left_plan_context.GetSchema();
+      expander_state.schema_ = right_plan_context.GetSchema();
       PhysicalOperatorBase* expander = new Expander(expander_state);
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = blocksize;

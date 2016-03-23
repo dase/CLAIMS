@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include "sql.tab.hpp"
-#include "../astnode/ast_node.h"
+#include "../ast_node/ast_node.h"
 int oldstate;
 extern void yyerror(struct ParseResult *pp,const char *s, ...);
 void GetCorrectString(char *dest, const char *src);
@@ -266,15 +266,15 @@ BEGIN		{ return BEGINT; }
    /* numbers */
 
 
-[0-9]+	{ yylval->strval = strdup(yytext); return INTNUM; } 	// 2014-4-14---save int value in string type
+[-+]?[0-9]+	{ yylval->strval = strdup(yytext); return INTNUM; } 	// 2014-4-14---save int value in string type
 
 
-[0-9]+"."[0-9]* |
-"."[0-9]+	|
-[0-9]+E[-+]?[0-9]+	|
-[0-9]+"."[0-9]*E[-+]?[0-9]+ |
+[-+]?[0-9]+"."[0-9]* |
+[-+]?"."[0-9]+	|
+[-+]?[0-9]+E[-+]?[0-9]+	|
+[-+]?[0-9]+"."[0-9]*E[-+]?[0-9]+ |
 
-"."[0-9]*E[-+]?[0-9]+	{ yylval->strval = strdup(yytext); return APPROXNUM; }	// 2014-4-14---save double value in string type
+[-+]?"."[0-9]*E[-+]?[0-9]+	{ yylval->strval = strdup(yytext); return APPROXNUM; }	// 2014-4-14---save double value in string type
 
 
     /* booleans */	// 2014-4-14---save bool value in string type
@@ -394,7 +394,7 @@ MAX    { int c = yyinput(pp->yyscan_info_); unput(c);
 <COMMENT><<EOF>> { yyerror(pp,"unclosed comment"); }
 
 	/* everything else */
-[ \t\n]         /* white space */
+[ \t\n]         /* white space */ {yylineno++;}
 .               { yyerror(pp,"mystery character '%c'", *yytext); }
 
 %%
