@@ -59,6 +59,13 @@ class TableFileConnector : public FileConnector {
     assert(false && "not implemented");
     return common::rFailure;
   }
+  virtual RetCode AtomicFlush(unsigned projection_offset,
+                              unsigned partition_offset, const void* source,
+                              unsigned length);
+  virtual RetCode AtomicFlush(const void* source, unsigned length) {
+    assert(false && "not implemented");
+    return common::rFailure;
+  }
   virtual RetCode LoadTotalFile(void*& buffer, uint64_t* length) {
     assert(false);
     return common::rFailure;

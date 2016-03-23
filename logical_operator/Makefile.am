@@ -1,5 +1,5 @@
 AM_CPPFLAGS= -fPIC -fpermissive \
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux\
 -I${THERON_HOME}/Include \
@@ -16,7 +16,6 @@ endif
 LDADD = ../logical_operator/liblogicalqueryplan.a \
 		../catalog/libcatalog.a \
 		../catalog/stat/libstat.a \
-		../Schema/libschema.a \
 		../Resource/libresource.a \
 		../common/libcommon.a \
 		../common/Schema/libschema.a \

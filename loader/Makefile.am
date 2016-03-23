@@ -2,7 +2,7 @@
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
 -I${THERON_HOME}/Include
@@ -15,7 +15,6 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD = 	../catalog/libcatalog.a \
-		../Schema/libschema.a \
 		../common/libcommon.a \
 		../common/Block/libblock.a \
 		../common/file_handle/libfilehandle.a \

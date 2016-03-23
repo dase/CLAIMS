@@ -18,13 +18,13 @@ using std::vector;
 class Parser {
  public:
   Parser();
-  explicit Parser(string SQL_statement);
+  explicit Parser(string SQL_statement, string& result_info);
   virtual ~Parser();
   AstNode* GetRawAST();
   string get_sql_stmt() { return sql_stmt_; }
 
  private:
-  AstNode* CreateRawAST(string SQL_statement);
+  AstNode* CreateRawAST(string SQL_statement, string& result_info);
   // AstNode* CreateAst(string SQL_statement);
   void SemanticAnalysis();
   void RecoveryExpr();

@@ -45,6 +45,7 @@ using claims::common::rInterruptedData;
 using claims::common::rIncorrectData;
 using claims::common::rInvalidNullData;
 using claims::common::kErrorMessage;
+using namespace claims::common;
 /**
  * if a string to input is warning, we modify it to a right value
  *     and return it's warning-code
@@ -476,11 +477,17 @@ RetCode OperateUSmallInt::CheckSet(string& str) const {
  */
 RetCode OperateDecimal::CheckSet(string& str) const {
   RetCode ret = rSuccess;
-  if (str == "" && nullable) return rSuccess;
+  if ((str == "" || str == "NULL") && nullable) return rSuccess;
   if (str == "" && !nullable) {
     ret = rInvalidNullData;
     ELOG(ret, str);
     return ret;
+  }
+  if (Decimal::StringToDecimal(this->precision_, this->scale_, str)) {
+    ret = rSuccess;
+  } else {
+    ret = rInvalidInsertData;
+    ELOG(ret, str);
   }
   return ret;
 }

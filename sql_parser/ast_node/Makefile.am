@@ -1,5 +1,5 @@
 AM_CPPFLAGS= -fPIC -fpermissive\
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
 -I${BOOST_HOME} \
@@ -15,7 +15,7 @@ AM_LDFLAGS+=-ltcmalloc
 endif
 
 LDADD =	../../Executor/libexecutor.a \
-	    ../../Catalog/libcatalog.a \
+	    ../../catalog/libcatalog.a \
 		../../common/libcommon.a \
 		../../common/Schema/libschema.a \
 		../../common/Block/libblock.a \
@@ -37,6 +37,7 @@ LDADD =	../../Executor/libexecutor.a \
 noinst_LIBRARIES=libast_node.a
 
 libast_node_a_SOURCES = \
+    ast_desc_stmt.cpp           ast_desc_stmt.h \
     ast_delete_stmt.cpp          ast_delete.h  \
 	ast_show_stmt.cpp           ast_show_stmt.h \
 	ast_select_stmt.cpp			ast_select_stmt.h \

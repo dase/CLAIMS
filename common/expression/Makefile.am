@@ -1,13 +1,13 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS\
 -I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
 
 AM_LDFLAGS=-lc -lm -lrt -lconfig++ -lpthread -lboost_serialization -lxs
 
-LDADD = 	../../Catalog/libcatalog.a \
+LDADD = 	../../catalog/libcatalog.a \
 		../../common/libcommon.a \
 		../../common/Schema/libschema.a \
 		../../utility/libutility.a \
