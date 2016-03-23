@@ -114,6 +114,7 @@ bool PhysicalProject::Next(BlockStreamBase* block) {
       // for case (1)
       return true;
   }
+  return false;
 }
 
 bool PhysicalProject::Close() {

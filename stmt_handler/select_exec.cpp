@@ -83,7 +83,8 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   RetCode ret = rSuccess;
   ret = select_ast_->SemanticAnalisys(&sem_cnxt);
   if (rSuccess != ret) {
-    exec_result->error_info_ = "semantic analysis error";
+    exec_result->error_info_ =
+        "semantic analysis error \n" + sem_cnxt.error_msg_;
     exec_result->status_ = false;
     LOG(ERROR) << "semantic analysis error result= : " << ret;
     cout << "semantic analysis error result= : " << ret << endl;

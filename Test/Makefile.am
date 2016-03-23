@@ -1,5 +1,5 @@
 AM_CPPFLAGS= -fPIC -fpermissive\
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
 -I${BOOST_HOME} \
@@ -29,7 +29,7 @@ LDADD =	TestSuit/libtestsuit.a \
 		../common/types/libtypes.a \
 		../sql_parser/parser/libparser_test.a	\
 		../utility/libutility.a \
-		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a\
+		${HADOOP_HOME}/lib/native/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.so \
