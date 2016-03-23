@@ -7,13 +7,13 @@ cd ../
 
 timestr=$(date +%Y-%m-%d)
 
-if [ ! -d "$logpath" ]; then
- echo "log path not exist, mkdir:$logpath"
- mkdir -p "$logpath"
+if [ ! -d "$CLAIMS_HOME/$logpath" ]; then
+ echo "log path not exist, mkdir:$CLAIMS_HOME/$logpath"
+ mkdir -p "$CLAIMS_HOME/$logpath"
 fi
 
 if [ -z $1 ]; then
- echo "please start with config file!" >> $logpath/noconfig-$timestr
+ echo "please start with config file!" >> $CLAIMS_HOME/$logpath/noconfig-$timestr
  echo "please start with config file!"
  exit 1
 fi
@@ -25,7 +25,7 @@ echo "-----------------------------------"
 echo -e "\033[31m`pwd`\033[0m"
 
 thisip=`sed '/^ip\s*=/!d;s/.*=//' $1`
-thislog=$logpath/claimsserver-$thisip-$timestr.log
+thislog=$CLAIMS_HOME/$logpath/claimsserver-$thisip-$timestr.log
 
 ./stop-node.sh
 
@@ -37,5 +37,5 @@ ulimit -c unlimited
 echo "========run claimsserver on:[$thisip] time:[$(date '+%Y-%m-%d %H:%M:%S')]========" >> $thislog
 $CLAIMS_HOME/install/claimsserver -c $1 >> $thislog &
 claimsserverpid=$!
-echo "claimsserver=$claimsserverpid" > $runclaimsprocid
+echo "claimsserver=$claimsserverpid" > $CLAIMS_HOME/$runclaimsprocid
 echo -e "$thisip start claimsserver pid:[$claimsserverpid][\033[32mOK\033[0m]"

@@ -15,8 +15,8 @@ if [ "$1" = "all" ]; then
   done
  fi
 
- if [ -f "$runclaimsprocid" ]; then
-  rm -f $runclaimsprocid
+ if [ -f "$CLAIMS_HOME/$runclaimsprocid" ]; then
+  rm -f $CLAIMS_HOME/$runclaimsprocid
  fi
  clientpids=`ps x | grep -w $CLAIMS_HOME/install/client | grep -v grep | awk '{print $1}'`
  if [ "$clientpids" != "" ]; then
@@ -36,12 +36,12 @@ if [ "$1" = "all" ]; then
  fi
 else
 
- if [ -f "$runclaimsprocid" ]; then
-  claimspids=`sed '/^claimsserver=/!d;s/.*=//' $runclaimsprocid`
+ if [ -f "$CLAIMS_HOME/$runclaimsprocid" ]; then
+  claimspids=`sed '/^claimsserver=/!d;s/.*=//' $CLAIMS_HOME/$runclaimsprocid`
   if [ "$claimspids" != "" ]; then
    echo "stop claimsserver pid : [$claimspids]"
    kill -9 $claimspids
   fi
-  rm -f $runclaimsprocid
+  rm -f $CLAIMS_HOME/$runclaimsprocid
  fi
 fi

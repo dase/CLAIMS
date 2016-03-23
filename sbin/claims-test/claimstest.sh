@@ -1,4 +1,10 @@
 #!/bin/sh
+
+if [ ! -f "${0##*/}" ]; then
+ echo "please run script in sbin/claims-test/ directory!"
+ exit 1
+fi
+
 set -e
 cd $CLAIMS_HOME/sbin/2-claims-conf/
 source ./load-config.sh
@@ -28,7 +34,7 @@ fi
 echo "runloops=[$runloops]"
 echo "concurrency_count=[$concurrency_count]"
 
-thislog=$logpath/client.$(date +%Y-%m-%d).log
+thislog=$CLAIMS_HOME/$logpath/client.$(date +%Y-%m-%d).log
 cd $CLAIMS_HOME/sbin/claims-test
 if [ ! -d "testresult" ]; then
  mkdir -p "testresult"
@@ -48,5 +54,6 @@ do
  }&
  done
  wait
+ echo -e "\033[33mtest loop:[$loop] end time:[`date '+%Y-%m-%d %H:%M:%S'`]\033[0m"
 }
 done

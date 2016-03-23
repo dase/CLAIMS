@@ -1,0 +1,96 @@
+#!/usr/bin/python
+# Filename : monitor_loader.py
+
+usage = u'''
+this scripts main role is to load data into
+different data path, eg:
+ /home/claims/data/tpc-h/sf1/1partition
+ /home/claims/data/tpc-h/sf1/4partition
+ /home/claims/data/tpc-h/sf1/8partition
+ /home/claims/data/tpc-h/sf10/1partition
+ /home/claims/data/tpc-h/sf10/4partition
+ /home/claims/data/tpc-h/sf10/8partition
+ /home/claims/data/tpc-h/sf100/1partition
+ /home/claims/data/tpc-h/sf100/4partition
+ /home/claims/data/tpc-h/sf100/8partition
+and different disk mode, eg:
+ local disk
+ hdfs
+while we load data into these place, we should 
+first modify the config file of claims:
+ sbin/2-claims-conf/cluster.config
+then deploy it, call script:
+ sbin/3-deploy.sh
+then restart claimsserver:
+ sbin/start-all.sh
+then start client and load the data, this step will call script:
+ sbin/claims-test/claimstest.sh 1 1 <testcase>
+here we do all these automatically in this scripts.
+and you can alse add your own load path and ddl into this scripts later.
+'''
+import os
+import sys
+
+'''
+ local_disk_mode
+   0 : hdfs mode
+   1 : local disk mode
+ data
+   the path for claims to store data
+ case
+   test case in sbin/claims-test/testcase/
+   the case tuple can contain numerous object
+'''
+mode_data_case=( 
+                 (0, "/home/claims/data/tpc-h/sf1/1partition",   
+                                    ((1, 2, "ddl_tpch_sf1_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf1/4partition",   ((1, 2, "ddl_tpch_sf1_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf1/8partition",   ((1, 2, "ddl_tpch_sf1_8partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/1partition",  ((1, 2, "ddl_tpch_sf10_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/4partition",  ((1, 2, "ddl_tpch_sf10_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/8partition",  ((1, 2, "ddl_tpch_sf10_8partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/1partition", ((1, 2, "ddl_tpch_sf100_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/4partition", ((1, 2, "ddl_tpch_sf100_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/8partition", ((1, 2, "ddl_tpch_sf100_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/1partition",   ((1, 2, "ddl_tpch_sf1_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/4partition",   ((1, 2, "ddl_tpch_sf1_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/8partition",   ((1, 2, "ddl_tpch_sf1_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/1partition",  ((1, 2, "ddl_tpch_sf10_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/4partition",  ((1, 2, "ddl_tpch_sf10_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/8partition",  ((1, 2, "ddl_tpch_sf10_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/1partition", ((1, 2, "ddl_tpch_sf100_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/4partition", ((1, 2, "ddl_tpch_sf100_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/8partition", ((1, 2, "ddl_tpch_sf100_8partition"),)) )
+
+claimshome=os.getenv("CLAIMS_HOME")
+config_disk_mode="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^local_disk_mode=.*$:local_disk_mode=%s:g' ./cluster.config; exit\""
+config_data="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^data=.*$:data=%s:g' ./cluster.config; exit\""
+deploy="ssh -f -n -l %s %s \"$CLAIMS_HOME/sbin/3-deploy.sh\""
+startall="%s/sbin/start-all.sh"
+runtest="cd %s/sbin/claims-test; ./claimstest.sh %d %d %s"
+
+def autotest():
+    for i in mode_data_case:
+        if i[0]==0:
+            continue
+        os.system(config_disk_mode % ( user, hostname, i[0]))
+        os.system(config_data % ( user, hostname, i[1]))
+        os.system(deploy % ( user, hostname))
+        os.system(startall % claimshome)
+        for j in i[2]:
+            print "test:[%s],loop:[%d],currencuy:[%d]" % (j[2], j[0], j[1])
+            #os.system(runtest % (claimshome, j[0], j[1], j[2]))
+
+def main():
+    if len(sys.argv)>1:
+        if sys.argv[1]=="--help":
+            print usage
+        else:
+            print "unrecognized option '%s'" % sys.argv[1]
+            print "use the --help option for usage information"
+    else:
+        autotest()
+
+if __name__=="__main__":
+    main()
+

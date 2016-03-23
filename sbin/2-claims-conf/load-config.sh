@@ -26,7 +26,7 @@ echo "user :                [$user]"
 echo "local_disk_mode :     [$local_disk_mode]"
 echo "data :                [$data]"
 echo "client_listener_port :[$client_listener_port]"
-echo "logpath :         [$logpath]"
+echo "logpath :             [$logpath]"
 echo "runclaimsprocid :     [$runclaimsprocid]"
 echo "=========cluster config end=========="
 }
