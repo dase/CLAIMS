@@ -24,7 +24,7 @@ echo "-----------------------------------"
 
 echo -e "\033[31m`pwd`\033[0m"
 
-thisip=`sed '/^ip\s*=/!d;s/.*=//' $1`
+thisip=${1#*config-}
 thislog=$CLAIMS_HOME/$logpath/claimsserver-$thisip-$timestr.log
 
 ./stop-node.sh

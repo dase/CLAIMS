@@ -38,20 +38,20 @@ master = $ismaster
 data = "$data"
 
 #hdfs主节点
-hdfs_master_ip = "10.11.1.192"
+hdfs_master_ip = "$hdfs_master_ip"
 
 #hdfs主节点端口
-hdfs_master_port = 9000
+hdfs_master_port = $hdfs_master_port
 
 #最大单机算子并行度
-max_degree_of_parallelism=10
+max_degree_of_parallelism=$max_degree_of_parallelism
 
 #初始单机算子并行度
-initial_degree_of_parallelism=2
+initial_degree_of_parallelism=$initial_degree_of_parallelism
 
-expander_adaptivity_check_frequency=1000
+expander_adaptivity_check_frequency=$expander_adaptivity_check_frequency
 
-enable_expander_adaptivity=0
+enable_expander_adaptivity=$enable_expander_adaptivity
 
 # 0: hdfs
 # 1: local
@@ -59,11 +59,11 @@ local_disk_mode = $local_disk_mode
 
 client_listener_port = $client_listener_port
 
-enable_codegen = 0
+enable_codegen = $enable_codegen
 
-load_thread_num = 12
+load_thread_num = $load_thread_num
 
-memory_utilization = 50
+memory_utilization = $memory_utilization
 
 EOF
 done
