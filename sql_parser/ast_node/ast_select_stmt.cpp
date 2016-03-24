@@ -377,6 +377,8 @@ RetCode AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
       Environment::getInstance()->getCatalog()->getTable(table_name_);
   if (NULL == tbl) {
     LOG(ERROR) << "table: " << table_name_ << " dosen't exist!" << endl;
+    sem_cnxt->error_msg_ =
+        "table: '\e[1m" + table_name_ + "\e[0m' dosen't exist ";
     return rTableNotExisted;
   }
   if (table_alias_ == "NULL") {
@@ -1232,6 +1234,8 @@ RetCode AstColumn::SemanticAnalisys(SemanticContext* sem_cnxt) {
   if (rSuccess != ret) {
     LOG(ERROR) << "There are errors in ( " << relation_name_ << " , "
                << column_name_ << " )" << endl;
+    sem_cnxt->error_msg_ =
+        "column: '\e[1m" + column_name_ + "\e[0m' is invalid";
     return ret;
   }
   if (NULL != next_) {
