@@ -79,7 +79,7 @@ using claims::catalog::Partitioner;
 using claims::catalog::ProjectionDescriptor;
 using claims::catalog::Catalog;
 using boost::lexical_cast;
-using namespace claims::common;
+using namespace claims::common;  // NOLINT
 /*
 #define DEFINE_DEBUG_LOG(FLAG, log) \
   #ifdef CLAIMS_DEBUG_LOG \
@@ -194,9 +194,9 @@ DataInjector::DataInjector(TableDescriptor* table, const string col_separator,
 
   sblock_ = new Block(BLOCK_SIZE);
 
-  //#ifdef DATA_DO_LOAD
-  //  connector_ = table_->get_connector();
-  //#endif
+  // #ifdef DATA_DO_LOAD
+  //   connector_ = table_->get_connector();
+  // #endif
 }
 
 DataInjector::~DataInjector() {
@@ -429,8 +429,7 @@ RetCode DataInjector::PrepareEverythingForLoading(
   if (kCreateFile == open_flag)
     EXEC_AND_LOG(ret, connector_.DeleteAllTableFiles(),
                  "deleted all table files", "failed to delete all table files");
-  EXEC_AND_RETURN_ERROR(ret, connector_.Open(FileOpenFlag::kAppendFile),
-                        " failed to open connector");
+  EXEC_AND_RETURN_ERROR(ret, connector_.Open(), " failed to open connector");
 #endif
   PLOG_DI("open connector time: " << GetElapsedTimeInUs(open_start_time) /
                                          1000000.0);
@@ -836,8 +835,7 @@ RetCode DataInjector::InsertFromString(const string tuples,
   EXEC_AND_RETURN_ERROR(ret, PrepareInitInfo(kAppendFile),
                         "failed to prepare initialization info");
 #ifdef DATA_DO_LOAD
-  EXEC_AND_RETURN_ERROR(ret, connector_.Open(FileOpenFlag::kAppendFile),
-                        " failed to open connector");
+  EXEC_AND_RETURN_ERROR(ret, connector_.Open(), " failed to open connector");
 #endif
   LOG(INFO) << "\n------------------Insert  Begin!-----------------------\n";
 

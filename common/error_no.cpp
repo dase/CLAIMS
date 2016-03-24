@@ -156,7 +156,7 @@ ErrorInit::ErrorInit() {
 
   DefineErrorAndMessage(rNoMemory, "failed to allocate memory from system");
   DefineErrorAndMessage(rDataPathError, "Data path not exist");
-  DefineErrorAndMessage(rFileIsUsing, "Someone is still using this file");
+  DefineErrorAndMessage(rFileInUsing, "Someone is still using this file");
   DefineErrorAndMessage(rResourceIsLocked, "other hold the lock of resource");
 
   // schema assocated

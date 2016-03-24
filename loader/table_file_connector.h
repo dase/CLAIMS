@@ -54,11 +54,12 @@ class TableFileConnector {
   NO_COPY_AND_ASSIGN(TableFileConnector);
 
  public:
-  TableFileConnector(common::FilePlatform platform, TableDescriptor* table);
+  TableFileConnector(common::FilePlatform platform, TableDescriptor* table,
+                     common::FileOpenFlag open_flag);
   //  TableFileConnector(common::FilePlatform platform,
   //                     std::vector<std::vector<std::string>> writepath);
   ~TableFileConnector();
-  RetCode Open(common::FileOpenFlag open_flag);
+  RetCode Open();
   RetCode Close();
 
   /**
@@ -88,12 +89,12 @@ class TableFileConnector {
   vector<vector<string>> write_path_name_;
   TableDescriptor* table_;
 
-  common::FileOpenFlag open_flag_ = -1;
+  common::FileOpenFlag open_flag_ = static_cast<common::FileOpenFlag>(-1);
 
   vector<vector<Lock>> write_locks_;
 
   atomic<int> ref_;
-  bool is_closed;
+  bool is_closed = true;
   Lock open_close_lock_;
 };
 

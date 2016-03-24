@@ -65,20 +65,10 @@ Catalog::Catalog() {
   binding_ = new ProjectionBinding();
   write_connector_ = new SingleFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      Config::catalog_file);
-  RetCode ret = rSuccess;
-  EXEC_AND_ONLY_LOG_ERROR(
-      ret, write_connector_->Open(FileOpenFlag::kCreateFile),
-      "failed to open catalog file: " << Config::catalog_file
-                                      << " with Overwrite mode");
-  assert(ret == rSuccess && "failed to open catalog ");
+      Config::catalog_file, FileOpenFlag::kCreateFile);
   read_connector_ = new SingleFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      Config::catalog_file);
-  EXEC_AND_ONLY_LOG_ERROR(ret, read_connector_->Open(FileOpenFlag::kReadFile),
-                          "failed to open catalog file: "
-                              << Config::catalog_file << " with Read mode");
-  assert(ret == rSuccess && "failed to open catalog ");
+      Config::catalog_file, FileOpenFlag::kReadFile);
 }
 
 Catalog::~Catalog() {
@@ -191,12 +181,19 @@ RetCode Catalog::saveCatalog() {
   oa << *this;
 
   int ret = rSuccess;
+
+  EXEC_AND_ONLY_LOG_ERROR(
+      ret, write_connector_->Open(),
+      "failed to open catalog file: " << Config::catalog_file
+                                      << " with Overwrite mode");
+  assert(ret == rSuccess && "failed to open catalog ");
   //  EXEC_AND_ONLY_LOG_ERROR(ret, write_connector_->Delete(),
   //                          "failed to delete catalog file");
   //  FileHandleImp* write_handler =
-  EXEC_AND_RETURN_ERROR(
+  EXEC_AND_LOG_RETURN(
       ret, write_connector_->AtomicFlush(
                static_cast<const void*>(oss.str().c_str()), oss.str().length()),
+      "write catalog " << oss.str().length() << " chars",
       "failed to flush into catalog file: " << Config::catalog_file);
 
   //  EXEC_AND_ONLY_LOG_ERROR(
@@ -266,6 +263,10 @@ RetCode Catalog::restoreCatalog() {
                     "The catalog file will be overwrite" << endl;
     return rSuccess;
   } else {
+    EXEC_AND_ONLY_LOG_ERROR(ret, read_connector_->Open(),
+                            "failed to open catalog file: "
+                                << Config::catalog_file << " with Read mode");
+    assert(ret == rSuccess && "failed to open catalog ");
     uint64_t file_length = 0;
     void* buffer;
     EXEC_AND_RETURN_ERROR(ret,

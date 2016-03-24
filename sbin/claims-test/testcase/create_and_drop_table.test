@@ -1,0 +1,23 @@
+
+drop table NATION;
+
+create table NATION(
+N_NATIONKEY bigint unsigned,
+N_NAME varchar(25),
+N_REGIONKEY bigint unsigned,
+N_COMMENT varchar(152)
+);
+
+create projection on NATION(
+N_NATIONKEY,
+N_NAME,
+N_REGIONKEY,
+N_COMMENT
+) number = 4 partitioned on N_NATIONKEY;
+
+load table NATION from "/home/imdb/rawData/tpch-raw-data/tpch_sf1/nation.tbl" with '|','\n';
+
+select * from NATION;
+
+drop table NATION;
+

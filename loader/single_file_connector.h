@@ -43,6 +43,7 @@ namespace claims {
 namespace loader {
 
 using std::string;
+using claims::common::FileOpenFlag;
 using claims::common::FileHandleImp;
 using claims::common::FilePlatform;
 using claims::common::rSuccess;
@@ -53,14 +54,21 @@ class SingleFileConnector {
   NO_COPY_AND_ASSIGN(SingleFileConnector);
 
  public:
-  SingleFileConnector(FilePlatform platform, string file_name)
-      : platform_(platform), file_name_(file_name), is_closed(true) {
+  SingleFileConnector(FilePlatform platform, string file_name,
+                      FileOpenFlag open_flag)
+      : platform_(platform),
+        file_name_(file_name),
+        is_closed(true),
+        open_flag_(open_flag) {
     imp_ = common::FileHandleImpFactory::Instance().CreateFileHandleImp(
         platform_, file_name_);
   }
-  ~SingleFileConnector() { DELETE_PTR(imp_); }
+  ~SingleFileConnector() {
+    Close();
+    DELETE_PTR(imp_);
+  }
 
-  RetCode Open(common::FileOpenFlag open_flag);
+  RetCode Open();
   RetCode Close();
 
   RetCode AtomicFlush(const void* source, unsigned length);
@@ -84,7 +92,7 @@ class SingleFileConnector {
    * @return  rSuccess if succeed.
    * @details   (additional) this method will modify buffer, set to a new memory
    */
-  RetCode LoadTotalFile(void*& buffer, uint64_t* length) {
+  RetCode LoadTotalFile(void*& buffer, uint64_t* length) {  // NOLINT
     assert(common::FileOpenFlag::kReadFile == open_flag_ &&
            "open mode must be read ");
     LockGuard<Lock> guard(write_lock_);
@@ -110,12 +118,12 @@ class SingleFileConnector {
   string file_name_;
   common::FilePlatform platform_;
   common::FileHandleImp* imp_;
-  common::FileOpenFlag open_flag_ = -1;
+  common::FileOpenFlag open_flag_ = static_cast<common::FileOpenFlag>(-1);
 
-  Lock write_lock_;
+  Lock write_lock_;  // when open with read mode, the lock become read_lock
 
   atomic<int> ref_;
-  bool is_closed;
+  bool is_closed = true;
   SpineLock open_close_lcok_;
 };
 

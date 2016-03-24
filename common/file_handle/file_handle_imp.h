@@ -106,7 +106,8 @@ class FileHandleImp {
    * @param length: hold the no. bytes of the all file
    * @return rSuccess if succeed
    */
-  virtual RetCode ReadTotalFile(void*& buffer, size_t* length) = 0;
+  virtual RetCode ReadTotalFile(void*& buffer, size_t* length) = 0;  // NOLINT
+
   /**
    * @brief Method description: read length bytes from file into memory, usually
    *        called after SetPosition()

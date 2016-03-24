@@ -40,12 +40,16 @@ namespace catalog {
 
 TableDescriptor::TableDescriptor() {
   write_connector_ = new TableFileConnector(
-      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      this);
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs, this,
+      common::kAppendFile);
 }
 
 TableDescriptor::TableDescriptor(const string& name, const TableID table_id)
-    : tableName(name), table_id_(table_id), row_number_(0) {}
+    : tableName(name), table_id_(table_id), row_number_(0) {
+  write_connector_ = new TableFileConnector(
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs, this,
+      common::kAppendFile);
+}
 
 TableDescriptor::~TableDescriptor() {}
 
@@ -98,7 +102,7 @@ RetCode TableDescriptor::createHashPartitionedProjection(
   //  UpdateConnectorWithNewProj(number_of_partitions);
   write_connector_->UpdateWithNewProj();
   update_lock_.release();
-  return true;
+  return rSuccess;
 }
 
 RetCode TableDescriptor::createHashPartitionedProjection(
@@ -127,7 +131,7 @@ RetCode TableDescriptor::createHashPartitionedProjection(
   //  AddProjectionLocks(number_of_partitions);
   write_connector_->UpdateWithNewProj();
   update_lock_.release();
-  return true;
+  return rSuccess;
 }
 
 // void TableDescriptor::AddProjectionLocks(int number_of_partitions) {

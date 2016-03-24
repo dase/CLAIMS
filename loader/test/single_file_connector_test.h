@@ -35,16 +35,17 @@
 #include <string>
 #include <iostream>
 #include <ostream>
-
+#include <thread>  //NOLINT
 #include "../../common/file_handle/file_handle_imp_factory.h"
 #include "../../common/memory_handle.h"
+#include "../file_connector.h"
+#include "../single_file_connector.h"
 
 namespace claims {
 
 namespace loader {
-
-using claims::common::FilePlatform;
-using claims::common::FileOpenFlag;
+using std::thread;
+using namespace claims::common;  // NOLINT
 
 class SingleFileConnector;
 
@@ -52,7 +53,7 @@ class SingleFileConnectorTest : public ::testing::Test {
  public:
   SingleFileConnectorTest()
       : connector_(NULL), path_("SingleFileConnectorTest") {
-    double_data =
+    double_data_ =
         "fafasfffffffffffffffdfsfsffsfsfsfs  a"
         ".fafasfffffffffffffffdfsfsffsfsfsfs  a.";
     data_length_ = 38;
@@ -60,19 +61,68 @@ class SingleFileConnectorTest : public ::testing::Test {
     LOG(INFO) << "data_: " << data_ << std::endl;
   }
 
-  static void SetUpTestCase();
-  static void TearDownTestCase();
-
   void WriteOrAppendFile(FilePlatform file_platform, FileOpenFlag open_flag,
                          char* expect, int expect_length);
+
+  void MultiThreadWriteOrAppend(SingleFileConnector* connector, int length) {
+    EXPECT_EQ(rSuccess, connector->Open());
+    EXPECT_EQ(rSuccess, connector->AtomicFlush(
+                            (length % 2 ? data_ : double_data_),
+                            (length % 2 ? data_length_ : data_length_ * 2)));
+    EXPECT_EQ(rSuccess, connector->Close());
+  }
+
+  void TryDeleteInUsingFile(FilePlatform file_platform, FileOpenFlag open_flag,
+                            char* expect, int expect_length);
+  void MultiThreadWrite(FilePlatform file_platform, FileOpenFlag open_flag,
+                        char* expect, int expect_length);
+
+  static void SetUpTestCase() {
+    std::cout << "=============" << std::endl;
+    LOG(INFO) << "=============" << std::endl;
+  }
+
+  static void TearDownTestCase() {}
 
  public:
   SingleFileConnector* connector_ = NULL;
   std::string path_;
   char* data_ = "fafasfffffffffffffffdfsfsffsfsfsfs  a.";
-  char* double_data;
+  char* double_data_;
   int data_length_ = 38;
 };
+TEST_F(SingleFileConnectorTest, DiskWrite) {
+  WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
+}
+TEST_F(SingleFileConnectorTest, DiskAppend) {
+  WriteOrAppendFile(kDisk, kAppendFile, double_data_, data_length_ * 2 - 1);
+}
+TEST_F(SingleFileConnectorTest, DiskOverWrite) {
+  WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
+}
+TEST_F(SingleFileConnectorTest, HdfsWrite) {
+  WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);
+}
+TEST_F(SingleFileConnectorTest, HdfsAppend) {
+  WriteOrAppendFile(kHdfs, kAppendFile, double_data_, data_length_ * 2 - 1);
+}
+TEST_F(SingleFileConnectorTest, HdfsOverWrite) {
+  WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);
+}
+
+TEST_F(SingleFileConnectorTest, DiskMultiThreadWrite) {
+  MultiThreadWrite(kDisk, kCreateFile, data_, data_length_);
+}
+TEST_F(SingleFileConnectorTest, HdfsMultiThreadWrite) {
+  MultiThreadWrite(kHdfs, kCreateFile, data_, data_length_);
+}
+
+TEST_F(SingleFileConnectorTest, DiskTryDeleteInUsingFile) {
+  TryDeleteInUsingFile(kDisk, kCreateFile, double_data_, data_length_ * 2);
+}
+TEST_F(SingleFileConnectorTest, HdfsTryDeleteInUsingFile) {
+  TryDeleteInUsingFile(kHdfs, kCreateFile, double_data_, data_length_ * 2);
+}
 
 }  // namespace loader
 

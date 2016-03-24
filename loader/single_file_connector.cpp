@@ -34,9 +34,8 @@ using claims::utility::LockGuard;
 namespace claims {
 namespace loader {
 
-RetCode SingleFileConnector::Open(common::FileOpenFlag open_flag) {
+RetCode SingleFileConnector::Open() {
   RetCode ret = rSuccess;
-  open_flag_ = open_flag;
   if (0 != ref_) {
     ++ref_;
   } else {
@@ -55,7 +54,7 @@ RetCode SingleFileConnector::Open(common::FileOpenFlag open_flag) {
 
 RetCode SingleFileConnector::Close() {
   RetCode ret = rSuccess;
-  if (0 == (--ref_)) {
+  if (!is_closed && 0 == (--ref_)) {
     LockGuard<SpineLock> guard(open_close_lcok_);
     if (0 == ref_ && !is_closed) {
       EXEC_AND_RETURN_ERROR(ret, imp_->Close(), "file name: " << file_name_);
@@ -80,7 +79,7 @@ RetCode SingleFileConnector::AtomicFlush(const void* source, unsigned length) {
 RetCode SingleFileConnector::Delete() {
   RetCode ret = rSuccess;
   if (0 != ref_) {
-    ret = common::rFileIsUsing;
+    ret = common::rFileInUsing;
     EXEC_AND_RETURN_ERROR(ret, ret, "file name: " << file_name_);
   }
   LockGuard<SpineLock> guard(open_close_lcok_);

@@ -156,7 +156,7 @@ RetCode DropTableExec::DropTable(const string& table_name) {
   // catalog
   ret = DeleteTableFiles(table_name);
   if (rSuccess != ret) {
-    ELOG(ret, "failed to delete the files when dropping table" + table_name);
+    ELOG(ret, "failed to delete the files when dropping table " + table_name);
     return ret;
   } else {
     ret = DropTableFromCatalog(table_name);
@@ -194,7 +194,8 @@ RetCode DropTableExec::DeleteTableFiles(const string& table_name) {
   // start to delete the files
   TableFileConnector* connector = new TableFileConnector(
       Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      Environment::getInstance()->getCatalog()->getTable(table_name));
+      Environment::getInstance()->getCatalog()->getTable(table_name),
+      common::kReadFile);
   EXEC_AND_RETURN_ERROR(
       ret, connector->DeleteAllTableFiles(),
       "failed to delete the projections, when delete the file on table" +

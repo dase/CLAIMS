@@ -27,9 +27,9 @@
  */
 
 #include "./table_file_connector.h"
+#include <hdfs.h>
 #include <vector>
 #include <string>
-#include <hdfs.h>
 
 #include "./file_connector.h"
 #include "../catalog/table.h"
@@ -51,10 +51,13 @@ namespace claims {
 namespace loader {
 
 TableFileConnector::TableFileConnector(FilePlatform platform,
-                                       TableDescriptor* table)
+                                       TableDescriptor* table,
+                                       FileOpenFlag open_flag)
     : platform_(platform),
       table_(table),
-      write_path_name_(table->GetAllPartitionsPath()) {
+      write_path_name_(table->GetAllPartitionsPath()),
+      ref_(0),
+      open_flag_(open_flag) {
   for (auto projection_iter : write_path_name_) {
     vector<FileHandleImp*> projection_files;
     projection_files.clear();
@@ -98,9 +101,8 @@ TableFileConnector::~TableFileConnector() {
   //  DELETE_PTR(imp_);
 }
 
-RetCode TableFileConnector::Open(common::FileOpenFlag open_flag) {
+RetCode TableFileConnector::Open() {
   RetCode ret = rSuccess;
-  open_flag_ = open_flag;
   if (0 != ref_) {
     ++ref_;
   } else {
@@ -218,7 +220,7 @@ RetCode TableFileConnector::Close() {
   assert(file_handles_.size() != 0 && "make sure file handles is not empty");
 
   int ret = rSuccess;
-  if (0 == (--ref_)) {
+  if (!is_closed && 0 == (--ref_)) {
     LockGuard<Lock> guard(open_close_lock_);
     if (0 == ref_ && !is_closed) {
       for (int i = 0; i < file_handles_.size(); ++i) {
@@ -244,8 +246,8 @@ RetCode TableFileConnector::DeleteAllTableFiles() {
 
   RetCode ret = rSuccess;
   if (0 != ref_) {
-    ret = common::rFileIsUsing;
-    EXEC_AND_RETURN_ERROR(ret, ret, "");
+    ret = common::rFileInUsing;
+    EXEC_AND_RETURN_ERROR(ret, ret, "now reference is " << ref_);
   }
   LockGuard<Lock> guard(open_close_lock_);
 

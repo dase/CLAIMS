@@ -130,7 +130,7 @@ class TableDescriptor {
   inline unsigned int getNumberOfAttribute() { return attributes.size(); }
 
   Schema* getSchema() const;
-  inline unsigned long getRowNumber() { return row_number_; }
+  inline uint64_t getRowNumber() { return row_number_; }
   inline bool isEmpty() { return row_number_ == 0; }
   inline bool HasDeletedTuples() { return has_deleted_tuples_; }
   inline void SetDeletedTuples(bool has_deleted_tuples) {
@@ -205,7 +205,7 @@ class TableDescriptor {
   vector<Attribute> attributes;
   TableID table_id_;
   vector<ProjectionDescriptor*> projection_list_;
-  unsigned long row_number_;
+  uint64_t row_number_;
   bool has_deleted_tuples_ = false;
 
   // Loading or inserting blocks updating table(create new projection and so
@@ -217,7 +217,7 @@ class TableDescriptor {
 
   friend class boost::serialization::access;
   template <class Archive>
-  void serialize(Archive& ar, const unsigned int version) {
+  void serialize(Archive& ar, const unsigned int version) {  // NOLINT
     ar& tableName& attributes& table_id_& projection_list_& row_number_&
         has_deleted_tuples_;
     //    InitLocks();
@@ -227,4 +227,4 @@ class TableDescriptor {
 } /* namespace catalog */
 } /* namespace claims */
 
-#endif  // CATALOG_TABLE1_H_
+#endif  // CATALOG_TABLE_H_

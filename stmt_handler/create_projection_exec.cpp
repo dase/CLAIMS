@@ -128,6 +128,7 @@ RetCode CreateProjectionExec::Execute(ExecutedResult* exec_result) {
     local_catalog->saveCatalog();
     return ret;
   } else {
+    exec_result->SetError(CStrError(ret));
     return ret;
   }
   return ret;
