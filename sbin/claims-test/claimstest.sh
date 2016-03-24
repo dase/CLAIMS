@@ -31,8 +31,7 @@ if [ "$3" = "" ]; then
  echo "please input test case as the third param."
  exit 1
 fi
-echo "runloops=[$runloops]"
-echo "concurrency_count=[$concurrency_count]"
+echo "loops=[$runloops];""concurrency=[$concurrency_count]"
 
 thislog=$CLAIMS_HOME/$logpath/client.$(date +%Y-%m-%d).log
 cd $CLAIMS_HOME/sbin/claims-test
