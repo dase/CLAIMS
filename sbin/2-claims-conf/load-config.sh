@@ -3,16 +3,15 @@
 function load_config()
 {
 config=$CLAIMS_HOME/sbin/2-claims-conf/cluster.config
-#master=`sed '/^master=/!d;s/.*=//' $config`
-#slaves=`sed '/^slaves=/!d;s/.*=//' $config`
-#local_disk_mode=`sed '/^local_disk_mode=/!d;s/.*=//' $config`
-#data=`sed '/^data=/!d;s/.*=//' $config`
-#claimshome=`sed '/^claimshome=/!d;s/.*=//' $config`
-#user=`sed '/^user=/!d;s/.*=//' $config`
-#client_listener_port=`sed '/^client_listener_port=/!d;s/.*=//' $config`
-#logpath=`sed '/^logpath=/!d;s/.*=//' $config`
-#runclaimsprocid=`sed '/^runclaimsprocid=/!d;s/.*=//' $config`
-source $config
+master=`sed '/^master=/!d;s/.*=//' $config`
+slaves=`sed '/^slaves=/!d;s/.*=//' $config`
+local_disk_mode=`sed '/^local_disk_mode=/!d;s/.*=//' $config`
+data=`sed '/^data=/!d;s/.*=//' $config`
+claimshome=`sed '/^claimshome=/!d;s/.*=//' $config`
+user=`sed '/^user=/!d;s/.*=//' $config`
+client_listener_port=`sed '/^client_listener_port=/!d;s/.*=//' $config`
+logpath=`sed '/^logpath=/!d;s/.*=//' $config`
+runclaimsprocid=`sed '/^runclaimsprocid=/!d;s/.*=//' $config`
 }
 
 function print_config()
