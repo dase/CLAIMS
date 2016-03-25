@@ -159,7 +159,7 @@ bool MemoryChunkStore::PutChunk(const ChunkID& chunk_id,
 // TODO(han)：LIRS is the optimization of LRU.
 void MemoryChunkStore::FreeChunkLRU::WayOfFreeChunk() {
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator target_ =
-      chunk_list_.begin();
+      MemoryChunkStore::GetInstance()->chunk_list_.begin();
   for (boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator mei_ =
            target_;
        mei_ != MemoryChunkStore::GetInstance()->chunk_list_.end(); mei_++) {
@@ -175,7 +175,7 @@ void MemoryChunkStore::FreeChunkLRU::WayOfFreeChunk() {
 
 void MemoryChunkStore::FreeChunkRandom::WayOfFreeChunk() {
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator it_ =
-      chunk_list_.begin();
+      MemoryChunkStore::GetInstance()->chunk_list_.begin();
   int count = (int)MemoryChunkStore::GetInstance()->chunk_list_.size();
   srand((unsigned)time(NULL));
   int size = rand() % count;
