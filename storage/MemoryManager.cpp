@@ -160,7 +160,6 @@ bool MemoryChunkStore::PutChunk(const ChunkID& chunk_id,
 void MemoryChunkStore::FreeChunkLRU::WayOfFreeChunk() {
   boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator target_ =
       chunk_list_.begin();
-  if (NULL == target_) std::cout << "chunk lost" << endl;
   for (boost::unordered_map<ChunkID, HdfsInMemoryChunk>::iterator mei_ =
            target_;
        mei_ != MemoryChunkStore::GetInstance()->chunk_list_.end(); mei_++) {
@@ -181,7 +180,6 @@ void MemoryChunkStore::FreeChunkRandom::WayOfFreeChunk() {
   srand((unsigned)time(NULL));
   int size = rand() % count;
   for (int i = 0; i < size; i++) it_++;
-  if (NULL == it_) std::cout << "chunk lost" << endl;
   LOG(INFO) << "The way is Random: the free chunk: " << it_->first.chunk_off
             << endl;
   MemoryChunkStore::GetInstance()->chunk_pool_.free(it_->second.hook);
