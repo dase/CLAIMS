@@ -30,6 +30,7 @@
 #define LOADER_SINGLE_FILE_CONNECTOR_H_
 #include <assert.h>
 #include <atomic>
+#include <functional>
 #include <string>
 #include "./file_connector.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
@@ -55,14 +56,7 @@ class SingleFileConnector {
 
  public:
   SingleFileConnector(FilePlatform platform, string file_name,
-                      FileOpenFlag open_flag)
-      : platform_(platform),
-        file_name_(file_name),
-        is_closed(true),
-        open_flag_(open_flag) {
-    imp_ = common::FileHandleImpFactory::Instance().CreateFileHandleImp(
-        platform_, file_name_);
-  }
+                      FileOpenFlag open_flag);
   ~SingleFileConnector() {
     Close();
     DELETE_PTR(imp_);
@@ -71,8 +65,18 @@ class SingleFileConnector {
   RetCode Open();
   RetCode Close();
 
-  RetCode AtomicFlush(const void* source, unsigned length);
-
+  inline RetCode AtomicFlush(const void* source, const size_t length) {
+    LockGuard<Lock> guard(write_lock_);
+    //  if (common::FileOpenFlag::kCreateFile == open_flag_) {
+    //    return imp_->OverWrite(source, length);
+    //  } else if (common::FileOpenFlag::kAppendFile == open_flag_) {
+    //    return imp_->Append(source, length);
+    //  } else {
+    //    assert(false && "Can't flush a file opened with read mode");
+    //    return common::rFailure;
+    //  }
+    return flush_function(source, length);
+  }
   /*RetCode AtomicFlush(const void* source, unsigned length,
                       function<void()> lock_func, function<void()> unlock_func,
                       bool overwrite = false) {
@@ -125,6 +129,9 @@ class SingleFileConnector {
   atomic<int> ref_;
   bool is_closed = true;
   SpineLock open_close_lcok_;
+  //  RetCode (*flush_function)(const void* source, unsigned length);
+  std::function<RetCode(const void* source, const size_t length)>
+      flush_function;
 };
 
 } /* namespace loader */

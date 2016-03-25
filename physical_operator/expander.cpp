@@ -309,8 +309,7 @@ bool Expander::CreateWorkingThread() {
   ticks start = curtick();
   if (exclusive_expanding_.try_acquire()) {
     if (true == g_thread_pool_used) {
-      Environment::getInstance()->getThreadPool()->AddTask(ExpandedWork,
-                                                            &para);
+      Environment::getInstance()->getThreadPool()->AddTask(ExpandedWork, &para);
     } else {
       const int error = pthread_create(&tid, NULL, ExpandedWork, &para);
       if (error != 0) {

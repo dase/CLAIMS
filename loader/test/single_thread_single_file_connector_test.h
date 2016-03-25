@@ -108,7 +108,7 @@ class SingleThreadSingleFileConnectorTest : public ::testing::Test {
     EXPECT_EQ(rSuccess, connector_->Append(data_, data_length_));
     EXPECT_EQ(rSuccess, connector_->LoadTotalFile(read_buffer, &length));
     EXPECT_STREQ(double_data_, static_cast<char*>(read_buffer));
-    EXPECT_EQ(data_length_ * 2 - 1, length);
+    EXPECT_EQ(data_length_ * 2, length);
 
     // close
     EXPECT_EQ(rSuccess, connector_->Close());
@@ -158,7 +158,7 @@ TEST_F(SingleThreadSingleFileConnectorTest, DiskWrite) {
   WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
 }
 TEST_F(SingleThreadSingleFileConnectorTest, DiskAppend) {
-  WriteOrAppendFile(kDisk, kAppendFile, double_data_, data_length_ * 2 - 1);
+  WriteOrAppendFile(kDisk, kAppendFile, double_data_, data_length_ * 2);
 }
 TEST_F(SingleThreadSingleFileConnectorTest, DiskOverWrite) {
   WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
@@ -167,7 +167,7 @@ TEST_F(SingleThreadSingleFileConnectorTest, HdfsWrite) {
   WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);
 }
 TEST_F(SingleThreadSingleFileConnectorTest, HdfsAppend) {
-  WriteOrAppendFile(kHdfs, kAppendFile, double_data_, data_length_ * 2 - 1);
+  WriteOrAppendFile(kHdfs, kAppendFile, double_data_, data_length_ * 2);
 }
 TEST_F(SingleThreadSingleFileConnectorTest, HdfsOverWrite) {
   WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);

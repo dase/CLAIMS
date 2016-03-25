@@ -61,21 +61,128 @@ class SingleFileConnectorTest : public ::testing::Test {
     LOG(INFO) << "data_: " << data_ << std::endl;
   }
 
-  void WriteOrAppendFile(FilePlatform file_platform, FileOpenFlag open_flag,
-                         char* expect, int expect_length);
-
   void MultiThreadWriteOrAppend(SingleFileConnector* connector, int length) {
-    EXPECT_EQ(rSuccess, connector->Open());
-    EXPECT_EQ(rSuccess, connector->AtomicFlush(
+    ASSERT_EQ(rSuccess, connector->Open());
+    ASSERT_EQ(rSuccess, connector->AtomicFlush(
                             (length % 2 ? data_ : double_data_),
                             (length % 2 ? data_length_ : data_length_ * 2)));
-    EXPECT_EQ(rSuccess, connector->Close());
+    ASSERT_EQ(rSuccess, connector->Close());
+  }
+
+  /*
+    void WriteOrAppendFile(FilePlatform file_platform, FileOpenFlag open_flag,
+                           char* expect, int expect_length);
+
+    void TryDeleteInUsingFile(FilePlatform file_platform, FileOpenFlag
+    open_flag,
+                              char* expect, int expect_length);
+    void MultiThreadWrite(FilePlatform file_platform, FileOpenFlag open_flag,
+                          char* expect, int expect_length);
+  */
+  void WriteOrAppendFile(FilePlatform file_platform, FileOpenFlag open_flag,
+                         char* expect, int expect_length) {
+    connector_ = new SingleFileConnector(file_platform, path_, open_flag);
+    connector_->Open();
+    if (rSuccess != connector_->AtomicFlush(data_, data_length_)) {
+      LOG(ERROR) << "failed to flush (" << path_ << ")" << std::endl;
+      FAIL();
+    }
+    if (rSuccess != connector_->Close()) FAIL();
+    DELETE_PTR(connector_);
+
+    void* read_buffer = NULL;
+    uint64_t length = 0;
+    SingleFileConnector* reader = NULL;
+    reader = new SingleFileConnector(file_platform, path_, kReadFile);
+    reader->Open();
+    if (rSuccess != reader->LoadTotalFile(read_buffer, &length)) {
+      FAIL();
+    }
+    ASSERT_EQ(expect_length, length);
+    ASSERT_STREQ(expect, static_cast<char*>(read_buffer));
+    reader->Close();
+    DELETE_PTR(reader);
+    SUCCEED();
   }
 
   void TryDeleteInUsingFile(FilePlatform file_platform, FileOpenFlag open_flag,
-                            char* expect, int expect_length);
+                            char* expect, int expect_length) {
+    SingleFileConnector* con =
+        new SingleFileConnector(file_platform, path_, open_flag);
+    ASSERT_EQ(rSuccess, con->Delete());
+    std::thread t1(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 1);
+    std::thread t2(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 2);
+    std::thread t3(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 3);
+    std::thread t4(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 4);
+    std::thread t5([con] { assert(rFileInUsing == con->Delete()); });
+    std::thread t6(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 6);
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    t5.join();
+    t6.join();
+    DELETE_PTR(con);
+
+    SingleFileConnector* reader =
+        new SingleFileConnector(kDisk, path_, kReadFile);
+    reader->Open();
+    void* buffer;
+    uint64_t length = 0;
+    ASSERT_EQ(rSuccess, reader->LoadTotalFile(buffer, &length));
+    ASSERT_EQ(rFileInUsing, con->Delete());  // can't delete
+    ASSERT_EQ(rSuccess, con->Close());
+    ASSERT_EQ(rSuccess, con->Delete());
+    DELETE_PTR(reader);
+
+    ASSERT_EQ(expect_length, length);
+    ASSERT_STREQ(expect, static_cast<char*>(buffer));
+  }
+
   void MultiThreadWrite(FilePlatform file_platform, FileOpenFlag open_flag,
-                        char* expect, int expect_length);
+                        char* expect, int expect_length) {
+    SingleFileConnector* con =
+        new SingleFileConnector(file_platform, path_, open_flag);
+    ASSERT_EQ(rSuccess, con->Delete());
+    std::thread t1(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 1);
+    std::thread t2(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 2);
+    std::thread t3(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 3);
+    std::thread t4(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 4);
+    std::thread t5(&SingleFileConnectorTest::MultiThreadWriteOrAppend, this,
+                   con, 5);
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    t5.join();
+    DELETE_PTR(con);
+
+    SingleFileConnector* reader =
+        new SingleFileConnector(kDisk, path_, kReadFile);
+    reader->Open();
+    void* buffer;
+    uint64_t length = 0;
+    ASSERT_EQ(rSuccess, reader->LoadTotalFile(buffer, &length));
+    ASSERT_EQ(rSuccess, reader->Close());
+    DELETE_PTR(reader);
+
+    std::cout << "data:" << data_ << std::endl << " length:" << length
+              << std::endl;
+    EXPECT_TRUE(
+        (strcmp(data_, static_cast<char*>(buffer)) && data_length_ == length) ||
+        (strcmp(double_data_, static_cast<char*>(buffer)) &&
+         data_length_ * 2 == length));
+    //    ASSERT_EQ(expect_length, length);
+  }
 
   static void SetUpTestCase() {
     std::cout << "=============" << std::endl;
@@ -95,7 +202,7 @@ TEST_F(SingleFileConnectorTest, DiskWrite) {
   WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
 }
 TEST_F(SingleFileConnectorTest, DiskAppend) {
-  WriteOrAppendFile(kDisk, kAppendFile, double_data_, data_length_ * 2 - 1);
+  WriteOrAppendFile(kDisk, kAppendFile, double_data_, data_length_ * 2);
 }
 TEST_F(SingleFileConnectorTest, DiskOverWrite) {
   WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
@@ -104,7 +211,7 @@ TEST_F(SingleFileConnectorTest, HdfsWrite) {
   WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);
 }
 TEST_F(SingleFileConnectorTest, HdfsAppend) {
-  WriteOrAppendFile(kHdfs, kAppendFile, double_data_, data_length_ * 2 - 1);
+  WriteOrAppendFile(kHdfs, kAppendFile, double_data_, data_length_ * 2);
 }
 TEST_F(SingleFileConnectorTest, HdfsOverWrite) {
   WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);

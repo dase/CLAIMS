@@ -394,7 +394,7 @@ MAX    { int c = yyinput(pp->yyscan_info_); unput(c);
 <COMMENT><<EOF>> { yyerror(pp,"unclosed comment"); }
 
 	/* everything else */
-[ \t\n]         /* white space */
+[ \t\n]         /* white space */ {yylineno++;}
 .               { yyerror(pp,"mystery character '%c'", *yytext); }
 
 %%

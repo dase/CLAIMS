@@ -47,7 +47,7 @@ hdfs_master_port = 9000
 max_degree_of_parallelism=10
 
 #初始单机算子并行度
-initial_degree_of_parallelism=8
+initial_degree_of_parallelism=2
 
 expander_adaptivity_check_frequency=1000
 
@@ -62,6 +62,8 @@ client_listener_port = $client_listener_port
 enable_codegen = 0
 
 load_thread_num = 12
+
+memory_utilization = 50
 
 EOF
 done

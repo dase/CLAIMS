@@ -1,5 +1,5 @@
 AM_CPPFLAGS= -fPIC -fpermissive\
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
 -I${BOOST_HOME} \
@@ -26,7 +26,7 @@ LDADD =	../../Executor/libexecutor.a \
 		../../utility/libutility.a \
 		/usr/local/lib/libglog.a	\
 		/usr/local/lib/libglog.so	\
-		${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a\
+		${HADOOP_HOME}/lib/native/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.so \
@@ -37,6 +37,7 @@ LDADD =	../../Executor/libexecutor.a \
 noinst_LIBRARIES=libast_node.a
 
 libast_node_a_SOURCES = \
+    ast_desc_stmt.cpp           ast_desc_stmt.h \
     ast_delete_stmt.cpp          ast_delete.h  \
 	ast_show_stmt.cpp           ast_show_stmt.h \
 	ast_select_stmt.cpp			ast_select_stmt.h \

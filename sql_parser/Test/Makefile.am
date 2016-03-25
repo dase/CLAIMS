@@ -1,5 +1,5 @@
 AM_CPPFLAGS=-fPIC  -DTHERON_XS\
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
 -I${THERON_HOME}/Include \
@@ -25,8 +25,8 @@ LDADD =  \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
 	${BOOST_HOME}/stage/lib/libboost_system.a \
 	${BOOST_HOME}/stage/lib/libboost_system.so \
-	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.so \
-	${HADOOP_HOME}/c++/Linux-amd64-64/lib/libhdfs.a \
+	${HADOOP_HOME}/lib/native/libhdfs.so\
+	${HADOOP_HOME}/lib/native/libhdfs.a\
 	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 	${THERON_HOME}/Lib/libtherond.a \
 	${GTEST_HOME}/libgtest.a 

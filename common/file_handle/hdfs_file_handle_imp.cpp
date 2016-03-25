@@ -123,9 +123,6 @@ RetCode HdfsFileHandleImp::Close() {
     return rSuccess;
   }
   assert(NULL != fs_ && "failed to connect hdfs");
-  //  if (0 != reference_count_  // someone are still using this file descriptor
-  //      || !i_win_to_close_.try_lock())  // someone win the lock to close
-  //    return rSuccess;
 
   if (0 != hdfsCloseFile(fs_, file_)) {
     PLOG(ERROR) << "failed to close hdfs file: " << file_name_;
@@ -258,7 +255,7 @@ RetCode HdfsFileHandleImp::DeleteFile() {
   int ret = rSuccess;
   EXEC_AND_ONLY_LOG_ERROR(ret, Close(), "file name: " << file_name_);
   if (CanAccess(file_name_)) {
-    if (0 != hdfsDelete(fs_, file_name_.c_str())) {
+    if (0 != hdfsDelete(fs_, file_name_.c_str(), 0)) {
       LOG(ERROR) << "Failed to delete file : [" + file_name_ + "]."
                  << std::endl;
       return rFailure;

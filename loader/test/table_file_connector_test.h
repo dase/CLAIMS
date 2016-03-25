@@ -150,7 +150,7 @@ TEST_F(TableFileConnectorTest, DiskAppend) {
   char double_data[] =
       "fafasfffffffffffffffdfsfsffsfsfsfs  "
       "a.fafasfffffffffffffffdfsfsffsfsfsfs  a.";
-  WriteOrAppendFile(kDisk, kAppendFile, double_data, sizeof(double_data) - 1);
+  WriteOrAppendFile(kDisk, kAppendFile, double_data, sizeof(double_data));
 }
 TEST_F(TableFileConnectorTest, DiskOverWrite) {
   WriteOrAppendFile(kDisk, kCreateFile, data_, data_length_);
@@ -162,7 +162,7 @@ TEST_F(TableFileConnectorTest, HdfsAppend) {
   char double_data[] =
       "fafasfffffffffffffffdfsfsffsfsfsfs  "
       "a.fafasfffffffffffffffdfsfsffsfsfsfs  a.";
-  WriteOrAppendFile(kHdfs, kAppendFile, double_data, sizeof(double_data) - 1);
+  WriteOrAppendFile(kHdfs, kAppendFile, double_data, sizeof(double_data));
 }
 TEST_F(TableFileConnectorTest, HdfsOverWrite) {
   WriteOrAppendFile(kHdfs, kCreateFile, data_, data_length_);

@@ -58,48 +58,43 @@ class HdfsFileHandleImpTest : public ::testing::Test {
   char* buffer = "abc";
 };
 
-string HdfsFileHandleImpTest::file_name_ =
+string HdfsFileHandleImpTest::file_name_ =  // NOLINT
     "/home/imdb/data/yk/HdfsFileHandleImpTest";
 FileHandleImp* HdfsFileHandleImpTest::imp_ = NULL;
 TEST_F(HdfsFileHandleImpTest, TestAccess1) {
-  int ret = rSuccess;
-  EXEC_AND_LOG(ret, imp_->DeleteFile(), "deleted file ",
-               "failed to delete file");
-  ret = imp_->CanAccess(file_name_);
-  EXPECT_FALSE(ret);
+  ASSERT_EQ(rSuccess, imp_->DeleteFile());
+  ASSERT_FALSE(imp_->CanAccess(file_name_));
 }
 
 TEST_F(HdfsFileHandleImpTest, TestAccess2) {
-  imp_->Append(buffer, 3);
-  bool ret = imp_->CanAccess(file_name_);
-  EXPECT_TRUE(ret);
+  assert(rSuccess == imp_->Append(buffer, 3));
+  ASSERT_TRUE(imp_->CanAccess(file_name_));
 }
 
 TEST_F(HdfsFileHandleImpTest, Delete) {
-  imp_->OverWrite(buffer, 3);
-  bool ret = imp_->CanAccess(file_name_);
-  EXPECT_TRUE(ret);
-  EXPECT_EQ(rSuccess, imp_->DeleteFile());
-  EXPECT_FALSE(imp_->CanAccess(file_name_));
+  ASSERT_EQ(rSuccess, imp_->OverWrite(buffer, 3));
+  ASSERT_TRUE(imp_->CanAccess(file_name_));
+  ASSERT_EQ(rSuccess, imp_->DeleteFile());
+  ASSERT_FALSE(imp_->CanAccess(file_name_));
 }
 
 TEST_F(HdfsFileHandleImpTest, DeleteNonExistFile) {
-  EXPECT_EQ(rSuccess, imp_->DeleteFile());
+  ASSERT_EQ(rSuccess, imp_->DeleteFile());
 }
 
 TEST_F(HdfsFileHandleImpTest, ReadNonExistFile) {
   void* data = NULL;
   size_t length = 0;
-  EXPECT_EQ(rSuccess, imp_->DeleteFile());
-  EXPECT_EQ(rOpenHdfsFileFail, imp_->ReadTotalFile(data, &length));
+  ASSERT_EQ(rSuccess, imp_->DeleteFile());
+  ASSERT_EQ(rOpenHdfsFileFail, imp_->ReadTotalFile(data, &length));
 }
 
 TEST_F(HdfsFileHandleImpTest, Write) {
   char* data = static_cast<char*>(Malloc(4));
   int ret = rSuccess;
-  EXPECT_EQ(rSuccess, imp_->OverWrite(buffer, 3));
-  EXPECT_EQ(rSuccess, imp_->PRead(data, 3, 0));
-  EXPECT_EQ(rSuccess, imp_->Close());
+  ASSERT_EQ(rSuccess, imp_->OverWrite(buffer, 3));
+  ASSERT_EQ(rSuccess, imp_->PRead(data, 3, 0));
+  ASSERT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abc", data);
 }
 
@@ -107,17 +102,17 @@ TEST_F(HdfsFileHandleImpTest, Append) {
   void* data = static_cast<char*>(Malloc(7));
   uint64_t length;
   int ret = rSuccess;
-  EXPECT_EQ(rSuccess, imp_->Append(buffer, 3));
-  EXPECT_EQ(rSuccess, imp_->ReadTotalFile(data, &length));
-  EXPECT_EQ(rSuccess, imp_->Close());
+  ASSERT_EQ(rSuccess, imp_->Append(buffer, 3));
+  ASSERT_EQ(rSuccess, imp_->ReadTotalFile(data, &length));
+  ASSERT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abcabc", (char*)data);
 }
 
 TEST_F(HdfsFileHandleImpTest, Read) {
   char* data = static_cast<char*>(Malloc(7));
   int ret = rSuccess;
-  EXPECT_EQ(rSuccess, imp_->Read(data, 6));
-  EXPECT_EQ(rSuccess, imp_->Close());
+  ASSERT_EQ(rSuccess, imp_->Read(data, 6));
+  ASSERT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abcabc", data);
 }
 
@@ -125,9 +120,9 @@ TEST_F(HdfsFileHandleImpTest, ReadTotalFile) {
   void* data = NULL;
   size_t a = 0;
   int ret = rSuccess;
-  EXPECT_EQ(rSuccess, imp_->Append(buffer, 3));
-  EXPECT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
-  EXPECT_EQ(rSuccess, imp_->Close());
+  ASSERT_EQ(rSuccess, imp_->Append(buffer, 3));
+  ASSERT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
+  ASSERT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abcabcabc", static_cast<char*>(data));
 }
 
@@ -135,8 +130,8 @@ TEST_F(HdfsFileHandleImpTest, PositionalRead) {
   char* data = static_cast<char*>(Malloc(4));
   size_t a = 0;
   int ret = rSuccess;
-  EXPECT_EQ(rSuccess, imp_->PRead(data, 3, 5));
-  EXPECT_EQ(rSuccess, imp_->Close());
+  ASSERT_EQ(rSuccess, imp_->PRead(data, 3, 5));
+  ASSERT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("cab", data);
 }
 
@@ -144,9 +139,9 @@ TEST_F(HdfsFileHandleImpTest, OverWrite) {
   void* data = NULL;
   size_t a = 0;
   int ret = rSuccess;
-  EXPECT_EQ(rSuccess, imp_->OverWrite(buffer, 3));
-  EXPECT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
-  EXPECT_EQ(rSuccess, imp_->Close());
+  ASSERT_EQ(rSuccess, imp_->OverWrite(buffer, 3));
+  ASSERT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
+  ASSERT_EQ(rSuccess, imp_->Close());
   EXPECT_STREQ("abc", static_cast<char*>(data));
 }
 
@@ -154,9 +149,9 @@ TEST_F(HdfsFileHandleImpTest, AppendIntoNonExistFile) {
   void* data = NULL;
   size_t a = 0;
   int ret = rSuccess;
-  EXPECT_EQ(rSuccess, imp_->DeleteFile());
-  EXPECT_EQ(rSuccess, imp_->Append(buffer, 3));
-  EXPECT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
+  ASSERT_EQ(rSuccess, imp_->DeleteFile());
+  ASSERT_EQ(rSuccess, imp_->Append(buffer, 3));
+  ASSERT_EQ(rSuccess, imp_->ReadTotalFile(data, &a));
   EXPECT_STREQ("abc", static_cast<char*>(data));
 }
 

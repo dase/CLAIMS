@@ -74,6 +74,7 @@ namespace loader {
 //  SUCCEED();
 //}
 
+/*
 void SingleFileConnectorTest::WriteOrAppendFile(FilePlatform file_platform,
                                                 FileOpenFlag open_flag,
                                                 char* expect,
@@ -179,6 +180,7 @@ void SingleFileConnectorTest::MultiThreadWrite(FilePlatform file_platform,
   EXPECT_STREQ(expect, static_cast<char*>(buffer));
   EXPECT_EQ(expect_length, length);
 }
+*/
 
 }  // namespace loader
 

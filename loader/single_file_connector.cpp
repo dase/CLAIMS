@@ -27,12 +27,36 @@
  */
 
 #include "./single_file_connector.h"
+#include <string>
 #include "../utility/lock_guard.h"
 
 using claims::utility::LockGuard;
 
 namespace claims {
 namespace loader {
+
+SingleFileConnector::SingleFileConnector(FilePlatform platform,
+                                         string file_name,
+                                         FileOpenFlag open_flag)
+    : platform_(platform),
+      file_name_(file_name),
+      is_closed(true),
+      open_flag_(open_flag) {
+  imp_ = common::FileHandleImpFactory::Instance().CreateFileHandleImp(
+      platform_, file_name_);
+  if (common::FileOpenFlag::kCreateFile == open_flag_) {
+    flush_function = std::bind(&FileHandleImp::OverWrite, imp_,
+                               std::placeholders::_1, std::placeholders::_2);
+  } else if (common::FileOpenFlag::kAppendFile == open_flag_) {
+    flush_function = std::bind(&FileHandleImp::Append, imp_,
+                               std::placeholders::_1, std::placeholders::_2);
+  } else {
+    flush_function = [](const void* source, const size_t length) -> RetCode {
+      assert(false && "Can't flush a file opened with read mode");
+      return common::rFailure;
+    };
+  }
+}
 
 RetCode SingleFileConnector::Open() {
   RetCode ret = rSuccess;
@@ -62,18 +86,6 @@ RetCode SingleFileConnector::Close() {
     }
   }
   return ret;
-}
-
-RetCode SingleFileConnector::AtomicFlush(const void* source, unsigned length) {
-  LockGuard<Lock> guard(write_lock_);
-  if (common::FileOpenFlag::kCreateFile == open_flag_) {
-    return imp_->OverWrite(source, length);
-  } else if (common::FileOpenFlag::kAppendFile == open_flag_) {
-    return imp_->Append(source, length);
-  } else {
-    assert(false && "Can't flush a file opened with read mode");
-    return common::rFailure;
-  }
 }
 
 RetCode SingleFileConnector::Delete() {

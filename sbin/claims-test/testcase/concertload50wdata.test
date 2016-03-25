@@ -1,0 +1,3 @@
+load table t1 from "../sbin/claims-test/testcase/results.txt" with ',','\n';
+load table t2 from "../sbin/claims-test/testcase/results.txt" with ',','\n';
+exit;
