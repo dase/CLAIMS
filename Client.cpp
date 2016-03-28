@@ -51,7 +51,10 @@ void submit_command(Client& client, std::string& command) {
       printf("%s", message.c_str());
       break;
     case Client::error:
-      printf("%s", message.c_str());
+      printf(
+          "\e[0;31m"
+          "%s\033[0m\n",
+          message.c_str());
       break;
     default:
       assert(false);
@@ -73,7 +76,10 @@ void submit_command_repeated(Client& client, std::string& command,
         printf("%s", message.c_str());
         break;
       case Client::error:
-        printf("%s", message.c_str());
+        printf(
+            "\e[0;31m"
+            "%s\033[0m\n",
+            message.c_str());
         break;
       default:
         assert(false);
