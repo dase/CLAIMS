@@ -30,6 +30,31 @@
 #include <string>
 #include "../utility/lock_guard.h"
 
+#define FILE_CONNECTOR_DEBUG
+
+#ifdef CLAIMS_DEBUG_LOG
+#ifdef FILE_CONNECTOR_DEBUG
+#define DLOG_FC(info) DLOG(INFO) << info << std::endl;
+#else
+#define DLOG_FC(info)
+#endif
+#ifdef FILE_CONNECTOR_DEBUG
+#define PLOG_FC(info) DLOG(INFO) << info << endl;
+#else
+#define PLOG_FC(info)
+#endif
+#else
+#define DLOG_FC(info)
+#endif
+
+#ifdef DATA_INJECTOR_PREF
+#define ATOMIC_ADD(var, value) __sync_add_and_fetch(&var, value);
+#define GET_TIME_DI(var) GETCURRENTTIME(var);
+#else
+#define ATOMIC_ADD(var, value)
+#define GET_TIME_DI(var)
+#endif
+
 using claims::utility::LockGuard;
 
 namespace claims {
@@ -62,15 +87,24 @@ RetCode SingleFileConnector::Open() {
   RetCode ret = rSuccess;
   if (0 != ref_) {
     ++ref_;
+    DLOG_FC("++ref_ "
+            << " and now ref_ is " << ref_);
   } else {
     LockGuard<SpineLock> guard(open_close_lcok_);
+    DLOG_FC("get locked to open "
+            << " and now ref_ is " << ref_);
     if (0 == ref_) {
+      DLOG_FC("get right to execute Open()");
       EXEC_AND_RETURN_ERROR(
           ret, imp_->SwitchStatus(
                    static_cast<FileHandleImp::FileStatus>(open_flag_)),
           "failed to open file:" << file_name_);
       ++ref_;
+      DLOG_FC("after Opening, ++ref_: " << ref_);
       is_closed = false;
+    } else {
+      ++ref_;  // also need add ref_
+      DLOG_FC("after other Opening, ++ref_: " << ref_);
     }
   }
   return ret;
@@ -79,25 +113,40 @@ RetCode SingleFileConnector::Open() {
 RetCode SingleFileConnector::Close() {
   RetCode ret = rSuccess;
   if (!is_closed && 0 == (--ref_)) {
+    DLOG_FC("after --ref_, ref_ which should be 0 now is" << ref_);
     LockGuard<SpineLock> guard(open_close_lcok_);
+    DLOG_FC("get lock to close, ref_ is" << ref_);
     if (0 == ref_ && !is_closed) {
+      DLOG_FC("get right to close, ref_ is" << ref_);
       EXEC_AND_RETURN_ERROR(ret, imp_->Close(), "file name: " << file_name_);
       is_closed = true;
     }
   }
+  assert(ref_ >= 0);
+  DLOG_FC("after --ref_, ref_ is" << ref_);
   return ret;
 }
 
 RetCode SingleFileConnector::Delete() {
   RetCode ret = rSuccess;
+  DLOG_FC("before deleting, ref_ is " << ref_);
   if (0 != ref_) {
-    ret = common::rFileInUsing;
-    EXEC_AND_RETURN_ERROR(ret, ret, "file name: " << file_name_);
+    EXEC_AND_RETURN_ERROR(ret, common::rFileInUsing,
+                          "file name: " << file_name_);
+    return common::rFileInUsing;
   }
   LockGuard<SpineLock> guard(open_close_lcok_);
-  EXEC_AND_RETURN_ERROR(ret, imp_->DeleteFile(), "failed to delete file "
-                                                     << file_name_);
-  is_closed = true;
+  // must double-check in case of deleting a file in using
+  if (0 == ref_ && is_closed) {
+    DLOG_FC("get lock to delete , ref_ is" << ref_);
+    EXEC_AND_RETURN_ERROR(ret, imp_->DeleteFile(), "failed to delete file "
+                                                       << file_name_);
+    DLOG_FC("file:" << file_name_ << "is closed successfully");
+    is_closed = true;
+  } else {
+    EXEC_AND_RETURN_ERROR(ret, common::rFileInUsing,
+                          "file name: " << file_name_);
+  }
   return ret;
 }
 

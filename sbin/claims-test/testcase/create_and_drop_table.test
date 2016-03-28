@@ -15,9 +15,68 @@ N_REGIONKEY,
 N_COMMENT
 ) number = 4 partitioned on N_NATIONKEY;
 
-load table NATION from "/home/imdb/rawData/tpch-raw-data/tpch_sf1/nation.tbl" with '|','\n';
+drop table NATION;
 
-select * from NATION;
+drop table PART;
+
+﻿create table PART(
+P_PARTKEY bigint unsigned,
+P_NAME varchar(55),
+P_MFGR varchar(25),
+P_BRAND varchar(10),
+P_TYPE varchar(25),
+P_SIZE int,
+P_CONTAINER varchar(10),
+P_RETAILPRICE  decimal(20,4),
+P_COMMENT varchar(23)
+);
+
+
+drop table PART;
+
+﻿create table PART(
+P_PARTKEY bigint unsigned,
+P_NAME varchar(55),
+P_MFGR varchar(25),
+P_BRAND varchar(10),
+P_TYPE varchar(25),
+P_SIZE int,
+P_CONTAINER varchar(10),
+P_RETAILPRICE  decimal(20,4),
+P_COMMENT varchar(23)
+);
+
+create projection on PART(
+P_PARTKEY,
+P_NAME,
+P_MFGR,
+P_BRAND,
+P_TYPE,
+P_SIZE,
+P_CONTAINER,
+P_RETAILPRICE,
+P_COMMENT
+) number =  1 partitioned on P_PARTKEY;
+
+drop table PART;
 
 drop table NATION;
 
+create table NATION(
+N_NATIONKEY bigint unsigned,
+N_NAME varchar(25),
+N_REGIONKEY bigint unsigned,
+N_COMMENT varchar(152)
+);
+
+create projection on NATION(
+N_NATIONKEY,
+N_NAME,
+N_REGIONKEY,
+N_COMMENT
+) number = 4 partitioned on N_NATIONKEY;
+
+
+load table NATION from "/home/imdb/rawData/tpch-raw-data/tpch_sf1/nation.tbl" with '|','\n';
+
+select * from NATION;

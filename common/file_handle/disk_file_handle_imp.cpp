@@ -261,7 +261,7 @@ RetCode DiskFileHandleImp::DeleteFile() {
     } else {
       fd_ = -1;
       file_status_ = kClosed;
-      LOG(WARNING) << "The file " << file_name_ << "is not exits!\n"
+      LOG(WARNING) << "The file " << file_name_ << "is deleted successfully!\n"
                    << std::endl;
     }
   }

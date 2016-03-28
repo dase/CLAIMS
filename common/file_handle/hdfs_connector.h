@@ -32,6 +32,7 @@
 #include <assert.h>
 #include <glog/logging.h>
 #include <hdfs.h>
+#include <iostream>
 
 #include "../../common/rename.h"
 #include "../../Config.h"
@@ -59,6 +60,12 @@ class HdfsConnector {
   }
 
   NO_COPY_AND_ASSIGN(HdfsConnector);
+
+  ~HdfsConnector() {
+    hdfsDisconnect(fs_);
+    fs_ = NULL;
+    std::cerr << "disconnected hdfs and fs_ was set to NULL" << std::endl;
+  }
 
  private:
   HdfsConnector() {}

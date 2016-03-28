@@ -209,6 +209,7 @@ RetCode HdfsFileHandleImp::SetPosition(size_t pos) {
 
 RetCode HdfsFileHandleImp::Append(const void* buffer, const size_t length) {
   //  RefHolder holder(reference_count_);
+  assert(NULL != fs_ && "failed to connect hdfs");
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInAppending),
                         "failed to switch status");
@@ -219,6 +220,7 @@ RetCode HdfsFileHandleImp::Append(const void* buffer, const size_t length) {
 RetCode HdfsFileHandleImp::AtomicAppend(const void* buffer, const size_t length,
                                         function<void()> lock_func,
                                         function<void()> unlock_func) {
+  assert(NULL != fs_ && "failed to connect hdfs");
   lock_func();
   RetCode ret = Append(buffer, length);
   // must close because another imp may want to open this file
@@ -230,6 +232,7 @@ RetCode HdfsFileHandleImp::AtomicAppend(const void* buffer, const size_t length,
 
 RetCode HdfsFileHandleImp::OverWrite(const void* buffer, const size_t length) {
   //  RefHolder holder(reference_count_);
+  assert(NULL != fs_ && "failed to connect hdfs");
   int ret = rSuccess;
   EXEC_AND_RETURN_ERROR(ret, SwitchStatus(kInOverWriting),
                         "failed to switch status");
@@ -240,6 +243,8 @@ RetCode HdfsFileHandleImp::AtomicOverWrite(const void* buffer,
                                            const size_t length,
                                            function<void()> lock_func,
                                            function<void()> unlock_func) {
+  assert(NULL != fs_ && "failed to connect hdfs");
+
   lock_func();
   RetCode ret = OverWrite(buffer, length);
   // must close because another imp may want to open this file
@@ -259,6 +264,8 @@ RetCode HdfsFileHandleImp::DeleteFile() {
       LOG(ERROR) << "Failed to delete file : [" + file_name_ + "]."
                  << std::endl;
       return rFailure;
+    } else {
+      LOG(INFO) << "The file " << file_name_ << " is deleted successfully";
     }
   } else {
     file_ = NULL;

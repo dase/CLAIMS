@@ -133,6 +133,8 @@ class TableFileConnectorTest : public ::testing::Test {
     }
     SUCCEED();
   }
+  virtual void SetUp() { LOG(INFO) << "-----------------------" << std::endl; }
+  virtual void TearDown() { LOG(INFO) << "---------------------" << std::endl; }
 
  public:
   TableFileConnector* connector_;

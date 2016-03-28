@@ -33,7 +33,7 @@
 #include "../common/file_handle/test/hdfs_file_handle_imp_test.h"
 #include "../loader/test/single_thread_single_file_connector_test.h"
 #include "../loader/test/single_file_connector_test.h"
-// #include "../loader/test/table_file_connector_test.h"
+#include "../loader/test/table_file_connector_test.h"
 #include "./iterator/elastic_iterator_model_test.h"
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES

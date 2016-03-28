@@ -77,7 +77,8 @@ TableFileConnector::TableFileConnector(FilePlatform platform,
     file_handles_.push_back(projection_files);
     write_locks_.push_back(projection_locks);
   }
-  LOG(INFO) << "open all  file successfully" << std::endl;
+  LOG(INFO) << "open all " << file_handles_.size() << " file successfully"
+            << std::endl;
 }
 
 // TableFileConnector::TableFileConnector(FilePlatform platform,
@@ -123,6 +124,8 @@ RetCode TableFileConnector::Open() {
         ++ref_;
         is_closed = false;
       }
+    } else {
+      ++ref_;
     }
   }
   return ret;
@@ -238,31 +241,41 @@ RetCode TableFileConnector::Close() {
       }
     }
   }
+  assert(ref_ >= 0);
   return ret;
 }
 
 RetCode TableFileConnector::DeleteAllTableFiles() {
-  assert(file_handles_.size() != 0 && "make sure file handles is not empty");
+  /*
+   * this method may be called after creating table and before creating
+   * projection, so file_handles_ may be empty
+   */
+  //  assert(!(0 == table_->row_number_ && file_handles_.size() != 0) &&
+  //         "make sure file handles is not empty");
 
   RetCode ret = rSuccess;
   if (0 != ref_) {
-    ret = common::rFileInUsing;
-    EXEC_AND_RETURN_ERROR(ret, ret, "now reference is " << ref_);
+    EXEC_AND_RETURN_ERROR(ret, common::rFileInUsing, "now reference is "
+                                                         << ref_);
   }
   LockGuard<Lock> guard(open_close_lock_);
-
-  for (auto prj_files : file_handles_) {
-    for (auto file : prj_files) {
-      RetCode subret = rSuccess;
-      EXEC_AND_ONLY_LOG_ERROR(subret, file->DeleteFile(),
-                              "failed to delete file "
-                                  << file->get_file_name());
-      if (rSuccess != subret) ret = subret;
+  // must double-check in case of deleting a file in using
+  if (0 == ref_ && is_closed) {
+    for (auto prj_files : file_handles_) {
+      for (auto file : prj_files) {
+        RetCode subret = rSuccess;
+        EXEC_AND_ONLY_LOG_ERROR(subret, file->DeleteFile(),
+                                "failed to delete file "
+                                    << file->get_file_name());
+        if (rSuccess != subret) ret = subret;
+      }
     }
-  }
-  if (rSuccess == ret) {
-    is_closed = true;
-    LOG(INFO) << "deleted all files" << std::endl;
+    if (rSuccess == ret) {
+      LOG(INFO) << "deleted all files" << std::endl;
+    }
+  } else {
+    ret = common::rFileInUsing;
+    EXEC_AND_RETURN_ERROR(ret, ret, "now reference is " << ref_);
   }
   return ret;
 }

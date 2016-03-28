@@ -146,6 +146,8 @@ class SingleThreadSingleFileConnectorTest : public ::testing::Test {
   }
 
   static void TearDownTestCase() {}
+  virtual void SetUp() { LOG(INFO) << "-----------------------" << std::endl; }
+  virtual void TearDown() { LOG(INFO) << "---------------------" << std::endl; }
 
  public:
   SingleThreadSingleFileConnector* connector_ = NULL;

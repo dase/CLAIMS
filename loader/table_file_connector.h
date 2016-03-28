@@ -86,7 +86,7 @@ class TableFileConnector {
  private:
   common::FilePlatform platform_;
   vector<vector<common::FileHandleImp*>> file_handles_;
-  vector<vector<string>> write_path_name_;
+  vector<vector<string>>& write_path_name_;
   TableDescriptor* table_;
 
   common::FileOpenFlag open_flag_ = static_cast<common::FileOpenFlag>(-1);
