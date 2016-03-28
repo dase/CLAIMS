@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # Filename : monitor_loader.py
+#
+# This script must be running on master
 
 usage = u'''
 this scripts main role is to load data into
@@ -46,26 +48,41 @@ import time
     third: test case in sbin/claims-test/testcase/
     the case tuple can contain numerous object
 '''
+'''
 mode_data_case=( 
-                 (0, "/home/imdb/data/tpc-h/sf1/1partition/",   ((1, 1, "ddl_tpch_sf1_1partition"),))
-                ,(0, "/home/imdb/data/tpc-h/sf1/4partition/",   ((1, 1, "ddl_tpch_sf1_4partition"),))
-                ,(0, "/home/imdb/data/tpc-h/sf1/8partition/",   ((1, 1, "ddl_tpch_sf1_8partition"),))
-                ,(0, "/home/imdb/data/tpc-h/sf10/1partition/",  ((1, 1, "ddl_tpch_sf10_1partition"),))
-                ,(0, "/home/imdb/data/tpc-h/sf10/4partition/",  ((1, 1, "ddl_tpch_sf10_4partition"),))
-                ,(0, "/home/imdb/data/tpc-h/sf10/8partition/",  ((1, 1, "ddl_tpch_sf10_8partition"),))
-                ,(0, "/home/imdb/data/tpc-h/sf100/1partition/", ((1, 1, "ddl_tpch_sf100_1partition"),))
-                ,(0, "/home/imdb/data/tpc-h/sf100/4partition/", ((1, 1, "ddl_tpch_sf100_4partition"),))
-                ,(0, "/home/imdb/data/tpc-h/sf100/8partition/", ((1, 1, "ddl_tpch_sf100_8partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf1/1partition/",   ((1, 1, "ddl_tpch_sf1_1partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf1/4partition/",   ((1, 1, "ddl_tpch_sf1_4partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf1/8partition/",   ((1, 1, "ddl_tpch_sf1_8partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf10/1partition/",  ((1, 1, "ddl_tpch_sf10_1partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf10/4partition/",  ((1, 1, "ddl_tpch_sf10_4partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf10/8partition/",  ((1, 1, "ddl_tpch_sf10_8partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf100/1partition/", ((1, 1, "ddl_tpch_sf100_1partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf100/4partition/", ((1, 1, "ddl_tpch_sf100_4partition"),))
-                ,(1, "/home/imdb/data/tpc-h/sf100/8partition/", ((1, 1, "ddl_tpch_sf100_8partition"),))
+                 (0, "/home/claims/data/tpc-h/sf1/1partition/",   ((1, 1, "ddl_tpch_sf1_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf1/4partition/",   ((1, 1, "ddl_tpch_sf1_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf1/8partition/",   ((1, 1, "ddl_tpch_sf1_8partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/1partition/",  ((1, 1, "ddl_tpch_sf10_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/4partition/",  ((1, 1, "ddl_tpch_sf10_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/8partition/",  ((1, 1, "ddl_tpch_sf10_8partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/1partition/", ((1, 1, "ddl_tpch_sf100_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/4partition/", ((1, 1, "ddl_tpch_sf100_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/8partition/", ((1, 1, "ddl_tpch_sf100_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/1partition/",   ((1, 1, "ddl_tpch_sf1_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/4partition/",   ((1, 1, "ddl_tpch_sf1_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/8partition/",   ((1, 1, "ddl_tpch_sf1_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/1partition/",  ((1, 1, "ddl_tpch_sf10_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/4partition/",  ((1, 1, "ddl_tpch_sf10_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/8partition/",  ((1, 1, "ddl_tpch_sf10_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/1partition/", ((1, 1, "ddl_tpch_sf100_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/4partition/", ((1, 1, "ddl_tpch_sf100_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/8partition/", ((1, 1, "ddl_tpch_sf100_8partition"),))
                )
+'''
+
+mode_data_case=( 
+                 (1, "/home/claims/data/tpc-h/sf1/1partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/4partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/8partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/1partition/",  ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/4partition/",  ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/8partition/",  ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/1partition/", ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/4partition/", ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/8partition/", ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+               )
+
 
 claimshome=os.getenv("CLAIMS_HOME")
 cf = ConfigParser.ConfigParser()
@@ -80,12 +97,14 @@ runtest="cd %s/sbin/claims-test; ./claimstest.sh %d %d %s;"
 
 def autotest():
     for i in mode_data_case:
-        if i[0] == 0:
-            continue
-        command=config_disk_mode%(user, hostname, i[0])+config_data%(user, hostname, i[1])+deploy%(user, hostname)+startall%claimshome
-        os.system(command)
-        time.sleep(10)
+        command1=config_disk_mode%(user, hostname, i[0])+config_data%(user, hostname, i[1])+deploy%(user, hostname)
+	print command1
+        os.system(command1)
+        time.sleep(5)
         for j in i[2]:
+            command2=startall%claimshome
+            os.system(command2)
+            time.sleep(15)
             print "test:[%s],loop:[%d],currencuy:[%d]" % (j[2], j[0], j[1])
             os.system(runtest % (claimshome, j[0], j[1], j[2]))
 
@@ -97,6 +116,9 @@ def main():
             print "unrecognized option '%s'" % sys.argv[1]
             print "use the --help option for usage information"
     else:
+	#print "time sleep 3600s"
+	#time.sleep(3600)
+	#print "start auto test"
         autotest()
 
 if __name__=="__main__":

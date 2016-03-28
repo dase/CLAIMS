@@ -1,11 +1,15 @@
 #!/bin/sh
 
-cd $CLAIMS_HOME/sbin/2-claims-conf
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+cd ../2-claims-conf
 source ./load-config.sh
+cd ../../
+# now in CLAIMS_HOME
 
 while [ 1 ]
 do
-  cd $CLAIMS_HOME/sbin/claims-test/
+  cd sbin/claims-test/
   read -p "Hit the ENTER |__>" tempuseless
   echo $tempuseless
   starttime=$(date '+%Y-%m-%d %H:%M:%S')

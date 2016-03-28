@@ -18,7 +18,7 @@ getcfg() {
 
 function load_config()
 {
-    config=$CLAIMS_HOME/sbin/2-claims-conf/cluster.config
+    config=cluster.config
     getcfg $config master master
     getcfg $config slaves slaves
     getcfg $config claimshome claimshome 
@@ -38,7 +38,14 @@ function load_config()
     getcfg $config load_thread_num load_thread_num
     getcfg $config memory_utilization memory_utilization
 
-} 
+}
+
+function currdir()
+{
+    CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    cd $CURRDIR
+}
+ 
 
 function print_config()
 {
@@ -65,5 +72,6 @@ echo "memory_utilization :                  [$memory_utilization]"
 echo "=========cluster config end=========="
 }
 
+currdir
 load_config
-$print_config
+#print_config

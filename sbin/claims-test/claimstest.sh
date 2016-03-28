@@ -6,13 +6,17 @@ if [ ! -f "${0##*/}" ]; then
 fi
 
 set -e
-cd $CLAIMS_HOME/sbin/2-claims-conf/
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+cd ../2-claims-conf
 source ./load-config.sh
+cd ../../
+# now in CLAIMS_HOME
 
 # for debug begin #####
-cd $CLAIMS_HOME
 cd install
 ulimit -c unlimited
+cd ../
 # for debug end #######
 
 if [ "$1" = "" ]; then
@@ -33,11 +37,12 @@ if [ "$3" = "" ]; then
 fi
 echo "loops=[$runloops];""concurrency=[$concurrency_count]"
 
-thislog=$CLAIMS_HOME/$logpath/client.$(date +%Y-%m-%d).log
-cd $CLAIMS_HOME/sbin/claims-test
+thislog=$logpath/client.$(date +%Y-%m-%d).log
+cd sbin/claims-test
 if [ ! -d "testresult" ]; then
  mkdir -p "testresult"
 fi
+cd ../../
 
 for((loop=1;loop<=runloops;loop++))
 do
@@ -48,7 +53,7 @@ do
   datestr=`date '+%Y-%m-%d %H:%M:%S'`
   thisstartstr="========run test:[$3] [$loop-$cur] time:[$datestr]========"
   echo -e "\033[33m$thisstartstr\033[0m"
-  $CLAIMS_HOME/install/client $master $client_listener_port < $CLAIMS_HOME/sbin/claims-test/testcase/$3.test > $CLAIMS_HOME/sbin/claims-test/testresult/$3-$loop-$cur.result
+  ./install/client $master $client_listener_port < ./sbin/claims-test/testcase/$3.test > ./sbin/claims-test/testresult/$3-$loop-$cur-$(date '+%Y-%m-%d-%H%M%S').result
   sleep 1
  }&
  done

@@ -1,12 +1,17 @@
 #!/bin/sh
 set -e
-cd $CLAIMS_HOME/sbin/2-claims-conf/
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+
+cd ../2-claims-conf/
 source ./load-config.sh
+cd ../../
+# now in CLAIMS_HOME
 
 # for debug begin #####
-cd $CLAIMS_HOME
 cd install
 ulimit -c unlimited
+cd ../
 # for debug end #######
 
-$CLAIMS_HOME/install/client $master $client_listener_port 
+./install/client $master $client_listener_port 

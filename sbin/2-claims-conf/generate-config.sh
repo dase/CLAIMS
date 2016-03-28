@@ -1,6 +1,7 @@
 #!/bin/sh
 
-cd $CLAIMS_HOME/sbin/2-claims-conf
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
 source ./load-config.sh
 
 rm -f config-*
