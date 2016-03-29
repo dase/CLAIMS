@@ -179,6 +179,7 @@ RetCode Catalog::saveCatalog() {
   std::ostringstream oss;
   boost::archive::text_oarchive oa(oss);
   oa << *this;
+  assert(0 != oss.str().length() && "catalog has nothing!!");
 
   int ret = rSuccess;
 
@@ -273,6 +274,7 @@ RetCode Catalog::restoreCatalog() {
                           read_connector_->LoadTotalFile(buffer, &file_length),
                           "catalog file name: " << catalog_file);
 
+    assert(0 != file_length && "catalog'length must not be 0 !");
     LOG(INFO) << "Start to deserialize catalog ..." << endl;
     string temp(static_cast<char*>(buffer), file_length);
     std::istringstream iss(temp);

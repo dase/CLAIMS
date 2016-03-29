@@ -45,6 +45,7 @@ class HdfsConnector {
  public:
   static hdfsFS Instance() {
     if (NULL == fs_) {
+      LOG(INFO) << "start to connect to HDFS";
       Config::getInstance();
       fs_ =
           hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);

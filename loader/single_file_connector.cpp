@@ -66,7 +66,8 @@ SingleFileConnector::SingleFileConnector(FilePlatform platform,
     : platform_(platform),
       file_name_(file_name),
       is_closed(true),
-      open_flag_(open_flag) {
+      open_flag_(open_flag),
+      ref_(0) {
   imp_ = common::FileHandleImpFactory::Instance().CreateFileHandleImp(
       platform_, file_name_);
   if (common::FileOpenFlag::kCreateFile == open_flag_) {
