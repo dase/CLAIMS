@@ -89,24 +89,27 @@ cf = ConfigParser.ConfigParser()
 cf.read("%s/sbin/2-claims-conf/cluster.config"%(claimshome))
 hostname = cf.get("cluster", "master") 
 user = cf.get("cluster", "user")
-config_disk_mode="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^local_disk_mode = .*$:local_disk_mode = %s:g' ./cluster.config; exit;\";"
-config_data="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^data = .*$:data = %s:g' ./cluster.config; exit;\";"
+config_disk_mode="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^local_disk_mode = .*$:local_disk_mode = %s:g' ./cluster.config; exit;\";sleep 1"
+config_data="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^data = .*$:data = %s:g' ./cluster.config; exit;\";sleep 1"
 deploy="ssh -f -n -l %s %s \"$CLAIMS_HOME/sbin/3-deploy.sh config; exit;\";"
 startall="%s/sbin/start-all.sh;"
 runtest="cd %s/sbin/claims-test; ./claimstest.sh %d %d %s;"
 
 def autotest():
     for i in mode_data_case:
-        command1=config_disk_mode%(user, hostname, i[0])+config_data%(user, hostname, i[1])+deploy%(user, hostname)
-	print command1
-        os.system(command1)
-        time.sleep(5)
+        if i[0]==0:
+            continue
         for j in i[2]:
+            command1=config_disk_mode%(user, hostname, i[0])+config_data%(user, hostname, i[1])+deploy%(user, hostname)
+	    print command1
+            os.system(command1)
+            time.sleep(5)
             command2=startall%claimshome
             os.system(command2)
-            time.sleep(15)
+            time.sleep(20)
             print "test:[%s],loop:[%d],currencuy:[%d]" % (j[2], j[0], j[1])
             os.system(runtest % (claimshome, j[0], j[1], j[2]))
+            time.sleep(5)
 
 def main():
     if len(sys.argv)>1:

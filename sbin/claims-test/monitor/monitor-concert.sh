@@ -9,10 +9,10 @@ cd ../../
 
 while [ 1 ]
 do
- procid=`pgrep claimsserver`
+ procid=`ps x | grep -w ./install/claimsserver | grep -v grep | awk '{print $1}'`
  if [ "$procid" = "" ]; then
   echo "claimsserver is aborted. Try to restart..."
-  ./sbinstop-all.sh
+  ./sbin/stop-all.sh
   if [ "$local_disk_mode" = "1" ]; then
   rm $data*
   fi
@@ -24,7 +24,7 @@ do
     ./sbin/1-compile.sh
   fi 
   ./sbin/3-deploy.sh
-  ./sbinstart-all.sh
+  ./sbin/start-all.sh
   sleep 3 
  else
   echo "claimsserver is running..."

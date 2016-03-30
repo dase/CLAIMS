@@ -9,7 +9,7 @@ cd ../../
 
 while [ 1 ]
 do
- procid=`pgrep claimsserver`
+ procid=`ps x | grep -w ./install/claimsserver | grep -v grep | awk '{print $1}'`
  if [ "$procid" = "" ]; then
   echo "claimsserver is aborted. Try to restart..."
   ./sbin/stop-all.sh
