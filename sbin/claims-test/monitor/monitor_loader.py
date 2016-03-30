@@ -100,19 +100,20 @@ def autotest():
     for i in mode_data_case:
         if i[0]==0:
             continue
+        command1=config_disk_mode%(user, hostname, i[0])+config_data%(user, hostname, i[1])+deploy%(user, hostname)
+        print command1
+        os.system(command1)
+        time.sleep(5)
         for j in i[2]:
             os.system(stopall%claimshome)
-            time.sleep(5)
-            command1=config_disk_mode%(user, hostname, i[0])+config_data%(user, hostname, i[1])+deploy%(user, hostname)
-            print command1
-            os.system(command1)
-            time.sleep(5)
-            command2=startall%claimshome
-            os.system(command2)
-            time.sleep(20)
+            time.sleep(25)
+            os.system(startall%claimshome)
+            time.sleep(30)
             print "test:[%s],loop:[%d],currencuy:[%d]" % (j[2], j[0], j[1])
             os.system(runtest % (claimshome, j[0], j[1], j[2]))
             time.sleep(5)
+        os.system(stopall%claimshome)
+        time.sleep(5)
 
 def main():
     if len(sys.argv)>1:
