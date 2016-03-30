@@ -89,8 +89,8 @@ cf = ConfigParser.ConfigParser()
 cf.read("%s/sbin/2-claims-conf/cluster.config"%(claimshome))
 hostname = cf.get("cluster", "master") 
 user = cf.get("cluster", "user")
-config_disk_mode="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^local_disk_mode = .*$:local_disk_mode = %s:g' ./cluster.config; exit;\";sleep 1"
-config_data="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^data = .*$:data = %s:g' ./cluster.config; exit;\";sleep 1"
+config_disk_mode="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^local_disk_mode = .*$:local_disk_mode = %s:g' ./cluster.config; exit;\";sleep 1;"
+config_data="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^data = .*$:data = %s:g' ./cluster.config; exit;\";sleep 1;"
 deploy="ssh -f -n -l %s %s \"$CLAIMS_HOME/sbin/3-deploy.sh config; exit;\";"
 startall="%s/sbin/start-all.sh;"
 runtest="cd %s/sbin/claims-test; ./claimstest.sh %d %d %s;"
