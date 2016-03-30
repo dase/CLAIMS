@@ -93,6 +93,7 @@ config_disk_mode="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -
 config_data="ssh -f -n -l %s %s \"cd $CLAIMS_HOME/sbin/2-claims-conf; sed -i 's:^data = .*$:data = %s:g' ./cluster.config; exit;\";sleep 1;"
 deploy="ssh -f -n -l %s %s \"$CLAIMS_HOME/sbin/3-deploy.sh config; exit;\";"
 startall="%s/sbin/start-all.sh;"
+stopall="%s/sbin/stop-all.sh;"
 runtest="cd %s/sbin/claims-test; ./claimstest.sh %d %d %s;"
 
 def autotest():
@@ -109,6 +110,8 @@ def autotest():
             time.sleep(20)
             print "test:[%s],loop:[%d],currencuy:[%d]" % (j[2], j[0], j[1])
             os.system(runtest % (claimshome, j[0], j[1], j[2]))
+            time.sleep(5)
+            os.system(stopall%claimshome)
             time.sleep(5)
 
 def main():
