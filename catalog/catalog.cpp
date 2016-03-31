@@ -197,9 +197,10 @@ RetCode Catalog::saveCatalog() {
       "write catalog " << oss.str().length() << " chars",
       "failed to flush into catalog file: " << Config::catalog_file);
 
-  //  EXEC_AND_ONLY_LOG_ERROR(
-  //      ret, write_connector_->Close(),
-  //      "failed to close catalog file: " << Config::catalog_file);
+  assert(ret == rSuccess && "failed to write catalog ");
+  EXEC_AND_ONLY_LOG_ERROR(
+      ret, write_connector_->Close(),
+      "failed to close catalog file: " << Config::catalog_file);
   return ret;
 }
 
