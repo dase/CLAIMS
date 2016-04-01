@@ -21,18 +21,14 @@ LDADD = 	../BlockStreamIterator/libblockstreamiterator.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.so
 
-noinst_LIBRARIES=libexecutor.a
-libexecutor_a_SOURCES = exchange_tracker.cpp \
-	exchange_tracker.h 		expander_tracker.cpp \
-	expander_tracker.h 		IteratorExecutorMaster.cpp \
-	IteratorExecutorMaster.h 	IteratorExecutorSlave.cpp \
-	IteratorExecutorSlave.h 	PortManager.cpp \
-	PortManager.h	
-libexecutor_a_LIBADD = 	\
+noinst_LIBRARIES=libexec_tracker.a
+
+libexec_tracker_a_SOURCES = \
+	segment_exec_tracker.h 	segment_exec_tracker.cpp	\
+	stmt_exec_tracker.h		stmt_exec_tracker.cpp
+	
+libexec_tracker_a_LIBADD = 	\
 	${CAF_HOME}/build/lib/libcaf_core.so \
 	${CAF_HOME}/build/lib/libcaf_io.so \
 	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so
-
-SUBDIRS = Test
-DIST_SUBDIRS = Test

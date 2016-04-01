@@ -52,6 +52,8 @@ class SelectExec : public StmtExec {
   virtual ~SelectExec();
   RetCode Execute(ExecutedResult* exec_result);
 
+  RetCode Execute();
+
  private:
   static void* SendAllSegments(void* arg);
   RetCode IsUpperExchangeRegistered(vector<NodeID>& upper_node_id_list,

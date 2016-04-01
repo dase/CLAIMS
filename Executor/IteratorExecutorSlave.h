@@ -17,7 +17,7 @@
 #include "../utility/Timer.h"
 
 using namespace std;
-
+class PhysicalQueryPlan;
 class IteratorExecutorSlave {
  public:
   IteratorExecutorSlave();

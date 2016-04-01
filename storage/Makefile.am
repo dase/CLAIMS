@@ -16,21 +16,21 @@ LDADD = 	../BufferManager/libbuffermanager.a \
 		../common/libcommon.a \
 		../common/Block/libblock.a \
 		../utility/libutility.a \
-		${HADOOP_HOME}/lib/native/libhdfs.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.a
 
 noinst_LIBRARIES=libstorage.a
+
 libstorage_a_SOURCES = \
 	AllBlockInfo.cpp 			AllBlockInfo.h \
-	BlanceMatcher.cpp 		BlanceMatcher.h \
+	BlanceMatcher.cpp 			BlanceMatcher.h \
 	BlockManager.cpp 			BlockManager.h \
-	BlockManagerId.cpp 		BlockManagerId.h \
+	BlockManagerId.cpp 			BlockManagerId.h \
 	BlockManagerMaster.cpp 		BlockManagerMaster.h \
 	BlockMessage.cpp 			BlockMessage.h \
-	BlockStore.cpp 			BlockStore.h \
+	BlockStore.cpp 				BlockStore.h \
 	ChunkStorage.cpp 			ChunkStorage.h \
-	DiskStore.cpp 			DiskStore.h \
+	DiskStore.cpp 				DiskStore.h \
 	MemoryStore.cpp 			MemoryStore.h \
 	PartitionReaderIterator.cpp 	PartitionReaderIterator.h \
 	PartitionStorage.cpp 		PartitionStorage.h \

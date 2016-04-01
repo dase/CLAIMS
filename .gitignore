@@ -77,7 +77,7 @@ CLAIMS.includes
 *sql.output
 *.doxyfile
 sbin/.claimssserver.pid
-sbin/2-claims-conf/config-*
+sbin/2-claims-conf/
 sbin/claims-test/claims_log/
 sbin/claims-test/test_for_DI_GetTuple
 sbin/claims-test/testresult/*.result

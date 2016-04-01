@@ -31,11 +31,15 @@
 #include <string>
 #include "../stmt_handler/stmt_handler.h"
 
+#include <boost/algorithm/string.hpp>
 #include "../stmt_handler/create_projection_exec.h"
 #include "../stmt_handler/desc_exec.h"
 #include "../stmt_handler/drop_table_exec.h"
 #include "../stmt_handler/show_exec.h"
 #include "../utility/Timer.h"
+
+using boost::algorithm::to_lower;
+using boost::algorithm::trim;
 namespace claims {
 namespace stmt_handler {
 
@@ -125,13 +129,34 @@ RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
   if (rSuccess != ret) {
     return ret;
   }
-  ret = stmt_exec_->Execute(exec_result);
-  if (rSuccess != ret) {
-    return ret;
+
+  trim(sql_stmt_);
+  to_lower(sql_stmt_);
+  // not select stmt
+  if (sql_stmt_.substr(0, 6) != string("select")) {
+    ret = stmt_exec_->Execute(exec_result);
+    if (rSuccess != ret) {
+      return ret;
+    }
+  } else {
+    // select stmt
+    StmtExecStatus* exec_status = new StmtExecStatus(sql_stmt_);
+    exec_status->RegisterToTracker();
+    stmt_exec_->set_stmt_exec_status(exec_status);
+    ret = stmt_exec_->Execute();
+    if (rSuccess != ret) {
+      return ret;
+    } else {
+      exec_result->result_ = exec_status->get_query_result();
+      exec_result->status_ = true;
+      exec_result->info_ = exec_status->get_exec_info();
+      exec_status->set_exec_status(StmtExecStatus::ExecStatus::kDone);
+    }
   }
   double exec_time_ms = GetElapsedTime(start_time);
-  if (NULL != exec_result->result_)
+  if (NULL != exec_result->result_) {
     exec_result->result_->query_time_ = exec_time_ms / 1000.0;
+  }
   cout << "execute time: " << exec_time_ms / 1000.0 << " sec" << endl;
   return rSuccess;
 }

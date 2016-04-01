@@ -13,6 +13,7 @@ typedef int NodeID;
 /*
  * just for reporting storage budget
  */
+class StorageBudgetMessage;
 class InstanceResourceManager {
  public:
   InstanceResourceManager();

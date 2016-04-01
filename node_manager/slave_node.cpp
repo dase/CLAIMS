@@ -58,6 +58,7 @@ class SlaveNodeActor : public event_based_actor {
           quit();
         },
         [=](SendPlanAtom, string str) {
+          // should delete new_plan, but where to do it ???
           PhysicalQueryPlan* new_plan = new PhysicalQueryPlan(
               PhysicalQueryPlan::TextDeserializePlan(str));
           Environment::getInstance()
@@ -91,6 +92,17 @@ class SlaveNodeActor : public event_based_actor {
             const string& node_ip, const uint16_t& node_port) {
           slave_node_->node_id_to_addr_.insert(
               make_pair(node_id, make_pair(node_ip, node_port)));
+        },
+        [=](ReportSegESAtom, NodeSegmentID node_segment_id,
+            SegmentExecStatus::ExecStatus exec_status, string exec_info) {
+          bool ret = Environment::getInstance()
+                         ->get_stmt_exec_tracker()
+                         ->UpdateSegExecStatus(node_segment_id,
+                                                      exec_status, exec_info);
+          if (false == ret) {
+            return make_message(CancelPlanAtom::value);
+          }
+          return make_message(OkAtom::value);
         },
         caf::others >>
             [=]() { LOG(WARNING) << "unkown message at slave node!!!" << endl; }

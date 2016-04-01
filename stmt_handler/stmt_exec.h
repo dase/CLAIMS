@@ -29,6 +29,7 @@
 #ifndef STMT_HANDLER_STMT_EXEC_H_
 #define STMT_HANDLER_STMT_EXEC_H_
 #include "../Daemon/Daemon.h"
+#include "../exec_tracker/stmt_exec_tracker.h"
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
@@ -47,15 +48,24 @@
 
 namespace claims {
 namespace stmt_handler {
-typedef int RetCode;
 const int rSuccess = 0;
 const int rParserError = -11000;
 const int rUnknowStmtType = -11001;
+
 class StmtExec {
  public:
   StmtExec(AstNode* stmt);
   virtual ~StmtExec();
   virtual int Execute(ExecutedResult* exec_result);
+
+  virtual RetCode Execute() {
+    cout << "WARNING: parent StmtExec with returning StmtExecStatus" << endl;
+    return rSuccess;
+  }
+  StmtExecStatus* get_stmt_exec_status() { return stmt_exec_status_; }
+  void set_stmt_exec_status(StmtExecStatus* stmt_exec_status) {
+    stmt_exec_status_ = stmt_exec_status;
+  }
 
  public:
   const ResultSet* getResultSet() const;
@@ -75,6 +85,7 @@ class StmtExec {
   bool result_flag_;
   string error_msg_;
   string info_;
+  StmtExecStatus* stmt_exec_status_;
 };
 
 }  // namespace stmt_handler

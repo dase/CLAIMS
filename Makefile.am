@@ -35,6 +35,7 @@ LDADD =  \
     sql_parser/Test/libparser_test.a	\
     sql_parser/parser/libparser.a \
     sql_parser/ast_node/libast_node.a \
+    exec_tracker/libexec_tracker.a	\
 	logical_operator/liblogicalqueryplan.a \
 	physical_operator/libphysicalqueryplan.a \
 	storage/libstorage.a \
@@ -104,9 +105,9 @@ test_SOURCES = Test/gtest_main.cpp\
 				
 SUBDIRS=  catalog Client common Daemon Executor IndexManager\
 loader physical_operator logical_operator  Resource \
-storage Test utility codegen sql_parser stmt_handler  node_manager
+storage Test utility codegen sql_parser stmt_handler  node_manager exec_tracker
 
 DIST_SUBDIRS =  catalog Client common Daemon Executor IndexManager\
 loader physical_operator logical_operator  Resource \
-storage Test utility codegen sql_parser stmt_handler node_manager
+storage Test utility codegen sql_parser stmt_handler node_manager exec_tracker
 

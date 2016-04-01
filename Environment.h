@@ -18,6 +18,8 @@
 #include "common/Logging.h"
 #include "utility/thread_pool.h"
 #include "Client/ClaimsServer.h"
+#include "exec_tracker/stmt_exec_tracker.h"
+#include "exec_tracker/segment_exec_tracker.h"
 #include "Executor/exchange_tracker.h"
 #include "Executor/expander_tracker.h"
 #include "node_manager/master_node.h"
@@ -26,8 +28,15 @@
 
 using claims::catalog::Catalog;
 using claims::MasterNode;
+using claims::SegmentExecTracker;
 using claims::SlaveNode;
+using claims::StmtExecTracker;
 class Catalog;
+class IteratorExecutorSlave;
+class BlockManager;
+class ResourceManagerMaster;
+class InstanceResourceManager;
+class BlockManagerMaster;
 
 class Environment {
  public:
@@ -50,6 +59,9 @@ class Environment {
     return iteratorExecutorMaster;
   }
   BlockManagerMaster* get_block_manager_master() { return blockManagerMaster_; }
+
+  StmtExecTracker* get_stmt_exec_tracker() { return stmt_exec_tracker_; }
+  SegmentExecTracker* get_segment_exec_tracker() { return seg_exec_tracker_; }
 
  private:
   void AnnounceCafMessage();
@@ -89,6 +101,9 @@ class Environment {
   ThreadPool* thread_pool_;
   MasterNode* master_node_;
   SlaveNode* slave_node_;
+
+  StmtExecTracker* stmt_exec_tracker_;
+  SegmentExecTracker* seg_exec_tracker_;
   /**
    * TODO: the master and slave pair, such as ResouceManagerMaster and
    * ResourceManagerSlave, should have a

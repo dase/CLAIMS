@@ -1,4 +1,5 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS \
+-I${HADOOP_HOME}/include \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
 -I${GTEST_HOME}/include

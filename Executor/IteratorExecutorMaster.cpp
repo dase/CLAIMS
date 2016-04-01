@@ -36,8 +36,11 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(
 }
 // send serialized plan string to target
 bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(
-    PhysicalOperatorBase* it, NodeID target_id) {
-  PhysicalQueryPlan* im = new PhysicalQueryPlan(it);
+    PhysicalOperatorBase* it, NodeID target_id, u_int64_t query_id = 0,
+    u_int32_t segment_id = 0) {
+  PhysicalQueryPlan* im = new PhysicalQueryPlan(
+      it, target_id, query_id, segment_id,
+      Environment::getInstance()->get_slave_node()->GetNodeAddr());
   string str = PhysicalQueryPlan::TextSerializePlan(*im);
   caf::scoped_actor self;
   auto node_addr =

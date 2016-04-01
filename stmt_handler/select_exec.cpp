@@ -35,9 +35,11 @@
 #include <stack>
 #include <vector>
 #include <string>
+#include <utility>
 
 #include "../common/error_define.h"
 #include "../common/ids.h"
+#include "../exec_tracker/stmt_exec_tracker.h"
 #include "../Environment.h"
 #include "../logical_operator/logical_query_plan_root.h"
 #include "../physical_operator/exchange_sender.h"
@@ -57,6 +59,7 @@ using std::endl;
 using std::vector;
 using std::string;
 using std::cout;
+using std::make_pair;
 
 namespace claims {
 namespace stmt_handler {
@@ -153,10 +156,102 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   delete physical_plan;
   return rSuccess;
 }
+
+RetCode SelectExec::Execute() {
+#ifdef PRINTCONTEXT
+  select_ast_->Print();
+  cout << "--------------begin semantic analysis---------------" << endl;
+#endif
+  SemanticContext sem_cnxt;
+  RetCode ret = rSuccess;
+  ret = select_ast_->SemanticAnalisys(&sem_cnxt);
+  if (rSuccess != ret) {
+    stmt_exec_status_->set_exec_info("semantic analysis error \n" +
+                                     sem_cnxt.error_msg_);
+    stmt_exec_status_->set_exec_status(StmtExecStatus::ExecStatus::kError);
+    LOG(ERROR) << "semantic analysis error result= : " << ret;
+    return ret;
+  }
+#ifdef PRINTCONTEXT
+  select_ast_->Print();
+  cout << "--------------begin push down condition ------------" << endl;
+#endif
+  ret = select_ast_->PushDownCondition(NULL);
+  if (rSuccess != ret) {
+    stmt_exec_status_->set_exec_info("push down condition error");
+    stmt_exec_status_->set_exec_status(StmtExecStatus::ExecStatus::kError);
+    stmt_exec_status_->set_query_result(NULL);
+    ELOG(ret, stmt_exec_status_->get_exec_info());
+    cout << stmt_exec_status_->get_exec_info();
+    return ret;
+  }
+#ifndef PRINTCONTEXT
+  select_ast_->Print();
+  cout << "--------------begin logical plan -------------------" << endl;
+#endif
+
+  LogicalOperator* logic_plan = NULL;
+  ret = select_ast_->GetLogicalPlan(logic_plan);
+  if (rSuccess != ret) {
+    stmt_exec_status_->set_exec_info("get logical plan error");
+    stmt_exec_status_->set_exec_status(StmtExecStatus::ExecStatus::kError);
+    stmt_exec_status_->set_query_result(NULL);
+    ELOG(ret, stmt_exec_status_->get_exec_info());
+    cout << stmt_exec_status_->get_exec_info();
+    delete logic_plan;
+    return ret;
+  }
+  logic_plan = new LogicalQueryPlanRoot(0, logic_plan, raw_sql_,
+                                        LogicalQueryPlanRoot::kResultCollector);
+  logic_plan->GetPlanContext();
+#ifndef PRINTCONTEXT
+  logic_plan->Print();
+  cout << "--------------begin physical plan -------------------" << endl;
+#endif
+
+  PhysicalOperatorBase* physical_plan = logic_plan->GetPhysicalPlan(64 * 1024);
+#ifndef PRINTCONTEXT
+  physical_plan->Print();
+  cout << "--------------begin output result -------------------" << endl;
+#endif
+  // collect all plan segments
+  physical_plan->GetAllSegments(&all_segments_);
+  // create thread to send all segments
+  pthread_t tid = 0;
+  if (all_segments_.size() > 0) {
+    int ret = pthread_create(&tid, NULL, SendAllSegments, this);
+  }
+
+  physical_plan->Open();
+
+  while (physical_plan->Next(NULL)) {
+    if (StmtExecStatus::kCancelled == stmt_exec_status_->get_exec_status()) {
+      stmt_exec_status_->set_exec_info("stmt have been cancelled!");
+      stmt_exec_status_->set_query_result(NULL);
+      if (tid != 0) {
+        pthread_join(tid, NULL);
+      }
+      delete logic_plan;
+      delete physical_plan;
+      return -1;
+    }
+  }
+  stmt_exec_status_->set_query_result(physical_plan->GetResultSet());
+  physical_plan->Close();
+
+  if (tid != 0) {
+    pthread_join(tid, NULL);
+  }
+  stmt_exec_status_->set_exec_info("execute a query successfully");
+  delete logic_plan;
+  delete physical_plan;
+  return rSuccess;
+}
 //!!!return ret by global variant
 void* SelectExec::SendAllSegments(void* arg) {
   RetCode ret = 0;
   SelectExec* select_exec = reinterpret_cast<SelectExec*>(arg);
+  short segment_id = 0;
   while (!select_exec->all_segments_.empty()) {
     auto a_plan_segment = select_exec->all_segments_.top();
     // make sure upper exchanges are prepared
@@ -168,15 +263,25 @@ void* SelectExec::SendAllSegments(void* arg) {
         // set partition offset for each segment
         reinterpret_cast<ExchangeSender*>(physical_sender_oper)
             ->SetPartitionOffset(i);
+        segment_id = select_exec->get_stmt_exec_status()->GenSegmentId();
         if (Environment::getInstance()
                 ->get_iterator_executor_master()
                 ->ExecuteBlockStreamIteratorsOnSite(
                     physical_sender_oper,
-                    a_plan_segment->lower_node_id_list_[i]) == false) {
+                    a_plan_segment->lower_node_id_list_[i],
+                    select_exec->get_stmt_exec_status()->get_query_id(),
+                    segment_id) == false) {
           LOG(ERROR) << "send plan error!!" << endl;
           ret = -1;
           return &ret;
         }
+        // new SegmentExecStatus and add it to StmtExecStatus
+        SegmentExecStatus* seg_exec_status = new SegmentExecStatus(make_pair(
+            select_exec->get_stmt_exec_status()->get_query_id(),
+            segment_id * kMaxNodeNum + a_plan_segment->lower_node_id_list_[i]));
+
+        select_exec->get_stmt_exec_status()->AddSegExecStatus(seg_exec_status);
+
         LOG(INFO) << "send plan succeed!!!" << endl;
       }
     } else {

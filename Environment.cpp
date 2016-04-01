@@ -12,6 +12,8 @@
 #include <utility>
 
 #include "common/Message.h"
+#include "exec_tracker/stmt_exec_tracker.h"
+#include "exec_tracker/segment_exec_tracker.h"
 #include "node_manager/base_node.h"
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
@@ -42,6 +44,8 @@ using claims::common::InitTypeConversionMatrix;
 #include "catalog/catalog.h"
 using claims::common::rSuccess;
 using claims::NodeAddr;
+using claims::NodeSegmentID;
+using claims::StmtExecTracker;
 
 Environment* Environment::_instance = 0;
 
@@ -61,6 +65,8 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
       cerr << "ERROR: restore catalog failed" << endl;
     }
   }
+  stmt_exec_tracker_ = new StmtExecTracker();
+  seg_exec_tracker_ = new SegmentExecTracker();
 
   if (true == g_thread_pool_used) {
     logging_->log("Initializing the ThreadPool...");
@@ -152,6 +158,8 @@ void Environment::AnnounceCafMessage() {
   announce<ExchangeID>("ExchangeID", &ExchangeID::exchange_id,
                        &ExchangeID::partition_offset);
   announce<BaseNode>("BaseNode", &BaseNode::node_id_to_addr_);
+  announce<NodeSegmentID>("NodeSegmentID", &NodeSegmentID::first,
+                          &NodeSegmentID::second);
 }
 void Environment::initializeStorage() {
   if (ismaster_) {

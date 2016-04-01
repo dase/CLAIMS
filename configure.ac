@@ -40,6 +40,7 @@ AC_CONFIG_FILES([
   logical_operator/Makefile 
   Resource/Makefile 
   storage/Makefile 
+  exec_tracker/Makefile
   sql_parser/Makefile
   sql_parser/ast_node/Makefile
   sql_parser/parser/Makefile

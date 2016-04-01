@@ -54,6 +54,9 @@ using BindingAtom = caf::atom_constant<caf::atom("binding")>;
 using UnBindingAtom = caf::atom_constant<caf::atom("unbinding")>;
 using StorageBudgetAtom = caf::atom_constant<caf::atom("storage")>;
 using BroadcastNodeAtom = caf::atom_constant<caf::atom("brdst_node")>;
+using ReportSegESAtom = caf::atom_constant<caf::atom("rept_sts")>;
+using CheckStmtESAtom = caf::atom_constant<caf::atom("ck_stmtes")>;
+using CancelPlanAtom = caf::atom_constant<caf::atom("cancel")>;
 
 const int kTimeout = 30;
 class MemoryInfo {};

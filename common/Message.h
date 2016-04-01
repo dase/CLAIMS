@@ -29,9 +29,11 @@
 #include "serialization/RegisterDerivedClass.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../Debug.h"
+#include "../Environment.h"
+#include "../node_manager/base_node.h"
 #include "../storage/StorageLevel.h"
 #include "ids.h"
-
+using claims::NodeAddr;
 using claims::physical_operator::PhysicalOperatorBase;
 
 // It's better to use fixed length information for implementation concern.
@@ -373,10 +375,20 @@ class RegisterSlaveMessage {
  */
 class PhysicalQueryPlan {
  public:
-  PhysicalQueryPlan(PhysicalOperatorBase* it)
-      : block_stream_iterator_root_(it){};
+  PhysicalQueryPlan(PhysicalOperatorBase* it, NodeID node_id,
+                    u_int64_t query_id, u_int32_t segment_id,
+                    NodeAddr coor_addr)
+      : block_stream_iterator_root_(it),
+        target_node_id_(node_id),
+        query_id_(query_id),
+        segment_id_(segment_id),
+        coor_addr_(coor_addr) {}
   PhysicalQueryPlan(const PhysicalQueryPlan& r) {
     block_stream_iterator_root_ = r.block_stream_iterator_root_;
+    target_node_id_ = r.target_node_id_;
+    query_id_ = r.query_id_;
+    coor_addr_ = r.coor_addr_;
+    segment_id_ = r.segment_id_;
   }
 
   PhysicalQueryPlan() : block_stream_iterator_root_(0){};
@@ -420,12 +432,17 @@ class PhysicalQueryPlan {
 
  private:
   PhysicalOperatorBase* block_stream_iterator_root_;
+  NodeID target_node_id_;
+  u_int64_t query_id_;
+  u_int32_t segment_id_;
+  NodeAddr coor_addr_;
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     Register_Schemas(ar);
     Register_Block_Stream_Iterator(ar);
-    ar& block_stream_iterator_root_;
+    ar& block_stream_iterator_root_& target_node_id_& query_id_& coor_addr_&
+        segment_id_;
     //		ar & block_stream_iterator_root_;
   }
 };
