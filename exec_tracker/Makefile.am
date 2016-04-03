@@ -24,6 +24,8 @@ LDADD = 	../BlockStreamIterator/libblockstreamiterator.a \
 noinst_LIBRARIES=libexec_tracker.a
 
 libexec_tracker_a_SOURCES = \
+	segment_exec_status.h	segment_exec_status.cpp	\
+	stmt_exec_status.h		stmt_exec_status.cpp	\
 	segment_exec_tracker.h 	segment_exec_tracker.cpp	\
 	stmt_exec_tracker.h		stmt_exec_tracker.cpp
 	

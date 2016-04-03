@@ -35,6 +35,7 @@
 #include "../Environment.h"
 #include "../node_manager/base_node.h"
 #include "caf/all.hpp"
+#include "caf/local_actor.hpp"
 using std::make_pair;
 using std::string;
 namespace claims {
@@ -130,96 +131,6 @@ bool StmtExecTracker::UpdateSegExecStatus(
   LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
             << " receive : " << exec_status << " , " << exec_info;
   return ret;
-}
-
-StmtExecStatus::StmtExecStatus(string sql_stmt)
-    : sql_stmt_(sql_stmt),
-      query_result_(NULL),
-      exec_info_(""),
-      exec_status_(ExecStatus::kOk),
-      segment_id_gen_(0) {}
-
-StmtExecStatus::~StmtExecStatus() {
-  // due to the query result should return, so shouldn't be deleted here
-  // if (NULL != query_result_) delete query_result_;
-
-  for (auto it = node_seg_id_to_seges_.begin();
-       it != node_seg_id_to_seges_.end(); ++it) {
-    delete it->second;
-    it->second = NULL;
-  }
-  node_seg_id_to_seges_.clear();
-}
-
-RetCode StmtExecStatus::CancelStmtExec() {
-  if (ExecStatus::kCancelled == exec_status_) {
-    return 0;
-  }
-  exec_status_ = kCancelled;
-  //  LOG(INFO) << query_id_ << " query should be cancelled!";
-  //  for (auto it = node_seg_id_to_seges_.begin();
-  //       it != node_seg_id_to_seges_.end(); ++it) {
-  //    it->second->set_exec_status(SegmentExecStatus::ExecStatus::kCancelled);
-  //  }
-  return 0;
-}
-// check every segment status
-bool StmtExecStatus::CouldBeDeleted() {
-  if (exec_status_ == kOk) {
-    return false;
-  }
-  for (auto it = node_seg_id_to_seges_.begin();
-       it != node_seg_id_to_seges_.end(); ++it) {
-    if (it->second->get_exec_status() == SegmentExecStatus::ExecStatus::kOk) {
-      return false;
-    }
-  }
-  LOG(INFO) << query_id_ << " query can be deleted";
-  return true;
-}
-bool StmtExecStatus::HaveErrorCase(u_int64_t logic_time) {
-  for (auto it = node_seg_id_to_seges_.begin();
-       it != node_seg_id_to_seges_.end(); ++it) {
-    if (it->second->HaveErrorCase(logic_time)) {
-      return true;
-    }
-  }
-  return false;
-}
-RetCode StmtExecStatus::RegisterToTracker() {
-  return Environment::getInstance()->get_stmt_exec_tracker()->RegisterStmtES(
-      this);
-}
-
-RetCode StmtExecStatus::UnRegisterFromTracker() {
-  return Environment::getInstance()->get_stmt_exec_tracker()->UnRegisterStmtES(
-      query_id_);
-}
-void StmtExecStatus::AddSegExecStatus(SegmentExecStatus* seg_exec_status) {
-  node_seg_id_to_seges_.insert(
-      make_pair(seg_exec_status->get_node_segment_id(), seg_exec_status));
-}
-
-bool StmtExecStatus::UpdateSegExecStatus(
-    NodeSegmentID node_segment_id, SegmentExecStatus::ExecStatus exec_status,
-    string exec_info, u_int64_t logic_time) {
-  if (SegmentExecStatus::ExecStatus::kError == exec_status) {
-    CancelStmtExec();
-  }
-  //  lock_.acquire();
-  auto it = node_seg_id_to_seges_.find(node_segment_id);
-  assert(it != node_seg_id_to_seges_.end());
-
-  if (kCancelled == exec_status_) {
-    it->second->UpdateStatus(SegmentExecStatus::ExecStatus::kCancelled,
-                             exec_info, logic_time);
-    //    lock_.release();
-    return false;
-  } else {
-    it->second->UpdateStatus(exec_status, exec_info, logic_time);
-  }
-  //  lock_.release();
-  return true;
 }
 
 }  // namespace claims

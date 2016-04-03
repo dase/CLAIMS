@@ -64,43 +64,7 @@ class SegmentExecTracker {
       node_segment_id_to_status_;
   Lock map_lock_;
 };
-// due to the conflict between deleting SegmentExecStatus and reporting the
-// last message (deleting is faster than reporting, so the last message doesn't
-// been sent successfully), so all instance of SegmentExecStatus should be
-// governed by SegmentExecTracker, new it and register it, then after the last
-// message (e.t kDone of kCancelled), unregister it and delete it(may controlled
-// by object poor).
-class SegmentExecStatus {
- public:
-  enum ExecStatus { kError, kOk, kCancelled, kDone };
-  SegmentExecStatus(NodeSegmentID node_segment_id, NodeAddr coor_addr);
-  SegmentExecStatus(NodeSegmentID node_segment_id);
-  virtual ~SegmentExecStatus();
-  // first cancel data source, e.t. exchange merger
-  RetCode CancelSegExec();
-  RetCode ReportStatus();
-  RetCode ReportStatus(ExecStatus exec_status, string exec_info);
-  bool UpdateStatus(ExecStatus exec_status, string exec_info,
-                    u_int64_t logic_time = 0, bool need_report = false);
-  RetCode RegisterToTracker();
-  RetCode UnRegisterFromTracker();
-  NodeSegmentID get_node_segment_id() { return node_segment_id_; }
-  bool HaveErrorCase(u_int64_t logic_time);
-  ExecStatus get_exec_status() { return exec_status_; }
-  void set_exec_status(ExecStatus exec_status) { exec_status_ = exec_status; }
-  string get_exec_info() { return exec_info_; }
-  void set_exec_info(string exec_info) { exec_info_ = exec_info; }
 
- private:
-  ExecStatus exec_status_;
-  RetCode ret_code_;
-  string exec_info_;
-  u_int64_t logic_time_;
-  actor coor_actor_;
-  NodeAddr coor_addr_;
-  NodeSegmentID node_segment_id_;
-  Lock lock_;
-};
 }  // namespace claims
 
 #endif  //  EXEC_TRACKER_SEGMENT_EXEC_TRACKER_H_

@@ -28,9 +28,13 @@
 
 #ifndef EXEC_TRACKER_STMT_EXEC_TRACKER_H_
 #define EXEC_TRACKER_STMT_EXEC_TRACKER_H_
+#include "../exec_tracker/stmt_exec_tracker.h"
+
 #include <boost/unordered/unordered_map.hpp>
 #include <string>
 
+#include "./segment_exec_status.h"
+#include "./stmt_exec_status.h"
 #include "../common/Block/ResultSet.h"
 #include "../common/error_define.h"
 #include "../exec_tracker/segment_exec_tracker.h"
@@ -38,7 +42,6 @@
 using std::string;
 
 namespace claims {
-class StmtExecStatus;
 #define kMaxNodeNum 10000
 class StmtExecTracker {
  public:
@@ -63,43 +66,6 @@ class StmtExecTracker {
   Lock lock_;
 };
 
-class StmtExecStatus {
- public:
-  enum ExecStatus { kError, kOk, kCancelled, kDone };
-  StmtExecStatus(string sql_stmt);
-  virtual ~StmtExecStatus();
-  u_int64_t get_query_id() { return query_id_; }
-  void set_query_id(u_int64_t query_id) { query_id_ = query_id; }
-  RetCode CancelStmtExec();
-  RetCode RegisterToTracker();
-  RetCode UnRegisterFromTracker();
-  short GenSegmentId() { return segment_id_gen_++; }
-  void AddSegExecStatus(SegmentExecStatus* seg_exec_status);
-  bool UpdateSegExecStatus(NodeSegmentID node_segment_id,
-                           SegmentExecStatus::ExecStatus exec_status,
-                           string exec_info, u_int64_t logic_time);
-  bool CouldBeDeleted();
-  bool HaveErrorCase(u_int64_t logic_time);
-  void set_exec_status(ExecStatus exec_status) { exec_status_ = exec_status; }
-  ExecStatus get_exec_status() { return exec_status_; }
-  string get_exec_info() { return exec_info_; }
-  void set_exec_info(string exec_info) { exec_info_ = exec_info; }
-  ResultSet* get_query_result() { return query_result_; }
-  void set_query_result(ResultSet* query_result) {
-    query_result_ = query_result;
-  }
-  bool IsCancelled() { return exec_status_ == ExecStatus::kCancelled; }
+}  // namespace claims
 
- private:
-  string exec_info_;
-  ExecStatus exec_status_;
-  ResultSet* query_result_;
-  boost::unordered_map<NodeSegmentID, SegmentExecStatus*> node_seg_id_to_seges_;
-  u_int64_t query_id_;
-  string sql_stmt_;
-  std::atomic_short segment_id_gen_;
-  Lock lock_;
-};
-
-}  // namespace claimsEXEC_TRACKER_STMT_EXEC_TRACKER_H_XEC_TRACKER_H_
-#endif
+#endif  // EXEC_TRACKER_STMT_EXEC_TRACKER_H_
