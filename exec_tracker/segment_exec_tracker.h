@@ -64,6 +64,12 @@ class SegmentExecTracker {
       node_segment_id_to_status_;
   Lock map_lock_;
 };
+// due to the conflict between deleting SegmentExecStatus and reporting the
+// last message (deleting is faster than reporting, so the last message doesn't
+// been sent successfully), so all instance of SegmentExecStatus should be
+// governed by SegmentExecTracker, new it and register it, then after the last
+// message (e.t kDone of kCancelled), unregister it and delete it(may controlled
+// by object poor).
 class SegmentExecStatus {
  public:
   enum ExecStatus { kError, kOk, kCancelled, kDone };

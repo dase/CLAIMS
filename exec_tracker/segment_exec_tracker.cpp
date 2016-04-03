@@ -146,6 +146,8 @@ RetCode SegmentExecStatus::CancelSegExec() {
 RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
                                         string exec_info) {
   if (kCancelled == exec_status_) {
+    lock_.release();
+
     return 0;
   }
   //  lock_.acquire();
@@ -186,16 +188,19 @@ RetCode SegmentExecStatus::ReportStatus() {
     return 0;
   }
   lock_.acquire();
+  ExecStatus exec_status = exec_status_;
+  string exec_info = exec_info_;
+  lock_.release();
   try {
     caf::scoped_actor self;
     self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
-                    exec_status_, exec_info_)
+                    exec_status, exec_info)
         .await(
 
             [=](OkAtom) {
               LOG(INFO) << node_segment_id_.first << " , "
                         << node_segment_id_.second
-                        << " report : " << exec_status_ << " , " << exec_info_;
+                        << " report : " << exec_status << " , " << exec_info;
             },
             [=](CancelPlanAtom) { CancelSegExec(); },
             caf::after(std::chrono::seconds(kTimeout)) >>
@@ -209,11 +214,12 @@ RetCode SegmentExecStatus::ReportStatus() {
     LOG(WARNING) << "cann't connect to coordinator ( " << coor_addr_.first
                  << " , " << coor_addr_.second << " )";
   }
-  lock_.release();
 
   // for making sure kError or kDone be the last message sended to remote
-  if (ExecStatus::kError == exec_status_ || ExecStatus::kDone == exec_status_) {
+  if (ExecStatus::kError == exec_status || ExecStatus::kDone == exec_status) {
+    lock_.acquire();
     exec_status_ = kCancelled;
+    lock_.release();
   }
   return rSuccess;
 }
@@ -223,19 +229,23 @@ bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
     LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
               << " update status failed!";
     return false;
-  }
-  lock_.acquire();
-  logic_time_ = logic_time;
-  exec_status_ = exec_status;
-  exec_info_ = exec_info;
-  LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
-            << " update logic_time= " << logic_time_
-            << " exec_status_= " << exec_status_;
-  lock_.release();
-  if (need_report) {
+  } else if (kOk == exec_status_) {
     lock_.acquire();
-
-    ReportStatus(exec_status, exec_info);
+    logic_time_ = logic_time;
+    exec_status_ = exec_status;
+    exec_info_ = exec_info;
+    LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
+              << " update logic_time= " << logic_time_
+              << " exec_status_= " << exec_status_;
+    lock_.release();
+    if (need_report) {
+      //    lock_.acquire();
+      //
+      //    ReportStatus(exec_status, exec_info);
+      ReportStatus();
+    }
+  } else {
+    LOG(WARNING) << "segment's status shouldn't be updated!!";
   }
   return true;
 }
