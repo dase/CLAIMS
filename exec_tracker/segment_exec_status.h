@@ -77,14 +77,14 @@ class SegmentExecStatus {
   Lock lock_;
 };
 
-#define RETURN_IF_CANCELLED(state)                        \
-  do {                                                    \
-    if (UNLIKELY((state)->is_cancelled())) {              \
-      cout << state->get_node_segment_id().first << " , " \
-           << state->get_node_segment_id().second         \
-           << " is cancelled and exited execution!";      \
-      return false;                                       \
-    }                                                     \
+#define RETURN_IF_CANCELLED(exec_status)                                \
+  do {                                                                  \
+    if (UNLIKELY((exec_status)->is_cancelled())) {                      \
+      LOG(WARNING) << exec_status->get_node_segment_id().first << " , " \
+                   << exec_status->get_node_segment_id().second         \
+                   << " is cancelled and exited execution!";            \
+      return false;                                                     \
+    }                                                                   \
   } while (false)
 
 }  // namespace claims

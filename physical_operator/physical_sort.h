@@ -109,14 +109,15 @@ class PhysicalSort : public PhysicalOperator {
    *          partiton the function operates on.
    * @return  true in all cases.
    */
-  bool Open(const PartitionOffset& part_off = 0);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& part_off = 0);
   /**
    * @brief Method description: Send the sorted data to father operator.
    * @param   BlockStreamBase *block, the info of block
    * @return  false if there's no tuple to function and the block is empty,
    *          otherwise true.
    */
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
   /**
    * @brief Method description: Close child opertor.
    * @return  true.

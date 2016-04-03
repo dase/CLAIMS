@@ -93,7 +93,8 @@ PhysicalHashJoin::State::State(
       hashtable_bucket_size_(ht_bucketsize),
       block_size_(block_size) {}
 
-bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
+bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
+                            const PartitionOffset& partition_offset) {
 #ifdef TIME
   startTimer(&timer);
 #endif
@@ -161,7 +162,7 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
    * serialization, then continue processing. Tong
    */
   LOG(INFO) << "join operator begin to open left child" << endl;
-  state_.child_left_->Open(partition_offset);
+  state_.child_left_->Open(exec_status, partition_offset);
   LOG(INFO) << "join operator finished opening left child" << endl;
   BarrierArrive(0);
   BasicHashTable::Iterator tmp_it = hashtable_->CreateIterator();
@@ -186,7 +187,7 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
   unsigned long long int processed_tuple_count = 0;
 
   LOG(INFO) << "join operator begin to call left child's next()" << endl;
-  while (state_.child_left_->Next(jtc->l_block_for_asking_)) {
+  while (state_.child_left_->Next(exec_status, jtc->l_block_for_asking_)) {
     delete jtc->l_block_stream_iterator_;
     jtc->l_block_stream_iterator_ = jtc->l_block_for_asking_->createIterator();
     while (cur = jtc->l_block_stream_iterator_->nextTuple()) {
@@ -218,12 +219,13 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
   }
 
   BarrierArrive(1);
-  state_.child_right_->Open(partition_offset);
+  state_.child_right_->Open(exec_status, partition_offset);
   LOG(INFO) << "join operator finished opening right child" << endl;
   return true;
 }
 
-bool PhysicalHashJoin::Next(BlockStreamBase* block) {
+bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
+                            BlockStreamBase* block) {
   void* result_tuple = NULL;
   void* tuple_from_right_child;
   void* tuple_in_hashtable;
@@ -300,7 +302,8 @@ bool PhysicalHashJoin::Next(BlockStreamBase* block) {
     }
     jtc->r_block_for_asking_->setEmpty();
     jtc->hashtable_iterator_ = hashtable_->CreateIterator();
-    if (state_.child_right_->Next(jtc->r_block_for_asking_) == false) {
+    if (state_.child_right_->Next(exec_status, jtc->r_block_for_asking_) ==
+        false) {
       if (block->Empty() == true) {
         return false;
       } else {

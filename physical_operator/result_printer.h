@@ -30,8 +30,6 @@
 #include "../physical_operator/physical_operator_base.h"
 #include "../common/Schema/Schema.h"
 
-
-
 namespace claims {
 namespace physical_operator {
 class ResultPrinter : public PhysicalOperatorBase {
@@ -61,8 +59,9 @@ class ResultPrinter : public PhysicalOperatorBase {
   ResultPrinter();
   ResultPrinter(State state);
   virtual ~ResultPrinter();
-  bool Open(const PartitionOffset& offset);
-  bool Next(BlockStreamBase* block);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& offset);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);

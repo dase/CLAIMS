@@ -104,8 +104,8 @@ class PhysicalAggregation : public PhysicalOperator {
   PhysicalAggregation();
   virtual ~PhysicalAggregation();
 
-  bool Open(const PartitionOffset &partition_offset);
-  bool Next(BlockStreamBase *block);
+  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset &partition_offset);
+  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase *block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment *> *all_segments);

@@ -74,7 +74,8 @@ ResultCollector::State::State(Schema* input, PhysicalOperatorBase* child,
       partition_offset_(partitoin_offset),
       column_header_(column_header) {}
 
-bool ResultCollector::Open(const PartitionOffset& part_offset) {
+bool ResultCollector::Open(SegmentExecStatus* const exec_status,
+                           const PartitionOffset& part_offset) {
   state_.partition_offset_ = part_offset;
 
   if (sema_open_.try_wait()) {
@@ -87,6 +88,7 @@ bool ResultCollector::Open(const PartitionOffset& part_offset) {
     }
   }
   registered_thread_count_++;
+  exec_status_ = exec_status;
   if (true == g_thread_pool_used) {
     Environment::getInstance()->getThreadPool()->AddTask(CollectResult, this);
   } else {
@@ -99,7 +101,10 @@ bool ResultCollector::Open(const PartitionOffset& part_offset) {
   return true;
 }
 
-bool ResultCollector::Next(BlockStreamBase* block) { return false; }
+bool ResultCollector::Next(SegmentExecStatus* const exec_status,
+                           BlockStreamBase* block) {
+  return false;
+}
 
 bool ResultCollector::Close() {
   state_.child_->Close();
@@ -138,7 +143,8 @@ void ResultCollector::DeallocateBlockStream(BlockStreamBase*& target) const {
 
 void* ResultCollector::CollectResult(void* arg) {
   ResultCollector* Pthis = (ResultCollector*)arg;
-  Pthis->state_.child_->Open(Pthis->state_.partition_offset_);
+  Pthis->state_.child_->Open(Pthis->exec_status_,
+                             Pthis->state_.partition_offset_);
   BlockStreamBase* block_for_asking;
   if (false == Pthis->CreateBlockStream(block_for_asking)) {
     assert(false);
@@ -149,7 +155,7 @@ void* ResultCollector::CollectResult(void* arg) {
   unsigned long long start = 0;
   start = curtick();
 
-  while (Pthis->state_.child_->Next(block_for_asking)) {
+  while (Pthis->state_.child_->Next(Pthis->exec_status_, block_for_asking)) {
     Pthis->block_buffer_->atomicAppendNewBlock(block_for_asking);
     if (false == Pthis->CreateBlockStream(block_for_asking)) {
       assert(false);

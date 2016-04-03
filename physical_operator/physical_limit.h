@@ -76,14 +76,14 @@ class PhysicalLimit : public PhysicalOperatorBase {
    * @brief Method description: Initialize the position of current tuple and
    * target tuple
    */
-  bool Open(const PartitionOffset& kPartitionOffset);
+  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset& kPartitionOffset);
 
   /**
    * @brief Method description:find limit_tuple tuples from start_position and
    * return them
    * @return : given tuples.
    */
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase* block);
 
   /**
    * @brief Method description: revoke resource

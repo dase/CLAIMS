@@ -78,7 +78,8 @@ Expander::State::State(Schema* schema, PhysicalOperatorBase* child,
  * @param partitoin_offset means to solve corresponding partition
  * every Expander should register to ExpanderTracker
  */
-bool Expander::Open(const PartitionOffset& partitoin_offset) {
+bool Expander::Open(SegmentExecStatus * const exec_status,
+                    const PartitionOffset& partitoin_offset) {
   received_tuples_ = 0;
   state_.partition_offset_ = partitoin_offset;
   input_data_complete_ = false;
@@ -93,7 +94,7 @@ bool Expander::Open(const PartitionOffset& partitoin_offset) {
   LOG(INFO) << expander_id_
             << "Expander open, thread count= " << state_.init_thread_count_
             << std::endl;
-
+  exec_status_ = exec_status;
   for (unsigned i = 0; i < state_.init_thread_count_; i++) {
     if (CreateWorkingThread() == false) {
       LOG(INFO) << "expander_id_ = " << expander_id_
@@ -106,7 +107,8 @@ bool Expander::Open(const PartitionOffset& partitoin_offset) {
 /**
  * fetch one block from buffer and return, until it is exhausted.
  */
-bool Expander::Next(BlockStreamBase* block) {
+bool Expander::Next(SegmentExecStatus * const exec_status,
+                    BlockStreamBase* block) {
   while (!block_stream_buffer_->getBlock(*block)) {
     if (ChildExhausted()) {
       return false;
@@ -192,7 +194,8 @@ void* Expander::ExpandedWork(void* arg) {
             << " begins to open child!" << std::endl;
   ticks start_open = curtick();
 
-  Pthis->state_.child_->Open(Pthis->state_.partition_offset_);
+  Pthis->state_.child_->Open(Pthis->exec_status_,
+                             Pthis->state_.partition_offset_);
 
   LOG(INFO) << Pthis->expander_id_ << ", pid= " << pid
             << " finished opening child" << std::endl;
@@ -212,7 +215,7 @@ void* Expander::ExpandedWork(void* arg) {
         Pthis->state_.schema_, Pthis->state_.block_size_);
     block_for_asking->setEmpty();
 
-    while (Pthis->state_.child_->Next(block_for_asking)) {
+    while (Pthis->state_.child_->Next(Pthis->exec_status_, block_for_asking)) {
       if (!block_for_asking->Empty()) {
         Pthis->lock_.acquire();
         Pthis->received_tuples_ += block_for_asking->getTuplesInBlock();

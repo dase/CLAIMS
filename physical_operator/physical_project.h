@@ -134,12 +134,13 @@ class PhysicalProject : public PhysicalOperator {
   /**
    * @brief: construct iterator of project operator
    */
-  bool Open(const PartitionOffset &kPartitionOffset = 0);
+  bool Open(SegmentExecStatus *const exec_status,
+            const PartitionOffset &kPartitionOffset = 0);
 
   /**
    * @brief: fetch a block from child and ProcessInLogic().
    */
-  bool Next(BlockStreamBase *block);
+  bool Next(SegmentExecStatus *const exec_status, BlockStreamBase *block);
 
   /**
    * @brief: revoke resource.

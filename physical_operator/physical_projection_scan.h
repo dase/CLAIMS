@@ -123,13 +123,13 @@ class PhysicalProjectionScan : public PhysicalOperator {
    * @brief Method description: Initialize the operator and get the initial
    * position of chunk read iterator.
    */
-  bool Open(const PartitionOffset& partition_offset = 0);
+  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset& partition_offset = 0);
 
   /**
    * @brief: fetch block from child operator.
    */
 
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase* block);
   /**
    * @brief: revoke resource.
    */

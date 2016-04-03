@@ -32,7 +32,7 @@
 #include "../common/data_type.h"
 #include "../common/error_define.h"
 #include "../common/ids.h"
-
+#include "../exec_tracker/segment_exec_status.h"
 using claims::common::rSuccess;
 namespace claims {
 namespace physical_operator {
@@ -66,8 +66,9 @@ class PhysicalOperatorBase {
 
   static PhysicalOperatorBase* createIterator(const string& IteratorName);
 
-  virtual bool Open(const PartitionOffset& part_off = 0) = 0;
-  virtual bool Next(BlockStreamBase*) = 0;
+  virtual bool Open(SegmentExecStatus* const exec_status,
+                    const PartitionOffset& part_off = 0) = 0;
+  virtual bool Next(SegmentExecStatus* const exec_status, BlockStreamBase*) = 0;
   virtual bool Close() = 0;
   virtual void Print() { printf("??\n"); }
   virtual RetCode GetAllSegments(stack<Segment*>* all_segments) {

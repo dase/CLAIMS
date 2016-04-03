@@ -13,10 +13,10 @@ void PhysicalQueryPlan::run() {
       coor_addr_);
   segment_exec_status->RegisterToTracker();
 
-  block_stream_iterator_root_->Open();
+  block_stream_iterator_root_->Open(segment_exec_status);
   segment_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
                                     "physical plan open() succeed", 0, true);
-  while (block_stream_iterator_root_->Next(0)) {
+  while (block_stream_iterator_root_->Next(segment_exec_status, 0)) {
   }
   segment_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
                                     "physical plan next() succeed", 0, true);

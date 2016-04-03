@@ -65,8 +65,9 @@ ExchangeSenderPipeline::~ExchangeSenderPipeline() {
  * pay attention to the work of different block buffer according to the
  * comments near it
  */
-bool ExchangeSenderPipeline::Open(const PartitionOffset&) {
-  state_.child_->Open(state_.partition_offset_);
+bool ExchangeSenderPipeline::Open(SegmentExecStatus * const exec_status,
+                                  const PartitionOffset&) {
+  state_.child_->Open(exec_status, state_.partition_offset_);
   upper_num_ = state_.upper_id_list_.size();
   partition_function_ =
       PartitionFunctionFactory::createBoostHashFunction(upper_num_);
@@ -155,12 +156,13 @@ bool ExchangeSenderPipeline::Open(const PartitionOffset&) {
  * else the state_.partition_schema_ is broadcast, straightly insert the block
  * from child into each partition buffer.
  */
-bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
+bool ExchangeSenderPipeline::Next(SegmentExecStatus * const exec_status,
+                                  BlockStreamBase* no_block) {
   void* tuple_from_child;
   void* tuple_in_cur_block_stream;
   while (true) {
     block_for_asking_->setEmpty();
-    if (state_.child_->Next(block_for_asking_)) {
+    if (state_.child_->Next(exec_status, block_for_asking_)) {
       /**
        * if a blocks is obtained from child, we repartition the tuples in the
        * block to corresponding partition_block_stream_.

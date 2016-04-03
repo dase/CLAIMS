@@ -135,7 +135,8 @@ PhysicalAggregation::State::State(
  * shared
  * hash table thread by thread synchronized by the hash table lock.
  */
-bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
+bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
+                               const PartitionOffset &partition_offset) {
   RegisterExpandedThreadToAllBarriers();
   // copy expression and initialize them
   vector<ExprNode *> group_by_attrs;
@@ -166,7 +167,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
     UnregisterExpandedThreadToAllBarriers(1);
     return true;
   }
-  state_.child_->Open(partition_offset);
+  state_.child_->Open(exec_status, partition_offset);
   ticks start = curtick();
   if (TryEntryIntoSerializedSection(1)) {
     hash_ = PartitionFunctionFactory::createGeneralModuloFunction(
@@ -212,7 +213,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
 
   start = curtick();
   // traverse every block from child
-  while (state_.child_->Next(block_for_asking)) {
+  while (state_.child_->Next(exec_status, block_for_asking)) {
     BlockStreamBase::BlockStreamTraverseIterator *bsti =
         block_for_asking->createIterator();
     bsti->reset();
@@ -407,7 +408,8 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
  * hash table, which will definitely reduce the degree of parallelism.
  * But it is for now, assuming that the aggregated results are small.
  */
-bool PhysicalAggregation::Next(BlockStreamBase *block) {
+bool PhysicalAggregation::Next(SegmentExecStatus *const exec_status,
+                               BlockStreamBase *block) {
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers(3);

@@ -90,7 +90,8 @@ ExchangeMerger::~ExchangeMerger() {
  * exchange merger is at the end of one segment of plan, so it's the "stage_src"
  * for this stage
  */
-bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
+bool ExchangeMerger::Open(SegmentExecStatus * const exec_status,
+                          const PartitionOffset& partition_offset) {
   unsigned long long int start = curtick();
   RegisterExpandedThreadToAllBarriers();
   if (TryEntryIntoSerializedSection()) {  // first arrived thread dose
@@ -164,7 +165,8 @@ bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
 /**
  * return block from all_merged_block_buffer
  */
-bool ExchangeMerger::Next(BlockStreamBase* block) {
+bool ExchangeMerger::Next(SegmentExecStatus * const exec_status,
+                          BlockStreamBase* block) {
   while (true) {
     /*
      * As Exchange merger is a local stage beginner, ExchangeMerger::next will
@@ -267,17 +269,17 @@ bool ExchangeMerger::PrepareSocket() {
   my_addr.sin_family = AF_INET;
 
   /* apply for the port dynamically.*/
-/*  if ((socket_port_ = PortManager::getInstance()->applyPort()) == 0) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_
-               << " Fails to apply a port for the socket. Reason: the "
-                  " PortManager is exhausted !" << endl;
-    return false;
-  }
-  LOG(INFO) << " exchange_id = " << state_.exchange_id_
-            << " partition_offset = " << partition_offset_
-            << " succeed applying one port !" << endl;
-*/
+  /*  if ((socket_port_ = PortManager::getInstance()->applyPort()) == 0) {
+      LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                 << " partition_offset = " << partition_offset_
+                 << " Fails to apply a port for the socket. Reason: the "
+                    " PortManager is exhausted !" << endl;
+      return false;
+    }
+    LOG(INFO) << " exchange_id = " << state_.exchange_id_
+              << " partition_offset = " << partition_offset_
+              << " succeed applying one port !" << endl;
+  */
   my_addr.sin_port = htons(0);
   my_addr.sin_addr.s_addr = INADDR_ANY;
   bzero(&(my_addr.sin_zero), 8);
@@ -294,12 +296,11 @@ bool ExchangeMerger::PrepareSocket() {
     return false;
   }
 
-  if(getsockname(sock_fd_, (struct sockaddr*)&my_addr2, &len) == -1)
-  {
-      LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_ << " getsockname error!"
-               << endl;
-	  return false;
+  if (getsockname(sock_fd_, (struct sockaddr*)&my_addr2, &len) == -1) {
+    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+               << " partition_offset = " << partition_offset_
+               << " getsockname error!" << endl;
+    return false;
   }
   socket_port_ = ntohs(my_addr2.sin_port);
 

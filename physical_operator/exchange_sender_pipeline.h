@@ -103,12 +103,13 @@ class ExchangeSenderPipeline : public ExchangeSender {
    * 2.build socket connection with uppder mergers
    * 3.create sender thread that sends blocks to different upper mergers.
    */
-  bool Open(const PartitionOffset& partition_offset = 0);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partition_offset = 0);
   /**
    * divide block that come from child and insert them into corresponding
    * partition buffer
    */
-  bool Next(BlockStreamBase* no_block);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* no_block);
   bool Close();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
   void SetPartitionOffset(const int par_off) {

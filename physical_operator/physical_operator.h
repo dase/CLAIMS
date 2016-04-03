@@ -80,8 +80,13 @@ class PhysicalOperator : public PhysicalOperatorBase {
    * when deserializing, and hence the following three virtual method cannot be
    * pure.
    */
-  virtual bool Open(const PartitionOffset& part_off = 0) { assert(false); };
-  virtual bool Next(BlockStreamBase*) { assert(false); };
+  virtual bool Open(SegmentExecStatus * const exec_status,
+                    const PartitionOffset& part_off = 0) {
+    assert(false);
+  };
+  virtual bool Next(SegmentExecStatus * const exec_status, BlockStreamBase*) {
+    assert(false);
+  };
   virtual bool Close() { assert(false); };
   virtual void Print() { printf("??\n"); };
 

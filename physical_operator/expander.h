@@ -42,8 +42,6 @@
 #include "../utility/thread_pool.h"
 #include "../Environment.h"
 
-
-
 namespace claims {
 namespace physical_operator {
 #define EXPANDER_BUFFER_SIZE 1000
@@ -85,11 +83,12 @@ class Expander : public PhysicalOperatorBase,
    * prepare block-buffer for collecting block from child and some thread list,
    * create one initial working thread.
    */
-  bool Open(const PartitionOffset& partitoin_offset = 0);
+  bool Open(SegmentExecStatus * const exec_status,
+            const PartitionOffset& partitoin_offset = 0);
   /**
    * fetch one block from buffer and return
    */
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus * const exec_status, BlockStreamBase* block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
@@ -112,7 +111,7 @@ class Expander : public PhysicalOperatorBase,
 
  private:
   State state_;
-
+  SegmentExecStatus* exec_status_;
   /*
    * The set of threads that are working normally.
    */

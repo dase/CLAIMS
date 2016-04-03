@@ -25,6 +25,8 @@
 
 #include <glog/logging.h>
 #include <iostream>
+
+#include "../exec_tracker/segment_exec_status.h"
 #include "../utility/rdtsc.h"
 
 using std::endl;
@@ -34,9 +36,10 @@ PerformanceMonitor::PerformanceMonitor(State state) : state_(state) {}
 PerformanceMonitor::PerformanceMonitor() {}
 PerformanceMonitor::~PerformanceMonitor() {}
 
-bool PerformanceMonitor::Open(const PartitionOffset& partition_offset) {
+bool PerformanceMonitor::Open(SegmentExecStatus* const exec_status,
+                              const PartitionOffset& partition_offset) {
   start_ = curtick();
-  state_.child_->Open(partition_offset);
+  state_.child_->Open(exec_status, partition_offset);
   block_ = BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   tuplecount_ = 0;
   int error;
@@ -48,12 +51,13 @@ bool PerformanceMonitor::Open(const PartitionOffset& partition_offset) {
   return true;
 }
 
-bool PerformanceMonitor::Next(BlockStreamBase*) {
+bool PerformanceMonitor::Next(SegmentExecStatus* const exec_status,
+                              BlockStreamBase*) {
   //	PartitionFunction*
   // hash=PartitionFunctionFactory::createBoostHashFunction(4);
   //	const int partition_index=3;
   block_->setEmpty();
-  if (state_.child_->Next(block_)) {
+  if (state_.child_->Next(exec_status, block_)) {
     BlockStreamBase::BlockStreamTraverseIterator* it = block_->createIterator();
     while (it->nextTuple()) {
       //			tuplecount_++;

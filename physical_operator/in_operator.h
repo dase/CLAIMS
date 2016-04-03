@@ -100,10 +100,11 @@ class InOperator : public PhysicalOperatorBase {
   InOperator();
   virtual ~InOperator();
   // buffer result of sub_query in a hash_table
-  bool Open(const PartitionOffset &partition_offset = 0);
+  bool Open(SegmentExecStatus *const exec_status,
+            const PartitionOffset &partition_offset = 0);
   // get block from child, and fetch each tuple, then compare with every tuple
   // in corresponding hash_bucket
-  bool Next(BlockStreamBase *block);
+  bool Next(SegmentExecStatus *const exec_status, BlockStreamBase *block);
   bool Close();
 
  private:

@@ -78,9 +78,10 @@ InOperator::State::State(PhysicalOperatorBase* child_set,
       ht_nbuckets_(1024),
       ht_bucket_size_(64) {}
 
-bool InOperator::Open(const PartitionOffset& partition_offset) {
-  state_.child_set_->Open(partition_offset);
-  state_.child_in_->Open(partition_offset);
+bool InOperator::Open(SegmentExecStatus* const exec_status,
+                      const PartitionOffset& partition_offset) {
+  state_.child_set_->Open(exec_status, partition_offset);
+  state_.child_in_->Open(exec_status, partition_offset);
   AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(
       state_.schema_child_set_, state_.block_size_));
   AtomicPushFreeBlockStream(BlockStreamBase::createBlock(
@@ -106,7 +107,7 @@ bool InOperator::Open(const PartitionOffset& partition_offset) {
   unsigned bn = 0;
 
   BlockStreamBase* bsb = AtomicPopFreeHtBlockStream();
-  while (state_.child_set_->Next(bsb)) {
+  while (state_.child_set_->Next(exec_status, bsb)) {
     BlockStreamBase::BlockStreamTraverseIterator* bsti = bsb->createIterator();
     bsti->reset();
     while (cur_tuple = bsti->nextTuple()) {
@@ -128,7 +129,8 @@ bool InOperator::Open(const PartitionOffset& partition_offset) {
   return true;
 }
 
-bool InOperator::Next(BlockStreamBase* block) {
+bool InOperator::Next(SegmentExecStatus* const exec_status,
+                      BlockStreamBase* block) {
   unsigned bn;
   RemainingBlock rb;
   void* tuple_from_child_in = NULL;
@@ -175,7 +177,7 @@ bool InOperator::Next(BlockStreamBase* block) {
 
   BlockStreamBase* block_for_asking = AtomicPopFreeBlockStream();
   block_for_asking->setEmpty();
-  while (state_.child_in_->Next(block_for_asking)) {
+  while (state_.child_in_->Next(exec_status, block_for_asking)) {
     BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator =
         block_for_asking->createIterator();
     while ((tuple_from_child_in = traverse_iterator->currentTuple()) > 0) {

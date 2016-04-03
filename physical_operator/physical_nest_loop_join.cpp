@@ -69,7 +69,8 @@ PhysicalNestLoopJoin::State::State(PhysicalOperatorBase *child_left,
  * block buffer is a dynamic block buffer since all the expanded threads will
  * share the same block buffer.
  */
-bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
+bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
+                                const PartitionOffset &partition_offset) {
   RegisterExpandedThreadToAllBarriers();
   unsigned long long int timer;
   bool winning_thread = false;
@@ -82,13 +83,13 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     LOG(INFO) << "[NestloopJoin]: [the first thread opens the nestloopJoin "
                  "physical operator]" << std::endl;
   }
-  state_.child_left_->Open(partition_offset);
+  state_.child_left_->Open(exec_status, partition_offset);
   BarrierArrive(0);
   NestLoopJoinContext *jtc = new NestLoopJoinContext();
   // create a new block to hold the results from the left child
   // and add results to the dynamic buffer
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
-  while (state_.child_left_->Next(jtc->block_for_asking_)) {
+  while (state_.child_left_->Next(exec_status, jtc->block_for_asking_)) {
     block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
     CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
   }
@@ -124,12 +125,13 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   InitContext(jtc);  // rename this function, here means to store the thread
                      // context in the operator context
 
-  state_.child_right_->Open(partition_offset);
+  state_.child_right_->Open(exec_status, partition_offset);
 
   return true;
 }
 
-bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
+bool PhysicalNestLoopJoin::Next(SegmentExecStatus *const exec_status,
+                                BlockStreamBase *block) {
   /**
    * @brief it describes the sequence of the nestloop join. As the intermediate
    * result of the left child has been stored in the dynamic block buffer in the
@@ -198,7 +200,7 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
       LOG(WARNING) << "[NestloopJoin]: the buffer is empty in nest loop join!";
       // for getting all right child's data
       jtc->block_for_asking_->setEmpty();
-      while (state_.child_right_->Next(jtc->block_for_asking_)) {
+      while (state_.child_right_->Next(exec_status, jtc->block_for_asking_)) {
         jtc->block_for_asking_->setEmpty();
       }
       return false;
@@ -207,7 +209,8 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
 
     // ask block from right child
     jtc->block_for_asking_->setEmpty();
-    if (false == state_.child_right_->Next(jtc->block_for_asking_)) {
+    if (false ==
+        state_.child_right_->Next(exec_status, jtc->block_for_asking_)) {
       if (true == block->Empty()) {
         LOG(WARNING) << "[NestloopJoin]: [no join result is stored in the "
                         "block after traverse the right child operator]"
@@ -222,7 +225,7 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
     jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
     jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
   }
-  return Next(block);
+  return Next(exec_status, block);
 }
 bool PhysicalNestLoopJoin::Close() {
   InitExpandedStatus();

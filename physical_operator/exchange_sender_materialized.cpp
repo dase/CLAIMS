@@ -60,8 +60,9 @@ ExchangeSenderMaterialized::~ExchangeSenderMaterialized() {}
 ExchangeSenderMaterialized::ExchangeSenderMaterialized() {
   set_phy_oper_type(kphysicalExchangeSender);
 }
-bool ExchangeSenderMaterialized::Open(const PartitionOffset&) {
-  state_.child_->Open(state_.partition_offset_);
+bool ExchangeSenderMaterialized::Open(SegmentExecStatus * const exec_status,
+                                      const PartitionOffset&) {
+  state_.child_->Open(exec_status, state_.partition_offset_);
 
   /** get the number of mergers **/
   nuppers_ = state_.upper_id_list_.size();
@@ -114,12 +115,13 @@ bool ExchangeSenderMaterialized::Open(const PartitionOffset&) {
 
   return true;
 }
-bool ExchangeSenderMaterialized::Next(BlockStreamBase* no_block) {
+bool ExchangeSenderMaterialized::Next(SegmentExecStatus * const exec_status,
+                                      BlockStreamBase* no_block) {
   void* tuple_from_child;
   void* tuple_in_cur_block_stream;
   while (true) {
     block_stream_for_asking_->setEmpty();
-    if (state_.child_->Next(block_stream_for_asking_)) {
+    if (state_.child_->Next(exec_status, block_stream_for_asking_)) {
       /** a new block is obtained from child iterator **/
       if (state_.partition_schema_.isHashPartition()) {
         BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator =

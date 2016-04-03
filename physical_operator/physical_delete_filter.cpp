@@ -86,7 +86,8 @@ PhysicalDeleteFilter::State::State(PhysicalOperatorBase* child_left,
  *hash manner and accelerate the probe phase
  *
  */
-bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
+bool PhysicalDeleteFilter::Open(SegmentExecStatus* const exec_status,
+                                const PartitionOffset& partition_offset) {
 #ifdef TIME
   startTimer(&timer);
 #endif
@@ -166,7 +167,7 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
    * in order to accelerate the open response time.
    */
   LOG(INFO) << "delete filter operator begin to open left child" << endl;
-  state_.child_left_->Open(partition_offset);
+  state_.child_left_->Open(exec_status, partition_offset);
   LOG(INFO) << "delete filter operator finished opening left child" << endl;
   BarrierArrive(0);
   BasicHashTable::Iterator tmp_it = hashtable_->CreateIterator();
@@ -193,7 +194,7 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
 
   LOG(INFO) << "delete filter operator begin to call left child's next()"
             << endl;
-  while (state_.child_left_->Next(dftc->l_block_for_asking_)) {
+  while (state_.child_left_->Next(exec_status, dftc->l_block_for_asking_)) {
     delete dftc->l_block_stream_iterator_;
     dftc->l_block_stream_iterator_ =
         dftc->l_block_for_asking_->createIterator();
@@ -241,12 +242,13 @@ bool PhysicalDeleteFilter::Open(const PartitionOffset& partition_offset) {
 
   //  printf("join open consume %d tuples\n",consumed_tuples_from_left);
 
-  state_.child_right_->Open(partition_offset);
+  state_.child_right_->Open(exec_status, partition_offset);
   LOG(INFO) << "delete filter operator finished opening right child" << endl;
   return true;
 }
 
-bool PhysicalDeleteFilter::Next(BlockStreamBase* block) {
+bool PhysicalDeleteFilter::Next(SegmentExecStatus* const exec_status,
+                                BlockStreamBase* block) {
   void* result_tuple;
   void* tuple_from_right_child;
   void* tuple_in_hashtable;
@@ -330,7 +332,8 @@ bool PhysicalDeleteFilter::Next(BlockStreamBase* block) {
     }
     dftc->r_block_for_asking_->setEmpty();
     dftc->hashtable_iterator_ = hashtable_->CreateIterator();
-    if (state_.child_right_->Next(dftc->r_block_for_asking_) == false) {
+    if (state_.child_right_->Next(exec_status, dftc->r_block_for_asking_) ==
+        false) {
       if (block->Empty() == true) {
         free(joinedTuple);
         return false;
@@ -353,7 +356,7 @@ bool PhysicalDeleteFilter::Next(BlockStreamBase* block) {
       hashtable_->placeIterator(dftc->hashtable_iterator_, bn);
     }
   }
-  return Next(block);
+  return Next(exec_status, block);
 }
 
 bool PhysicalDeleteFilter::Close() {

@@ -90,7 +90,8 @@ PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
  *computerFilterwithGeneratedCode.
  * 3)If it can't be optimized by llvm , we still choose computerFilter.
  */
-bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
+bool PhysicalFilter::Open(SegmentExecStatus* const exec_status,
+                          const PartitionOffset& kPartitiontOffset) {
   // set a Synchronization point.
   RegisterExpandedThreadToAllBarriers();
   FilterThreadContext* ftc = reinterpret_cast<FilterThreadContext*>(
@@ -134,7 +135,7 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
 // should null
 #endif
   }
-  bool ret = state_.child_->Open(kPartitiontOffset);
+  bool ret = state_.child_->Open(exec_status, kPartitiontOffset);
   SetReturnStatus(ret);
   BarrierArrive();
   return GetReturnStatus();
@@ -147,7 +148,8 @@ bool PhysicalFilter::Open(const PartitionOffset& kPartitiontOffset) {
  * (2) block_for_asking_ is exhausted (should fetch a new block from child
  * and continue to process)
  */
-bool PhysicalFilter::Next(BlockStreamBase* block) {
+bool PhysicalFilter::Next(SegmentExecStatus* const exec_status,
+                          BlockStreamBase* block) {
   void* tuple_from_child;
   void* tuple_in_block;
   FilterThreadContext* tc =
@@ -156,7 +158,7 @@ bool PhysicalFilter::Next(BlockStreamBase* block) {
     if (NULL == (tc->block_stream_iterator_->currentTuple())) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();
-      if (state_.child_->Next(tc->block_for_asking_)) {
+      if (state_.child_->Next(exec_status, tc->block_for_asking_)) {
         delete tc->block_stream_iterator_;
         tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
       } else {

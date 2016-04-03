@@ -141,10 +141,11 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   if (all_segments_.size() > 0) {
     int ret = pthread_create(&tid, NULL, SendAllSegments, this);
   }
+  SegmentExecStatus* seg_exec_status = new SegmentExecStatus(make_pair(0, 0));
 
-  physical_plan->Open();
+  physical_plan->Open(seg_exec_status);
 
-  while (physical_plan->Next(NULL)) {
+  while (physical_plan->Next(seg_exec_status, NULL)) {
   }
   exec_result->result_ = physical_plan->GetResultSet();
   physical_plan->Close();
@@ -221,12 +222,14 @@ RetCode SelectExec::Execute() {
   if (all_segments_.size() > 0) {
     int ret = pthread_create(&tid, NULL, SendAllSegments, this);
   }
+  SegmentExecStatus* seg_exec_status =
+      new SegmentExecStatus(make_pair(stmt_exec_status_->get_query_id(), 0));
+  physical_plan->Open(seg_exec_status);
 
-  physical_plan->Open();
-
-  while (physical_plan->Next(NULL)) {
+  while (physical_plan->Next(seg_exec_status, NULL)) {
     if (StmtExecStatus::kCancelled == stmt_exec_status_->get_exec_status()) {
       stmt_exec_status_->set_exec_info("stmt have been cancelled!");
+      seg_exec_status->CancelSegExec();
       stmt_exec_status_->set_query_result(NULL);
       if (tid != 0) {
         pthread_join(tid, NULL);

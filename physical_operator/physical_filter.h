@@ -124,12 +124,12 @@ class PhysicalFilter : public PhysicalOperator {
   /**
    * @brief: choose which way to generate filter function
    */
-  bool Open(const PartitionOffset& kPartitionOffset);
+  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset& kPartitionOffset);
 
   /**
    * @brief: fetch a block from child and execute ProcessInLogic
    */
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase* block);
 
   /**
    * @brief: revoke resource

@@ -51,8 +51,6 @@
 #include "../common/Block/BlockStreamBuffer.h"
 #include "../physical_operator/physical_operator.h"
 
-
-
 namespace claims {
 namespace physical_operator {
 /**
@@ -107,9 +105,10 @@ class ExchangeMerger : public PhysicalOperator {
    * 4. create receive thread, if one block is enough, then will be put into
    * all_merged_block_buffer
    */
-  bool Open(const PartitionOffset& partition_offset = 0);
+  bool Open(SegmentExecStatus * const exec_status,
+            const PartitionOffset& partition_offset = 0);
   /// fetch block from all_merged_block_buffer and return.
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus * const exec_status, BlockStreamBase* block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);

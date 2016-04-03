@@ -24,7 +24,6 @@
  */
 #include <stack>
 
-
 #ifndef PHYSICAL_QUERY_PLAN_BLOCKSTREAMRESULTCOLLECTOR_H_
 #define PHYSICAL_QUERY_PLAN_BLOCKSTREAMRESULTCOLLECTOR_H_
 #include <string>
@@ -34,7 +33,6 @@
 #include "../common/Schema/Schema.h"
 #include "../common/Block/DynamicBlockBuffer.h"
 #include "../Environment.h"
-
 
 using std::string;
 using std::vector;
@@ -78,8 +76,9 @@ class ResultCollector : public PhysicalOperatorBase {
   ResultCollector();
   ResultCollector(State);
   virtual ~ResultCollector();
-  bool Open(const PartitionOffset& part_off = 0);
-  bool Next(BlockStreamBase* block);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& part_off = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
@@ -112,6 +111,7 @@ class ResultCollector : public PhysicalOperatorBase {
 
  private:
   State state_;
+  SegmentExecStatus* exec_status_;
   /**
    *  It is the resposibility of the user to free the resultset.
    */

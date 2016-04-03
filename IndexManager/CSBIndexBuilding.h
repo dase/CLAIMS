@@ -14,12 +14,14 @@
 #include "../common/data_type.h"
 #include "../common/Schema/Schema.h"
 #include "../common/Block/BlockStream.h"
+#include "../exec_tracker/segment_exec_status.h"
 #include "../physical_operator/physical_operator.h"
 #include "../storage/PartitionStorage.h"
 #include "../storage/ChunkStorage.h"
 #include "CSBPlusTree.h"
 
 using claims::physical_operator::PhysicalOperator;
+using claims::SegmentExecStatus;
 
 template <typename T>
 CSBPlusTree<T>* indexBuilding(Schema* schema, vector<void*> chunk_tuples);
@@ -150,8 +152,9 @@ class bottomLayerSorting : public PhysicalOperator {
   bottomLayerSorting(State state);
   virtual ~bottomLayerSorting();
 
-  bool Open(const PartitionOffset& partition_offset = 0);
-  bool Next(BlockStreamBase* block);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partition_offset = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
   bool Close();
 
  private:

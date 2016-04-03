@@ -59,13 +59,13 @@ RetCode StmtExecTracker::RegisterStmtES(StmtExecStatus* stmtes) {
 }
 
 RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id) {
-  lock_.acquire();
+  //  lock_.acquire();
   auto it = query_id_to_stmtes_.find(query_id);
   if (it == query_id_to_stmtes_.end()) {
     LOG(WARNING) << "invalide query id at UnRegisterStmtES" << endl;
   }
   query_id_to_stmtes_.erase(it);
-  lock_.release();
+  //  lock_.release();
   LOG(INFO) << "query id= " << query_id
             << " has erased from StmtEs! then left stmt = "
             << query_id_to_stmtes_.size() << endl;
@@ -73,7 +73,7 @@ RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id) {
 }
 
 RetCode StmtExecTracker::CancelStmtExec(u_int64_t query_id) {
-  lock_.acquire();
+  //  lock_.acquire();
   auto it = query_id_to_stmtes_.find(query_id);
   if (it == query_id_to_stmtes_.end()) {
     LOG(WARNING) << "inval query id at cancel query of stmt exec tracker"
@@ -83,7 +83,7 @@ RetCode StmtExecTracker::CancelStmtExec(u_int64_t query_id) {
     return -1;
   }
   it->second->CancelStmtExec();
-  lock_.release();
+  //  lock_.release();
   return 0;
 }
 
@@ -92,7 +92,7 @@ void StmtExecTracker::CheckStmtExecStatus(caf::event_based_actor* self,
   self->become(
 
       [=](CheckStmtESAtom) {
-        //        stmtes->lock_.acquire();
+        stmtes->lock_.acquire();
         for (auto it = stmtes->query_id_to_stmtes_.begin();
              it != stmtes->query_id_to_stmtes_.end(); ++it) {
           if (it->second->CouldBeDeleted()) {
@@ -106,7 +106,7 @@ void StmtExecTracker::CheckStmtExecStatus(caf::event_based_actor* self,
             }
           }
         }
-        //        stmtes->lock_.release();
+        stmtes->lock_.release();
         stmtes->logic_time_++;
         self->delayed_send(self, std::chrono::milliseconds(2000),
                            CheckStmtESAtom::value);

@@ -102,8 +102,8 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   PhysicalNestLoopJoin();
   virtual ~PhysicalNestLoopJoin();
   PhysicalNestLoopJoin(State state);
-  bool Open(const PartitionOffset &partition_offset = 0);
-  bool Next(BlockStreamBase *block);
+  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset &partition_offset = 0);
+  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase *block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment *> *all_segments);

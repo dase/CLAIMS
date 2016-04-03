@@ -70,11 +70,12 @@ PhysicalProject::State::State(Schema* schema_input, Schema* schema_output,
  * Call back child Open().
  */
 
-bool PhysicalProject::Open(const PartitionOffset& kPartitionOffset) {
+bool PhysicalProject::Open(SegmentExecStatus* const exec_status,
+                           const PartitionOffset& kPartitionOffset) {
   RegisterExpandedThreadToAllBarriers();
   ProjectThreadContext* ptc = reinterpret_cast<ProjectThreadContext*>(
       CreateOrReuseContext(crm_core_sensitive));
-  bool ret = state_.child_->Open(kPartitionOffset);
+  bool ret = state_.child_->Open(exec_status, kPartitionOffset);
   SetReturnStatus(ret);
   BarrierArrive();  //  Synchronization point
   return GetReturnStatus();
@@ -87,7 +88,8 @@ bool PhysicalProject::Open(const PartitionOffset& kPartitionOffset) {
  * case(2): block_for_asking_ is exhausted (should fetch a new block from
  * child and continue to process)
  */
-bool PhysicalProject::Next(BlockStreamBase* block) {
+bool PhysicalProject::Next(SegmentExecStatus* const exec_status,
+                           BlockStreamBase* block) {
   unsigned total_length_ = state_.schema_output_->getTupleMaxSize();
 
   void* tuple_from_child;
@@ -98,7 +100,7 @@ bool PhysicalProject::Next(BlockStreamBase* block) {
     if (tc->block_stream_iterator_->currentTuple() == 0) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();
-      if (state_.child_->Next(tc->block_for_asking_)) {
+      if (state_.child_->Next(exec_status, tc->block_for_asking_)) {
         delete tc->block_stream_iterator_;
         tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
       } else {

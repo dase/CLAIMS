@@ -140,7 +140,8 @@ void PhysicalSort::Order() {
  *    by specifying the column to be sorted
  * 3, whether to register the buffer into the blockmanager.
  * */
-bool PhysicalSort::Open(const PartitionOffset &part_off) {
+bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
+                        const PartitionOffset &part_off) {
   RegisterExpandedThreadToAllBarriers();
   if (TryEntryIntoSerializedSection(0)) {
     all_cur_ = 0;
@@ -154,7 +155,7 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
     return 0;
   }
   //  state_.partition_offset_ = part_off;
-  state_.child_->Open(part_off);
+  state_.child_->Open(exec_status, part_off);
 
   /**
    *  phase 1: store the data in the buffer!
@@ -165,7 +166,7 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
   void *tuple_ptr = NULL;
   BlockStreamBase::BlockStreamTraverseIterator *block_it;
 
-  while (state_.child_->Next(block_for_asking)) {
+  while (state_.child_->Next(exec_status, block_for_asking)) {
     block_buffer_.atomicAppendNewBlock(block_for_asking);
     block_it = block_for_asking->createIterator();
     while (NULL != (tuple_ptr = block_it->nextTuple())) {
@@ -216,7 +217,8 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
   return true;
 }
 // just only thread can fetch this result
-bool PhysicalSort::Next(BlockStreamBase *block) {
+bool PhysicalSort::Next(SegmentExecStatus *const exec_status,
+                        BlockStreamBase *block) {
   lock_->acquire();
   if (thread_id_ == -1) {
     thread_id_ = pthread_self();

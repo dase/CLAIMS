@@ -64,12 +64,13 @@ PhysicalLimit::~PhysicalLimit() {
 /**
  * Initialize of the position of current tuple and target tuple
  */
-bool PhysicalLimit::Open(const PartitionOffset& kPartitionOffset) {
+bool PhysicalLimit::Open(SegmentExecStatus* const exec_status,
+                         const PartitionOffset& kPartitionOffset) {
   tuple_cur_ = 0;
   block_for_asking_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   received_tuples_ = 0;
-  return state_.child_->Open(kPartitionOffset);
+  return state_.child_->Open(exec_status, kPartitionOffset);
 }
 /**
  * if the limit has already been exhausted, the current loop breaks
@@ -80,8 +81,9 @@ bool PhysicalLimit::Open(const PartitionOffset& kPartitionOffset) {
 // that the limit is exhausted is not necessary. However, in the current
 // implementation, the child iterator sub-tree leaded by exchange
 // lower iterator cannot be closed if not all the blocks are called.
-bool PhysicalLimit::Next(BlockStreamBase* block) {
-  while (state_.child_->Next(block_for_asking_)) {
+bool PhysicalLimit::Next(SegmentExecStatus* const exec_status,
+                         BlockStreamBase* block) {
+  while (state_.child_->Next(exec_status, block_for_asking_)) {
     void* tuple_from_child;
     BlockStreamBase::BlockStreamTraverseIterator* it =
         block_for_asking_->createIterator();

@@ -35,13 +35,15 @@ ResultPrinter::ResultPrinter(State state) : state_(state), block_buffer_(0) {
 }
 
 ResultPrinter::~ResultPrinter() {}
-bool ResultPrinter::Open(const PartitionOffset& offset) {
+bool ResultPrinter::Open(SegmentExecStatus* const exec_status,
+                         const PartitionOffset& offset) {
   block_buffer_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   tuple_count_ = 0;
-  return state_.child_->Open(offset);
+  return state_.child_->Open(exec_status, offset);
 }
-bool ResultPrinter::Next(BlockStreamBase*) {
+bool ResultPrinter::Next(SegmentExecStatus* const exec_status,
+                         BlockStreamBase*) {
   printf("Query result:\n");
   printf(
       "========================================================================"
@@ -56,7 +58,7 @@ bool ResultPrinter::Next(BlockStreamBase*) {
   //	getchar();
 
   unsigned block_count(0);
-  while (state_.child_->Next(block_buffer_)) {
+  while (state_.child_->Next(exec_status, block_buffer_)) {
     unsigned tuple_in_block(0);
     BlockStreamBase::BlockStreamTraverseIterator* it =
         block_buffer_->createIterator();
