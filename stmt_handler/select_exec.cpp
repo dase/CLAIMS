@@ -60,6 +60,7 @@ using std::vector;
 using std::string;
 using std::cout;
 using std::make_pair;
+using claims::common::rStmtCancelled;
 
 namespace claims {
 namespace stmt_handler {
@@ -76,6 +77,10 @@ SelectExec::~SelectExec() {
   //    delete select_ast_;
   //    select_ast_ = NULL;
   //  }
+  while (!all_segments_.empty()) {
+    delete all_segments_.top();
+    all_segments_.pop();
+  }
 }
 RetCode SelectExec::Execute(ExecutedResult* exec_result) {
 #ifdef PRINTCONTEXT
@@ -219,36 +224,48 @@ RetCode SelectExec::Execute() {
   physical_plan->GetAllSegments(&all_segments_);
   // create thread to send all segments
   pthread_t tid = 0;
+  // add segment_exec_status to stmt_exec_status_
+  SegmentExecStatus* seg_exec_status_1 = new SegmentExecStatus(
+      make_pair(stmt_exec_status_->get_query_id(),
+                Environment::getInstance()->get_slave_node()->get_node_id()));
+
+  stmt_exec_status_->AddSegExecStatus(seg_exec_status_1);
+
   if (all_segments_.size() > 0) {
     int ret = pthread_create(&tid, NULL, SendAllSegments, this);
   }
-  SegmentExecStatus* seg_exec_status =
-      new SegmentExecStatus(make_pair(stmt_exec_status_->get_query_id(), 0));
+  // this segment_exec_status for reporting status
+  SegmentExecStatus* seg_exec_status = new SegmentExecStatus(
+      make_pair(stmt_exec_status_->get_query_id(),
+                Environment::getInstance()->get_slave_node()->get_node_id()),
+      Environment::getInstance()->get_slave_node()->GetNodeAddr());
+  seg_exec_status->RegisterToTracker();
+
   physical_plan->Open(seg_exec_status);
-
+  seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
+                                "physical plan Open() succeed", 0, true);
   while (physical_plan->Next(seg_exec_status, NULL)) {
-    if (StmtExecStatus::kCancelled == stmt_exec_status_->get_exec_status()) {
-      stmt_exec_status_->set_exec_info("stmt have been cancelled!");
-      seg_exec_status->CancelSegExec();
-      stmt_exec_status_->set_query_result(NULL);
-      if (tid != 0) {
-        pthread_join(tid, NULL);
-      }
-      delete logic_plan;
-      delete physical_plan;
-      return -1;
-    }
   }
+  seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
+                                "physical plan next() succeed", 0, true);
   stmt_exec_status_->set_query_result(physical_plan->GetResultSet());
+  stmt_exec_status_->set_exec_info("execute a query successfully");
   physical_plan->Close();
-
+  seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kDone,
+                                "physical plan close() succeed", 0, true);
   if (tid != 0) {
     pthread_join(tid, NULL);
   }
-  stmt_exec_status_->set_exec_info("execute a query successfully");
+  seg_exec_status->UnRegisterFromTracker();
+
+  ret = rSuccess;
+  //  if (seg_exec_status->is_cancelled()) {
+  //    ret = rStmtCancelled;
+  //  }
+  delete seg_exec_status;
   delete logic_plan;
   delete physical_plan;
-  return rSuccess;
+  return ret;
 }
 //!!!return ret by global variant
 void* SelectExec::SendAllSegments(void* arg) {

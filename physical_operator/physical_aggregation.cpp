@@ -53,14 +53,21 @@ PhysicalAggregation::PhysicalAggregation(State state)
       state_(state),
       hashtable_(NULL),
       hash_(NULL),
-      bucket_cur_(0) {
+      bucket_cur_(0),
+      block_for_asking(NULL),
+      private_hashtable(NULL) {
   set_phy_oper_type(kPhysicalAggregation);
   InitExpandedStatus();
   assert(state_.hash_schema_);
 }
 
 PhysicalAggregation::PhysicalAggregation()
-    : PhysicalOperator(4, 3), hashtable_(NULL), hash_(NULL), bucket_cur_(0) {
+    : PhysicalOperator(4, 3),
+      hashtable_(NULL),
+      hash_(NULL),
+      bucket_cur_(0),
+      block_for_asking(NULL),
+      private_hashtable(NULL) {
   set_phy_oper_type(kPhysicalAggregation);
   InitExpandedStatus();
 }
@@ -137,6 +144,8 @@ PhysicalAggregation::State::State(
  */
 bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
                                const PartitionOffset &partition_offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
   // copy expression and initialize them
   vector<ExprNode *> group_by_attrs;
@@ -167,6 +176,8 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
     UnregisterExpandedThreadToAllBarriers(1);
     return true;
   }
+  RETURN_IF_CANCELLED(exec_status);
+
   state_.child_->Open(exec_status, partition_offset);
   ticks start = curtick();
   if (TryEntryIntoSerializedSection(1)) {
@@ -187,7 +198,9 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
    * with small groups, as private aggregation avoids the contention to the
    * shared hash table.
    */
-  BasicHashTable *private_hashtable =
+  RETURN_IF_CANCELLED(exec_status);
+
+  private_hashtable =
       new BasicHashTable(state_.num_of_buckets_, state_.bucket_size_,
                          state_.hash_schema_->getTupleMaxSize());
 
@@ -207,13 +220,17 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
   BasicHashTable::Iterator ht_it = hashtable_->CreateIterator();
   BasicHashTable::Iterator pht_it = private_hashtable->CreateIterator();
   int64_t one = 1;
-  BlockStreamBase *block_for_asking =
+  block_for_asking =
       BlockStreamBase::createBlock(state_.input_schema_, state_.block_size_);
   block_for_asking->setEmpty();
 
   start = curtick();
   // traverse every block from child
+  RETURN_IF_CANCELLED(exec_status);
+
   while (state_.child_->Next(exec_status, block_for_asking)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     BlockStreamBase::BlockStreamTraverseIterator *bsti =
         block_for_asking->createIterator();
     bsti->reset();
@@ -295,6 +312,8 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
 
   // merge private_hash_table into hash_table
   for (int i = 0; i < state_.num_of_buckets_; i++) {
+    RETURN_IF_CANCELLED(exec_status);
+
     private_hashtable->placeIterator(pht_it, i);
     // traverse every tuple from block
     while (NULL != (cur = pht_it.readCurrent())) {
@@ -377,6 +396,8 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
     UnregisterExpandedThreadToAllBarriers(2);
     return true;
   }
+  RETURN_IF_CANCELLED(exec_status);
+
   BarrierArrive(2);
 
   if (TryEntryIntoSerializedSection(2)) {
@@ -410,6 +431,8 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
  */
 bool PhysicalAggregation::Next(SegmentExecStatus *const exec_status,
                                BlockStreamBase *block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers(3);
@@ -473,7 +496,14 @@ bool PhysicalAggregation::Close() {
     delete hashtable_;
     hashtable_ = NULL;
   }
-
+  if (NULL != block_for_asking) {
+    delete block_for_asking;
+    block_for_asking = NULL;
+  }
+  if (NULL != private_hashtable) {
+    delete private_hashtable;
+    private_hashtable = NULL;
+  }
   state_.child_->Close();
   return true;
 }

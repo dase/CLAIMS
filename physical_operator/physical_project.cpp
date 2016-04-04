@@ -72,6 +72,8 @@ PhysicalProject::State::State(Schema* schema_input, Schema* schema_output,
 
 bool PhysicalProject::Open(SegmentExecStatus* const exec_status,
                            const PartitionOffset& kPartitionOffset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
   ProjectThreadContext* ptc = reinterpret_cast<ProjectThreadContext*>(
       CreateOrReuseContext(crm_core_sensitive));
@@ -97,6 +99,8 @@ bool PhysicalProject::Next(SegmentExecStatus* const exec_status,
   ProjectThreadContext* tc =
       reinterpret_cast<ProjectThreadContext*>(GetContext());
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
+
     if (tc->block_stream_iterator_->currentTuple() == 0) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();

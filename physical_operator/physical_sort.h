@@ -150,9 +150,11 @@ class PhysicalSort : public PhysicalOperator {
   RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
+  BlockStreamBase* block_for_asking = NULL;
+
   State state_;
   /* store the data in the buffer!*/
-  DynamicBlockBuffer block_buffer_;
+  DynamicBlockBuffer* block_buffer_;
   unsigned all_cur_;
   int64_t thread_id_;
   vector<void*> all_tuples_;

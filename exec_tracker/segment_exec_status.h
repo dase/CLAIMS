@@ -76,6 +76,7 @@ class SegmentExecStatus {
   NodeSegmentID node_segment_id_;
   Lock lock_;
 };
+#define UNLIKELY(expr) __builtin_expect(!!(expr), 0)
 
 #define RETURN_IF_CANCELLED(exec_status)                                \
   do {                                                                  \

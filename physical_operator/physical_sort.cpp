@@ -50,14 +50,18 @@ namespace physical_operator {
 unsigned PhysicalSort::order_by_pos_ = 0;
 PhysicalSort::State *PhysicalSort::cmp_state_ = NULL;
 OperFuncInfo PhysicalSort::fcinfo = NULL;
-PhysicalSort::PhysicalSort() : PhysicalOperator(3, 2) {
+PhysicalSort::PhysicalSort()
+    : PhysicalOperator(3, 2), block_buffer_(NULL), block_for_asking(NULL) {
   set_phy_oper_type(kPhysicalSort);
   lock_ = new Lock();
   InitExpandedStatus();
 }
 
 PhysicalSort::PhysicalSort(State state)
-    : PhysicalOperator(3, 2), state_(state) {
+    : PhysicalOperator(3, 2),
+      state_(state),
+      block_buffer_(NULL),
+      block_for_asking(NULL) {
   set_phy_oper_type(kPhysicalSort);
   cmp_state_ = &state_;
   lock_ = new Lock();
@@ -142,20 +146,23 @@ void PhysicalSort::Order() {
  * */
 bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
                         const PartitionOffset &part_off) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
   if (TryEntryIntoSerializedSection(0)) {
     all_cur_ = 0;
     thread_id_ = -1;
     all_tuples_.clear();
+    block_buffer_ = new DynamicBlockBuffer();
   }
   BarrierArrive(0);
-  BlockStreamBase *block_for_asking = NULL;
   if (CreateBlock(block_for_asking) == false) {
     LOG(ERROR) << "error in the create block stream!!!" << endl;
     return 0;
   }
   //  state_.partition_offset_ = part_off;
   state_.child_->Open(exec_status, part_off);
+  RETURN_IF_CANCELLED(exec_status);
 
   /**
    *  phase 1: store the data in the buffer!
@@ -167,7 +174,9 @@ bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
   BlockStreamBase::BlockStreamTraverseIterator *block_it;
 
   while (state_.child_->Next(exec_status, block_for_asking)) {
-    block_buffer_.atomicAppendNewBlock(block_for_asking);
+    RETURN_IF_CANCELLED(exec_status);
+
+    block_buffer_->atomicAppendNewBlock(block_for_asking);
     block_it = block_for_asking->createIterator();
     while (NULL != (tuple_ptr = block_it->nextTuple())) {
       thread_tuple.push_back(tuple_ptr);
@@ -219,6 +228,8 @@ bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
 // just only thread can fetch this result
 bool PhysicalSort::Next(SegmentExecStatus *const exec_status,
                         BlockStreamBase *block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   lock_->acquire();
   if (thread_id_ == -1) {
     thread_id_ = pthread_self();
@@ -255,6 +266,14 @@ bool PhysicalSort::Next(SegmentExecStatus *const exec_status,
 }
 
 bool PhysicalSort::Close() {
+  if (NULL != block_buffer_) {
+    delete block_buffer_;
+    block_buffer_ = NULL;
+  }
+  if (NULL != block_for_asking) {
+    delete block_for_asking;
+    block_for_asking = NULL;
+  }
   state_.child_->Close();
   return true;
 }

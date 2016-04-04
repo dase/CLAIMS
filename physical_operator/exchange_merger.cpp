@@ -2,6 +2,7 @@
 
 #include "../common/error_define.h"
 #include "../common/Logging.h"
+#include "../exec_tracker/segment_exec_status.h"
 #include "../physical_operator/segment.h"
 /*
  * Copyright [2012-2015] DaSE@ECNU
@@ -66,12 +67,29 @@
 namespace claims {
 namespace physical_operator {
 const int kBufferSizeInExchange = 1000;
-ExchangeMerger::ExchangeMerger(State state) : state_(state) {
+ExchangeMerger::ExchangeMerger(State state)
+    : state_(state),
+      all_merged_block_buffer_(NULL),
+      block_for_deserialization(NULL),
+      block_for_socket_(NULL),
+      add_stage_endpoint_(false),
+      receiver_thread_id_(0),
+      sock_fd_(-1),
+      socket_port_(-1),
+      epoll_fd_(-1) {
   set_phy_oper_type(kPhysicalExchangeMerger);
   InitExpandedStatus();
   assert(state.partition_schema_.partition_key_index < 100);
 }
-ExchangeMerger::ExchangeMerger() {
+ExchangeMerger::ExchangeMerger()
+    : all_merged_block_buffer_(NULL),
+      block_for_deserialization(NULL),
+      block_for_socket_(NULL),
+      add_stage_endpoint_(false),
+      receiver_thread_id_(0),
+      sock_fd_(-1),
+      socket_port_(-1),
+      epoll_fd_(-1) {
   InitExpandedStatus();
   set_phy_oper_type(kPhysicalExchangeMerger);
 }
@@ -90,8 +108,9 @@ ExchangeMerger::~ExchangeMerger() {
  * exchange merger is at the end of one segment of plan, so it's the "stage_src"
  * for this stage
  */
-bool ExchangeMerger::Open(SegmentExecStatus * const exec_status,
+bool ExchangeMerger::Open(SegmentExecStatus* const exec_status,
                           const PartitionOffset& partition_offset) {
+  RETURN_IF_CANCELLED(exec_status);
   unsigned long long int start = curtick();
   RegisterExpandedThreadToAllBarriers();
   if (TryEntryIntoSerializedSection()) {  // first arrived thread dose
@@ -105,10 +124,13 @@ bool ExchangeMerger::Open(SegmentExecStatus * const exec_status,
     // buffer all deserialized blocks come from every socket
     all_merged_block_buffer_ = new BlockStreamBuffer(
         state_.block_size_, kBufferSizeInExchange, state_.schema_);
+
+    RETURN_IF_CANCELLED(exec_status);
+
     ExpanderTracker::getInstance()->addNewStageEndpoint(
         pthread_self(),
         LocalStageEndPoint(stage_src, "Exchange", all_merged_block_buffer_));
-
+    add_stage_endpoint_ = true;
     // if one of block_for_socket is full, it will be deserialized into
     // block_for_deserialization and sended to all_merged_data_buffer
     block_for_deserialization =
@@ -120,6 +142,9 @@ bool ExchangeMerger::Open(SegmentExecStatus * const exec_status,
       block_for_socket_[i] = new BlockContainer(
           block_for_deserialization->getSerializedBlockSize());
     }
+
+    RETURN_IF_CANCELLED(exec_status);
+
     if (PrepareSocket() == false) return false;
     if (SetSocketNonBlocking(sock_fd_) == false) {
       return false;
@@ -153,21 +178,28 @@ bool ExchangeMerger::Open(SegmentExecStatus * const exec_status,
       if (SerializeAndSendPlan() == false) return false;
     }
 #endif
+
+    RETURN_IF_CANCELLED(exec_status);
+
     if (CreateReceiverThread() == false) {
       return false;
     }
     CreatePerformanceInfo();
   }
   /// A synchronization barrier, in case of multiple expanded threads
+  RETURN_IF_CANCELLED(exec_status);
+
   BarrierArrive();
   return true;
 }
 /**
  * return block from all_merged_block_buffer
  */
-bool ExchangeMerger::Next(SegmentExecStatus * const exec_status,
+bool ExchangeMerger::Next(SegmentExecStatus* const exec_status,
                           BlockStreamBase* block) {
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
+
     /*
      * As Exchange merger is a local stage beginner, ExchangeMerger::next will
      * return false in order to shrink the current work thread, if the
@@ -230,9 +262,10 @@ bool ExchangeMerger::Close() {
    * of open() and next() can act correctly.
    */
   ResetStatus();
-
-  Environment::getInstance()->getExchangeTracker()->LogoutExchange(
-      ExchangeID(state_.exchange_id_, partition_offset_));
+  if (add_stage_endpoint_) {
+    Environment::getInstance()->getExchangeTracker()->LogoutExchange(
+        ExchangeID(state_.exchange_id_, partition_offset_));
+  }
   LOG(INFO) << "exchange merger id = " << state_.exchange_id_ << " is closed!"
             << endl;
   return true;
@@ -320,7 +353,9 @@ bool ExchangeMerger::PrepareSocket() {
 
 void ExchangeMerger::CloseSocket() {
   /* close the epoll fd */
-  FileClose(epoll_fd_);
+  if (epoll_fd_ > 2) {
+    FileClose(epoll_fd_);
+  }
   /* colse the sockets of the lowers*/
   for (unsigned i = 0; i < lower_num_; i++) {
     if (socket_fd_lower_list_[i] > 2) {
@@ -328,10 +363,13 @@ void ExchangeMerger::CloseSocket() {
     }
   }
   /* close the socket of this exchange*/
-  FileClose(sock_fd_);
-
+  if (sock_fd_ > 2) {
+    FileClose(sock_fd_);
+  }
   /* return the applied port to the port manager*/
-  PortManager::getInstance()->returnPort(socket_port_);
+  if (socket_port_ > 0) {
+    PortManager::getInstance()->returnPort(socket_port_);
+  }
 }
 
 bool ExchangeMerger::RegisterExchange() {
@@ -440,13 +478,13 @@ bool ExchangeMerger::CreateReceiverThread() {
   return true;
 }
 void ExchangeMerger::CancelReceiverThread() {
-  //  if (receiver_thread_id_ != 0) {
-  pthread_cancel(receiver_thread_id_);
-  void* res = 0;
-  pthread_join(receiver_thread_id_, &res);
-  //  } else {
-  //    LOG(ERROR) << "exchange merger cancel thread error" << endl;
-  //  }
+  if (receiver_thread_id_ != 0) {
+    pthread_cancel(receiver_thread_id_);
+    void* res = 0;
+    pthread_join(receiver_thread_id_, &res);
+    //  } else {
+    //    LOG(ERROR) << "exchange merger cancel thread error" << endl;
+  }
 }
 
 /**

@@ -37,9 +37,12 @@
 #include "../stmt_handler/drop_table_exec.h"
 #include "../stmt_handler/show_exec.h"
 #include "../utility/Timer.h"
+#include "../common/error_define.h"
 
 using boost::algorithm::to_lower;
 using boost::algorithm::trim;
+using claims::common::rUnknowStmtType;
+using claims::common::rSQLParserErr;
 namespace claims {
 namespace stmt_handler {
 
@@ -122,7 +125,7 @@ RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
     exec_result->error_info_ = "Parser Error\n" + exec_result->info_;
     exec_result->status_ = false;
     exec_result->result_ = NULL;
-    return rParserError;
+    return rSQLParserErr;
   }
   raw_ast->Print();
   ret = GenerateStmtExec(raw_ast);

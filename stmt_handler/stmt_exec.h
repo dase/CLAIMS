@@ -48,9 +48,6 @@
 
 namespace claims {
 namespace stmt_handler {
-const int rSuccess = 0;
-const int rParserError = -11000;
-const int rUnknowStmtType = -11001;
 
 class StmtExec {
  public:

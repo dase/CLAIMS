@@ -37,6 +37,8 @@ ResultPrinter::ResultPrinter(State state) : state_(state), block_buffer_(0) {
 ResultPrinter::~ResultPrinter() {}
 bool ResultPrinter::Open(SegmentExecStatus* const exec_status,
                          const PartitionOffset& offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   block_buffer_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   tuple_count_ = 0;
@@ -44,6 +46,8 @@ bool ResultPrinter::Open(SegmentExecStatus* const exec_status,
 }
 bool ResultPrinter::Next(SegmentExecStatus* const exec_status,
                          BlockStreamBase*) {
+  RETURN_IF_CANCELLED(exec_status);
+
   printf("Query result:\n");
   printf(
       "========================================================================"
@@ -59,6 +63,8 @@ bool ResultPrinter::Next(SegmentExecStatus* const exec_status,
 
   unsigned block_count(0);
   while (state_.child_->Next(exec_status, block_buffer_)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     unsigned tuple_in_block(0);
     BlockStreamBase::BlockStreamTraverseIterator* it =
         block_buffer_->createIterator();

@@ -51,7 +51,14 @@
 namespace claims {
 namespace physical_operator {
 ExchangeSenderMaterialized::ExchangeSenderMaterialized(State state)
-    : state_(state), ExchangeSender() {
+    : state_(state),
+      ExchangeSender(),
+      block_for_sending_(NULL),
+      block_for_serialization_(NULL),
+      block_stream_for_asking_(NULL),
+      partitioned_block_stream_(NULL),
+      partitioned_data_buffer_(NULL),
+      socket_fd_upper_list_(NULL) {
   set_phy_oper_type(kphysicalExchangeSender);
 }
 
@@ -60,8 +67,10 @@ ExchangeSenderMaterialized::~ExchangeSenderMaterialized() {}
 ExchangeSenderMaterialized::ExchangeSenderMaterialized() {
   set_phy_oper_type(kphysicalExchangeSender);
 }
-bool ExchangeSenderMaterialized::Open(SegmentExecStatus * const exec_status,
+bool ExchangeSenderMaterialized::Open(SegmentExecStatus* const exec_status,
                                       const PartitionOffset&) {
+  RETURN_IF_CANCELLED(exec_status);
+
   state_.child_->Open(exec_status, state_.partition_offset_);
 
   /** get the number of mergers **/
@@ -101,27 +110,36 @@ bool ExchangeSenderMaterialized::Open(SegmentExecStatus * const exec_status,
       nuppers_, block_stream_for_asking_->getSerializedBlockSize(), 1000);
 
   /** connect to the mergers **/
+  RETURN_IF_CANCELLED(exec_status);
+
   for (unsigned upper_id = 0; upper_id < state_.upper_id_list_.size();
        upper_id++) {
+    RETURN_IF_CANCELLED(exec_status);
+
     if (!ConnectToUpper(ExchangeID(state_.exchange_id_, upper_id),
                         state_.upper_id_list_[upper_id],
                         socket_fd_upper_list_[upper_id])) {
       return false;
     }
   }
+  RETURN_IF_CANCELLED(exec_status);
 
   /** create the Sender thread **/
   CreateWorkerThread();
 
   return true;
 }
-bool ExchangeSenderMaterialized::Next(SegmentExecStatus * const exec_status,
+bool ExchangeSenderMaterialized::Next(SegmentExecStatus* const exec_status,
                                       BlockStreamBase* no_block) {
   void* tuple_from_child;
   void* tuple_in_cur_block_stream;
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
+
     block_stream_for_asking_->setEmpty();
     if (state_.child_->Next(exec_status, block_stream_for_asking_)) {
+      RETURN_IF_CANCELLED(exec_status);
+
       /** a new block is obtained from child iterator **/
       if (state_.partition_schema_.isHashPartition()) {
         BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator =
@@ -164,6 +182,8 @@ bool ExchangeSenderMaterialized::Next(SegmentExecStatus * const exec_status,
         }
       }
     } else {
+      RETURN_IF_CANCELLED(exec_status);
+
       /* the child iterator is exhausted. We add the remaining data in
        * partitioned data blocks into the buffer*/
       for (unsigned i = 0; i < nuppers_; i++) {
@@ -192,6 +212,8 @@ bool ExchangeSenderMaterialized::Next(SegmentExecStatus * const exec_status,
       child_exhausted_ = true;
 
       while (!partitioned_data_buffer_->isEmpty()) {
+        RETURN_IF_CANCELLED(exec_status);
+
         usleep(1);
       }
       /*
@@ -202,6 +224,8 @@ bool ExchangeSenderMaterialized::Next(SegmentExecStatus * const exec_status,
       LOG(INFO) << "Waiting for close notification!" << std::endl;
 
       for (unsigned i = 0; i < nuppers_; i++) {
+        RETURN_IF_CANCELLED(exec_status);
+
         WaitingForCloseNotification(socket_fd_upper_list_[i]);
       }
       return false;
@@ -213,21 +237,21 @@ bool ExchangeSenderMaterialized::Close() {
   Logging_ExpandableBlockStreamExchangeLM(
       "The sender thread is killed in the close() function!");
 
+  assert(false);
   /* close the files*/
   CloseDiskFiles();
   /* Delete the files */
   DeleteDiskFiles();
 
   state_.child_->Close();
-
   delete block_stream_for_asking_;
   delete block_for_sending_;
   delete block_for_serialization_;
   for (unsigned i = 0; i < nuppers_; i++) {
     delete partitioned_block_stream_[i];
   }
-  delete partitioned_data_buffer_;
   delete[] partitioned_block_stream_;
+  delete partitioned_data_buffer_;
   delete[] socket_fd_upper_list_;
 
   return true;

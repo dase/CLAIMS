@@ -38,7 +38,8 @@
 namespace claims {
 namespace physical_operator {
 
-PhysicalNestLoopJoin::PhysicalNestLoopJoin() : PhysicalOperator(2, 2) {
+PhysicalNestLoopJoin::PhysicalNestLoopJoin()
+    : PhysicalOperator(2, 2), block_buffer_(NULL) {
   set_phy_oper_type(kPhysicalNestLoopJoin);
   InitExpandedStatus();
 }
@@ -47,7 +48,7 @@ PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
   // TODO Auto-generated destructor stub
 }
 PhysicalNestLoopJoin::PhysicalNestLoopJoin(State state)
-    : PhysicalOperator(2, 2), state_(state) {
+    : PhysicalOperator(2, 2), state_(state), block_buffer_(NULL) {
   set_phy_oper_type(kPhysicalNestLoopJoin);
   InitExpandedStatus();
 }
@@ -71,6 +72,8 @@ PhysicalNestLoopJoin::State::State(PhysicalOperatorBase *child_left,
  */
 bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
                                 const PartitionOffset &partition_offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
   unsigned long long int timer;
   bool winning_thread = false;
@@ -83,13 +86,26 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
     LOG(INFO) << "[NestloopJoin]: [the first thread opens the nestloopJoin "
                  "physical operator]" << std::endl;
   }
+  RETURN_IF_CANCELLED(exec_status);
+
   state_.child_left_->Open(exec_status, partition_offset);
+  RETURN_IF_CANCELLED(exec_status);
+
   BarrierArrive(0);
   NestLoopJoinContext *jtc = new NestLoopJoinContext();
   // create a new block to hold the results from the left child
   // and add results to the dynamic buffer
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
+
   while (state_.child_left_->Next(exec_status, jtc->block_for_asking_)) {
+    if (exec_status->is_cancelled()) {
+      if (NULL != jtc->block_for_asking_) {
+        delete jtc->block_for_asking_;
+        jtc->block_for_asking_ = NULL;
+      }
+      return false;
+    }
+
     block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
     CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
   }
@@ -124,6 +140,7 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
 
   InitContext(jtc);  // rename this function, here means to store the thread
                      // context in the operator context
+  RETURN_IF_CANCELLED(exec_status);
 
   state_.child_right_->Open(exec_status, partition_offset);
 
@@ -145,6 +162,8 @@ bool PhysicalNestLoopJoin::Next(SegmentExecStatus *const exec_status,
    * @ return
    * @details   (additional)
    */
+  RETURN_IF_CANCELLED(exec_status);
+
   void *tuple_from_buffer_child = NULL;
   void *tuple_from_right_child = NULL;
   void *result_tuple = NULL;
@@ -152,6 +171,8 @@ bool PhysicalNestLoopJoin::Next(SegmentExecStatus *const exec_status,
   NestLoopJoinContext *jtc =
       reinterpret_cast<NestLoopJoinContext *>(GetContext());
   while (1) {
+    RETURN_IF_CANCELLED(exec_status);
+
     while (NULL != (tuple_from_right_child =
                         jtc->block_stream_iterator_->currentTuple())) {
       while (1) {

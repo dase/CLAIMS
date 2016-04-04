@@ -105,10 +105,10 @@ class ExchangeMerger : public PhysicalOperator {
    * 4. create receive thread, if one block is enough, then will be put into
    * all_merged_block_buffer
    */
-  bool Open(SegmentExecStatus * const exec_status,
+  bool Open(SegmentExecStatus* const exec_status,
             const PartitionOffset& partition_offset = 0);
   /// fetch block from all_merged_block_buffer and return.
-  bool Next(SegmentExecStatus * const exec_status, BlockStreamBase* block);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
@@ -164,6 +164,7 @@ class ExchangeMerger : public PhysicalOperator {
   semaphore sem_new_block_or_eof_;
   std::map<int, int> lower_sock_fd_to_id_;
   PerformanceInfo* perf_info_;
+  bool add_stage_endpoint_;
 
  private:
   friend class boost::serialization::access;

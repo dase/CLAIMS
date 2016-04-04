@@ -80,8 +80,14 @@ InOperator::State::State(PhysicalOperatorBase* child_set,
 
 bool InOperator::Open(SegmentExecStatus* const exec_status,
                       const PartitionOffset& partition_offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   state_.child_set_->Open(exec_status, partition_offset);
+  RETURN_IF_CANCELLED(exec_status);
+
   state_.child_in_->Open(exec_status, partition_offset);
+  RETURN_IF_CANCELLED(exec_status);
+
   AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(
       state_.schema_child_set_, state_.block_size_));
   AtomicPushFreeBlockStream(BlockStreamBase::createBlock(
@@ -93,13 +99,20 @@ bool InOperator::Open(SegmentExecStatus* const exec_status,
         PartitionFunctionFactory::createBoostHashFunction(state_.ht_nbuckets_);
     vector<unsigned> ht_index;
     ht_index.push_back(state_.index_child_set_);
+
+    RETURN_IF_CANCELLED(exec_status);
+
     hash_table_ = new BasicHashTable(
         state_.ht_nbuckets_, state_.ht_bucket_size_,
         (state_.schema_child_set_->getSubSchema(ht_index))->getTupleMaxSize());
     ht_index.clear();
     open_finished_ = true;
   } else {
-    while (!open_finished_) usleep(1);
+    while (!open_finished_) {
+      RETURN_IF_CANCELLED(exec_status);
+
+      usleep(1);
+    }
   }
 
   void* cur_tuple = NULL;
@@ -107,7 +120,11 @@ bool InOperator::Open(SegmentExecStatus* const exec_status,
   unsigned bn = 0;
 
   BlockStreamBase* bsb = AtomicPopFreeHtBlockStream();
+  RETURN_IF_CANCELLED(exec_status);
+
   while (state_.child_set_->Next(exec_status, bsb)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     BlockStreamBase::BlockStreamTraverseIterator* bsti = bsb->createIterator();
     bsti->reset();
     while (cur_tuple = bsti->nextTuple()) {
@@ -177,7 +194,11 @@ bool InOperator::Next(SegmentExecStatus* const exec_status,
 
   BlockStreamBase* block_for_asking = AtomicPopFreeBlockStream();
   block_for_asking->setEmpty();
+  RETURN_IF_CANCELLED(exec_status);
+
   while (state_.child_in_->Next(exec_status, block_for_asking)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator =
         block_for_asking->createIterator();
     while ((tuple_from_child_in = traverse_iterator->currentTuple()) > 0) {

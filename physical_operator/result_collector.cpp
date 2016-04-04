@@ -38,14 +38,21 @@ using std::endl;
 namespace claims {
 namespace physical_operator {
 ResultCollector::ResultCollector()
-    : finished_thread_count_(0), registered_thread_count_(0) {
+    : finished_thread_count_(0),
+      registered_thread_count_(0),
+      block_buffer_(NULL),
+      thread_id_(0) {
   set_phy_oper_type(kPhysicalResult);
   sema_open_.set_value(1);
   sema_open_finished_.set_value(0);
   sema_input_complete_.set_value(0);
 }
 ResultCollector::ResultCollector(State state)
-    : finished_thread_count_(0), registered_thread_count_(0), state_(state) {
+    : finished_thread_count_(0),
+      registered_thread_count_(0),
+      state_(state),
+      block_buffer_(NULL),
+      thread_id_(0) {
   set_phy_oper_type(kPhysicalResult);
   sema_open_.set_value(1);
   sema_open_finished_.set_value(0);
@@ -76,6 +83,8 @@ ResultCollector::State::State(Schema* input, PhysicalOperatorBase* child,
 
 bool ResultCollector::Open(SegmentExecStatus* const exec_status,
                            const PartitionOffset& part_offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   state_.partition_offset_ = part_offset;
 
   if (sema_open_.try_wait()) {
@@ -92,8 +101,7 @@ bool ResultCollector::Open(SegmentExecStatus* const exec_status,
   if (true == g_thread_pool_used) {
     Environment::getInstance()->getThreadPool()->AddTask(CollectResult, this);
   } else {
-    pthread_t tid;
-    pthread_create(&tid, NULL, CollectResult, this);
+    pthread_create(&thread_id_, NULL, CollectResult, this);
   }
   unsigned long long int start = curtick();
   sema_input_complete_.wait();
@@ -107,6 +115,9 @@ bool ResultCollector::Next(SegmentExecStatus* const exec_status,
 }
 
 bool ResultCollector::Close() {
+  if (0 != thread_id_) {
+    pthread_join(thread_id_, NULL);
+  }
   state_.child_->Close();
   sema_input_complete_.set_value(0);
   return true;

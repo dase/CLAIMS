@@ -58,14 +58,18 @@ RetCode StmtExecTracker::RegisterStmtES(StmtExecStatus* stmtes) {
   return 0;
 }
 
-RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id) {
-  //  lock_.acquire();
+RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id, bool is_locked) {
+  if (!is_locked) {
+    lock_.acquire();
+  }
   auto it = query_id_to_stmtes_.find(query_id);
   if (it == query_id_to_stmtes_.end()) {
     LOG(WARNING) << "invalide query id at UnRegisterStmtES" << endl;
   }
   query_id_to_stmtes_.erase(it);
-  //  lock_.release();
+  if (!is_locked) {
+    lock_.release();
+  }
   LOG(INFO) << "query id= " << query_id
             << " has erased from StmtEs! then left stmt = "
             << query_id_to_stmtes_.size() << endl;

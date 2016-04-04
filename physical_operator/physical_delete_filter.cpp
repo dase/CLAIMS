@@ -91,6 +91,7 @@ bool PhysicalDeleteFilter::Open(SegmentExecStatus* const exec_status,
 #ifdef TIME
   startTimer(&timer);
 #endif
+  RETURN_IF_CANCELLED(exec_status);
 
   RegisterExpandedThreadToAllBarriers();
   int ret = rSuccess;
@@ -194,7 +195,10 @@ bool PhysicalDeleteFilter::Open(SegmentExecStatus* const exec_status,
 
   LOG(INFO) << "delete filter operator begin to call left child's next()"
             << endl;
+  RETURN_IF_CANCELLED(exec_status);
+
   while (state_.child_left_->Next(exec_status, dftc->l_block_for_asking_)) {
+    RETURN_IF_CANCELLED(exec_status);
     delete dftc->l_block_stream_iterator_;
     dftc->l_block_stream_iterator_ =
         dftc->l_block_for_asking_->createIterator();
@@ -241,8 +245,11 @@ bool PhysicalDeleteFilter::Open(SegmentExecStatus* const exec_status,
   //  hashtable->report_status();
 
   //  printf("join open consume %d tuples\n",consumed_tuples_from_left);
+  RETURN_IF_CANCELLED(exec_status);
 
   state_.child_right_->Open(exec_status, partition_offset);
+  RETURN_IF_CANCELLED(exec_status);
+
   LOG(INFO) << "delete filter operator finished opening right child" << endl;
   return true;
 }
@@ -263,6 +270,8 @@ bool PhysicalDeleteFilter::Next(SegmentExecStatus* const exec_status,
       reinterpret_cast<DeleteFilterThreadContext*>(GetContext());
 
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
+
     while ((tuple_from_right_child =
                 dftc->r_block_stream_iterator_->currentTuple()) > 0) {
       unsigned bn =
@@ -356,6 +365,8 @@ bool PhysicalDeleteFilter::Next(SegmentExecStatus* const exec_status,
       hashtable_->placeIterator(dftc->hashtable_iterator_, bn);
     }
   }
+  RETURN_IF_CANCELLED(exec_status);
+
   return Next(exec_status, block);
 }
 
@@ -368,7 +379,10 @@ bool PhysicalDeleteFilter::Close() {
   LOG(INFO) << "Consumes %ld tuples from left child!" << endl;
   InitExpandedStatus();
   DestoryAllContext();
-  delete hashtable_;
+  if (NULL != hashtable_) {
+    delete hashtable_;
+    hashtable_ = NULL;
+  }
   state_.child_left_->Close();
   state_.child_right_->Close();
   return true;

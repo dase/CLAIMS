@@ -66,10 +66,14 @@ PhysicalLimit::~PhysicalLimit() {
  */
 bool PhysicalLimit::Open(SegmentExecStatus* const exec_status,
                          const PartitionOffset& kPartitionOffset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   tuple_cur_ = 0;
   block_for_asking_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   received_tuples_ = 0;
+  RETURN_IF_CANCELLED(exec_status);
+
   return state_.child_->Open(exec_status, kPartitionOffset);
 }
 /**
@@ -83,7 +87,11 @@ bool PhysicalLimit::Open(SegmentExecStatus* const exec_status,
 // lower iterator cannot be closed if not all the blocks are called.
 bool PhysicalLimit::Next(SegmentExecStatus* const exec_status,
                          BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   while (state_.child_->Next(exec_status, block_for_asking_)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     void* tuple_from_child;
     BlockStreamBase::BlockStreamTraverseIterator* it =
         block_for_asking_->createIterator();

@@ -49,7 +49,7 @@ class StmtExecTracker {
   virtual ~StmtExecTracker();
   u_int64_t GenQueryId() { return query_id_gen_++; }
   RetCode RegisterStmtES(StmtExecStatus* stmtes);
-  RetCode UnRegisterStmtES(u_int64_t query_id);
+  RetCode UnRegisterStmtES(u_int64_t query_id, bool is_locked = true);
   RetCode CancelStmtExec(u_int64_t query_id);
   static void CheckStmtExecStatus(caf::event_based_actor* self,
                                   StmtExecTracker* stmtes);

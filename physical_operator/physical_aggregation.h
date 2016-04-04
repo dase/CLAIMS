@@ -104,8 +104,9 @@ class PhysicalAggregation : public PhysicalOperator {
   PhysicalAggregation();
   virtual ~PhysicalAggregation();
 
-  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset &partition_offset);
-  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase *block);
+  bool Open(SegmentExecStatus *const exec_status,
+            const PartitionOffset &partition_offset);
+  bool Next(SegmentExecStatus *const exec_status, BlockStreamBase *block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment *> *all_segments);
@@ -116,7 +117,8 @@ class PhysicalAggregation : public PhysicalOperator {
  private:
   BasicHashTable *hashtable_;
   PartitionFunction *hash_;
-
+  BlockStreamBase *block_for_asking;
+  BasicHashTable *private_hashtable;
   // hashtable traverse and in the next func
   Lock hashtable_cur_lock_;
   unsigned bucket_cur_;

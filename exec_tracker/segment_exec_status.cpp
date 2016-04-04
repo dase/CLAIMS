@@ -35,7 +35,7 @@
 #include "../exec_tracker/stmt_exec_tracker.h"
 #include "../Environment.h"
 using caf::io::remote_actor;
-using std::ostringstream;
+// using std::ostringstream;
 using std::string;
 using std::endl;
 #include "caf/io/all.hpp"
@@ -61,10 +61,11 @@ SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id)
                       ->get_stmt_exec_tracker()
                       ->get_logic_time()) {}
 SegmentExecStatus::~SegmentExecStatus() {
-  ostringstream exec_info;
-  exec_info << "query (" << node_segment_id_.first << " , "
-            << node_segment_id_.second / kMaxNodeNum << " ) at node "
-            << node_segment_id_.second % kMaxNodeNum << " execution succeed";
+  //  ostringstream exec_info;
+  //  exec_info << "query (" << node_segment_id_.first << " , "
+  //            << node_segment_id_.second / kMaxNodeNum << " ) at node "
+  //            << node_segment_id_.second % kMaxNodeNum << " execution
+  //            succeed";
   //  UpdateStatus(SegmentExecStatus::ExecStatus::kDone, exec_info.str(), 0,
   //  true);
   //  ReportStatus(SegmentExecStatus::ExecStatus::kDone, exec_info.str());
@@ -90,7 +91,7 @@ RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
   try {
     caf::scoped_actor self;
     self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
-                    exec_status, exec_info)
+                    (int)exec_status, exec_info)
         .await(
 
             [=](OkAtom) {
@@ -130,7 +131,7 @@ RetCode SegmentExecStatus::ReportStatus() {
   try {
     caf::scoped_actor self;
     self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
-                    exec_status, exec_info)
+                    (int)exec_status, exec_info)
         .await(
 
             [=](OkAtom) {
@@ -175,10 +176,9 @@ bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
               << " exec_status_= " << exec_status_;
     lock_.release();
     if (need_report) {
-      //    lock_.acquire();
-      //
-      //    ReportStatus(exec_status, exec_info);
-      ReportStatus();
+      lock_.acquire();
+      ReportStatus(exec_status, exec_info);
+      // ReportStatus();
     }
   } else {
     LOG(WARNING) << "segment's status shouldn't be updated!!";

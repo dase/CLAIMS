@@ -83,12 +83,12 @@ class Expander : public PhysicalOperatorBase,
    * prepare block-buffer for collecting block from child and some thread list,
    * create one initial working thread.
    */
-  bool Open(SegmentExecStatus * const exec_status,
+  bool Open(SegmentExecStatus* const exec_status,
             const PartitionOffset& partitoin_offset = 0);
   /**
    * fetch one block from buffer and return
    */
-  bool Next(SegmentExecStatus * const exec_status, BlockStreamBase* block);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
   bool Close();
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
@@ -110,13 +110,13 @@ class Expander : public PhysicalOperatorBase,
   unsigned GetDegreeOfParallelism();
 
  private:
+  bool is_registered_;
   State state_;
   SegmentExecStatus* exec_status_;
   /*
    * The set of threads that are working normally.
    */
   std::set<pthread_t> in_work_expanded_thread_list_;
-  pthread_t coordinate_pid_;
   ExpanderID expander_id_;
   Lock exclusive_expanding_;
   /*

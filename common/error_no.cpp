@@ -200,7 +200,7 @@ ErrorInit::ErrorInit() {
   /* errorno for loader -2001 ~ -3000  */
   DefineErrorAndMessage(rUnbindEntireProjectionFail,
                         "failed to unbind entire projection");
-  DefineErrorAndMessage(rInvalidInsertData,"The Insert Data is Invalid");
+  DefineErrorAndMessage(rInvalidInsertData, "The Insert Data is Invalid");
   DefineErrorAndMessage(rTooLargeData, "Load Too Large Data");
   DefineErrorAndMessage(rTooSmallData, "Load Too Small Data");
   DefineErrorAndMessage(rTooLongData, "Load Too Long Data");
@@ -296,6 +296,8 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rTableNotExisted, "table not exist");
   DefineErrorAndMessage(rNULLDropTableName,
                         "The table name in the drop table statment is NULL");
+  DefineErrorAndMessage(rStmtCancelled, "this stmt is cancelled");
+  DefineErrorAndMessage(rUnknowStmtType, "the type of the stmt doesn't know");
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common

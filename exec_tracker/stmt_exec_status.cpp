@@ -49,18 +49,19 @@ StmtExecStatus::StmtExecStatus(string sql_stmt)
       query_result_(NULL),
       exec_info_(""),
       exec_status_(ExecStatus::kOk),
-      segment_id_gen_(0) {}
+      segment_id_gen_(1) {}
 
 StmtExecStatus::~StmtExecStatus() {
   // due to the query result should return, so shouldn't be deleted here
   // if (NULL != query_result_) delete query_result_;
-
+  lock_.acquire();
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
     delete it->second;
     it->second = NULL;
   }
   node_seg_id_to_seges_.clear();
+  lock_.release();
 }
 
 RetCode StmtExecStatus::CancelStmtExec() {
@@ -105,11 +106,13 @@ RetCode StmtExecStatus::RegisterToTracker() {
 
 RetCode StmtExecStatus::UnRegisterFromTracker() {
   return Environment::getInstance()->get_stmt_exec_tracker()->UnRegisterStmtES(
-      query_id_);
+      query_id_, false);
 }
 void StmtExecStatus::AddSegExecStatus(SegmentExecStatus* seg_exec_status) {
+  lock_.acquire();
   node_seg_id_to_seges_.insert(
       make_pair(seg_exec_status->get_node_segment_id(), seg_exec_status));
+  lock_.release();
 }
 
 bool StmtExecStatus::UpdateSegExecStatus(
@@ -118,14 +121,14 @@ bool StmtExecStatus::UpdateSegExecStatus(
   if (SegmentExecStatus::ExecStatus::kError == exec_status) {
     CancelStmtExec();
   }
-  //  lock_.acquire();
+  lock_.acquire();
   auto it = node_seg_id_to_seges_.find(node_segment_id);
   assert(it != node_seg_id_to_seges_.end());
 
+  lock_.release();
   if (kCancelled == exec_status_) {
     it->second->UpdateStatus(SegmentExecStatus::ExecStatus::kCancelled,
                              exec_info, logic_time);
-    //    lock_.release();
     return false;
   } else {
     it->second->UpdateStatus(exec_status, exec_info, logic_time);

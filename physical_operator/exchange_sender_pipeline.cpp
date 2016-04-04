@@ -42,12 +42,31 @@
 namespace claims {
 namespace physical_operator {
 
-ExchangeSenderPipeline::ExchangeSenderPipeline(State state) : state_(state) {
+ExchangeSenderPipeline::ExchangeSenderPipeline(State state)
+    : state_(state),
+      sender_thread_id_(0),
+      partitioned_block_stream_(NULL),
+      partitioned_data_buffer_(NULL),
+      block_for_asking_(NULL),
+      block_for_sending_buffer_(NULL),
+      block_for_serialization_(NULL),
+      sending_buffer_(NULL),
+      partition_function_(NULL),
+      socket_fd_upper_list_(NULL) {
   set_phy_oper_type(kphysicalExchangeSender);
   assert(state.partition_schema_.partition_key_index < 100);
 }
 
-ExchangeSenderPipeline::ExchangeSenderPipeline() {
+ExchangeSenderPipeline::ExchangeSenderPipeline()
+    : sender_thread_id_(0),
+      partitioned_block_stream_(NULL),
+      partitioned_data_buffer_(NULL),
+      block_for_asking_(NULL),
+      block_for_sending_buffer_(NULL),
+      block_for_serialization_(NULL),
+      sending_buffer_(NULL),
+      partition_function_(NULL),
+      socket_fd_upper_list_(NULL) {
   set_phy_oper_type(kphysicalExchangeSender);
 }
 
@@ -65,9 +84,12 @@ ExchangeSenderPipeline::~ExchangeSenderPipeline() {
  * pay attention to the work of different block buffer according to the
  * comments near it
  */
-bool ExchangeSenderPipeline::Open(SegmentExecStatus * const exec_status,
+bool ExchangeSenderPipeline::Open(SegmentExecStatus* const exec_status,
                                   const PartitionOffset&) {
+  RETURN_IF_CANCELLED(exec_status);
   state_.child_->Open(exec_status, state_.partition_offset_);
+  RETURN_IF_CANCELLED(exec_status);
+
   upper_num_ = state_.upper_id_list_.size();
   partition_function_ =
       PartitionFunctionFactory::createBoostHashFunction(upper_num_);
@@ -116,10 +138,13 @@ bool ExchangeSenderPipeline::Open(SegmentExecStatus * const exec_status,
     partitioned_block_stream_[i] =
         BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   }
+  RETURN_IF_CANCELLED(exec_status);
 
   /** connect to all the mergers **/
   for (unsigned upper_offset = 0; upper_offset < state_.upper_id_list_.size();
        ++upper_offset) {
+    RETURN_IF_CANCELLED(exec_status);
+
     LOG(INFO) << "(exchane_id= " << state_.exchange_id_
               << " partition_offset= " << state_.partition_offset_
               << " ) try to connect to upper( " << upper_offset << " , "
@@ -132,11 +157,12 @@ bool ExchangeSenderPipeline::Open(SegmentExecStatus * const exec_status,
       return false;
     }
   }
-  LOG(INFO) << "successfully !" << std::endl;
+  LOG(INFO) << "connect to all mereger successfully !" << std::endl;
+
+  RETURN_IF_CANCELLED(exec_status);
 
   /** create the Sender thread **/
-  int error;
-  error = pthread_create(&sender_thread_id_, NULL, Sender, this);
+  int error = pthread_create(&sender_thread_id_, NULL, Sender, this);
   if (error != 0) {
     LOG(ERROR) << "(exchane_id= " << state_.exchange_id_
                << " partition_offset= " << state_.partition_offset_
@@ -156,13 +182,17 @@ bool ExchangeSenderPipeline::Open(SegmentExecStatus * const exec_status,
  * else the state_.partition_schema_ is broadcast, straightly insert the block
  * from child into each partition buffer.
  */
-bool ExchangeSenderPipeline::Next(SegmentExecStatus * const exec_status,
+bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
                                   BlockStreamBase* no_block) {
   void* tuple_from_child;
   void* tuple_in_cur_block_stream;
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
+
     block_for_asking_->setEmpty();
     if (state_.child_->Next(exec_status, block_for_asking_)) {
+      RETURN_IF_CANCELLED(exec_status);
+
       /**
        * if a blocks is obtained from child, we repartition the tuples in the
        * block to corresponding partition_block_stream_.
@@ -216,6 +246,8 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus * const exec_status,
         }
       }
     } else {
+      RETURN_IF_CANCELLED(exec_status);
+
       if (state_.partition_schema_.isHashPartition()) {
         /* the child iterator is exhausted. We add the last block stream block
          * which would be not full into the buffer for hash partitioned case.
@@ -256,7 +288,11 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus * const exec_status,
                 << " partition_offset= " << state_.partition_offset_
                 << " ) Waiting until all the blocks in the buffer is sent!"
                 << std::endl;
+      RETURN_IF_CANCELLED(exec_status);
+
       while (!partitioned_data_buffer_->isEmpty()) {
+        RETURN_IF_CANCELLED(exec_status);
+
         usleep(1);
       }
 
@@ -270,7 +306,11 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus * const exec_status,
                 << " partition_offset= " << state_.partition_offset_
                 << " ) Waiting for close notification from all merger!"
                 << std::endl;
+      RETURN_IF_CANCELLED(exec_status);
+
       for (unsigned i = 0; i < upper_num_; i++) {
+        RETURN_IF_CANCELLED(exec_status);
+
         WaitingForCloseNotification(socket_fd_upper_list_[i]);
       }
       LOG(INFO) << " received all close notification, closing.. " << endl;
@@ -299,11 +339,13 @@ bool ExchangeSenderPipeline::Close() {
     delete sending_buffer_;
     sending_buffer_ = NULL;
   }
+
   if (NULL != block_for_sending_buffer_) {
     delete block_for_sending_buffer_;
     block_for_sending_buffer_ = NULL;
   }
-  for (unsigned i = 0; i < upper_num_; i++) {
+  for (unsigned i = 0; NULL != partitioned_block_stream_ && i < upper_num_;
+       i++) {
     if (NULL != partitioned_block_stream_[i]) {
       delete partitioned_block_stream_[i];
       partitioned_block_stream_[i] = NULL;
@@ -453,17 +495,19 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
 }
 
 void ExchangeSenderPipeline::CancelSenderThread() {
-  pthread_cancel(sender_thread_id_);
-  void* res;
-  pthread_join(sender_thread_id_, &res);
-  if (res != PTHREAD_CANCELED)
-    LOG(WARNING) << "(exchange_id = " << state_.exchange_id_
-                 << " , partition_offset = " << state_.partition_offset_
-                 << " ) thread is not canceled!" << std::endl;
-  LOG(INFO) << "(exchange_id = " << state_.exchange_id_
-            << " , partition_offset = " << state_.partition_offset_
-            << " ) thread is canceled!" << std::endl;
-  sender_thread_id_ = 0;
+  if (0 != sender_thread_id_) {
+    pthread_cancel(sender_thread_id_);
+    void* res;
+    pthread_join(sender_thread_id_, &res);
+    if (res != PTHREAD_CANCELED)
+      LOG(WARNING) << "(exchange_id = " << state_.exchange_id_
+                   << " , partition_offset = " << state_.partition_offset_
+                   << " ) thread is not canceled!" << std::endl;
+    LOG(INFO) << "(exchange_id = " << state_.exchange_id_
+              << " , partition_offset = " << state_.partition_offset_
+              << " ) thread is canceled!" << std::endl;
+    sender_thread_id_ = 0;
+  }
 }
 RetCode ExchangeSenderPipeline::GetAllSegments(stack<Segment*>* all_segments) {
   RetCode ret = rSuccess;

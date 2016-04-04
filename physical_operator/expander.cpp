@@ -43,7 +43,7 @@ Expander::Expander(State state)
       block_stream_buffer_(0),
       finished_thread_count_(0),
       thread_count_(0),
-      coordinate_pid_(0) {
+      is_registered_(false) {
   set_phy_oper_type(kphysicalExpander);
 }
 
@@ -51,7 +51,7 @@ Expander::Expander()
     : block_stream_buffer_(0),
       finished_thread_count_(0),
       thread_count_(0),
-      coordinate_pid_(0) {
+      is_registered_(false) {
   set_phy_oper_type(kphysicalExpander);
 }
 
@@ -78,7 +78,7 @@ Expander::State::State(Schema* schema, PhysicalOperatorBase* child,
  * @param partitoin_offset means to solve corresponding partition
  * every Expander should register to ExpanderTracker
  */
-bool Expander::Open(SegmentExecStatus * const exec_status,
+bool Expander::Open(SegmentExecStatus* const exec_status,
                     const PartitionOffset& partitoin_offset) {
   received_tuples_ = 0;
   state_.partition_offset_ = partitoin_offset;
@@ -89,13 +89,18 @@ bool Expander::Open(SegmentExecStatus * const exec_status,
       state_.block_size_, state_.block_count_in_buffer_ * 10, state_.schema_);
 
   in_work_expanded_thread_list_.clear();
+  RETURN_IF_CANCELLED(exec_status);
+
   expander_id_ = ExpanderTracker::getInstance()->registerNewExpander(
       block_stream_buffer_, this);
+  is_registered_ = true;
   LOG(INFO) << expander_id_
             << "Expander open, thread count= " << state_.init_thread_count_
             << std::endl;
   exec_status_ = exec_status;
   for (unsigned i = 0; i < state_.init_thread_count_; i++) {
+    RETURN_IF_CANCELLED(exec_status);
+
     if (CreateWorkingThread() == false) {
       LOG(INFO) << "expander_id_ = " << expander_id_
                 << " Failed to create initial expanded thread*" << std::endl;
@@ -107,9 +112,13 @@ bool Expander::Open(SegmentExecStatus * const exec_status,
 /**
  * fetch one block from buffer and return, until it is exhausted.
  */
-bool Expander::Next(SegmentExecStatus * const exec_status,
+bool Expander::Next(SegmentExecStatus* const exec_status,
                     BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   while (!block_stream_buffer_->getBlock(*block)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     if (ChildExhausted()) {
       return false;
     } else {
@@ -123,7 +132,10 @@ bool Expander::Close() {
   LOG(INFO) << "Expander: " << expander_id_ << " received "
             << block_stream_buffer_->getReceivedDataSizeInKbytes() << " kByte "
             << received_tuples_ << " tuples!" << std::endl;
-  ExpanderTracker::getInstance()->unregisterExpander(expander_id_);
+  if (is_registered_) {
+    ExpanderTracker::getInstance()->unregisterExpander(expander_id_);
+    is_registered_ = false;
+  }
   if (true == g_thread_pool_used) {
     // do nothing
   } else {
@@ -293,12 +305,12 @@ bool Expander::ChildExhausted() {
              this->block_stream_buffer_->Empty();
   lock_.release();
   exclusive_expanding_.release();
-  if (ret == true && coordinate_pid_ != 0) {
-    void* res;
-    pthread_join(coordinate_pid_, &res);
-    coordinate_pid_ = 0;
-    return ChildExhausted();
-  }
+  //  if (ret == true && coordinate_pid_ != 0) {
+  //    void* res;
+  //    pthread_join(coordinate_pid_, &res);
+  //    coordinate_pid_ = 0;
+  //    return ChildExhausted();
+  //  }
   if (ret) {
     LOG(INFO) << expander_id_ << " child iterator is exhausted!" << std::endl;
   }

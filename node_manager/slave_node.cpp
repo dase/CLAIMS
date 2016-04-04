@@ -93,12 +93,14 @@ class SlaveNodeActor : public event_based_actor {
           slave_node_->node_id_to_addr_.insert(
               make_pair(node_id, make_pair(node_ip, node_port)));
         },
-        [=](ReportSegESAtom, NodeSegmentID node_segment_id,
-            SegmentExecStatus::ExecStatus exec_status, string exec_info) {
-          bool ret = Environment::getInstance()
-                         ->get_stmt_exec_tracker()
-                         ->UpdateSegExecStatus(node_segment_id,
-                                                      exec_status, exec_info);
+        [=](ReportSegESAtom, NodeSegmentID node_segment_id, int exec_status,
+            string exec_info) {
+          bool ret =
+              Environment::getInstance()
+                  ->get_stmt_exec_tracker()
+                  ->UpdateSegExecStatus(
+                      node_segment_id,
+                      (SegmentExecStatus::ExecStatus)exec_status, exec_info);
           if (false == ret) {
             return make_message(CancelPlanAtom::value);
           }

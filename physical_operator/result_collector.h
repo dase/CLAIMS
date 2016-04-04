@@ -111,6 +111,8 @@ class ResultCollector : public PhysicalOperatorBase {
 
  private:
   State state_;
+  pthread_t thread_id_;
+
   SegmentExecStatus* exec_status_;
   /**
    *  It is the resposibility of the user to free the resultset.

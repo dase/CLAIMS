@@ -99,6 +99,8 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
   startTimer(&timer);
 #endif
 
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
 
   unsigned long long int timer;
@@ -185,9 +187,12 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
 
   unsigned long long int start = curtick();
   unsigned long long int processed_tuple_count = 0;
+  RETURN_IF_CANCELLED(exec_status);
 
   LOG(INFO) << "join operator begin to call left child's next()" << endl;
   while (state_.child_left_->Next(exec_status, jtc->l_block_for_asking_)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     delete jtc->l_block_stream_iterator_;
     jtc->l_block_stream_iterator_ = jtc->l_block_for_asking_->createIterator();
     while (cur = jtc->l_block_stream_iterator_->nextTuple()) {
@@ -226,6 +231,8 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
 
 bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
                             BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   void* result_tuple = NULL;
   void* tuple_from_right_child;
   void* tuple_in_hashtable;
@@ -251,6 +258,8 @@ bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
    * send was full, so we need hashtable_iterator_ preserved.
    */
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
+
     while (NULL != (tuple_from_right_child =
                         jtc->r_block_stream_iterator_->currentTuple())) {
       unsigned bn =
@@ -335,7 +344,10 @@ bool PhysicalHashJoin::Close() {
             << "tuples from left child!" << endl;
   InitExpandedStatus();
   DestoryAllContext();
-  delete hashtable_;
+  if (NULL != hashtable_) {
+    delete hashtable_;
+    hashtable_ = NULL;
+  }
   state_.child_left_->Close();
   state_.child_right_->Close();
   return true;

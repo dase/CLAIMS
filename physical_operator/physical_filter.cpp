@@ -92,6 +92,8 @@ PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
  */
 bool PhysicalFilter::Open(SegmentExecStatus* const exec_status,
                           const PartitionOffset& kPartitiontOffset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   // set a Synchronization point.
   RegisterExpandedThreadToAllBarriers();
   FilterThreadContext* ftc = reinterpret_cast<FilterThreadContext*>(
@@ -135,6 +137,8 @@ bool PhysicalFilter::Open(SegmentExecStatus* const exec_status,
 // should null
 #endif
   }
+  RETURN_IF_CANCELLED(exec_status);
+
   bool ret = state_.child_->Open(exec_status, kPartitiontOffset);
   SetReturnStatus(ret);
   BarrierArrive();
@@ -150,15 +154,21 @@ bool PhysicalFilter::Open(SegmentExecStatus* const exec_status,
  */
 bool PhysicalFilter::Next(SegmentExecStatus* const exec_status,
                           BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   void* tuple_from_child;
   void* tuple_in_block;
   FilterThreadContext* tc =
       reinterpret_cast<FilterThreadContext*>(GetContext());
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
     if (NULL == (tc->block_stream_iterator_->currentTuple())) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();
+
       if (state_.child_->Next(exec_status, tc->block_for_asking_)) {
+        RETURN_IF_CANCELLED(exec_status);
+
         delete tc->block_stream_iterator_;
         tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
       } else {

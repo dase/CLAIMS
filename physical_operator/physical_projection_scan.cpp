@@ -85,7 +85,10 @@ PhysicalProjectionScan::State::State(ProjectionID projection_id, Schema* schema,
  * decide if it generates a buffer.
  */
 
-bool PhysicalProjectionScan::Open(SegmentExecStatus * const exec_status,const PartitionOffset& kPartitionOffset) {
+bool PhysicalProjectionScan::Open(SegmentExecStatus* const exec_status,
+                                  const PartitionOffset& kPartitionOffset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
 
   if (TryEntryIntoSerializedSection()) {
@@ -136,7 +139,10 @@ bool PhysicalProjectionScan::Open(SegmentExecStatus * const exec_status,const Pa
 
 // TODO(Hanzhang): According to AVOID_CONTENTION_IN_SCAN, we choose the
 // strategy. We need finish case(1).
-bool PhysicalProjectionScan::Next(SegmentExecStatus * const exec_status,BlockStreamBase* block) {
+bool PhysicalProjectionScan::Next(SegmentExecStatus* const exec_status,
+                                  BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   unsigned long long total_start = curtick();
 #ifdef AVOID_CONTENTION_IN_SCAN
   ScanThreadContext* stc = reinterpret_cast<ScanThreadContext*>(GetContext());
@@ -183,6 +189,8 @@ bool PhysicalProjectionScan::Next(SegmentExecStatus * const exec_status,BlockStr
   }
   perf_info_->processed_one_block();
   // case(2)
+  RETURN_IF_CANCELLED(exec_status);
+
   return partition_reader_iterator_->nextBlock(block);
 
 #endif
