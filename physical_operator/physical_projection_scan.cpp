@@ -196,7 +196,7 @@ bool PhysicalProjectionScan::Next(SegmentExecStatus* const exec_status,
 #endif
 }
 
-bool PhysicalProjectionScan::Close() {
+bool PhysicalProjectionScan::Close(SegmentExecStatus* const exec_status) {
   if (NULL != partition_reader_iterator_) {
     delete partition_reader_iterator_;
     partition_reader_iterator_ = NULL;

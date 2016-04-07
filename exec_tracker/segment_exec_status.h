@@ -35,6 +35,7 @@
 
 #include "../utility/lock.h"
 #include "caf/all.hpp"
+#include <atomic>
 using std::string;
 namespace claims {
 
@@ -75,6 +76,7 @@ class SegmentExecStatus {
   NodeAddr coor_addr_;
   NodeSegmentID node_segment_id_;
   Lock lock_;
+  std::atomic_bool stop_report_;
 };
 #define UNLIKELY(expr) __builtin_expect(!!(expr), 0)
 

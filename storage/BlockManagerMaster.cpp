@@ -43,23 +43,29 @@ bool BlockManagerMaster::SendBindingMessage(
   caf::scoped_actor self;
   auto target_node_addr =
       Environment::getInstance()->get_master_node()->GetNodeAddrFromId(target);
-  auto target_actor =
-      remote_actor(target_node_addr.first.c_str(), target_node_addr.second);
-  self->sync_send(target_actor, BindingAtom::value, partition_id,
-                  number_of_chunks, desirable_storage_level)
-      .await(
+  try {
+    auto target_actor =
+        remote_actor(target_node_addr.first.c_str(), target_node_addr.second);
+    self->sync_send(target_actor, BindingAtom::value, partition_id,
+                    number_of_chunks, desirable_storage_level)
+        .await(
 
-          [=](OkAtom) {
-            LOG(INFO) << "sending binding message is OK!!" << endl;
-          },
-          after(std::chrono::seconds(30)) >>
-              [=]() {
-                LOG(WARNING) << "sending binding message, but timeout 30s!!"
-                             << endl;
-                return false;
-              }
+            [=](OkAtom) {
+              LOG(INFO) << "sending binding message is OK!!" << endl;
+            },
+            after(std::chrono::seconds(30)) >>
+                [=]() {
+                  LOG(WARNING) << "sending binding message, but timeout 30s!!"
+                               << endl;
+                  return false;
+                }
 
-          );
+            );
+  } catch (caf::network_error &e) {
+    LOG(WARNING) << "cann't connect to node ( " << target_node_addr.first
+                 << " , " << target_node_addr.second << " )";
+    return false;
+  }
   return true;
 }
 

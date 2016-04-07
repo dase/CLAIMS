@@ -88,9 +88,10 @@ class ExchangeSenderMaterialized : public ExchangeSender {
   explicit ExchangeSenderMaterialized(State state);
   ExchangeSenderMaterialized();
   virtual ~ExchangeSenderMaterialized();
-  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset& part_off = 0);
-  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase* no_block);
-  bool Close();
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& part_off = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* no_block);
+  bool Close(SegmentExecStatus* const exec_status);
   RetCode GetAllSegments(stack<Segment*>* all_segments);
   void SetPartitionOffset(const int par_off) {
     state_.partition_offset_ = par_off;

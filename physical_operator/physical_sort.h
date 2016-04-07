@@ -122,7 +122,7 @@ class PhysicalSort : public PhysicalOperator {
    * @brief Method description: Close child opertor.
    * @return  true.
    */
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
 
  private:

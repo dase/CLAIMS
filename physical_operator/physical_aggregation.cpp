@@ -490,7 +490,7 @@ bool PhysicalAggregation::Next(SegmentExecStatus *const exec_status,
   }
 }
 
-bool PhysicalAggregation::Close() {
+bool PhysicalAggregation::Close(SegmentExecStatus *const exec_status) {
   InitExpandedStatus();
   if (NULL != hashtable_) {
     delete hashtable_;
@@ -504,7 +504,7 @@ bool PhysicalAggregation::Close() {
     delete private_hashtable;
     private_hashtable = NULL;
   }
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   return true;
 }
 void PhysicalAggregation::Print() {

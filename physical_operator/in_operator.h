@@ -105,7 +105,7 @@ class InOperator : public PhysicalOperatorBase {
   // get block from child, and fetch each tuple, then compare with every tuple
   // in corresponding hash_bucket
   bool Next(SegmentExecStatus *const exec_status, BlockStreamBase *block);
-  bool Close();
+  bool Close(SegmentExecStatus *const exec_status);
 
  private:
   bool AtomicPopRemainingBlock(RemainingBlock &rb);

@@ -69,7 +69,7 @@ class PhysicalOperatorBase {
   virtual bool Open(SegmentExecStatus* const exec_status,
                     const PartitionOffset& part_off = 0) = 0;
   virtual bool Next(SegmentExecStatus* const exec_status, BlockStreamBase*) = 0;
-  virtual bool Close() = 0;
+  virtual bool Close(SegmentExecStatus* const exec_status) = 0;
   virtual void Print() { printf("??\n"); }
   virtual RetCode GetAllSegments(stack<Segment*>* all_segments) {
     cout << "Get All Segments error!" << endl;

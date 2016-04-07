@@ -81,11 +81,11 @@ bool ResultPrinter::Next(SegmentExecStatus* const exec_status,
   }
   return false;
 }
-bool ResultPrinter::Close() {
+bool ResultPrinter::Close(SegmentExecStatus* const exec_status) {
   printf("tuple count:%d\n", tuple_count_);
   block_buffer_->~BlockStreamBase();
   cout << "----------total tuples: " << tuple_count_ << "----------\n";
-  return state_.child_->Close();
+  return state_.child_->Close(exec_status);
 }
 void ResultPrinter::Print() {
   printf("Print:\n");

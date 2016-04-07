@@ -124,8 +124,8 @@ bool PhysicalLimit::Next(SegmentExecStatus* const exec_status,
   return !block->Empty();
 }
 
-bool PhysicalLimit::Close() {
-  state_.child_->Close();
+bool PhysicalLimit::Close(SegmentExecStatus* const exec_status) {
+  state_.child_->Close(exec_status);
   block_for_asking_->~BlockStreamBase();
   return true;
 }

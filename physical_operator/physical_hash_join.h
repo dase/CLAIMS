@@ -144,7 +144,7 @@ class PhysicalHashJoin : public PhysicalOperator {
    *                            delete hashtable, and close childs.
    * @return  true.
    */
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
 

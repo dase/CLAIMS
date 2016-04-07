@@ -86,7 +86,7 @@ void Analyzer::analyse(const AttributeID& attrID) {
   SegmentExecStatus* exec_status = new SegmentExecStatus(make_pair(0, 0));
   collector->Open(exec_status);
   collector->Next(exec_status, 0);
-  collector->Close();
+  collector->Close(exec_status);
 
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
@@ -273,7 +273,7 @@ void Analyzer::compute_table_stat(const TableID& tab_id) {
 
   collector->Open(exec_status);
   collector->Next(exec_status, 0);
-  collector->Close();
+  collector->Close(exec_status);
 
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
@@ -406,7 +406,7 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
 
   collector->Open(exec_status);
   collector->Next(exec_status, 0);
-  collector->Close();
+  collector->Close(exec_status);
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
   BlockStreamBase::BlockStreamTraverseIterator* b_it =
@@ -474,7 +474,7 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,
 
   collector->Open(exec_status);
   collector->Next(exec_status, 0);
-  collector->Close();
+  collector->Close(exec_status);
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
 

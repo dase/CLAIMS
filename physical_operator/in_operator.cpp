@@ -241,7 +241,7 @@ bool InOperator::Next(SegmentExecStatus* const exec_status,
   return false;
 }
 
-bool InOperator::Close() {
+bool InOperator::Close(SegmentExecStatus* const exec_status) {
   sema_open_.post();
   open_finished_ = false;
   //	barrier_->~Barrier();
@@ -250,8 +250,8 @@ bool InOperator::Close() {
   remaining_block_list_.clear();
   //	hash->~PartitionFunction();
   hash_table_->~BasicHashTable();
-  state_.child_set_->Close();
-  state_.child_in_->Close();
+  state_.child_set_->Close(exec_status);
+  state_.child_in_->Close(exec_status);
   return true;
 }
 

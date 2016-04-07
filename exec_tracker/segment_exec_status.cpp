@@ -48,15 +48,24 @@ SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id,
       exec_info_("ok"),
       exec_status_(ExecStatus::kOk),
       ret_code_(0),
-      logic_time_(0) {
-  coor_actor_ = remote_actor(coor_addr.first, coor_addr.second);
+      logic_time_(0),
+      stop_report_(false) {
   //  RegisterToTracker();
+  try {
+    coor_actor_ = remote_actor(coor_addr_.first, coor_addr_.second);
+  } catch (caf::network_error& e) {
+    LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
+                 << " cann't connect to node  ( " << coor_addr_.first << " , "
+                 << coor_addr_.second
+                 << " ) when SegmentExecStatus connect remote actor";
+  }
 }
 SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id)
     : node_segment_id_(node_segment_id),
       exec_info_("ok"),
       exec_status_(ExecStatus::kOk),
       ret_code_(0),
+      stop_report_(false),
       logic_time_(Environment::getInstance()
                       ->get_stmt_exec_tracker()
                       ->get_logic_time()) {}
@@ -80,9 +89,10 @@ RetCode SegmentExecStatus::CancelSegExec() {
             << " need be cancelled!" << endl;
   return 0;
 }
+// make sure that kCancel or kDone is the last message transfer to stmt
 RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
                                         string exec_info) {
-  if (kCancelled == exec_status_) {
+  if (kCancelled == exec_status_ || stop_report_) {
     lock_.release();
 
     return 0;
@@ -90,16 +100,24 @@ RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
   //  lock_.acquire();
   try {
     caf::scoped_actor self;
+    //    coor_actor_ = remote_actor(coor_addr_.first, coor_addr_.second);
+
     self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
                     (int)exec_status, exec_info)
         .await(
 
             [=](OkAtom) {
+              if (kCancelled == exec_status || kDone == exec_status) {
+                stop_report_ = true;
+              }
               LOG(INFO) << node_segment_id_.first << " , "
                         << node_segment_id_.second
                         << " report0: " << exec_status << " , " << exec_info;
             },
-            [=](CancelPlanAtom) { CancelSegExec(); },
+            [=](CancelPlanAtom) {
+              stop_report_ = true;
+              CancelSegExec();
+            },
             caf::after(std::chrono::seconds(kTimeout)) >>
                 [&]() {
                   LOG(WARNING)
@@ -108,20 +126,24 @@ RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
                 });
 
   } catch (caf::network_error& e) {
-    LOG(WARNING) << "cann't connect to coordinator ( " << coor_addr_.first
-                 << " , " << coor_addr_.second << " )";
+    LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
+                 << " cann't connect to node  ( " << coor_addr_.first << " , "
+                 << coor_addr_.second << " ) when report status";
   }
   lock_.release();
 
   // for making sure kError or kDone be the last message sended to remote
-  if (ExecStatus::kError == exec_status_ || ExecStatus::kDone == exec_status_) {
-    exec_status_ = kCancelled;
-  }
+  //  if (ExecStatus::kError == exec_status_ || ExecStatus::kDone ==
+  //  exec_status_) {
+  //    lock_.acquire();
+  //    exec_status_ = kCancelled;
+  //    lock_.release();
+  //  }
   return rSuccess;
 }
 RetCode SegmentExecStatus::ReportStatus() {
   // if this segment is cancelled, needn't report status
-  if (kCancelled == exec_status_) {
+  if (kCancelled == exec_status_ || stop_report_) {
     return 0;
   }
   lock_.acquire();
@@ -130,16 +152,24 @@ RetCode SegmentExecStatus::ReportStatus() {
   lock_.release();
   try {
     caf::scoped_actor self;
+    //    coor_actor_ = remote_actor(coor_addr_.first, coor_addr_.second);
+
     self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
                     (int)exec_status, exec_info)
         .await(
 
             [=](OkAtom) {
+              if (kCancelled == exec_status || kDone == exec_status) {
+                stop_report_ = true;
+              }
               LOG(INFO) << node_segment_id_.first << " , "
                         << node_segment_id_.second
                         << " report : " << exec_status << " , " << exec_info;
             },
-            [=](CancelPlanAtom) { CancelSegExec(); },
+            [=](CancelPlanAtom) {
+              stop_report_ = true;
+              CancelSegExec();
+            },
             caf::after(std::chrono::seconds(kTimeout)) >>
                 [&]() {
                   LOG(WARNING)
@@ -148,25 +178,27 @@ RetCode SegmentExecStatus::ReportStatus() {
                 });
 
   } catch (caf::network_error& e) {
-    LOG(WARNING) << "cann't connect to coordinator ( " << coor_addr_.first
-                 << " , " << coor_addr_.second << " )";
+    LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
+                 << " cann't connect to node ( " << coor_addr_.first << " , "
+                 << coor_addr_.second << " ) when report status";
   }
 
   // for making sure kError or kDone be the last message sended to remote
-  if (ExecStatus::kError == exec_status || ExecStatus::kDone == exec_status) {
-    lock_.acquire();
-    exec_status_ = kCancelled;
-    lock_.release();
-  }
+  //  if (ExecStatus::kError == exec_status || ExecStatus::kDone == exec_status)
+  //  {
+  //    lock_.acquire();
+  //    exec_status_ = kCancelled;
+  //    lock_.release();
+  //  }
   return rSuccess;
 }
 bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
                                      u_int64_t logic_time, bool need_report) {
-  if (exec_status_ == kCancelled) {
+  if (exec_status_ == ExecStatus::kCancelled) {
     LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
               << " update status failed!";
     return false;
-  } else if (kOk == exec_status_) {
+  } else if (ExecStatus::kOk == exec_status_) {
     lock_.acquire();
     logic_time_ = logic_time;
     exec_status_ = exec_status;

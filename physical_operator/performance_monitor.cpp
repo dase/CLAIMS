@@ -72,7 +72,7 @@ bool PerformanceMonitor::Next(SegmentExecStatus* const exec_status,
   return false;
 }
 
-bool PerformanceMonitor::Close() {
+bool PerformanceMonitor::Close(SegmentExecStatus* const exec_status) {
   pthread_cancel(report_tid_);
   double eclipsed_seconds = getSecond(start_);
   double processed_data_in_bytes =
@@ -86,7 +86,7 @@ bool PerformanceMonitor::Close() {
             << (float)tuplecount_ / 2014 / 1024 / eclipsed_seconds
             << " M tuples/s" << endl;
   block_->~BlockStreamBase();
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   return true;
 }
 void PerformanceMonitor::Print() {

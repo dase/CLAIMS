@@ -47,7 +47,7 @@ namespace claims {
 StmtExecStatus::StmtExecStatus(string sql_stmt)
     : sql_stmt_(sql_stmt),
       query_result_(NULL),
-      exec_info_(""),
+      exec_info_("OK"),
       exec_status_(ExecStatus::kOk),
       segment_id_gen_(1) {}
 
@@ -78,16 +78,21 @@ RetCode StmtExecStatus::CancelStmtExec() {
 }
 // check every segment status
 bool StmtExecStatus::CouldBeDeleted() {
-  if (exec_status_ == kOk) {
+  // exec_status_ is set kDone or kError when the stmt is over in
+  // select_exec.cpp, and then it could be deleted
+  if (!(exec_status_ == kDone || exec_status_ == kError)) {
     return false;
   }
+  // then check every segment of this stmt, if one is kOk (e.t. not kCancel and
+  // kDone), then shouldn't delete this stmt
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
     if (it->second->get_exec_status() == SegmentExecStatus::ExecStatus::kOk) {
       return false;
     }
   }
-  LOG(INFO) << query_id_ << " query can be deleted";
+  LOG(INFO) << query_id_
+            << " query can be deleted and status= " << exec_status_;
   return true;
 }
 bool StmtExecStatus::HaveErrorCase(u_int64_t logic_time) {
@@ -126,7 +131,8 @@ bool StmtExecStatus::UpdateSegExecStatus(
   assert(it != node_seg_id_to_seges_.end());
 
   lock_.release();
-  if (kCancelled == exec_status_) {
+  if (ExecStatus::kCancelled == exec_status_ ||
+      ExecStatus::kError == exec_status_) {
     it->second->UpdateStatus(SegmentExecStatus::ExecStatus::kCancelled,
                              exec_info, logic_time);
     return false;

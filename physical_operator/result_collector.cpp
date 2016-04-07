@@ -97,6 +97,8 @@ bool ResultCollector::Open(SegmentExecStatus* const exec_status,
     }
   }
   registered_thread_count_++;
+  RETURN_IF_CANCELLED(exec_status);
+
   exec_status_ = exec_status;
   if (true == g_thread_pool_used) {
     Environment::getInstance()->getThreadPool()->AddTask(CollectResult, this);
@@ -104,6 +106,7 @@ bool ResultCollector::Open(SegmentExecStatus* const exec_status,
     pthread_create(&thread_id_, NULL, CollectResult, this);
   }
   unsigned long long int start = curtick();
+
   sema_input_complete_.wait();
   block_buffer_->query_time_ = getSecond(start);
   return true;
@@ -114,11 +117,11 @@ bool ResultCollector::Next(SegmentExecStatus* const exec_status,
   return false;
 }
 
-bool ResultCollector::Close() {
+bool ResultCollector::Close(SegmentExecStatus* const exec_status) {
   if (0 != thread_id_) {
     pthread_join(thread_id_, NULL);
   }
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   sema_input_complete_.set_value(0);
   return true;
 }
@@ -171,6 +174,9 @@ void* ResultCollector::CollectResult(void* arg) {
     if (false == Pthis->CreateBlockStream(block_for_asking)) {
       assert(false);
       return 0;
+    }
+    if (Pthis->exec_status_->is_cancelled()) {
+      break;
     }
   }
   Pthis->sema_input_complete_.post();

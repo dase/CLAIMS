@@ -92,6 +92,8 @@ bool PhysicalProject::Open(SegmentExecStatus* const exec_status,
  */
 bool PhysicalProject::Next(SegmentExecStatus* const exec_status,
                            BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   unsigned total_length_ = state_.schema_output_->getTupleMaxSize();
 
   void* tuple_from_child;
@@ -123,10 +125,10 @@ bool PhysicalProject::Next(SegmentExecStatus* const exec_status,
   return false;
 }
 
-bool PhysicalProject::Close() {
+bool PhysicalProject::Close(SegmentExecStatus* const exec_status) {
   InitExpandedStatus();
   DestoryAllContext();
-  return state_.child_->Close();
+  return state_.child_->Close(exec_status);
 }
 
 bool PhysicalProject::CopyNewValue(void* tuple, void* result, int length) {

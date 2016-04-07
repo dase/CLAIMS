@@ -72,7 +72,7 @@ ExchangeMerger::ExchangeMerger(State state)
       all_merged_block_buffer_(NULL),
       block_for_deserialization(NULL),
       block_for_socket_(NULL),
-      add_stage_endpoint_(false),
+      is_registered_to_tracker_(false),
       receiver_thread_id_(0),
       sock_fd_(-1),
       socket_port_(-1),
@@ -85,7 +85,7 @@ ExchangeMerger::ExchangeMerger()
     : all_merged_block_buffer_(NULL),
       block_for_deserialization(NULL),
       block_for_socket_(NULL),
-      add_stage_endpoint_(false),
+      is_registered_to_tracker_(false),
       receiver_thread_id_(0),
       sock_fd_(-1),
       socket_port_(-1),
@@ -130,7 +130,6 @@ bool ExchangeMerger::Open(SegmentExecStatus* const exec_status,
     ExpanderTracker::getInstance()->addNewStageEndpoint(
         pthread_self(),
         LocalStageEndPoint(stage_src, "Exchange", all_merged_block_buffer_));
-    add_stage_endpoint_ = true;
     // if one of block_for_socket is full, it will be deserialized into
     // block_for_deserialization and sended to all_merged_data_buffer
     block_for_deserialization =
@@ -159,6 +158,7 @@ bool ExchangeMerger::Open(SegmentExecStatus* const exec_status,
       LOG(ERROR) << "Register Exchange with ID = " << state_.exchange_id_
                  << " fails!" << endl;
     }
+    is_registered_to_tracker_ = true;
 #ifdef ExchangeSender
     if (IsMaster()) {
       /*  According to a bug reported by dsc, the master exchange upper should
@@ -184,7 +184,9 @@ bool ExchangeMerger::Open(SegmentExecStatus* const exec_status,
     if (CreateReceiverThread() == false) {
       return false;
     }
-    CreatePerformanceInfo();
+    if (!exec_status->is_cancelled()) {
+      CreatePerformanceInfo();
+    }
   }
   /// A synchronization barrier, in case of multiple expanded threads
   RETURN_IF_CANCELLED(exec_status);
@@ -236,17 +238,19 @@ bool ExchangeMerger::Next(SegmentExecStatus* const exec_status,
   }
 }
 
-bool ExchangeMerger::Close() {
+bool ExchangeMerger::Close(SegmentExecStatus* const exec_status) {
   LOG(INFO) << " exchange_merger_id = " << state_.exchange_id_ << " closed!"
             << " exhausted lower senders num = " << exhausted_lowers
             << " lower sender num = " << lower_num_ << endl;
 
   CancelReceiverThread();
   CloseSocket();
-  for (unsigned i = 0; i < lower_num_; i++) {
-    if (NULL != block_for_socket_[i]) {
-      delete block_for_socket_[i];
-      block_for_socket_[i] = NULL;
+  if (NULL != block_for_socket_) {
+    for (unsigned i = 0; i < lower_num_; i++) {
+      if (NULL != block_for_socket_[i]) {
+        delete block_for_socket_[i];
+        block_for_socket_[i] = NULL;
+      }
     }
   }
   if (NULL != block_for_deserialization) {
@@ -262,7 +266,7 @@ bool ExchangeMerger::Close() {
    * of open() and next() can act correctly.
    */
   ResetStatus();
-  if (add_stage_endpoint_) {
+  if (is_registered_to_tracker_) {
     Environment::getInstance()->getExchangeTracker()->LogoutExchange(
         ExchangeID(state_.exchange_id_, partition_offset_));
   }
@@ -524,6 +528,7 @@ void* ExchangeMerger::Receiver(void* arg) {
   std::vector<int> finish_times;  // in ms
   while (true) {
     usleep(1);
+    pthread_testcancel();
     const int event_count =
         epoll_wait(Pthis->epoll_fd_, events, Pthis->lower_num_, -1);
     for (int i = 0; i < event_count; i++) {
@@ -543,6 +548,8 @@ void* ExchangeMerger::Receiver(void* arg) {
          * more incoming connections.
          */
         while (true) {
+          pthread_testcancel();
+
           sockaddr in_addr;
           socklen_t in_len;
           int infd;
@@ -594,6 +601,8 @@ void* ExchangeMerger::Receiver(void* arg) {
         /* We have data on the fd waiting to be read.*/
         int done = 0;
         while (true) {
+          pthread_testcancel();
+
           int byte_received;
           int socket_fd_index = Pthis->lower_sock_fd_to_id_[events[i].data.fd];
           byte_received = read(
@@ -696,6 +705,8 @@ void* ExchangeMerger::Receiver(void* arg) {
 
             /** tell the Sender that all the block are consumed so that the
              * Sender can close the socket**/
+            pthread_testcancel();
+
             Pthis->ReplyAllBlocksConsumed(events[i].data.fd);
 
             LOG(INFO)

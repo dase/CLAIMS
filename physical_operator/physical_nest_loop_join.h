@@ -36,9 +36,6 @@
 #include "../physical_operator/physical_operator.h"
 #include "../Debug.h"
 
-
-
-
 namespace claims {
 namespace physical_operator {
 class PhysicalNestLoopJoin : public PhysicalOperator {
@@ -102,9 +99,10 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   PhysicalNestLoopJoin();
   virtual ~PhysicalNestLoopJoin();
   PhysicalNestLoopJoin(State state);
-  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset &partition_offset = 0);
-  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase *block);
-  bool Close();
+  bool Open(SegmentExecStatus *const exec_status,
+            const PartitionOffset &partition_offset = 0);
+  bool Next(SegmentExecStatus *const exec_status, BlockStreamBase *block);
+  bool Close(SegmentExecStatus *const exec_status);
   void Print();
   RetCode GetAllSegments(stack<Segment *> *all_segments);
 

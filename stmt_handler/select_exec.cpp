@@ -153,7 +153,7 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   while (physical_plan->Next(seg_exec_status, NULL)) {
   }
   exec_result->result_ = physical_plan->GetResultSet();
-  physical_plan->Close();
+  physical_plan->Close(seg_exec_status);
 
   if (tid != 0) {
     pthread_join(tid, NULL);
@@ -249,19 +249,20 @@ RetCode SelectExec::Execute() {
   seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
                                 "physical plan next() succeed", 0, true);
   stmt_exec_status_->set_query_result(physical_plan->GetResultSet());
-  stmt_exec_status_->set_exec_info("execute a query successfully");
-  physical_plan->Close();
+  stmt_exec_status_->set_exec_info(string("execute a query successfully"));
+  physical_plan->Close(seg_exec_status);
   seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kDone,
                                 "physical plan close() succeed", 0, true);
   if (tid != 0) {
+    //    if (StmtExecStatus::kCancelled ==
+    //    stmt_exec_status_->get_exec_status()) {
+    //      pthread_cancel(tid);
+    //    }
     pthread_join(tid, NULL);
   }
   seg_exec_status->UnRegisterFromTracker();
 
   ret = rSuccess;
-  //  if (seg_exec_status->is_cancelled()) {
-  //    ret = rStmtCancelled;
-  //  }
   delete seg_exec_status;
   delete logic_plan;
   delete physical_plan;
@@ -273,6 +274,10 @@ void* SelectExec::SendAllSegments(void* arg) {
   SelectExec* select_exec = reinterpret_cast<SelectExec*>(arg);
   short segment_id = 0;
   while (!select_exec->all_segments_.empty()) {
+    pthread_testcancel();
+    if (select_exec->stmt_exec_status_->IsCancelled()) {
+      return NULL;
+    }
     auto a_plan_segment = select_exec->all_segments_.top();
     // make sure upper exchanges are prepared
     ret = select_exec->IsUpperExchangeRegistered(
@@ -280,6 +285,10 @@ void* SelectExec::SendAllSegments(void* arg) {
     if (rSuccess == ret) {
       auto physical_sender_oper = a_plan_segment->get_plan_segment();
       for (int i = 0; i < a_plan_segment->lower_node_id_list_.size(); ++i) {
+        pthread_testcancel();
+        if (select_exec->stmt_exec_status_->IsCancelled()) {
+          return NULL;
+        }
         // set partition offset for each segment
         reinterpret_cast<ExchangeSender*>(physical_sender_oper)
             ->SetPartitionOffset(i);
@@ -291,7 +300,9 @@ void* SelectExec::SendAllSegments(void* arg) {
                     a_plan_segment->lower_node_id_list_[i],
                     select_exec->get_stmt_exec_status()->get_query_id(),
                     segment_id) == false) {
-          LOG(ERROR) << "send plan error!!" << endl;
+          LOG(ERROR) << "sending plan of "
+                     << select_exec->get_stmt_exec_status()->get_query_id()
+                     << " , " << segment_id << "error!!!" << endl;
           ret = -1;
           return &ret;
         }
@@ -302,7 +313,9 @@ void* SelectExec::SendAllSegments(void* arg) {
 
         select_exec->get_stmt_exec_status()->AddSegExecStatus(seg_exec_status);
 
-        LOG(INFO) << "send plan succeed!!!" << endl;
+        LOG(INFO) << "sending plan of "
+                  << select_exec->get_stmt_exec_status()->get_query_id()
+                  << " , " << segment_id << "succeed!!!" << endl;
       }
     } else {
       LOG(ERROR) << "asking upper exchange failed!" << endl;
@@ -323,6 +336,9 @@ RetCode SelectExec::IsUpperExchangeRegistered(
                ->AskForSocketConnectionInfo(ExchangeID(exchange_id, i),
                                             upper_node_id_list[i],
                                             node_addr) != true) {
+      if (stmt_exec_status_->IsCancelled()) {
+        return -1;
+      }
       usleep(200);
     }
   }

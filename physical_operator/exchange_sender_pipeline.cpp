@@ -27,6 +27,7 @@
 
 #include "../physical_operator/exchange_sender_pipeline.h"
 
+#include <glog/raw_logging.h>
 #include <malloc.h>
 #include <stack>
 
@@ -319,9 +320,9 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
   }
 }
 
-bool ExchangeSenderPipeline::Close() {
+bool ExchangeSenderPipeline::Close(SegmentExecStatus* const exec_status) {
   CancelSenderThread();
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   // free temporary space
   if (NULL != partitioned_data_buffer_) {
     delete partitioned_data_buffer_;
@@ -373,9 +374,14 @@ bool ExchangeSenderPipeline::Close() {
 void* ExchangeSenderPipeline::Sender(void* arg) {
   ExchangeSenderPipeline* Pthis =
       reinterpret_cast<ExchangeSenderPipeline*>(arg);
-  LOG(INFO) << "(exchange_id = " << Pthis->state_.exchange_id_
-            << " , partition_offset = " << Pthis->state_.partition_offset_
-            << " ) sender thread created successfully!" << std::endl;
+  pthread_testcancel();
+
+  //  LOG(INFO) << "(exchange_id = " << Pthis->state_.exchange_id_
+  //            << " , partition_offset = " << Pthis->state_.partition_offset_
+  //            << " ) sender thread created successfully!";
+  RAW_LOG(INFO,
+          "exchange_id= %d, par_off= %d sender thread is created successfully!",
+          Pthis->state_.exchange_id_, Pthis->state_.partition_offset_);
   Pthis->sending_buffer_->Initialized();
   Pthis->sendedblocks_ = 0;
   try {

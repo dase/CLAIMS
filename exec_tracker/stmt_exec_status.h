@@ -61,7 +61,11 @@ class StmtExecStatus {
   void set_exec_status(ExecStatus exec_status) { exec_status_ = exec_status; }
   ExecStatus get_exec_status() { return exec_status_; }
   string get_exec_info() { return exec_info_; }
-  void set_exec_info(string exec_info) { exec_info_ = exec_info; }
+  void set_exec_info(string exec_info) {
+    lock_.acquire();
+    exec_info_ = exec_info;
+    lock_.release();
+  }
   ResultSet* get_query_result() { return query_result_; }
   void set_query_result(ResultSet* query_result) {
     query_result_ = query_result;

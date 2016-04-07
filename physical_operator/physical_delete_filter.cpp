@@ -370,7 +370,7 @@ bool PhysicalDeleteFilter::Next(SegmentExecStatus* const exec_status,
   return Next(exec_status, block);
 }
 
-bool PhysicalDeleteFilter::Close() {
+bool PhysicalDeleteFilter::Close(SegmentExecStatus* const exec_status) {
 #ifdef TIME
   stopTimer(&timer);
   printf("time consuming: %lld, %f\n", timer,
@@ -383,8 +383,8 @@ bool PhysicalDeleteFilter::Close() {
     delete hashtable_;
     hashtable_ = NULL;
   }
-  state_.child_left_->Close();
-  state_.child_right_->Close();
+  state_.child_left_->Close(exec_status);
+  state_.child_right_->Close(exec_status);
   return true;
 }
 

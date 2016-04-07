@@ -129,11 +129,14 @@ bool StmtExecTracker::UpdateSegExecStatus(
   lock_.acquire();
   auto it = query_id_to_stmtes_.find(node_segment_id.first);
   assert(it != query_id_to_stmtes_.end());
+  StmtExecStatus::ExecStatus stmt_exec_status = it->second->get_exec_status();
   bool ret = it->second->UpdateSegExecStatus(node_segment_id, exec_status,
                                              exec_info, logic_time_);
   lock_.release();
   LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
-            << " receive : " << exec_status << " , " << exec_info;
+            << " receive : " << exec_status << " , " << exec_info
+            << " stmt status before: " << stmt_exec_status
+            << " ,after: " << it->second->get_exec_status();
   return ret;
 }
 

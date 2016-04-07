@@ -91,7 +91,7 @@ int TestNewSql() {
       while (physical_plan->Next(exec_status, NULL)) {
       }
       ResultSet* result_set = physical_plan->GetResultSet();
-      physical_plan->Close();
+      physical_plan->Close(exec_status);
 
       result_set->print();
 

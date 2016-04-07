@@ -220,6 +220,8 @@ bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
           [state_.order_by_attrs_[i].first->get_type_][OperType::oper_great];
     }
     //    int64_t time = curtick();
+    RETURN_IF_CANCELLED(exec_status);
+
     Order();
   }
   BarrierArrive(2);
@@ -265,7 +267,7 @@ bool PhysicalSort::Next(SegmentExecStatus *const exec_status,
   return false;
 }
 
-bool PhysicalSort::Close() {
+bool PhysicalSort::Close(SegmentExecStatus *const exec_status) {
   if (NULL != block_buffer_) {
     delete block_buffer_;
     block_buffer_ = NULL;
@@ -274,7 +276,7 @@ bool PhysicalSort::Close() {
     delete block_for_asking;
     block_for_asking = NULL;
   }
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   return true;
 }
 

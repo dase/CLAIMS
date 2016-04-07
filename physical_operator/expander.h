@@ -89,7 +89,7 @@ class Expander : public PhysicalOperatorBase,
    * fetch one block from buffer and return
    */
   bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
 

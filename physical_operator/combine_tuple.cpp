@@ -40,7 +40,7 @@ CombineTuple::State::State(std::vector<Schema *> input_schemas,
 
 CombineTuple::~CombineTuple() {}
 
-bool CombineTuple::Open(SegmentExecStatus * const exec_status,
+bool CombineTuple::Open(SegmentExecStatus *const exec_status,
                         const PartitionOffset &partition_offset) {
   // first
   std::vector<BlockStreamBase *> v_b;
@@ -60,7 +60,7 @@ bool CombineTuple::Open(SegmentExecStatus * const exec_status,
   return true;
 }
 
-bool CombineTuple::Next(SegmentExecStatus * const exec_status,
+bool CombineTuple::Next(SegmentExecStatus *const exec_status,
                         BlockStreamBase *block) {
   unsigned total_length_ = 0;
   for (unsigned i = 0; i < state_.input_schemas_.size(); i++) {
@@ -127,9 +127,9 @@ bool CombineTuple::Next(SegmentExecStatus * const exec_status,
   return Next(exec_status, block);
 }
 
-bool CombineTuple::Close() {
+bool CombineTuple::Close(SegmentExecStatus *const exec_status) {
   for (unsigned i = 0; i < state_.children_.size(); i++) {
-    state_.children_[i]->Close();
+    state_.children_[i]->Close(exec_status);
   }
   return true;
 }

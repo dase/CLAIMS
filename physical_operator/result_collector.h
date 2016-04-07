@@ -79,7 +79,7 @@ class ResultCollector : public PhysicalOperatorBase {
   bool Open(SegmentExecStatus* const exec_status,
             const PartitionOffset& part_off = 0);
   bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
 

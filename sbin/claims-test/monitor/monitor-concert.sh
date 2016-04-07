@@ -31,10 +31,10 @@ do
   cd $CLAIMS_HOME/sbin/claims-test/
   read -p "Hit the ENTER |__>" tempuseless
   echo $tempuseless
-  ./claimstest.sh 1 1 concertdroptable
-  ./claimstest.sh 1 1 concertcreatetable
-  ./claimstest.sh 1 1 concertload50wdata
-  ./claimstest.sh 1 100 concert
-   
+  #./claimstest.sh 1 1 concertdroptable
+  #./claimstest.sh 1 1 concertcreatetable
+  #./claimstest.sh 1 1 concertload50wdata
+  #./claimstest.sh 1 100 concert
+   ./claimstest.sh 100 1 cancel
  fi
 done

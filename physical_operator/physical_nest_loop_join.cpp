@@ -248,15 +248,15 @@ bool PhysicalNestLoopJoin::Next(SegmentExecStatus *const exec_status,
   }
   return Next(exec_status, block);
 }
-bool PhysicalNestLoopJoin::Close() {
+bool PhysicalNestLoopJoin::Close(SegmentExecStatus *const exec_status) {
   InitExpandedStatus();
   DestoryAllContext();
   if (NULL != block_buffer_) {
     delete block_buffer_;
     block_buffer_ = NULL;
   }
-  state_.child_left_->Close();
-  state_.child_right_->Close();
+  state_.child_left_->Close(exec_status);
+  state_.child_right_->Close(exec_status);
   return true;
 }
 

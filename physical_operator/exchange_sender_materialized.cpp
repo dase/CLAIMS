@@ -233,7 +233,7 @@ bool ExchangeSenderMaterialized::Next(SegmentExecStatus* const exec_status,
   }
 }
 
-bool ExchangeSenderMaterialized::Close() {
+bool ExchangeSenderMaterialized::Close(SegmentExecStatus* const exec_status) {
   Logging_ExpandableBlockStreamExchangeLM(
       "The sender thread is killed in the close() function!");
 
@@ -243,7 +243,7 @@ bool ExchangeSenderMaterialized::Close() {
   /* Delete the files */
   DeleteDiskFiles();
 
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   delete block_stream_for_asking_;
   delete block_for_sending_;
   delete block_for_serialization_;

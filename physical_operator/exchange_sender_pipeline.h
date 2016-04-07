@@ -110,7 +110,7 @@ class ExchangeSenderPipeline : public ExchangeSender {
    * partition buffer
    */
   bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* no_block);
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
   RetCode GetAllSegments(stack<Segment*>* all_segments);
   void SetPartitionOffset(const int par_off) {
     state_.partition_offset_ = par_off;

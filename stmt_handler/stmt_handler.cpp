@@ -148,12 +148,30 @@ RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
     stmt_exec_->set_stmt_exec_status(exec_status);
     ret = stmt_exec_->Execute();
     if (rSuccess != ret) {
+      exec_result->result_ = NULL;
+      exec_result->status_ = false;
+      exec_result->error_info_ = sql_stmt_ + string(" execution error!");
+      exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
       return ret;
     } else {
-      exec_result->result_ = exec_status->get_query_result();
-      exec_result->status_ = true;
-      exec_result->info_ = exec_status->get_exec_info();
-      exec_status->set_exec_status(StmtExecStatus::ExecStatus::kDone);
+      if (StmtExecStatus::ExecStatus::kCancelled ==
+          exec_status->get_exec_status()) {
+        exec_result->result_ = NULL;
+        exec_result->status_ = false;
+        exec_result->error_info_ = sql_stmt_ + string(" have been cancelled!");
+        exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
+
+      } else if (StmtExecStatus::ExecStatus::kOk ==
+                 exec_status->get_exec_status()) {
+        exec_result->result_ = exec_status->get_query_result();
+        exec_result->status_ = true;
+        exec_result->info_ = exec_status->get_exec_info();
+        exec_status->set_exec_status(StmtExecStatus::ExecStatus::kDone);
+
+      } else {
+        assert(false);
+        exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
+      }
     }
   }
   double exec_time_ms = GetElapsedTime(start_time);

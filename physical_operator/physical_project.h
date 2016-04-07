@@ -145,7 +145,7 @@ class PhysicalProject : public PhysicalOperator {
   /**
    * @brief: revoke resource.
    */
-  bool Close();
+  bool Close(SegmentExecStatus *const exec_status);
   void Print();
   RetCode GetAllSegments(stack<Segment *> *all_segments);
 

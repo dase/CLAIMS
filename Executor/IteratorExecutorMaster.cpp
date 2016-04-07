@@ -46,8 +46,18 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(
   auto node_addr =
       Environment::getInstance()->get_master_node()->GetNodeAddrFromId(
           target_id);
-  auto target_actor = remote_actor(node_addr.first.c_str(), node_addr.second);
-  self->send(target_actor, SendPlanAtom::value, str);
+
+  try {
+    auto target_actor = remote_actor(node_addr.first.c_str(), node_addr.second);
+    self->send(target_actor, SendPlanAtom::value, str);
+  } catch (caf::bind_failure& e) {
+    LOG(ERROR)
+        << "master sending plan binds port error when connecting remote actor";
+  } catch (caf::network_error& e) {
+    LOG(ERROR) << "master sending plan connect to remote node error due to "
+                  "network error!";
+  }
+
   LOG(INFO) << "master send serialized plan to target slave : " << target_id
             << " succeed!" << endl;
   return true;

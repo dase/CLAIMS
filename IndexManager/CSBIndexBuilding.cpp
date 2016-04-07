@@ -33,7 +33,8 @@ bottomLayerCollecting::State::State(ProjectionID projection_id, Schema* schema,
       key_indexing_(key_indexing),
       block_size_(block_size) {}
 
-bool bottomLayerCollecting::Open(const PartitionOffset& partition_offset) {
+bool bottomLayerCollecting::Open(SegmentExecStatus* const exec_status,
+                                 const PartitionOffset& partition_offset) {
   AtomicPushBlockStream(BlockStreamBase::createBlockWithDesirableSerilaizedSize(
       state_.schema_, state_.block_size_));
   if (TryEntryIntoSerializedSection()) {
@@ -57,7 +58,8 @@ bool bottomLayerCollecting::Open(const PartitionOffset& partition_offset) {
   return GetReturnStatus();
 }
 
-bool bottomLayerCollecting::Next(BlockStreamBase* block) {
+bool bottomLayerCollecting::Next(SegmentExecStatus* const exec_status,
+                                 BlockStreamBase* block) {
   remaining_block rb;
   void* original_tuple;
   void* tuple_new;
@@ -147,7 +149,7 @@ bool bottomLayerCollecting::Next(BlockStreamBase* block) {
   return false;
 }
 
-bool bottomLayerCollecting::Close() {
+bool bottomLayerCollecting::Close(SegmentExecStatus* const exec_status) {
   InitExpandedStatus();
   delete partition_reader_iterator_;
   remaining_block_list_.clear();
@@ -320,7 +322,7 @@ bool bottomLayerSorting::Open(SegmentExecStatus* const exec_status,
            tuples_in_chunk_.begin();
        iter != tuples_in_chunk_.end(); iter++) {
     ///*for testing*/		cout << "chunk id: " << *(unsigned
-    ///short*)iter->first
+    /// short*)iter->first
     ///<<
     /// endl;
     // for testing begin
@@ -441,9 +443,9 @@ bool bottomLayerSorting::Next(SegmentExecStatus* const exec_status,
   */
 }
 
-bool bottomLayerSorting::Close() {
+bool bottomLayerSorting::Close(SegmentExecStatus* const exec_status) {
   InitExpandedStatus();
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   cout << "bottomLayerSorting close finished!\n";
   return true;
 }
@@ -469,7 +471,7 @@ CSBPlusTree<T>* bottomLayerSorting::indexBuilding(
     aray[i]._tuple_off = *(unsigned short*)(vector_schema_->getColumnAddess(
         2, chunk_tuples[i]->tuple_));
     ///*for testing*/		cout << aray[i]._key << "\t" <<
-    ///aray[i]._block_off
+    /// aray[i]._block_off
     ///<<
     ///"\t" << aray[i]._tuple_off << endl;
   }

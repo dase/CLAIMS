@@ -143,8 +143,12 @@ void SlaveNode::CreateActor() {
   auto slave_actor = caf::spawn<SlaveNodeActor>(this);
   try {
     caf::io::publish(slave_actor, get_node_port());
+    LOG(INFO) << "slave node publish port " << get_node_port()
+              << " successfully!";
   } catch (caf::bind_failure& e) {
+    LOG(ERROR) << "slave node binds port error when publishing";
   } catch (caf::network_error& e) {
+    LOG(ERROR) << "slave node publish error due to network error!";
   }
 }
 

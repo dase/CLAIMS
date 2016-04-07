@@ -250,10 +250,10 @@ void PhysicalFilter::ProcessInLogic(BlockStreamBase* block,
   }
 }
 
-bool PhysicalFilter::Close() {
+bool PhysicalFilter::Close(SegmentExecStatus* const exec_status) {
   InitExpandedStatus();
   DestoryAllContext();
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   return true;
 }
 

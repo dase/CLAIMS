@@ -43,9 +43,6 @@
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
 
-
-
-
 namespace claims {
 namespace physical_operator {
 
@@ -115,9 +112,10 @@ class PhysicalDeleteFilter : public PhysicalOperator {
   PhysicalDeleteFilter();
   virtual ~PhysicalDeleteFilter();
 
-  bool Open(SegmentExecStatus * const exec_status,const PartitionOffset& partition_offset = 0);
-  bool Next(SegmentExecStatus * const exec_status,BlockStreamBase* block);
-  bool Close();
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partition_offset = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
   RetCode GetAllSegments(stack<Segment*>* all_segments);
 

@@ -74,9 +74,10 @@ class bottomLayerCollecting : public PhysicalOperator {
   bottomLayerCollecting();
   bottomLayerCollecting(State state);
   virtual ~bottomLayerCollecting();
-  bool Open(const PartitionOffset& partition_offset = 0);
-  bool Next(BlockStreamBase* block);
-  bool Close();
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partition_offset = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
+  bool Close(SegmentExecStatus* const exec_status);
   void Print() { printf("CCSBIndexingBuilding\n"); }
 
  private:
@@ -155,7 +156,7 @@ class bottomLayerSorting : public PhysicalOperator {
   bool Open(SegmentExecStatus* const exec_status,
             const PartitionOffset& partition_offset = 0);
   bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
 
  private:
   static bool compare(const compare_node* a, const compare_node* b);

@@ -334,7 +334,7 @@ bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
   }
 }
 
-bool PhysicalHashJoin::Close() {
+bool PhysicalHashJoin::Close(SegmentExecStatus* const exec_status) {
 #ifdef TIME
   stopTimer(&timer);
   LOG(INFO) << "time consuming: " << timer << ", "
@@ -348,8 +348,8 @@ bool PhysicalHashJoin::Close() {
     delete hashtable_;
     hashtable_ = NULL;
   }
-  state_.child_left_->Close();
-  state_.child_right_->Close();
+  state_.child_left_->Close(exec_status);
+  state_.child_right_->Close(exec_status);
   return true;
 }
 
