@@ -110,7 +110,7 @@ void MemoryChunkStore::ReturnChunk(const ChunkID& chunk_id) {
   HdfsInMemoryChunk chunk_info = it->second;
   chunk_pool_.free(chunk_info.hook);
   chunk_list_.erase(it);
-  BufferManager::getInstance()->returnStorageBudget(chunk_info.length);
+  BufferManager::getInstance()->returnStorageBudget(CHUNK_SIZE);
   lock_.release();
 }
 
