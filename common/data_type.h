@@ -44,7 +44,7 @@ using boost::lexical_cast;
 using namespace decimal;
 #define DATA_TYPE_NUMBER 20
 enum data_type {
-  t_smallInt,
+  t_smallInt = 0,
   t_int,
   t_u_long,
   t_float,
@@ -110,6 +110,18 @@ typedef void (*fun)(void*, void*);
 #define NULL_DECIMAL nvalue_null
 #define NULL_U_SMALL_INT USHRT_MAX
 #define NULL_BOOLEAN 2
+
+extern int null_int_value;
+extern float null_float_value;
+extern double null_double_value;
+extern unsigned long null_u_long_value;
+extern char null_string_value[];
+extern date null_date_value;
+extern ptime null_datetime_value;
+extern short null_small_int_value;
+extern unsigned short null_u_small_int_value;
+extern Decimal null_decimal_value;
+extern int null_boolean_value;
 
 static NValue nvalue_null = NValue::getDecimalValueFromString(
     "99999999999999999999999999.999999999999");
@@ -254,6 +266,7 @@ class Operate {
   virtual Operate* duplicateOperator() const = 0;
 
   inline virtual bool setNull(void* value) = 0;
+  inline virtual bool getNull(void* value) = 0;
   inline virtual bool isNull(void* value) const = 0;
 
   inline virtual RetCode CheckSet(string& str) const = 0;
@@ -328,6 +341,12 @@ class OperateInt : public Operate {
   inline bool setNull(void* value) {
     if (this->nullable == false) return false;
     *(int*)value = NULL_INT;
+    return true;
+  }
+
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_int_value;
     return true;
   }
 
@@ -408,6 +427,12 @@ class OperateFloat : public Operate {
     return true;
   }
 
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_float_value;
+    return true;
+  }
+
   inline bool isNull(void* value) const {
     if (this->nullable == true && (*(int*)value) == (int)NULL_FLOAT)
       return true;
@@ -484,6 +509,12 @@ class OperateDouble : public Operate {
     return true;
   }
 
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_double_value;
+    return true;
+  }
+
   inline bool isNull(void* value) const {
     if (this->nullable == true && (*(int*)value) == (int)NULL_DOUBLE)
       return true;
@@ -557,6 +588,12 @@ class OperateULong : public Operate {
   inline bool setNull(void* value) {
     if (this->nullable == false) return false;
     *(unsigned long*)value = NULL_U_LONG;
+    return true;
+  }
+
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_u_long_value;
     return true;
   }
 
@@ -645,6 +682,12 @@ class OperateString : public Operate {
   inline bool setNull(void* value) {
     if (this->nullable == false) return false;
     *(char*)value = NULL_STRING;
+    return true;
+  }
+
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_boolean_value;
     return true;
   }
 
@@ -749,6 +792,12 @@ class OperateDate : public Operate {
     return true;
   }
 
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_date_value;
+    return true;
+  }
+
   inline bool isNull(void* value) const {
     if (this->nullable == true && (*(date*)value).is_neg_infinity() == true)
       return true;
@@ -829,6 +878,13 @@ class OperateTime : public Operate {
     if (this->nullable == false) return false;
     time_duration d(NULL_TIME);
     *(time_duration*)value = d;
+    return true;
+  }
+
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    time_duration null_time_value(NULL_TIME);
+    value = &null_time_value;
     return true;
   }
 
@@ -919,6 +975,12 @@ class OperateDatetime : public Operate {
     return true;
   }
 
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_datetime_value;
+    return true;
+  }
+
   inline bool isNull(void* value) const {
     if (this->nullable == true && (*(ptime*)value).is_neg_infinity() == true)
       return true;
@@ -997,6 +1059,12 @@ class OperateSmallInt : public Operate {
   inline bool setNull(void* value) {
     if (this->nullable == false) return false;
     *(short*)value = NULL_SMALL_INT;
+    return true;
+  }
+
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_small_int_value;
     return true;
   }
 
@@ -1079,6 +1147,12 @@ class OperateUSmallInt : public Operate {
     return true;
   }
 
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_u_small_int_value;
+    return true;
+  }
+
   inline bool isNull(void* value) const {
     if (this->nullable == true && (*(unsigned short*)value) == NULL_U_SMALL_INT)
       return true;
@@ -1091,9 +1165,9 @@ class OperateUSmallInt : public Operate {
 class OperateDecimal : public Operate {
  public:
   OperateDecimal(int p = 10, int s = 0, bool nullable = true) {
-   // assert(size > 1000);
+    // assert(size > 1000);
     assign = assigns<int>;
-   // this->size = size;
+    // this->size = size;
     this->nullable = nullable;
     this->precision_ = p;
     this->scale_ = s;
@@ -1126,7 +1200,8 @@ class OperateDecimal : public Operate {
    }
    */
   void toValue(void* target, const char* str) {
-    if (((strcmp(str, "") == 0)||(strcmp(str, "NULL") == 0)) && this->nullable == true)
+    if (((strcmp(str, "") == 0) || (strcmp(str, "NULL") == 0)) &&
+        this->nullable == true)
       *(Decimal*)target = Decimal::CreateNullDecimal();
     else
       *(Decimal*)target = Decimal(precision_, scale_, str);
@@ -1206,6 +1281,12 @@ class OperateDecimal : public Operate {
   inline bool setNull(void* value) {
     if (this->nullable == false) return false;
     *(Decimal*)value = Decimal::CreateNullDecimal();
+    return true;
+  }
+
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_decimal_value;
     return true;
   }
 
@@ -1297,6 +1378,12 @@ class OperateBool : public Operate {
   inline bool setNull(void* value) {
     if (this->nullable == false) return false;
     *(int*)value = NULL_BOOLEAN;
+    return true;
+  }
+
+  inline bool getNull(void* value) {
+    if (this->nullable == false) return false;
+    value = &null_boolean_value;
     return true;
   }
 
@@ -1417,7 +1504,7 @@ class column_type {
         operate = new OperateDatetime(nullable);
         break;
       case t_decimal:
-        operate = new OperateDecimal(size/1000, size%1000, nullable);
+        operate = new OperateDecimal(size / 1000, size % 1000, nullable);
         break;
       case t_smallInt:
         operate = new OperateSmallInt(nullable);

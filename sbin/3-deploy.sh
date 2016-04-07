@@ -1,27 +1,41 @@
 #!/bin/sh
-if [ ! -f "${0##*/}" ]; then
- echo "please run script in sbin/ directory!"
- exit 1
-fi
 
-cd $CLAIMS_HOME/sbin/2-claims-conf/
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+cd 2-claims-conf/
 source ./load-config.sh
-cd ../
+source ./generate-config.sh
+cd ../../
+# now in CLAIMS_HOME
 
-if [ "$1" = "all" ]; then 
-for slave in $slaves
+for node in $slaves $master
 do
-  ssh $user@$slave "$deploypath/stop-slave.sh>/dev/null 2>&1 &"
-  
-  scp $CLAIMS_HOME/install/claimsserver $user@$slave:$deploypath
-  scp $CLAIMS_HOME/sbin/2-claims-conf/config-$slave $user@$slave:$deploypath
-  scp $CLAIMS_HOME/sbin/slave-scripts/start-slave.sh $user@$slave:$deploypath
-  scp $CLAIMS_HOME/sbin/slave-scripts/stop-slave.sh $user@$slave:$deploypath
-done
-else
-for slave in $slaves
-do
-  scp $CLAIMS_HOME/sbin/2-claims-conf/config-$slave $user@$slave:$deploypath
-done
-fi
 
+  echo -e "\033[36m<-$node->\033[0m"
+
+  if [ "$1" = "" ] || [ "$1" = "exec" ]; then
+      ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin' ]; then mkdir -p '$claimshome/sbin'; else $claimshome/sbin/stop-node.sh; fi; exit"
+      ssh -f -n -l $user $node "if [ ! -d '$claimshome/install' ]; then mkdir -p '$claimshome/install'; fi; exit"
+      scp install/claimsserver $user@$node:$claimshome/install
+      scp install/client $user@$node:$claimshome/install
+      scp install/test $user@$node:$claimshome/install
+      scp sbin/*.sh $user@$node:$claimshome/sbin
+  fi
+
+  if [ "$1" = "" ] || [ "$1" = "config" ]; then
+      ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin/2-claims-conf' ]; then mkdir -p '$claimshome/sbin/2-claims-conf'; fi; exit"
+      scp -r sbin/2-claims-conf/cluster.config $user@$node:$claimshome/sbin/2-claims-conf
+      scp -r sbin/2-claims-conf/*.sh $user@$node:$claimshome/sbin/2-claims-conf
+      scp -r sbin/2-claims-conf/config-$node $user@$node:$claimshome/sbin/2-claims-conf
+  fi
+
+  if [ "$1" = "" ] || [ "$1" = "test" ]; then
+      ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin/claims-test' ]; then mkdir -p '$claimshome/sbin/claims-test'; fi; exit"
+      scp -r sbin/claims-test/*.sh $user@$node:$claimshome/sbin/claims-test
+      ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin/claims-test/testcase' ]; then mkdir -p '$claimshome/sbin/claims-test/testcase'; fi; exit"
+      scp -r sbin/claims-test/testcase/* $user@$node:$claimshome/sbin/claims-test/testcase
+      ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin/claims-test/monitor' ]; then mkdir -p '$claimshome/sbin/claims-test/monitor'; fi; exit"
+      scp -r sbin/claims-test/monitor/* $user@$node:$claimshome/sbin/claims-test/monitor
+  fi
+
+done

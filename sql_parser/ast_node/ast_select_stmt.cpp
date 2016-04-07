@@ -50,6 +50,7 @@
 #include "../../logical_operator/logical_sort.h"
 #include "../../logical_operator/logical_subquery.h"
 #include "../../logical_operator/logical_delete_filter.h"
+#include "../../logical_operator/logical_outer_join.h"
 
 #include "../ast_node/ast_expr_node.h"
 #include "../ast_node/ast_node.h"
@@ -316,7 +317,23 @@ RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
       if (rSuccess != ret) {
         return ret;
       }
-      logic_plan = new LogicalEqualJoin(join_pair, args_lplan, next_lplan);
+      // judge from join_type "left" "right"
+      // TODO(yuyang): need full outer join? In mysql, full outer join means
+      // cross join. And ON clause is invalid.
+      // And join logical operator needs refactoring.
+      string join_type = "";
+      // this->args_ can be AST_TABLE, but treat as join.
+      if (AST_JOIN == (static_cast<AstJoin*>(this->args_))->ast_node_type_) {
+        join_type = (static_cast<AstJoin*>(this->args_))->join_type_;
+      }
+      if (-1 != join_type.find("left")) {
+        int join = 0;
+        logic_plan = new LogicalOuterJoin(join_pair, args_lplan, next_lplan, 0);
+      } else if (-1 != join_type.find("right")) {
+        logic_plan = new LogicalOuterJoin(join_pair, args_lplan, next_lplan, 1);
+      } else {
+        logic_plan = new LogicalEqualJoin(join_pair, args_lplan, next_lplan);
+      }
     } else {
       logic_plan = new LogicalCrossJoin(args_lplan, next_lplan);
     }
@@ -618,6 +635,8 @@ AstJoin::AstJoin(AstNodeType ast_node_type, int join_type, AstNode* left_table,
     }
     if (bit_num[3] == 1) {
       join_type_ = join_type_ + "left ";
+      left_table_ = right_table;
+      right_table_ = left_table;
     }
     if (bit_num[4] == 1) {
       join_type_ = join_type_ + "right ";
@@ -745,7 +764,14 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
     if (rSuccess != ret) {
       return ret;
     }
-    logic_plan = new LogicalEqualJoin(join_pair, left_plan, right_plan);
+    if (-1 != join_type_.find("left")) {
+      int join = 0;
+      logic_plan = new LogicalOuterJoin(join_pair, left_plan, right_plan, 0);
+    } else if (-1 != join_type_.find("right")) {
+      logic_plan = new LogicalOuterJoin(join_pair, left_plan, right_plan, 1);
+    } else {
+      logic_plan = new LogicalEqualJoin(join_pair, left_plan, right_plan);
+    }
   } else {
     logic_plan = new LogicalCrossJoin(left_plan, right_plan);
   }

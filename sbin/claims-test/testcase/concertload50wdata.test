@@ -1,0 +1,3 @@
+load table t1 from "/home/imdb/rawData/concert/concert.txt" with ',','\n';
+load table t2 from "/home/imdb/rawData/concert/concert.txt" with ',','\n';
+exit;

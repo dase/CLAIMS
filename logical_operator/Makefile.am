@@ -41,7 +41,8 @@ liblogicalqueryplan_a_SOURCES = \
 	logical_cross_join.cpp				logical_cross_join.h \
 	logical_subquery.cpp				logical_subquery.h	\
 	logical_sort.cpp 					logical_sort.h \
-	logical_delete_filter.cpp           logical_delete_filter.h
+	logical_delete_filter.cpp           logical_delete_filter.h \
+	logical_outer_join.cpp              logical_outer_join.h
 
 
 SUBDIRS = 

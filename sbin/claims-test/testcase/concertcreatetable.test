@@ -1,0 +1,5 @@
+create table t1(name VARCHAR(10), ID VARCHAR(20), SEAT_ID int, BUY_TICKET_TIME DATETIME, SHOW_TIME DATETIME, CHECKED int);
+create projection on t1(name, ID, SEAT_ID, BUY_TICKET_TIME, SHOW_TIME, CHECKED) number = 4 partitioned on ID;
+create table t2(name VARCHAR(10), ID VARCHAR(20), SEAT_ID int, BUY_TICKET_TIME DATETIME, SHOW_TIME DATETIME, CHECKED int);
+create projection on t2(name, ID, SEAT_ID, BUY_TICKET_TIME, SHOW_TIME, CHECKED) number = 4 partitioned on ID;
+exit;

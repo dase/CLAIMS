@@ -1,0 +1,35 @@
+
+drop table A;
+drop table B;
+
+create table A(id int unsigned, num int, strdate varchar(10) );
+create projection on A(id,num,strdate) number = 1 partitioned on id;
+create table B(id int unsigned, name int, strdate varchar(10) );
+create projection on B(id,name,strdate) number = 1 partitioned on id;
+
+show tables;
+desc A;
+desc B;
+
+insert into A values(1, 111 ,"20160401");
+insert into A values(2, 112 ,"20160401");
+insert into A values(3, 113 ,"20160401");
+insert into A values(4, 114 ,"20160331");
+insert into A values(5, 115 ,"20160331");
+insert into A values(6, 116 ,"20160331");
+
+select * from A;
+
+insert into B values(1, 111 ,"20160401");
+insert into B values(2, 212 ,"20160401");
+insert into B values(3, 213 ,"20160401");
+insert into B values(4, 214 ,"20160331");
+insert into B values(8, 215 ,"20160331");
+insert into B values(9, 216 ,"20160331");
+insert into B values(10, 217 ,"20160331");
+insert into B values(11, 218 ,"20160331");
+
+select * from B;
+
+
+exit;
