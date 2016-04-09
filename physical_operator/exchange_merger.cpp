@@ -76,6 +76,7 @@ ExchangeMerger::ExchangeMerger(State state)
       receiver_thread_id_(0),
       sock_fd_(-1),
       socket_port_(-1),
+      socket_fd_lower_list_(NULL),
       epoll_fd_(-1) {
   set_phy_oper_type(kPhysicalExchangeMerger);
   InitExpandedStatus();
@@ -89,6 +90,7 @@ ExchangeMerger::ExchangeMerger()
       receiver_thread_id_(0),
       sock_fd_(-1),
       socket_port_(-1),
+      socket_fd_lower_list_(NULL),
       epoll_fd_(-1) {
   InitExpandedStatus();
   set_phy_oper_type(kPhysicalExchangeMerger);
@@ -361,9 +363,11 @@ void ExchangeMerger::CloseSocket() {
     FileClose(epoll_fd_);
   }
   /* colse the sockets of the lowers*/
-  for (unsigned i = 0; i < lower_num_; i++) {
-    if (socket_fd_lower_list_[i] > 2) {
-      FileClose(socket_fd_lower_list_[i]);
+  if (socket_fd_lower_list_) {
+    for (unsigned i = 0; i < lower_num_; i++) {
+      if (socket_fd_lower_list_[i] > 2) {
+        FileClose(socket_fd_lower_list_[i]);
+      }
     }
   }
   /* close the socket of this exchange*/

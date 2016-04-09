@@ -23,10 +23,10 @@ void PhysicalQueryPlan::run() {
     segment_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kError,
                                       "physical plan open() failed", 0, true);
   }
-  if (segment_id_ == 3 || segment_id_ == 2) {
-    segment_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kError,
-                                      "cancelled", 0, true);
-  }
+  //  if (segment_id_ == 3 || segment_id_ == 2) {
+  //    segment_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kError,
+  //                                      "cancelled", 0, true);
+  //  }
   while (ret && block_stream_iterator_root_->Next(segment_exec_status, 0)) {
   }
   segment_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
