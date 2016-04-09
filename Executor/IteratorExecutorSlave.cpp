@@ -27,6 +27,7 @@ void* IteratorExecutorSlave::run_iterator(void* arg) {
   PhysicalQueryPlan* it = (PhysicalQueryPlan*)(*(void**)arg);
   IteratorExecutorSlave* Pthis = (IteratorExecutorSlave*)(*((void**)arg + 1));
   executePhysicalQueryPlan(*it);
+  it->destory();
   delete it;
   LOG(INFO) << "A iterator tree is successfully executed!\n";
   assert(Pthis->busy_thread_list_.find(pthread_self()) !=

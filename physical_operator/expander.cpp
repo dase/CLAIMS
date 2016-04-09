@@ -129,17 +129,14 @@ bool Expander::Next(SegmentExecStatus* const exec_status,
 }
 
 bool Expander::Close(SegmentExecStatus* const exec_status) {
-  if (!exec_status->is_cancelled()) {
-    LOG(INFO) << "Expander: " << expander_id_ << " received "
-              << block_stream_buffer_->getReceivedDataSizeInKbytes()
-              << " kByte " << received_tuples_ << " tuples!" << std::endl;
-  }
-  if (is_registered_) {
-    ExpanderTracker::getInstance()->unregisterExpander(expander_id_);
-    is_registered_ = false;
-  }
+  // for making sure every thread have exited from next()
   if (true == g_thread_pool_used) {
-    // do nothing
+    while (!in_work_expanded_thread_list_.empty() ||
+           !being_called_bacl_expanded_thread_list_.empty()) {
+      LOG(WARNING) << "there are thread working now when expander close(), so "
+                      "waiting!!!";
+      usleep(300);
+    }
   } else {
     for (std::set<pthread_t>::iterator it =
              in_work_expanded_thread_list_.begin();
@@ -150,6 +147,15 @@ bool Expander::Close(SegmentExecStatus* const exec_status) {
       LOG(WARNING) << expander_id_
                    << " A expander thread is killed before close!" << std::endl;
     }
+  }
+  if (!exec_status->is_cancelled()) {
+    LOG(INFO) << "Expander: " << expander_id_ << " received "
+              << block_stream_buffer_->getReceivedDataSizeInKbytes()
+              << " kByte " << received_tuples_ << " tuples!" << std::endl;
+  }
+  if (is_registered_) {
+    ExpanderTracker::getInstance()->unregisterExpander(expander_id_);
+    is_registered_ = false;
   }
   if (!exec_status->is_cancelled()) {
     assert(input_data_complete_);
@@ -191,9 +197,7 @@ void* Expander::ExpandedWork(void* arg) {
   LOG(INFO) << Pthis->expander_id_ << " thread " << pid
             << " is created!  BlockStreamExpander address is  " << Pthis
             << std::endl;
-  if (Pthis->exec_status_->is_cancelled()) {
-    return NULL;
-  }
+
   bool expanding = true;
   ticks start = curtick();
 

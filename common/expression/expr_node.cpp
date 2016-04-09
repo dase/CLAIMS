@@ -49,7 +49,7 @@ ExprNode::ExprNode(ExprNode* expr)
       is_null_(expr->is_null_),
       value_size_(expr->value_size_),
       type_cast_func_(expr->type_cast_func_),
-      value_(expr->value_) {}
+      value_(NULL) {}
 
 bool ExprNode::MoreExprEvaluate(vector<ExprNode*> thread_condi, void* tuple,
                                 Schema* schema) {
