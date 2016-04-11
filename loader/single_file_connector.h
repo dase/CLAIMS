@@ -28,51 +28,67 @@
 
 #ifndef LOADER_SINGLE_FILE_CONNECTOR_H_
 #define LOADER_SINGLE_FILE_CONNECTOR_H_
+#include <assert.h>
+#include <atomic>
+#include <functional>
 #include <string>
 #include "./file_connector.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/memory_handle.h"
+#include "../common/rename.h"
+#include "../utility/lock.h"
+#include "../utility/lock_guard.h"
 
 namespace claims {
 namespace loader {
 
 using std::string;
+using claims::common::FileOpenFlag;
 using claims::common::FileHandleImp;
 using claims::common::FilePlatform;
+using claims::common::rSuccess;
+using claims::utility::LockGuard;
+using std::atomic;
 
-class SingleFileConnector : public FileConnector {
+class SingleFileConnector {
+  NO_COPY_AND_ASSIGN(SingleFileConnector);
+
  public:
-  SingleFileConnector(FilePlatform platform, string file_name)
-      : FileConnector(platform), file_name_(file_name) {
-    imp_ =
-        common::FileHandleImpFactory::Instance().CreateFileHandleImp(platform_);
-  }
-  ~SingleFileConnector() { DELETE_PTR(imp_); }
-
-  virtual RetCode Open(common::FileOpenFlag oepn_flag) {
-    return imp_->Open(file_name_, oepn_flag);
-  }
-  virtual RetCode Close() { return imp_->Close(); }
-  virtual RetCode Flush(const void* source, unsigned length) {
-    return imp_->Write(source, length);
-  }
-  virtual RetCode AtomicFlush(const void* source, unsigned length) {
-    return imp_->AtomicWrite(source, length);
-  }
-  virtual RetCode Flush(unsigned projection_offset, unsigned partition_offset,
-                        const void* source, unsigned length) {
-    assert(false && "not implemented");
-    return common::rFailure;
-  }
-  virtual RetCode AtomicFlush(unsigned projection_offset,
-                              unsigned partition_offset, const void* source,
-                              unsigned length) {
-    assert(false && "not implemented");
-    return common::rFailure;
+  SingleFileConnector(FilePlatform platform, string file_name,
+                      FileOpenFlag open_flag);
+  ~SingleFileConnector() {
+    Close();
+    DELETE_PTR(imp_);
   }
 
-  virtual bool CanAccess() { return imp_->CanAccess(file_name_); }
+  RetCode Open();
+  RetCode Close();
+
+  inline RetCode AtomicFlush(const void* source, const size_t length) {
+    LockGuard<Lock> guard(write_lock_);
+    //  if (common::FileOpenFlag::kCreateFile == open_flag_) {
+    //    return imp_->OverWrite(source, length);
+    //  } else if (common::FileOpenFlag::kAppendFile == open_flag_) {
+    //    return imp_->Append(source, length);
+    //  } else {
+    //    assert(false && "Can't flush a file opened with read mode");
+    //    return common::rFailure;
+    //  }
+    return flush_function(source, length);
+  }
+  /*RetCode AtomicFlush(const void* source, unsigned length,
+                      function<void()> lock_func, function<void()> unlock_func,
+                      bool overwrite = false) {
+    if (overwrite)
+      return imp_->AtomicOverWrite(source, length, lock_func, unlock_func);
+    else
+      return imp_->AtomicAppend(source, length, lock_func, unlock_func);
+  }*/
+
+  bool CanAccess() { return imp_->CanAccess(file_name_); }
+
+  RetCode Delete();
   /**
    * @brief Method description: load total file into memory
    * @param buffer: set buffer point to a new memory allocated by this method,
@@ -80,7 +96,10 @@ class SingleFileConnector : public FileConnector {
    * @return  rSuccess if succeed.
    * @details   (additional) this method will modify buffer, set to a new memory
    */
-  virtual RetCode LoadTotalFile(void*& buffer, uint64_t* length) {
+  RetCode LoadTotalFile(void*& buffer, uint64_t* length) {  // NOLINT
+    assert(common::FileOpenFlag::kReadFile == open_flag_ &&
+           "open mode must be read ");
+    LockGuard<Lock> guard(write_lock_);
     return imp_->ReadTotalFile(buffer, length);
   }
 
@@ -93,17 +112,26 @@ class SingleFileConnector : public FileConnector {
    * @return  rSuccess if OK
    * @details   (additional)
    */
-  virtual RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {
-    int ret = imp_->SetPosition(start);
-    if (ret != common::rSuccess) {
-      LOG(ERROR) << "failed to set postion at " << start << ". ret:" << ret;
-      return ret;
-    }
-    return imp_->Read(buffer, length);
+  RetCode LoadFile(void* buffer, int64_t start, uint64_t length) {
+    assert(common::FileOpenFlag::kReadFile == open_flag_ &&
+           "open mode must be read ");
+    return imp_->PRead(buffer, length, start);
   }
 
  private:
   string file_name_;
+  common::FilePlatform platform_;
+  common::FileHandleImp* imp_;
+  common::FileOpenFlag open_flag_ = static_cast<common::FileOpenFlag>(-1);
+
+  Lock write_lock_;  // when open with read mode, the lock become read_lock
+
+  atomic<int> ref_;
+  bool is_closed = true;
+  SpineLock open_close_lcok_;
+  //  RetCode (*flush_function)(const void* source, unsigned length);
+  std::function<RetCode(const void* source, const size_t length)>
+      flush_function;
 };
 
 } /* namespace loader */

@@ -156,6 +156,8 @@ ErrorInit::ErrorInit() {
 
   DefineErrorAndMessage(rNoMemory, "failed to allocate memory from system");
   DefineErrorAndMessage(rDataPathError, "Data path not exist");
+  DefineErrorAndMessage(rFileInUsing, "Someone is still using this file");
+  DefineErrorAndMessage(rResourceIsLocked, "other hold the lock of resource");
 
   // schema assocated
   DefineErrorAndMessage(rEmptyAttributeName,
@@ -200,7 +202,7 @@ ErrorInit::ErrorInit() {
   /* errorno for loader -2001 ~ -3000  */
   DefineErrorAndMessage(rUnbindEntireProjectionFail,
                         "failed to unbind entire projection");
-  DefineErrorAndMessage(rInvalidInsertData,"The Insert Data is Invalid");
+  DefineErrorAndMessage(rInvalidInsertData, "The Insert Data is Invalid");
   DefineErrorAndMessage(rTooLargeData, "Load Too Large Data");
   DefineErrorAndMessage(rTooSmallData, "Load Too Small Data");
   DefineErrorAndMessage(rTooLongData, "Load Too Long Data");

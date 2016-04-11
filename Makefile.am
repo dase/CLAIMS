@@ -56,12 +56,9 @@ LDADD =  \
 	common/types/ttmath/libttmath.a \
 	utility/libutility.a \
 	${THERON_HOME}/Lib/libtherond.a \
-	${BOOST_HOME}/stage/lib/libboost_serialization.a \
 	${BOOST_HOME}/stage/lib/libboost_serialization.so \
-	${BOOST_HOME}/stage/lib/libboost_system.a \
 	${BOOST_HOME}/stage/lib/libboost_system.so \
 	${HADOOP_HOME}/lib/native/libhdfs.so\
-	${HADOOP_HOME}/lib/native/libhdfs.a\
 	${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 	${GTEST_HOME}/libgtest.a \
 	${GLOG_HOME}/.libs/libglog.so.0 \
