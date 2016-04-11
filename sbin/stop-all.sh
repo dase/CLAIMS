@@ -1,8 +1,12 @@
 #!/bin/sh
 
-cd $CLAIMS_HOME/sbin/2-claims-conf/
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+
+cd 2-claims-conf/
 source ./load-config.sh 
-cd ../
+cd ../../
+# now in CLAIMS_HOME
 
 for node in $slaves $master
 do
