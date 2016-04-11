@@ -59,6 +59,16 @@ typedef int RetCode;  // means return code
     }                                        \
   } while (0)
 
+#define EXEC_AND_LOG_RETURN(ret, f, info, err_info) \
+  do {                                              \
+    if (rSuccess == (ret = f)) {                    \
+      LOG(INFO) << info << std::endl;               \
+    } else {                                        \
+      ELOG(ret, err_info)                           \
+      return ret;                                   \
+    }                                               \
+  } while (0)
+
 #define EXEC_AND_PLOG(ret, f, info, err_info)                       \
   do {                                                              \
     if (rSuccess == (ret = f)) {                                    \
@@ -189,6 +199,9 @@ const int rAccessDiskFileFail = -98;
 const int rAccessHdfsFileFail = -99;
 const int rNoMemory = -100;
 const int rDataPathError = -101;
+const int rFileInUsing = -102;
+
+const int rResourceIsLocked = -103;
 
 // schema associated
 const int rEmptyAttributeName = -501;

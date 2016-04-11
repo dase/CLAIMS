@@ -39,10 +39,11 @@
 #include "../common/error_define.h"
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
+#include "../common/file_handle/hdfs_connector.h"
 #include "../common/rename.h"
 #include "../Config.h"
-#include "../loader/file_connector.h"
 #include "../loader/single_file_connector.h"
+using claims::common::FileHandleImpFactory;
 using std::vector;
 using std::string;
 using std::endl;
@@ -51,7 +52,7 @@ using claims::common::rCatalogNotFound;
 using claims::common::rDataPathError;
 using claims::common::FileOpenFlag;
 using claims::common::FilePlatform;
-using claims::loader::FileConnector;
+using claims::common::HdfsConnector;
 using claims::loader::SingleFileConnector;
 
 namespace claims {
@@ -62,6 +63,12 @@ Catalog* Catalog::instance_ = NULL;
 Catalog::Catalog() {
   logging = new CatalogLogging();
   binding_ = new ProjectionBinding();
+  write_connector_ = new SingleFileConnector(
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+      Config::catalog_file, FileOpenFlag::kCreateFile);
+  read_connector_ = new SingleFileConnector(
+      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
+      Config::catalog_file, FileOpenFlag::kReadFile);
 }
 
 Catalog::~Catalog() {
@@ -168,26 +175,33 @@ void Catalog::outPut() {
 
 // 2014-3-20---save as a file---by Yu
 RetCode Catalog::saveCatalog() {
+  //  LockGuard<Lock> guard(write_lock_);
   std::ostringstream oss;
   boost::archive::text_oarchive oa(oss);
   oa << *this;
+  assert(0 != oss.str().length() && "catalog has nothing!!");
 
   int ret = rSuccess;
-  FileConnector* connector = new SingleFileConnector(
-      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      Config::catalog_file);
-
-  EXEC_AND_ONLY_LOG_ERROR(ret, connector->Open(FileOpenFlag::kCreateFile),
-                          "catalog file name:" << Config::catalog_file);
 
   EXEC_AND_ONLY_LOG_ERROR(
-      ret, connector->Flush(static_cast<const void*>(oss.str().c_str()),
-                            oss.str().length()),
-      "catalog file name:" << Config::catalog_file);
+      ret, write_connector_->Open(),
+      "failed to open catalog file: " << Config::catalog_file
+                                      << " with Overwrite mode");
+  assert(ret == rSuccess && "failed to open catalog ");
+  //  EXEC_AND_ONLY_LOG_ERROR(ret, write_connector_->Delete(),
+  //                          "failed to delete catalog file");
+  //  FileHandleImp* write_handler =
+  EXEC_AND_LOG_RETURN(
+      ret, write_connector_->AtomicFlush(
+               static_cast<const void*>(oss.str().c_str()), oss.str().length()),
+      "write catalog " << oss.str().length() << " chars",
+      "failed to flush into catalog file: " << Config::catalog_file);
 
-  EXEC_AND_ONLY_LOG_ERROR(ret, connector->Close(),
-                          "catalog file name:" << Config::catalog_file);
-  return rSuccess;
+  assert(ret == rSuccess && "failed to write catalog ");
+  EXEC_AND_ONLY_LOG_ERROR(
+      ret, write_connector_->Close(),
+      "failed to close catalog file: " << Config::catalog_file);
+  return ret;
 }
 
 bool Catalog::IsDataFileExist() {
@@ -211,11 +225,9 @@ bool Catalog::IsDataFileExist() {
     LOG(INFO) << "There are no data file in disk" << endl;
     return false;
   } else {
-    hdfsFS hdfsfs =
-        hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
     int file_num;
-    hdfsFileInfo* file_list =
-        hdfsListDirectory(hdfsfs, Config::data_dir.c_str(), &file_num);
+    hdfsFileInfo* file_list = hdfsListDirectory(
+        HdfsConnector::Instance(), Config::data_dir.c_str(), &file_num);
     for (int cur = 0; cur < file_num; ++cur) {
       LOG(INFO) << "  " << file_list[cur].mName << "----";
       string full_file_name(file_list[cur].mName);
@@ -238,16 +250,14 @@ bool Catalog::IsDataFileExist() {
 RetCode Catalog::restoreCatalog() {
   int ret = rSuccess;
   string catalog_file = Config::catalog_file;
-  SingleFileConnector* connector = new SingleFileConnector(
-      Config::local_disk_mode ? FilePlatform::kDisk : FilePlatform::kHdfs,
-      catalog_file);
+  //  LockGuard<Lock> guard(write_lock_);
 
   // check whether there is catalog file if there are data file
-  if (!connector->CanAccess() && IsDataFileExist()) {
+  if (!read_connector_->CanAccess() && IsDataFileExist()) {
     LOG(ERROR) << "The data file are existed while catalog file "
                << catalog_file << " is not existed!" << endl;
     return rCatalogNotFound;
-  } else if (!connector->CanAccess()) {
+  } else if (!read_connector_->CanAccess()) {
     LOG(INFO) << "The catalog file and data file all are not existed" << endl;
     return rSuccess;
   } else if (!IsDataFileExist()) {
@@ -255,19 +265,23 @@ RetCode Catalog::restoreCatalog() {
                     "The catalog file will be overwrite" << endl;
     return rSuccess;
   } else {
+    EXEC_AND_ONLY_LOG_ERROR(ret, read_connector_->Open(),
+                            "failed to open catalog file: "
+                                << Config::catalog_file << " with Read mode");
+    assert(ret == rSuccess && "failed to open catalog ");
     uint64_t file_length = 0;
     void* buffer;
-    EXEC_AND_RETURN_ERROR(ret, connector->Open(FileOpenFlag::kReadFile),
-                          "catalog file name: " << catalog_file);
-    EXEC_AND_RETURN_ERROR(ret, connector->LoadTotalFile(buffer, &file_length),
+    EXEC_AND_RETURN_ERROR(ret,
+                          read_connector_->LoadTotalFile(buffer, &file_length),
                           "catalog file name: " << catalog_file);
 
+    assert(0 != file_length && "catalog'length must not be 0 !");
     LOG(INFO) << "Start to deserialize catalog ..." << endl;
     string temp(static_cast<char*>(buffer), file_length);
     std::istringstream iss(temp);
     boost::archive::text_iarchive ia(iss);
     ia >> *this;
-    return rSuccess;
+    return ret;
   }
 }
 
@@ -296,7 +310,6 @@ bool Catalog::DropTable(const std::string table_name, const TableID id) {
   }
 
   if (isnamedrop && istableIDdrop) {
-    // table_id_allocator.decrease_table_id();
     isdropped = true;
   } else {
     if (!isnamedrop) {

@@ -76,7 +76,10 @@ RetCode CreateProjectionExec::Execute(ExecutedResult* exec_result) {
   Catalog* local_catalog = Environment::getInstance()->getCatalog();
   ret = CreateTableProjection(table_name, local_catalog, sem_cnxt.index_,
                               partition_attribute_name, partition_num);
-  if (rSuccess == ret) {
+  if (common::rResourceIsLocked == ret) {
+    exec_result->SetError(
+        "Can't create new projection when loading/ inserting data");
+  } else if (rSuccess == ret) {
     exec_result->status_ = true;
     exec_result->result_ = NULL;
     exec_result->info_ = "create projection successfully";
@@ -125,6 +128,7 @@ RetCode CreateProjectionExec::Execute(ExecutedResult* exec_result) {
     local_catalog->saveCatalog();
     return ret;
   } else {
+    exec_result->SetError(CStrError(ret));
     return ret;
   }
   return ret;
@@ -143,8 +147,10 @@ RetCode CreateProjectionExec::CreateTableProjection(
     //    vector<ColumnOffset> indexDEL;
     //    indexDEL.push_back(0);
     if (0 != columns.size()) {
-      catalog->getTable(table_id)->createHashPartitionedProjection(
-          columns, partition_attribute, partition_num);
+      EXEC_AND_RETURN_ERROR(
+          ret, catalog->getTable(table_id)->createHashPartitionedProjection(
+                   columns, partition_attribute, partition_num),
+          "failed to create projection");
 
       int projection_index =
           catalog->getTable(table_id)->getNumberOfProjection() - 1;

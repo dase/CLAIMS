@@ -6,11 +6,15 @@
  */
 #include <sstream>
 #include "BlockManager.h"
+
+#include "../common/file_handle/hdfs_connector.h"
 #include "../Environment.h"
 #include "../common/rename.h"
 #include "../common/Message.h"
 #include "../common/Logging.h"
 #include "../Config.h"
+
+using claims::common::HdfsConnector;
 BlockManager* BlockManager::blockmanager_ = 0;
 
 BlockManager* BlockManager::getInstance() {
@@ -179,7 +183,7 @@ bool BlockManager::put(string blockId, storageLevel level, void* value) {
 //	else{
 //		hdfsFS fs=hdfsConnect(HDFS_N,9000);
 //		hdfsFile
-//readFile=hdfsOpenFile(fs,file_name.c_str(),O_RDONLY,0,0,0);
+// readFile=hdfsOpenFile(fs,file_name.c_str(),O_RDONLY,0,0,0);
 //		hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,file_name.c_str());
 ////		char
 ///***path=hdfsGetHosts(fs,"/home/hayue/input/3_64m",0,201326592+12);
@@ -193,7 +197,7 @@ bool BlockManager::put(string blockId, storageLevel level, void* value) {
 //			ChunkInfo ci;
 //			void *rt=malloc(CHUNK_SIZE);		//newmalloc
 //			tSize
-//bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
+// bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
 //			cout<<"split interface: "<<bytes_num<<endl;
 //			ostringstream chunkid;
 //			chunkid<<file_name.c_str()<<"_"<<offset++;
@@ -222,8 +226,9 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name) {
   file_name_former = file_name.substr(0, pos);
   file_name_latter = file_name.substr(pos + 1, file_name.length());
   int offset = atoi(file_name_latter.c_str());
-  hdfsFS fs =
-      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  //  hdfsFS fs =
+  //      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  hdfsFS fs = HdfsConnector::Instance();
   hdfsFile readFile =
       hdfsOpenFile(fs, file_name_former.c_str(), O_RDONLY, 0, 0, 0);
   hdfsFileInfo* hdfsfile = hdfsGetPathInfo(fs, file_name_former.c_str());
@@ -246,7 +251,7 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name) {
     ci.hook = 0;
   }
   hdfsCloseFile(fs, readFile);
-  hdfsDisconnect(fs);
+  //  hdfsDisconnect(fs);
   return ci;
 }
 int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const& desc,
@@ -254,8 +259,9 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const& desc,
   lock.acquire();
   int ret;
   uint64_t offset = chunk_id.chunk_off;
-  hdfsFS fs =
-      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  //  hdfsFS fs =
+  //      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  hdfsFS fs = HdfsConnector::Instance();
   hdfsFile readFile = hdfsOpenFile(
       fs, chunk_id.partition_id.getPathAndName().c_str(), O_RDONLY, 0, 0, 0);
   hdfsFileInfo* hdfsfile = hdfsGetPathInfo(
@@ -265,7 +271,7 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const& desc,
     logging_->elog("Fail to open file [%s].Reason:%s",
                    chunk_id.partition_id.getPathAndName().c_str(),
                    strerror(errno));
-    hdfsDisconnect(fs);
+    //    hdfsDisconnect(fs);
     lock.release();
     return -1;
   } else {
@@ -280,7 +286,7 @@ int BlockManager::loadFromHdfs(const ChunkID& chunk_id, void* const& desc,
     ret = -1;
   }
   hdfsCloseFile(fs, readFile);
-  hdfsDisconnect(fs);
+  //  hdfsDisconnect(fs);
   lock.release();
   return ret;
 }
@@ -385,7 +391,7 @@ bool BlockManager::BlockManagerWorkerActor::_reigisterToMaster(
   //	cout<<"in the worker actor to register"<<endl;
   //	//
   //在注册的时候，就有receiverId的构造，也就是用这个string来作为所有的stroage
-  //node的标志，
+  // node的标志，
   //	// 不会出现冲突，是因为传输的message是不一样的，
   //	receiverId_=bMId->blockManagerId;
   //	StorageBudgetMessage rsm(receiverId_.c_str());

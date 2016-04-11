@@ -15,7 +15,7 @@
 #include "../stmt_handler/stmt_handler.h"
 
 using claims::stmt_handler::StmtHandler;
-#define WORK_THREAD_COUNT 1
+#define WORK_THREAD_COUNT 3
 
 Daemon* Daemon::instance_ = 0;
 Lock* Daemon::lock_ = new Lock();

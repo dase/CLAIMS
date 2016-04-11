@@ -45,4 +45,3 @@ libcatalog_a_SOURCES = \
 # if it is need to include stat folder and Test folder, add stat and Test at next two lines
 SUBDIRS = stat
 DIST_SUBDIRS = stat
-
