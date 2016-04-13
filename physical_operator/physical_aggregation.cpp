@@ -41,6 +41,7 @@
 #include "../Executor/expander_tracker.h"
 using claims::common::DataTypeOper;
 using claims::common::DataTypeOperFunc;
+using claims::common::ExprEvalCnxt;
 using claims::common::ExprNode;
 using claims::common::ExprUnary;
 using std::vector;
@@ -199,6 +200,9 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
   void *value_in_input_tuple;
   void *value_in_hash_table;
   void *new_tuple_in_hash_table;
+  ExprEvalCnxt eecnxt;
+  eecnxt.schema[0] = state_.input_schema_;
+
   unsigned allocated_tuples_in_hashtable = 0;
   BasicHashTable::Iterator ht_it = hashtable_->CreateIterator();
   BasicHashTable::Iterator pht_it = private_hashtable->CreateIterator();
@@ -221,9 +225,9 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
        */
       bn = 0;
       // execute group by attributes and get partition key
+      eecnxt.tuple[0] = cur;
       if (state_.group_by_attrs_.size() > 0) {
-        group_by_expr_result =
-            group_by_attrs[0]->ExprEvaluate(cur, state_.input_schema_);
+        group_by_expr_result = group_by_attrs[0]->ExprEvaluate(eecnxt);
         bn = state_.hash_schema_->getcolumn(0).operate->getPartitionValue(
             group_by_expr_result, state_.num_of_buckets_);
       }
@@ -236,8 +240,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
          */
         key_exist = true;
         for (int i = 0; i < group_by_attrs.size(); ++i) {
-          group_by_expr_result =
-              group_by_attrs[i]->ExprEvaluate(cur, state_.input_schema_);
+          group_by_expr_result = group_by_attrs[i]->ExprEvaluate(eecnxt);
           key_in_hash_table =
               state_.hash_schema_->getColumnAddess(i, tuple_in_hashtable);
           if (!state_.hash_schema_->getcolumn(i)
@@ -252,9 +255,8 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
           // update function
           for (int i = 0; i < agg_attrs.size(); ++i) {
             agg_attrs[i]->ExprEvaluate(
-                cur, state_.input_schema_,
-                state_.hash_schema_->getColumnAddess(i + group_by_size,
-                                                     tuple_in_hashtable));
+                eecnxt, state_.hash_schema_->getColumnAddess(
+                            i + group_by_size, tuple_in_hashtable));
           }
           bsti->increase_cur_();
           break;
@@ -268,8 +270,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
       new_tuple_in_hash_table = private_hashtable->allocate(bn);
       // set group-by's original value by expression
       for (int i = 0; i < group_by_attrs.size(); ++i) {
-        key_in_input_tuple =
-            group_by_attrs[i]->ExprEvaluate(cur, state_.input_schema_);
+        key_in_input_tuple = group_by_attrs[i]->ExprEvaluate(eecnxt);
         key_in_hash_table =
             state_.hash_schema_->getColumnAddess(i, new_tuple_in_hash_table);
         state_.hash_schema_->getcolumn(i)
@@ -277,8 +278,7 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
       }
       // get value_in_input_tuple from expression
       for (int i = 0; i < agg_attrs.size(); ++i) {
-        value_in_input_tuple =
-            agg_attrs[i]->arg0_->ExprEvaluate(cur, state_.input_schema_);
+        value_in_input_tuple = agg_attrs[i]->arg0_->ExprEvaluate(eecnxt);
         value_in_hash_table = state_.hash_schema_->getColumnAddess(
             group_by_size + i, new_tuple_in_hash_table);
         state_.hash_schema_->getcolumn(group_by_size + i)

@@ -65,7 +65,8 @@ class AstExprConst : public AstNode {
   void ReplaceAggregation(AstNode*& agg_column, set<AstNode*>& agg_node,
                           bool need_collect);
   RetCode GetLogicalPlan(ExprNode*& logic_expr,
-                         LogicalOperator* child_logic_plan);
+                         LogicalOperator* const left_lplan,
+                         LogicalOperator* const right_lplan);
 
   string expr_type_;
   string data_;
@@ -88,7 +89,8 @@ class AstExprUnary : public AstNode {
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
   RetCode GetLogicalPlan(ExprNode*& logic_expr,
-                         LogicalOperator* child_logic_plan);
+                         LogicalOperator* const left_lplan,
+                         LogicalOperator* const right_lplan);
   RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;
@@ -111,7 +113,8 @@ class AstExprFunc : public AstNode {
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
   RetCode GetLogicalPlan(ExprNode*& logic_expr,
-                         LogicalOperator* child_logic_plan);
+                         LogicalOperator* const left_lplan,
+                         LogicalOperator* const right_lplan);
   RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;
@@ -137,7 +140,8 @@ class AstExprCalBinary : public AstNode {
   void GetSubExpr(vector<AstNode*>& sub_expr, bool is_top_and);
   void GetRefTable(set<string>& ref_table);
   RetCode GetLogicalPlan(ExprNode*& logic_expr,
-                         LogicalOperator* child_logic_plan);
+                         LogicalOperator* const left_lplan,
+                         LogicalOperator* const right_lplan);
   RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;
@@ -163,7 +167,8 @@ class AstExprCmpBinary : public AstNode {
                           bool need_collect);
   void GetRefTable(set<string>& ref_table);
   RetCode GetLogicalPlan(ExprNode*& logic_expr,
-                         LogicalOperator* child_logic_plan);
+                         LogicalOperator* const left_lplan,
+                         LogicalOperator* const right_lplan);
   RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
 
   AstNode* arg0_;

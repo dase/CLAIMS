@@ -36,23 +36,23 @@ ExprDate::ExprDate(ExprDate* expr)
       arg1_(expr->arg1_->ExprCopy()),
       arg1_return_type_(expr->arg1_return_type_),
       DataTypeOperFunc_(expr->DataTypeOperFunc_) {}
-void* ExprDate::ExprEvaluate(void* tuple, Schema* schema) {
+
+void* ExprDate::ExprEvaluate(ExprEvalCnxt& eecnxt) {
   OperFuncInfoData oper_info;
-  oper_info.args_[0] = arg0_->ExprEvaluate(tuple, schema);
-  oper_info.args_[1] = arg1_->ExprEvaluate(tuple, schema);
+  oper_info.args_[0] = arg0_->ExprEvaluate(eecnxt);
+  oper_info.args_[1] = arg1_->ExprEvaluate(eecnxt);
   oper_info.args_num_ = 2;
   oper_info.result_ = value_;
   DataTypeOperFunc_(&oper_info);
   return type_cast_func_(oper_info.result_, value_);
 }
 
-void ExprDate::InitExprAtLogicalPlan(
-    data_type return_type, const std::map<std::string, int>& column_index,
-    Schema* schema) {
-  return_type_ = return_type;
-  // difference from ExprBinary
-  arg0_->InitExprAtLogicalPlan(actual_type_, column_index, schema);
-  arg1_->InitExprAtLogicalPlan(arg1_return_type_, column_index, schema);
+void ExprDate::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
+  return_type_ = licnxt.return_type_;
+  licnxt.return_type_ = actual_type_;
+  arg0_->InitExprAtLogicalPlan(licnxt);
+  licnxt.return_type_ = arg1_return_type_;
+  arg1_->InitExprAtLogicalPlan(licnxt);
   value_size_ = std::max(arg0_->value_size_, arg1_->value_size_);
   is_null_ = (arg0_->is_null_ || arg1_->is_null_);
 }

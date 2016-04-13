@@ -1,4 +1,5 @@
-#include "../common/error_no.h"
+#include "../common/expression/expr_node.h"
+#include "../common/memory_handle.h"
 
 /*
  * Copyright [2012-2015] DaSE@ECNU
@@ -29,6 +30,10 @@
  */
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 
+#include <map>
+#include <vector>
+#include <string>
+#include "../common/error_no.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../Resource/NodeTracker.h"
@@ -38,6 +43,7 @@
 #include "../physical_operator/exchange_merger.h"
 #include "../logical_operator/logical_cross_join.h"
 #include "../physical_operator/physical_nest_loop_join.h"
+using claims::common::LogicInitCnxt;
 using claims::physical_operator::ExchangeMerger;
 using claims::physical_operator::Expander;
 using claims::physical_operator::PhysicalNestLoopJoin;
@@ -60,6 +66,17 @@ LogicalCrossJoin::LogicalCrossJoin(LogicalOperator* left_child,
       left_child_(left_child),
       right_child_(right_child),
       plan_context_(NULL),
+      join_policy_(kUninitialized) {
+  join_condi_.clear();
+}
+LogicalCrossJoin::LogicalCrossJoin(LogicalOperator* left_child,
+                                   LogicalOperator* right_child,
+                                   std::vector<ExprNode*> join_condi)
+    : LogicalOperator(kLogicalCrossJoin),
+      left_child_(left_child),
+      right_child_(right_child),
+      plan_context_(NULL),
+      join_condi_(join_condi),
       join_policy_(kUninitialized) {}
 LogicalCrossJoin::~LogicalCrossJoin() {
   if (NULL != plan_context_) {
@@ -74,6 +91,10 @@ LogicalCrossJoin::~LogicalCrossJoin() {
     delete right_child_;
     right_child_ = NULL;
   }
+  for (auto it = join_condi_.begin(); it != join_condi_.end(); ++it) {
+    DELETE_PTR(*it);
+  }
+  join_condi_.clear();
 }
 
 /**
@@ -190,6 +211,16 @@ PlanContext LogicalCrossJoin::GetPlanContext() {
       }
       default: { assert(false); }
     }
+    // initialize expression
+    LogicInitCnxt licnxt;
+    GetColumnToId(left_plan_context.attribute_list_, licnxt.column_id0_);
+    GetColumnToId(right_plan_context.attribute_list_, licnxt.column_id1_);
+    licnxt.schema0_ = left_plan_context.GetSchema();
+    licnxt.schema1_ = right_plan_context.GetSchema();
+    for (int i = 0; i < join_condi_.size(); ++i) {
+      licnxt.return_type_ = join_condi_[i]->actual_type_;
+      join_condi_[i]->InitExprAtLogicalPlan(licnxt);
+    }
     plan_context_ = new PlanContext();
     *plan_context_ = ret;
   } else {
@@ -256,6 +287,7 @@ PhysicalOperatorBase* LogicalCrossJoin::GetPhysicalPlan(
   PlanContext right_plan_context = right_child_->GetPlanContext();
   PhysicalNestLoopJoin::State state;
   state.block_size_ = block_size;
+  state.join_condi_ = join_condi_;
   state.input_schema_left_ = GetSchema(left_plan_context.attribute_list_);
   state.input_schema_right_ = GetSchema(right_plan_context.attribute_list_);
   state.output_schema_ = GetSchema(plan_context_->attribute_list_);

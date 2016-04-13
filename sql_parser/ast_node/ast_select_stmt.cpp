@@ -67,7 +67,7 @@ using claims::logical_operator::LogicalSort;
 using claims::logical_operator::LogicalLimit;
 using claims::logical_operator::LogicalSubquery;
 using claims::logical_operator::LogicalDeleteFilter;
-
+using claims::catalog::Attribute;
 using std::bitset;
 using std::endl;
 using std::cout;
@@ -452,7 +452,7 @@ RetCode AstTable::GetLogicalPlan(LogicalOperator*& logic_plan) {
     ExprNode* qnode = NULL;
     for (auto it = normal_condition_.begin(); it != normal_condition_.end();
          ++it) {
-      ret = (*it)->GetLogicalPlan(qnode, logic_plan);
+      ret = (*it)->GetLogicalPlan(qnode, logic_plan, NULL);
       if (rSuccess != ret) {
         LOG(ERROR) << "get normal condition upon a table, due to [err: " << ret
                    << " ] !" << endl;
@@ -723,6 +723,8 @@ RetCode AstJoin::PushDownCondition(PushDownConditionContext* pdccnxt) {
 
   pdccnxt->from_tables_.insert(cur_pdccnxt->from_tables_.begin(),
                                cur_pdccnxt->from_tables_.end());
+  delete child_pdccnxt;
+  delete cur_pdccnxt;
   return rSuccess;
 }
 RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
@@ -737,6 +739,7 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
   if (rSuccess != ret) {
     return ret;
   }
+#ifdef JOIN_WITHOUT_EXPR
   if (equal_join_condition_.size() > 0) {
     vector<LogicalEqualJoin::JoinPair> join_pair;
     join_pair.clear();
@@ -758,6 +761,19 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
     }
     logic_plan = new LogicalFilter(logic_plan, condition);
   }
+#else
+  if (normal_condition_.size() > 0) {
+    vector<ExprNode*> condition;
+    condition.clear();
+    ret = GetJoinCondition(condition, normal_condition_, left_plan, right_plan);
+    if (rSuccess != ret) {
+      return ret;
+    }
+    logic_plan = new LogicalCrossJoin(left_plan, right_plan, condition);
+  } else {
+    logic_plan = new LogicalCrossJoin(left_plan, right_plan);
+  }
+#endif
   return rSuccess;
 }
 
@@ -1032,7 +1048,7 @@ RetCode AstOrderByClause::GetLogicalPlan(LogicalOperator*& logic_plan) {
   int direction = 0;
   AstOrderByList* orderby = orderby_list_;
   while (NULL != orderby) {
-    orderby->expr_->GetLogicalPlan(tmp_expr, logic_plan);
+    orderby->expr_->GetLogicalPlan(tmp_expr, logic_plan, NULL);
     direction = orderby->orderby_direction_ == "ASC" ? 0 : 1;
     orderby_expr.push_back(make_pair(tmp_expr, direction));
     orderby = orderby->next_;
@@ -1085,7 +1101,7 @@ RetCode AstHavingClause::GetLogicalPlan(LogicalOperator*& logic_plan) {
   if (NULL != expr_) {
     vector<ExprNode*> having_expr;
     ExprNode* expr = NULL;
-    expr_->GetLogicalPlan(expr, logic_plan);
+    expr_->GetLogicalPlan(expr, logic_plan, NULL);
     having_expr.push_back(expr);
     logic_plan = new LogicalFilter(logic_plan, having_expr);
   }
@@ -1276,14 +1292,42 @@ void AstColumn::GetRefTable(set<string>& ref_table) {
 }
 
 RetCode AstColumn::GetLogicalPlan(ExprNode*& logic_expr,
-                                  LogicalOperator* child_logic_plan) {
-  logic_expr = new ExprColumn(
-      ExprNodeType::t_qcolcumns,
-      child_logic_plan->GetPlanContext()
-          .GetAttribute(relation_name_, relation_name_ + "." + column_name_)
-          .attrType->type,
-      expr_str_, relation_name_, column_name_);
-  return rSuccess;
+                                  LogicalOperator* const left_lplan,
+                                  LogicalOperator* const right_lplan) {
+  Attribute ret_lattr = left_lplan->GetPlanContext().GetAttribute(
+      string(relation_name_ + "." + column_name_));
+  if (NULL != right_lplan) {
+    Attribute ret_rattr = right_lplan->GetPlanContext().GetAttribute(
+        string(relation_name_ + "." + column_name_));
+    if ((ret_lattr.attrName != "NULL") && (ret_rattr.attrName != "NULL")) {
+      assert(false);
+      return rFailure;
+    } else if (ret_lattr.attrName != "NULL") {
+      logic_expr =
+          new ExprColumn(ExprNodeType::t_qcolcumns, ret_lattr.attrType->type,
+                         expr_str_, relation_name_, column_name_);
+      return rSuccess;
+    } else if (ret_rattr.attrName != "NULL") {
+      logic_expr =
+          new ExprColumn(ExprNodeType::t_qcolcumns, ret_rattr.attrType->type,
+                         expr_str_, relation_name_, column_name_);
+      return rSuccess;
+    } else {
+      assert(false);
+      return rFailure;
+    }
+  } else {
+    if (ret_lattr.attrName != "NULL") {
+      logic_expr =
+          new ExprColumn(ExprNodeType::t_qcolcumns, ret_lattr.attrType->type,
+                         expr_str_, relation_name_, column_name_);
+      return rSuccess;
+    } else {
+      logic_expr = NULL;
+      assert(false);
+      return rFailure;
+    }
+  }
 }
 RetCode AstColumn::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
@@ -1533,14 +1577,14 @@ RetCode AstSelectStmt::GetLogicalPlanOfAggeration(
   ExprNode* tmp_expr = NULL;
   RetCode ret = rSuccess;
   for (auto it = groupby_attrs_.begin(); it != groupby_attrs_.end(); ++it) {
-    ret = (*it)->GetLogicalPlan(tmp_expr, logic_plan);
+    ret = (*it)->GetLogicalPlan(tmp_expr, logic_plan, NULL);
     if (rSuccess != ret) {
       return ret;
     }
     group_by_attrs.push_back(tmp_expr);
   }
   for (auto it = agg_attrs_.begin(); it != agg_attrs_.end(); ++it) {
-    ret = (*it)->GetLogicalPlan(tmp_expr, logic_plan);
+    ret = (*it)->GetLogicalPlan(tmp_expr, logic_plan, NULL);
     if (rSuccess != ret) {
       return ret;
     }
@@ -1591,7 +1635,7 @@ RetCode AstSelectStmt::GetLogicalPlanOfProject(LogicalOperator*& logic_plan) {
     }
   }
   for (int i = 0; i < ast_expr.size(); ++i) {
-    ret = ast_expr[i]->GetLogicalPlan(tmp_expr, logic_plan);
+    ret = ast_expr[i]->GetLogicalPlan(tmp_expr, logic_plan, NULL);
     if (rSuccess != ret) {
       return rSuccess;
     }

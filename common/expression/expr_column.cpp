@@ -17,6 +17,7 @@
 #include <iostream>
 #include <map>
 
+#include "./expr_node.h"
 #include "./expr_type_cast.h"
 using std::string;
 namespace claims {
@@ -36,33 +37,46 @@ ExprColumn::ExprColumn(ExprColumn* expr)
       table_id_(expr->table_id_),
       table_name_(expr->table_name_),
       column_name_(expr->column_name_) {}
-void* ExprColumn::ExprEvaluate(void* tuple, Schema* schema) {
-  void* result = schema->getColumnAddess(attr_id_, tuple);
+
+void* ExprColumn::ExprEvaluate(ExprEvalCnxt& eecnxt) {
+  void* result = eecnxt.schema[table_id_]->getColumnAddess(
+      attr_id_, eecnxt.tuple[table_id_]);
   return type_cast_func_(result, value_);
 }
-
-void ExprColumn::InitExprAtLogicalPlan(
-    data_type return_type, const std::map<std::string, int>& column_index,
-    Schema* schema) {
-  return_type_ = return_type;
-  auto it = column_index.find(table_name_ + "." + column_name_);
-  if (it != column_index.end()) {
+// checking the column belongs to witch table
+void ExprColumn::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
+  return_type_ = licnxt.return_type_;
+  auto it = licnxt.column_id0_.find(table_name_ + "." + column_name_);
+  if (it != licnxt.column_id0_.end()) {
     attr_id_ = it->second;
+    table_id_ = 0;
+    if (return_type_ == t_string) {
+      value_size_ = std::max(licnxt.schema0_->getcolumn(attr_id_).get_length(),
+                             static_cast<unsigned int>(BASE_DATA_SIZE));
+    } else {
+      value_size_ = licnxt.schema0_->getcolumn(attr_id_).get_length();
+    }
+    is_null_ = false;
   } else {
-    LOG(ERROR) << "[ " << table_name_ + "." + column_name_
-               << " ] doesn't exist in column_index_map during initalize "
-                  "column at logical plan" << endl;
-    assert(false);
+    auto it = licnxt.column_id1_.find(table_name_ + "." + column_name_);
+    if (it != licnxt.column_id1_.end()) {
+      attr_id_ = it->second;
+      table_id_ = 1;
+      if (return_type_ == t_string) {
+        value_size_ =
+            std::max(licnxt.schema1_->getcolumn(attr_id_).get_length(),
+                     static_cast<unsigned int>(BASE_DATA_SIZE));
+      } else {
+        value_size_ = licnxt.schema1_->getcolumn(attr_id_).get_length();
+      }
+      is_null_ = false;
+    } else {
+      LOG(ERROR) << "[ " << table_name_ + "." + column_name_
+                 << " ] doesn't exist in column_id_map during initalize "
+                    "column at logical plan" << endl;
+      assert(false);
+    }
   }
-
-  // now column_name_ like A.a, but may be change to a.
-  if (return_type_ == t_string) {
-    value_size_ = std::max(schema->getcolumn(attr_id_).get_length(),
-                           static_cast<unsigned int>(BASE_DATA_SIZE));
-  } else {
-    value_size_ = schema->getcolumn(attr_id_).get_length();
-  }
-  is_null_ = false;
 }
 
 void ExprColumn::InitExprAtPhysicalPlan() {

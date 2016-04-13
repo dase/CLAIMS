@@ -307,8 +307,10 @@ class AstColumn : public AstNode {
   RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   void RecoverExprName(string& name);
   void GetRefTable(set<string>& ref_table);
+
   RetCode GetLogicalPlan(ExprNode*& logic_expr,
-                         LogicalOperator* child_logic_plan);
+                         LogicalOperator* const left_lplan,
+                         LogicalOperator* const right_lplan);
   RetCode SolveSelectAlias(SelectAliasSolver* const select_alias_solver);
   AstNode* AstNodeCopy();
   string relation_name_;

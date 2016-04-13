@@ -261,14 +261,20 @@ class AstNode {
   virtual RetCode GetLogicalPlan(LogicalOperator*& logic_plan) {
     return rSuccess;
   }
+
   virtual RetCode GetLogicalPlan(ExprNode*& logic_expr,
-                                 LogicalOperator* child_logic_plan) {
+                                 LogicalOperator* const left_lplan,
+                                 LogicalOperator* const right_lplan) {
     return rSuccess;
   }
   RetCode GetEqualJoinPair(vector<LogicalEqualJoin::JoinPair>& join_pair,
                            LogicalOperator* args_lplan,
                            LogicalOperator* next_lplan,
                            const vector<AstNode*>& equal_join_condition);
+  RetCode GetJoinCondition(vector<ExprNode*>& condition,
+                           const vector<AstNode*>& normal_condition,
+                           LogicalOperator* left_lplan,
+                           LogicalOperator* right_lplan);
   RetCode GetFilterCondition(vector<ExprNode*>& condition,
                              const vector<AstNode*>& normal_condition,
                              LogicalOperator* logic_plan);

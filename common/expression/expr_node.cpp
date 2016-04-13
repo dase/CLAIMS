@@ -48,18 +48,18 @@ ExprNode::ExprNode(ExprNode* expr)
       alias_(expr->alias_),
       is_null_(expr->is_null_),
       value_size_(expr->value_size_),
-      type_cast_func_(expr->type_cast_func_),
-      value_(expr->value_) {}
+      type_cast_func_(expr->type_cast_func_) {}
 
-bool ExprNode::MoreExprEvaluate(vector<ExprNode*> thread_condi, void* tuple,
-                                Schema* schema) {
+bool ExprNode::MoreExprEvaluate(vector<ExprNode*> thread_condi,
+                                ExprEvalCnxt& eecnxt) {
   for (int i = 0; i < thread_condi.size(); ++i) {
     bool result =
-        *reinterpret_cast<bool*>(thread_condi[i]->ExprEvaluate(tuple, schema));
+        *reinterpret_cast<bool*>(thread_condi[i]->ExprEvaluate(eecnxt));
     if (!result) return false;
   }
   return true;
 }
+
 bool ExprNode::IsEqualAttr(const Attribute& attr) {
   if (expr_node_type_ == t_qcolcumns) {
     ExprColumn* column = reinterpret_cast<ExprColumn*>(this);
