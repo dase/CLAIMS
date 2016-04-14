@@ -68,14 +68,18 @@ PhysicalHashJoin::PhysicalHashJoin()
   InitExpandedStatus();
 }
 
-PhysicalHashJoin::~PhysicalHashJoin() {}
+PhysicalHashJoin::~PhysicalHashJoin() {
+  for (int i = 0; i < state_.join_condi_.size(); ++i) {
+    DELETE_PTR(state_.join_condi_[i]);
+  }
+  state_.join_condi_.clear();
+}
 
 PhysicalHashJoin::State::State(
     PhysicalOperatorBase* child_left, PhysicalOperatorBase* child_right,
     Schema* input_schema_left, Schema* input_schema_right,
     Schema* output_schema, Schema* ht_schema,
     std::vector<unsigned> joinIndex_left, std::vector<unsigned> joinIndex_right,
-    std::vector<unsigned> payload_left, std::vector<unsigned> payload_right,
     unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size,
     vector<ExprNode*> join_condi)
     : child_left_(child_left),
@@ -86,8 +90,6 @@ PhysicalHashJoin::State::State(
       hashtable_schema_(ht_schema),
       join_index_left_(joinIndex_left),
       join_index_right_(joinIndex_right),
-      payload_left_(payload_left),
-      payload_right_(payload_right),
       hashtable_bucket_num_(ht_nbuckets),
       hashtable_bucket_size_(ht_bucketsize),
       block_size_(block_size),
@@ -106,29 +108,18 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
     winning_thread = true;
     ExpanderTracker::getInstance()->addNewStageEndpoint(
         pthread_self(), LocalStageEndPoint(stage_desc, "Hash join build", 0));
-    unsigned output_index = 0;
-    for (unsigned i = 0; i < state_.join_index_left_.size(); i++) {
-      join_index_left_to_output_[i] = output_index;
-      output_index++;
-    }
-    for (unsigned i = 0; i < state_.payload_left_.size(); i++) {
-      payload_left_to_output_[i] = output_index;
-      output_index++;
-    }
-    for (unsigned i = 0; i < state_.payload_right_.size(); i++) {
-      payload_right_to_output_[i] = output_index;
-      output_index++;
-    }
     hash_func_ = PartitionFunctionFactory::createBoostHashFunction(
         state_.hashtable_bucket_num_);
     unsigned long long hash_table_build = curtick();
     hashtable_ = new BasicHashTable(
         state_.hashtable_bucket_num_, state_.hashtable_bucket_size_,
         state_.input_schema_left_->getTupleMaxSize());
+
 #ifdef _DEBUG_
     consumed_tuples_from_left = 0;
 #endif
 
+#ifdef CodeGen
     QNode* expr = createEqualJoinExpression(
         state_.hashtable_schema_, state_.input_schema_right_,
         state_.join_index_left_, state_.join_index_right_);
@@ -149,6 +140,7 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
       LOG(INFO) << "Codegen(Join) failed!" << endl;
     }
     delete expr;
+#endif
   }
 
   /**
@@ -260,7 +252,7 @@ bool PhysicalHashJoin::Next(BlockStreamBase* block) {
 
       while (NULL !=
              (tuple_in_hashtable = jtc->hashtable_iterator_.readCurrent())) {
-#ifdef OldCondition
+#ifdef CodeGen
         cff_(tuple_in_hashtable, tuple_from_right_child, &key_exit,
              state_.join_index_left_, state_.join_index_right_,
              state_.hashtable_schema_, state_.input_schema_right_, eftt_);

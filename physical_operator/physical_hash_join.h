@@ -82,9 +82,7 @@ class PhysicalHashJoin : public PhysicalOperator {
           Schema* input_schema_left, Schema* input_schema_right,
           Schema* output_schema, Schema* ht_schema,
           std::vector<unsigned> joinIndex_left,
-          std::vector<unsigned> joinIndex_right,
-          std::vector<unsigned> payload_left,
-          std::vector<unsigned> payload_right, unsigned ht_nbuckets,
+          std::vector<unsigned> joinIndex_right, unsigned ht_nbuckets,
           unsigned ht_bucketsize, unsigned block_size,
           vector<ExprNode*> join_condi);
     State() {}
@@ -93,9 +91,8 @@ class PhysicalHashJoin : public PhysicalOperator {
     void serialize(Archive& ar, const unsigned int version) {
       ar& child_left_& child_right_& input_schema_left_& input_schema_right_&
           output_schema_& hashtable_schema_& join_index_left_&
-              join_index_right_& payload_left_& payload_right_&
-                  hashtable_bucket_num_& hashtable_bucket_size_& block_size_&
-                      join_condi_;
+              join_index_right_& hashtable_bucket_num_& hashtable_bucket_size_&
+                  block_size_& join_condi_;
     }
 
    public:
@@ -107,8 +104,6 @@ class PhysicalHashJoin : public PhysicalOperator {
     // how to join
     std::vector<unsigned> join_index_left_;
     std::vector<unsigned> join_index_right_;
-    std::vector<unsigned> payload_left_;
-    std::vector<unsigned> payload_right_;
     std::vector<ExprNode*> join_condi_;
     // hashtable
     unsigned hashtable_bucket_num_;
@@ -178,12 +173,6 @@ class PhysicalHashJoin : public PhysicalOperator {
 
  private:
   State state_;
-  /* joinIndex map to the output*/
-  std::map<unsigned, unsigned> join_index_left_to_output_;
-  /* payload_left map to the output*/
-  std::map<unsigned, unsigned> payload_left_to_output_;
-  /* payload_right map to the output*/
-  std::map<unsigned, unsigned> payload_right_to_output_;
 
   PartitionFunction* hash_func_;
   BasicHashTable* hashtable_;

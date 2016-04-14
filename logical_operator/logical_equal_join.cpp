@@ -368,8 +368,6 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
   state.join_index_left_ = GetLeftJoinKeyIds();
   state.join_index_right_ = GetRightJoinKeyIds();
   state.join_condi_ = join_condi_;
-  state.payload_left_ = GetLeftPayloadIds();
-  state.payload_right_ = GetRightPayloadIds();
   switch (join_policy_) {
     case kNoRepartition: {
       state.child_left_ = child_iterator_left;
@@ -584,41 +582,7 @@ std::vector<unsigned> LogicalEqualJoin::GetRightJoinKeyIds() const {
   }
   return ret;
 }
-std::vector<unsigned> LogicalEqualJoin::GetLeftPayloadIds() const {
-  std::vector<unsigned> ret;
-  const PlanContext dataflow = left_child_->GetPlanContext();
-  const std::vector<unsigned> left_join_key_index_list = GetLeftJoinKeyIds();
 
-  for (unsigned i = 0; i < dataflow.attribute_list_.size(); i++) {
-    bool found_equal = false;
-    for (unsigned j = 0; j < left_join_key_index_list.size(); j++) {
-      if (i == left_join_key_index_list[j]) {
-        found_equal = true;
-        break;
-      }
-    }
-    if (!found_equal) {
-      ret.push_back(i);
-    }
-  }
-  return ret;
-}
-
-std::vector<unsigned> LogicalEqualJoin::GetRightPayloadIds() const {
-  std::vector<unsigned> ret;
-  const PlanContext dataflow = right_child_->GetPlanContext();
-  const std::vector<unsigned> right_join_key_index_list = GetRightJoinKeyIds();
-
-  for (unsigned i = 0; i < dataflow.attribute_list_.size(); i++) {
-    for (unsigned j = 0; j < right_join_key_index_list.size(); j++) {
-      if (i == right_join_key_index_list[j]) {
-        break;
-      }
-    }
-    ret.push_back(i);
-  }
-  return ret;
-}
 int LogicalEqualJoin::GetIdInLeftJoinKeys(const Attribute& attribute) const {
   for (unsigned i = 0; i < joinkey_pair_list_.size(); i++) {
     if (joinkey_pair_list_[i].left_join_attr_ == attribute) {

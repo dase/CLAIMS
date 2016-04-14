@@ -110,8 +110,6 @@ class LogicalEqualJoin : public LogicalOperator {
  private:
   std::vector<unsigned> GetLeftJoinKeyIds() const;
   std::vector<unsigned> GetRightJoinKeyIds() const;
-  std::vector<unsigned> GetLeftPayloadIds() const;
-  std::vector<unsigned> GetRightPayloadIds() const;
   int GetIdInLeftJoinKeys(const Attribute&) const;
   int GetIdInLeftJoinKeys(
       const Attribute&,
