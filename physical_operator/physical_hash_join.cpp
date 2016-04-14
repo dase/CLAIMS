@@ -33,9 +33,12 @@
 #include "../physical_operator/physical_hash_join.h"
 #include <glog/logging.h>
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/expression/expr_node.h"
 #include "../Config.h"
 #include "../Executor/expander_tracker.h"
 #include "../utility/rdtsc.h"
+
+using claims::common::ExprNode;
 
 // #define _DEBUG_
 
@@ -73,7 +76,8 @@ PhysicalHashJoin::State::State(
     Schema* output_schema, Schema* ht_schema,
     std::vector<unsigned> joinIndex_left, std::vector<unsigned> joinIndex_right,
     std::vector<unsigned> payload_left, std::vector<unsigned> payload_right,
-    unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size)
+    unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size,
+    vector<ExprNode*> join_condi)
     : child_left_(child_left),
       child_right_(child_right),
       input_schema_left_(input_schema_left),
@@ -86,7 +90,8 @@ PhysicalHashJoin::State::State(
       payload_right_(payload_right),
       hashtable_bucket_num_(ht_nbuckets),
       hashtable_bucket_size_(ht_bucketsize),
-      block_size_(block_size) {}
+      block_size_(block_size),
+      join_condi_(join_condi) {}
 
 bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
 #ifdef TIME
@@ -255,10 +260,14 @@ bool PhysicalHashJoin::Next(BlockStreamBase* block) {
 
       while (NULL !=
              (tuple_in_hashtable = jtc->hashtable_iterator_.readCurrent())) {
+#ifdef OldCondition
         cff_(tuple_in_hashtable, tuple_from_right_child, &key_exit,
              state_.join_index_left_, state_.join_index_right_,
              state_.hashtable_schema_, state_.input_schema_right_, eftt_);
-
+#else
+        key_exit =
+            JoinCondiProcess(tuple_in_hashtable, tuple_from_right_child, jtc);
+#endif
         if (key_exit) {
           if (NULL != (result_tuple = block->allocateTuple(
                            state_.output_schema_->getTupleMaxSize()))) {
@@ -374,12 +383,29 @@ inline void PhysicalHashJoin::IsMatchCodegen(
     Schema* l_schema, Schema* r_schema, ExprFuncTwoTuples func) {
   func(l_tuple_addr, r_tuple_addr, return_addr);
 }
-
+inline bool PhysicalHashJoin::JoinCondiProcess(void* tuple_left,
+                                               void* tuple_right,
+                                               JoinThreadContext* const hjtc) {
+  hjtc->expr_eval_cnxt_.tuple[0] = tuple_left;
+  hjtc->expr_eval_cnxt_.tuple[1] = tuple_right;
+  bool pass = false;
+  for (int i = 0; i < hjtc->join_condi_.size(); ++i) {
+    pass = *(bool*)(hjtc->join_condi_[i]->ExprEvaluate(hjtc->expr_eval_cnxt_));
+    if (pass == false) {
+      return false;
+    }
+  }
+  return true;
+}
 PhysicalHashJoin::JoinThreadContext::~JoinThreadContext() {
   delete l_block_for_asking_;
   delete l_block_stream_iterator_;
   delete r_block_for_asking_;
   delete r_block_stream_iterator_;
+  for (int i = 0; i < join_condi_.size(); ++i) {
+    DELETE_PTR(join_condi_[i]);
+  }
+  join_condi_.clear();
 }
 
 ThreadContext* PhysicalHashJoin::CreateContext() {
@@ -390,7 +416,14 @@ ThreadContext* PhysicalHashJoin::CreateContext() {
   jtc->r_block_for_asking_ = BlockStreamBase::createBlock(
       state_.input_schema_right_, state_.block_size_);
   jtc->r_block_stream_iterator_ = jtc->r_block_for_asking_->createIterator();
-
+  ExprNode* new_node = NULL;
+  for (int i = 0; i < state_.join_condi_.size(); ++i) {
+    new_node = state_.join_condi_[i]->ExprCopy();
+    new_node->InitExprAtPhysicalPlan();
+    jtc->join_condi_.push_back(new_node);
+  }
+  jtc->expr_eval_cnxt_.schema[0] = state_.input_schema_left_;
+  jtc->expr_eval_cnxt_.schema[1] = state_.input_schema_right_;
   return jtc;
 }
 

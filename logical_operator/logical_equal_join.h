@@ -74,6 +74,9 @@ class LogicalEqualJoin : public LogicalOperator {
    */
   LogicalEqualJoin(std::vector<JoinPair>, LogicalOperator* left_input,
                    LogicalOperator* right_input);
+  LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
+                   LogicalOperator* left_input, LogicalOperator* right_input,
+                   vector<ExprNode*> join_condi);
   virtual ~LogicalEqualJoin();
   /**
    * @brief Method description: Get the child information.
@@ -177,6 +180,7 @@ class LogicalEqualJoin : public LogicalOperator {
       const Attribute& attr_left, const Attribute& attr_right) const;
 
  private:
+  std::vector<ExprNode*> join_condi_;
   std::vector<JoinPair> joinkey_pair_list_;
   std::vector<Attribute> left_join_key_list_;
   std::vector<Attribute> right_join_key_list_;

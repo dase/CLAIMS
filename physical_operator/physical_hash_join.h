@@ -46,6 +46,9 @@
 #include "../common/expression/expr_node.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
+using claims::common::ExprNode;
+using claims::common::ExprEvalCnxt;
+
 namespace claims {
 namespace physical_operator {
 
@@ -63,6 +66,8 @@ class PhysicalHashJoin : public PhysicalOperator {
     BlockStreamBase* r_block_for_asking_;
     BlockStreamBase::BlockStreamTraverseIterator* r_block_stream_iterator_;
     BasicHashTable::Iterator hashtable_iterator_;
+    std::vector<ExprNode*> join_condi_;
+    ExprEvalCnxt expr_eval_cnxt_;
   };
 
   class State {
@@ -80,15 +85,17 @@ class PhysicalHashJoin : public PhysicalOperator {
           std::vector<unsigned> joinIndex_right,
           std::vector<unsigned> payload_left,
           std::vector<unsigned> payload_right, unsigned ht_nbuckets,
-          unsigned ht_bucketsize, unsigned block_size);
-    State(){};
+          unsigned ht_bucketsize, unsigned block_size,
+          vector<ExprNode*> join_condi);
+    State() {}
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
       ar& child_left_& child_right_& input_schema_left_& input_schema_right_&
           output_schema_& hashtable_schema_& join_index_left_&
               join_index_right_& payload_left_& payload_right_&
-                  hashtable_bucket_num_& hashtable_bucket_size_& block_size_;
+                  hashtable_bucket_num_& hashtable_bucket_size_& block_size_&
+                      join_condi_;
     }
 
    public:
@@ -102,7 +109,7 @@ class PhysicalHashJoin : public PhysicalOperator {
     std::vector<unsigned> join_index_right_;
     std::vector<unsigned> payload_left_;
     std::vector<unsigned> payload_right_;
-
+    std::vector<ExprNode*> join_condi_;
     // hashtable
     unsigned hashtable_bucket_num_;
     unsigned hashtable_bucket_size_;
@@ -166,6 +173,9 @@ class PhysicalHashJoin : public PhysicalOperator {
                              vector<unsigned>& r_join_index, Schema* l_schema,
                              Schema* r_schema, ExprFuncTwoTuples func);
   // static void copy_to_hashtable(void* desc, void* src, Schema* );
+  bool JoinCondiProcess(void* tuple_left, void* tuple_right,
+                        JoinThreadContext* const jtc);
+
  private:
   State state_;
   /* joinIndex map to the output*/

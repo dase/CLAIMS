@@ -34,6 +34,7 @@
 #include <string>
 
 #include "../catalog/stat/StatManager.h"
+#include "../common/expression/expr_node.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../common/Logging.h"
@@ -42,6 +43,7 @@
 #include "../physical_operator/physical_hash_join.h"
 #include "../physical_operator/physical_operator_base.h"
 
+using claims::common::LogicInitCnxt;
 using claims::physical_operator::ExchangeMerger;
 using claims::physical_operator::Expander;
 using claims::physical_operator::PhysicalHashJoin;
@@ -64,6 +66,17 @@ LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
     right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
   }
 }
+LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
+                                   LogicalOperator* left_input,
+                                   LogicalOperator* right_input,
+                                   vector<ExprNode*> join_condi)
+    : LogicalOperator(kLogicalEqualJoin),
+      joinkey_pair_list_(joinpair_list),
+      left_child_(left_input),
+      right_child_(right_input),
+      join_condi_(join_condi),
+      join_policy_(kNull),
+      plan_context_(NULL) {}
 LogicalEqualJoin::~LogicalEqualJoin() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -264,6 +277,15 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
     }
   }
 
+  LogicInitCnxt licnxt;
+  GetColumnToId(left_dataflow.attribute_list_, licnxt.column_id0_);
+  GetColumnToId(right_dataflow.attribute_list_, licnxt.column_id1_);
+  licnxt.schema0_ = left_dataflow.GetSchema();
+  licnxt.schema1_ = right_dataflow.GetSchema();
+  for (int i = 0; i < join_condi_.size(); ++i) {
+    licnxt.return_type_ = join_condi_[i]->actual_type_;
+    join_condi_[i]->InitExprAtLogicalPlan(licnxt);
+  }
   plan_context_ = new PlanContext();
   *plan_context_ = ret;
   lock_->release();
@@ -345,7 +367,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
 
   state.join_index_left_ = GetLeftJoinKeyIds();
   state.join_index_right_ = GetRightJoinKeyIds();
-
+  state.join_condi_ = join_condi_;
   state.payload_left_ = GetLeftPayloadIds();
   state.payload_right_ = GetRightPayloadIds();
   switch (join_policy_) {

@@ -762,16 +762,40 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
     logic_plan = new LogicalFilter(logic_plan, condition);
   }
 #else
-  if (normal_condition_.size() > 0) {
+  if (!equal_join_condition_.empty()) {
     vector<ExprNode*> condition;
     condition.clear();
+    ret = GetJoinCondition(condition, equal_join_condition_, left_plan,
+                           right_plan);
+    if (rSuccess != ret) {
+      return ret;
+    }
     ret = GetJoinCondition(condition, normal_condition_, left_plan, right_plan);
     if (rSuccess != ret) {
       return ret;
     }
-    logic_plan = new LogicalCrossJoin(left_plan, right_plan, condition);
+    vector<LogicalEqualJoin::JoinPair> join_pair;
+    join_pair.clear();
+    ret = GetEqualJoinPair(join_pair, left_plan, right_plan,
+                           equal_join_condition_);
+    if (rSuccess != ret) {
+      return ret;
+    }
+    logic_plan =
+        new LogicalEqualJoin(join_pair, left_plan, right_plan, condition);
   } else {
-    logic_plan = new LogicalCrossJoin(left_plan, right_plan);
+    if (!normal_condition_.empty()) {
+      vector<ExprNode*> condition;
+      condition.clear();
+      ret =
+          GetJoinCondition(condition, normal_condition_, left_plan, right_plan);
+      if (rSuccess != ret) {
+        return ret;
+      }
+      logic_plan = new LogicalCrossJoin(left_plan, right_plan, condition);
+    } else {
+      logic_plan = new LogicalCrossJoin(left_plan, right_plan);
+    }
   }
 #endif
   return rSuccess;
