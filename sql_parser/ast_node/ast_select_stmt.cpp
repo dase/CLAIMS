@@ -308,26 +308,37 @@ RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
     next_->GetLogicalPlan(next_lplan);
   }
   if (NULL != next_lplan) {
-    if (equal_join_condition_.size() > 0) {
+    if (!equal_join_condition_.empty()) {
       vector<LogicalEqualJoin::JoinPair> join_pair;
       join_pair.clear();
-      ret = GetEqualJoinPair(join_pair, args_lplan, next_lplan,
+      ret = GetEqualJoinPair(join_pair, next_lplan, args_lplan,
                              equal_join_condition_);
       if (rSuccess != ret) {
         return ret;
       }
-      logic_plan = new LogicalEqualJoin(join_pair, args_lplan, next_lplan);
-    } else {
-      logic_plan = new LogicalCrossJoin(args_lplan, next_lplan);
-    }
-    if (normal_condition_.size() > 0) {
       vector<ExprNode*> condition;
       condition.clear();
-      ret = GetFilterCondition(condition, normal_condition_, logic_plan);
+      ret = GetJoinCondition(condition, equal_join_condition_, next_lplan,
+                             args_lplan);
       if (rSuccess != ret) {
         return ret;
       }
-      logic_plan = new LogicalFilter(logic_plan, condition);
+      ret = GetJoinCondition(condition, normal_condition_, next_lplan,
+                             args_lplan);
+      if (rSuccess != ret) {
+        return ret;
+      }
+      logic_plan =
+          new LogicalEqualJoin(join_pair, next_lplan, args_lplan, condition);
+    } else {
+      vector<ExprNode*> condition;
+      condition.clear();
+      ret = GetJoinCondition(condition, normal_condition_, next_lplan,
+                             args_lplan);
+      if (rSuccess != ret) {
+        return ret;
+      }
+      logic_plan = new LogicalCrossJoin(next_lplan, args_lplan, condition);
     }
   } else {
     logic_plan = args_lplan;
@@ -739,29 +750,7 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
   if (rSuccess != ret) {
     return ret;
   }
-#ifdef JOIN_WITHOUT_EXPR
-  if (equal_join_condition_.size() > 0) {
-    vector<LogicalEqualJoin::JoinPair> join_pair;
-    join_pair.clear();
-    ret = GetEqualJoinPair(join_pair, left_plan, right_plan,
-                           equal_join_condition_);
-    if (rSuccess != ret) {
-      return ret;
-    }
-    logic_plan = new LogicalEqualJoin(join_pair, left_plan, right_plan);
-  } else {
-    logic_plan = new LogicalCrossJoin(left_plan, right_plan);
-  }
-  if (normal_condition_.size() > 0) {
-    vector<ExprNode*> condition;
-    condition.clear();
-    ret = GetFilterCondition(condition, normal_condition_, logic_plan);
-    if (rSuccess != ret) {
-      return ret;
-    }
-    logic_plan = new LogicalFilter(logic_plan, condition);
-  }
-#else
+
   if (!equal_join_condition_.empty()) {
     vector<ExprNode*> condition;
     condition.clear();
@@ -797,7 +786,7 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
       logic_plan = new LogicalCrossJoin(left_plan, right_plan);
     }
   }
-#endif
+
   return rSuccess;
 }
 
