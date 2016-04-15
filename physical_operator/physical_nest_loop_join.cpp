@@ -46,7 +46,14 @@ PhysicalNestLoopJoin::PhysicalNestLoopJoin()
 }
 
 PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
-  // TODO Auto-generated destructor stub
+  DELETE_PTR(state_.child_left_);
+  DELETE_PTR(state_.child_right_);
+  DELETE_PTR(state_.input_schema_left_);
+  DELETE_PTR(state_.input_schema_right_);
+  for (int i = 0; i < state_.join_condi_.size(); ++i) {
+    DELETE_PTR(state_.join_condi_[i]);
+  }
+  state_.join_condi_.clear();
 }
 PhysicalNestLoopJoin::PhysicalNestLoopJoin(State state)
     : PhysicalOperator(2, 2), state_(state), join_condi_process_(NULL) {
@@ -93,9 +100,8 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   }
   state_.child_left_->Open(partition_offset);
   BarrierArrive(0);
-  NestLoopJoinContext *jtc =
-      new NestLoopJoinContext(state_.join_condi_, state_.input_schema_left_,
-                              state_.input_schema_right_);
+
+  NestLoopJoinContext *jtc = CreateOrReuseContext(crm_numa_sensitive);
   // create a new block to hold the results from the left child
   // and add results to the dynamic buffer
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
@@ -131,9 +137,6 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   // every buffer_iterator of each thread point to an empty block
   // jtc->buffer_stream_iterator_ =
   //    jtc->buffer_iterator_.nextBlock()->createIterator();
-
-  InitContext(jtc);  // rename this function, here means to store the thread
-                     // context in the operator context
 
   state_.child_right_->Open(partition_offset);
 
@@ -287,7 +290,36 @@ bool PhysicalNestLoopJoin::CreateBlockStream(BlockStreamBase *&target,
     return true;
   }
 }
-
+PhysicalNestLoopJoin::NestLoopJoinContext::NestLoopJoinContext(
+    const vector<ExprNode *> &join_condi, const Schema *left_schema,
+    const Schema *right_schema)
+    : block_for_asking_(NULL),
+      block_stream_iterator_(NULL),
+      buffer_stream_iterator_(NULL) {
+  ExprNode *new_node = NULL;
+  for (int i = 0; i < join_condi.size(); ++i) {
+    new_node = join_condi[i]->ExprCopy();
+    new_node->InitExprAtPhysicalPlan();
+    join_condi_.push_back(new_node);
+  }
+  expr_eval_cnxt_.schema[0] = left_schema;
+  expr_eval_cnxt_.schema[1] = right_schema;
+}
+PhysicalNestLoopJoin::NestLoopJoinContext::~NestLoopJoinContext() {
+  DELETE_PTR(block_for_asking_);
+  DELETE_PTR(block_stream_iterator_);
+  DELETE_PTR(buffer_stream_iterator_);
+  for (int i = 0; i < join_condi_.size(); ++i) {
+    DELETE_PTR(join_condi_[i]);
+  }
+  join_condi_.clear();
+}
+ThreadContext *PhysicalNestLoopJoin::CreateContext() {
+  NestLoopJoinContext *jtc =
+      new NestLoopJoinContext(state_.join_condi_, state_.input_schema_left_,
+                              state_.input_schema_right_);
+  return jtc;
+}
 void PhysicalNestLoopJoin::Print() {
   printf("NestLoopJoin\n");
   printf("------Join Left-------\n");

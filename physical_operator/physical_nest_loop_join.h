@@ -47,16 +47,8 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   class NestLoopJoinContext : public ThreadContext {
    public:
     NestLoopJoinContext(const vector<ExprNode *> &join_condi,
-                        const Schema *left_schema, const Schema *right_schema) {
-      ExprNode *new_node = NULL;
-      for (int i = 0; i < join_condi.size(); ++i) {
-        new_node = join_condi[i]->ExprCopy();
-        new_node->InitExprAtPhysicalPlan();
-        join_condi_.push_back(new_node);
-      }
-      expr_eval_cnxt_.schema[0] = left_schema;
-      expr_eval_cnxt_.schema[1] = right_schema;
-    }
+                        const Schema *left_schema, const Schema *right_schema);
+    ~NestLoopJoinContext();
     BlockStreamBase *block_for_asking_;
     BlockStreamBase::BlockStreamTraverseIterator *block_stream_iterator_;
     DynamicBlockBuffer::Iterator buffer_iterator_;
@@ -138,6 +130,7 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   void AtomicPushFreeBlockStream(BlockStreamBase *block);
   BlockStreamBase *AtomicPopFreeHtBlockStream();
   void AtomicPushFreeHtBlockStream(BlockStreamBase *block);
+  ThreadContext *CreateContext();
 
   DynamicBlockBuffer *block_buffer_;
   std::map<unsigned, unsigned> joinIndex_left_to_output_;
