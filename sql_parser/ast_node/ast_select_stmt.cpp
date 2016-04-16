@@ -331,6 +331,8 @@ RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
         logic_plan = new LogicalOuterJoin(join_pair, args_lplan, next_lplan, 0);
       } else if (-1 != join_type.find("right")) {
         logic_plan = new LogicalOuterJoin(join_pair, args_lplan, next_lplan, 1);
+      } else if (-1 != join_type.find("full")) {
+        logic_plan = new LogicalOuterJoin(join_pair, args_lplan, next_lplan, 2);
       } else {
         logic_plan = new LogicalEqualJoin(join_pair, args_lplan, next_lplan);
       }
@@ -644,6 +646,9 @@ AstJoin::AstJoin(AstNodeType ast_node_type, int join_type, AstNode* left_table,
     if (bit_num[5] == 1) {
       join_type_ = join_type_ + "natural ";
     }
+    if (bit_num[6] == 1) {
+      join_type_ = join_type_ + "full ";
+    }
   }
   join_type_ = join_type_ + "join";
 }
@@ -769,6 +774,8 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
       logic_plan = new LogicalOuterJoin(join_pair, left_plan, right_plan, 0);
     } else if (-1 != join_type_.find("right")) {
       logic_plan = new LogicalOuterJoin(join_pair, left_plan, right_plan, 1);
+    } else if (-1 != join_type_.find("full")) {
+      logic_plan = new LogicalOuterJoin(join_pair, left_plan, right_plan, 2);
     } else {
       logic_plan = new LogicalEqualJoin(join_pair, left_plan, right_plan);
     }

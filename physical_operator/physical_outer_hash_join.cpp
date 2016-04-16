@@ -229,7 +229,6 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
   int hash_tuple_size = state_.hashtable_schema_->getTupleMaxSize();
 
   JoinThreadContext* jtc = (JoinThreadContext*)GetContext();
-
   /**
    * A specific method suitable for physical_join.
    * In this case, it preserves the r_block_stream_iterator_ and
@@ -260,9 +259,15 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
         cff_(tuple_in_hashtable, tuple_from_right_child, &key_exit,
              state_.join_index_left_, state_.join_index_right_,
              state_.hashtable_schema_, state_.input_schema_right_, eftt_);
-
         if (key_exit) {
           nothing_join = false;
+          // mark the row_id of joined tuple in hash table(left table)
+          if (join_type_ == 2) {
+            unsigned long joined_row_id = 0;
+            memcpy(&joined_row_id, tuple_in_hashtable, sizeof(unsigned long));
+            joined_tuple_.insert(joined_row_id);
+          }
+
           if (NULL != (result_tuple = block->allocateTuple(
                            state_.output_schema_->getTupleMaxSize()))) {
             produced_tuples++;
@@ -281,8 +286,8 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
         }
         jtc->hashtable_iterator_.increase_cur_();
       }
-      // if nothing_join is true, we should produce a null tuple according to
-      // left table
+      // if nothing_join is true, we should produce a null left tuple with right
+      // tuple
       if (nothing_join == true) {
         if (NULL != (result_tuple = block->allocateTuple(
                          state_.output_schema_->getTupleMaxSize()))) {
@@ -313,6 +318,8 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
 
           delete null_tuple;
           null_tuple = NULL;
+        } else {
+          return true;
         }
       }
       jtc->r_block_stream_iterator_->increase_cur_();
@@ -329,13 +336,69 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
         hashtable_->placeIterator(jtc->hashtable_iterator_, bn);
       }
     }
-    //  left join uses left tuple as outer loop tuple
     jtc->r_block_for_asking_->setEmpty();
     jtc->hashtable_iterator_ = hashtable_->CreateIterator();
     if (state_.child_right_->Next(jtc->r_block_for_asking_) == false) {
       if (block->Empty() == true) {
         return false;
       } else {
+        // full outer join need another loop for tuples in the hashtable
+        if (join_type_ == 2) {
+          for (unsigned bucket_num = 0;
+               bucket_num < state_.hashtable_bucket_num_; bucket_num++) {
+            hashtable_->placeIterator(jtc->hashtable_iterator_, bucket_num);
+            while (NULL != (tuple_in_hashtable =
+                                jtc->hashtable_iterator_.readCurrent())) {
+              unsigned long row_id_in_hashtable = 0;
+              memcpy(&row_id_in_hashtable, tuple_in_hashtable,
+                     sizeof(unsigned long));
+              auto it = joined_tuple_.find(row_id_in_hashtable);
+              if (it == joined_tuple_.end()) {
+                // ----------------------------------
+                if (NULL != (result_tuple = block->allocateTuple(
+                                 state_.output_schema_->getTupleMaxSize()))) {
+                  unsigned null_tuple_size = 0;
+                  void* null_tuple =
+                      malloc(state_.input_schema_right_->getTupleMaxSize());
+                  for (int count = 0;
+                       count < state_.input_schema_right_->columns.size();
+                       count++) {
+                    void* temp_record =
+                        malloc(state_.input_schema_right_->columns[count]
+                                   .get_length());
+                    if (state_.input_schema_right_->columns[count]
+                            .operate->setNull(temp_record)) {
+                      unsigned temp_record_length =
+                          state_.input_schema_right_->columns[count]
+                              .get_length();
+                      memcpy((char*)null_tuple + null_tuple_size, temp_record,
+                             state_.input_schema_right_->columns[count]
+                                 .get_length());
+                      null_tuple_size +=
+                          state_.input_schema_right_->columns[count]
+                              .get_length();
+                    }
+                    delete temp_record;
+                    temp_record = NULL;
+                  }
+                  const unsigned copyed_bytes =
+                      state_.input_schema_left_->copyTuple(tuple_in_hashtable,
+                                                           result_tuple);
+                  state_.input_schema_right_->copyTuple(
+                      null_tuple, (char*)result_tuple + copyed_bytes);
+                  produced_tuples++;
+                  cout << "produced tuples = " << produced_tuples << endl;
+                  delete null_tuple;
+                  null_tuple = NULL;
+                } else {
+                  return true;
+                }
+                // ----------------------------------
+              }
+              jtc->hashtable_iterator_.increase_cur_();
+            }
+          }
+        }
         return true;
       }
     }

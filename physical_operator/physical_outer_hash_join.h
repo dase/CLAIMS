@@ -33,6 +33,7 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <set>
 #include "../Debug.h"
 #include "../utility/rdtsc.h"
 #include "../common/hash.h"
@@ -174,6 +175,7 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
   BasicHashTable* hashtable_;
   Schema* hashtable_schema_;
   int join_type_;
+  std::set<unsigned long> joined_tuple_;
 
   typedef void (*ConditionFilterFunc)(void*, void*, void*, vector<unsigned>&,
                                       vector<unsigned>&, Schema*, Schema*,
