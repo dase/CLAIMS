@@ -186,11 +186,18 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
   LLVMMemcat memcat_;
 
   // debug
-  unsigned produced_tuples;
+  unsigned produced_tuples = 0;
   unsigned consumed_tuples_from_right;
   unsigned consumed_tuples_from_left;
   unsigned tuples_in_hashtable;
   unsigned water_mark;
+  unsigned long int first_arrive_thread_ = 0;
+  unsigned working_tread_count_ = 0;
+  unsigned buket_num_ = 0;
+  bool first_done_ = false;
+  Lock lock_thread_;
+  Lock sem_;
+  Lock set_;
 
 #ifdef TIME
   unsigned long long timer;
