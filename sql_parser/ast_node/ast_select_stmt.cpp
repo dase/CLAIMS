@@ -277,24 +277,23 @@ RetCode AstFromList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   return rSuccess;
 }
 
-RetCode AstFromList::PushDownCondition(PushDownConditionContext* pdccnxt) {
-  PushDownConditionContext* cur_pdccnxt = new PushDownConditionContext();
-  cur_pdccnxt->sub_expr_info_ = pdccnxt->sub_expr_info_;
+RetCode AstFromList::PushDownCondition(PushDownConditionContext& pdccnxt) {
+  PushDownConditionContext cur_pdccnxt;
+  cur_pdccnxt.sub_expr_info_ = pdccnxt.sub_expr_info_;
 
   if (NULL != args_) {
-    cur_pdccnxt->from_tables_.clear();
+    cur_pdccnxt.from_tables_.clear();
     args_->PushDownCondition(cur_pdccnxt);
-    pdccnxt->from_tables_.insert(cur_pdccnxt->from_tables_.begin(),
-                                 cur_pdccnxt->from_tables_.end());
+    pdccnxt.from_tables_.insert(cur_pdccnxt.from_tables_.begin(),
+                                cur_pdccnxt.from_tables_.end());
   }
   if (NULL != next_) {
-    cur_pdccnxt->from_tables_.clear();
+    cur_pdccnxt.from_tables_.clear();
     next_->PushDownCondition(cur_pdccnxt);
-    pdccnxt->from_tables_.insert(cur_pdccnxt->from_tables_.begin(),
-                                 cur_pdccnxt->from_tables_.end());
+    pdccnxt.from_tables_.insert(cur_pdccnxt.from_tables_.begin(),
+                                cur_pdccnxt.from_tables_.end());
   }
-  pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
-  delete cur_pdccnxt;
+  pdccnxt.SetCondition(equal_join_condition_, normal_condition_);
   return rSuccess;
 }
 RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
@@ -407,9 +406,9 @@ RetCode AstTable::SemanticAnalisys(SemanticContext* sem_cnxt) {
             << endl;
   return rSuccess;
 }
-RetCode AstTable::PushDownCondition(PushDownConditionContext* pdccnxt) {
-  pdccnxt->from_tables_.insert(table_alias_);
-  pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+RetCode AstTable::PushDownCondition(PushDownConditionContext& pdccnxt) {
+  pdccnxt.from_tables_.insert(table_alias_);
+  pdccnxt.SetCondition(equal_join_condition_, normal_condition_);
   return rSuccess;
 }
 // TODO(FZH) diver table_name_ to LogicalScan
@@ -547,14 +546,15 @@ RetCode AstSubquery::SemanticAnalisys(SemanticContext* sem_cnxt) {
   return sem_cnxt->AddTableColumn(column_to_table);
 }
 
-RetCode AstSubquery::PushDownCondition(PushDownConditionContext* pdccnxt) {
+RetCode AstSubquery::PushDownCondition(PushDownConditionContext& pdccnxt) {
   RetCode ret = rSuccess;
-  ret = subquery_->PushDownCondition(NULL);
+  PushDownConditionContext child_pdccnxt;
+  ret = subquery_->PushDownCondition(child_pdccnxt);
   if (rSuccess != ret) {
     return ret;
   }
-  pdccnxt->from_tables_.insert(subquery_alias_);
-  pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+  pdccnxt.from_tables_.insert(subquery_alias_);
+  pdccnxt.SetCondition(equal_join_condition_, normal_condition_);
   return rSuccess;
 }
 // may be deliver subquery output schema
@@ -709,33 +709,31 @@ RetCode AstJoin::SemanticAnalisys(SemanticContext* sem_cnxt) {
   //  join_sem_cnxt.~SemanticContext();
   return ret;
 }
-RetCode AstJoin::PushDownCondition(PushDownConditionContext* pdccnxt) {
-  PushDownConditionContext* cur_pdccnxt = new PushDownConditionContext();
-  cur_pdccnxt->sub_expr_info_ = pdccnxt->sub_expr_info_;
+RetCode AstJoin::PushDownCondition(PushDownConditionContext& pdccnxt) {
+  PushDownConditionContext cur_pdccnxt;
+  cur_pdccnxt.sub_expr_info_ = pdccnxt.sub_expr_info_;
   if (NULL != join_condition_) {
-    cur_pdccnxt->GetSubExprInfo(
+    cur_pdccnxt.GetSubExprInfo(
         reinterpret_cast<AstJoinCondition*>(join_condition_)->condition_);
   }
 
-  cur_pdccnxt->from_tables_.clear();
-  PushDownConditionContext* child_pdccnxt = new PushDownConditionContext();
-  child_pdccnxt->sub_expr_info_ = cur_pdccnxt->sub_expr_info_;
-  child_pdccnxt->from_tables_.clear();
+  cur_pdccnxt.from_tables_.clear();
+  PushDownConditionContext child_pdccnxt;
+  child_pdccnxt.sub_expr_info_ = cur_pdccnxt.sub_expr_info_;
+  child_pdccnxt.from_tables_.clear();
   left_table_->PushDownCondition(child_pdccnxt);
-  cur_pdccnxt->from_tables_.insert(child_pdccnxt->from_tables_.begin(),
-                                   child_pdccnxt->from_tables_.end());
+  cur_pdccnxt.from_tables_.insert(child_pdccnxt.from_tables_.begin(),
+                                  child_pdccnxt.from_tables_.end());
 
-  child_pdccnxt->from_tables_.clear();
+  child_pdccnxt.from_tables_.clear();
   right_table_->PushDownCondition(child_pdccnxt);
-  cur_pdccnxt->from_tables_.insert(child_pdccnxt->from_tables_.begin(),
-                                   child_pdccnxt->from_tables_.end());
+  cur_pdccnxt.from_tables_.insert(child_pdccnxt.from_tables_.begin(),
+                                  child_pdccnxt.from_tables_.end());
 
-  cur_pdccnxt->SetCondition(equal_join_condition_, normal_condition_);
+  cur_pdccnxt.SetCondition(equal_join_condition_, normal_condition_);
 
-  pdccnxt->from_tables_.insert(cur_pdccnxt->from_tables_.begin(),
-                               cur_pdccnxt->from_tables_.end());
-  delete child_pdccnxt;
-  delete cur_pdccnxt;
+  pdccnxt.from_tables_.insert(cur_pdccnxt.from_tables_.begin(),
+                              cur_pdccnxt.from_tables_.end());
   return rSuccess;
 }
 RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
@@ -1568,14 +1566,11 @@ RetCode AstSelectStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
   return ret;
 }
 
-RetCode AstSelectStmt::PushDownCondition(PushDownConditionContext* pdccnxt) {
-  if (NULL == pdccnxt) {
-    pdccnxt = new PushDownConditionContext();
-  }
+RetCode AstSelectStmt::PushDownCondition(PushDownConditionContext& pdccnxt) {
   if (NULL != where_clause_) {
     AstWhereClause* where_clause =
         reinterpret_cast<AstWhereClause*>(where_clause_);
-    pdccnxt->GetSubExprInfo(where_clause->expr_);
+    pdccnxt.GetSubExprInfo(where_clause->expr_);
   }
   from_list_->PushDownCondition(pdccnxt);
 

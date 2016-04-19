@@ -203,7 +203,7 @@ RetCode AstStmtList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   return rSuccess;
 }
-RetCode AstStmtList::PushDownCondition(PushDownConditionContext* pdccnxt) {
+RetCode AstStmtList::PushDownCondition(PushDownConditionContext& pdccnxt) {
   if (NULL != stmt_) {
     stmt_->PushDownCondition(pdccnxt);
   }
@@ -517,7 +517,10 @@ void SemanticContext::PrintContext(string flag) {
   cout << "---------------------\n" << endl;
 }
 
-PushDownConditionContext::PushDownConditionContext() { from_tables_.clear(); }
+PushDownConditionContext::PushDownConditionContext() {
+  from_tables_.clear();
+  sub_expr_info_.clear();
+}
 bool PushDownConditionContext::IsTableSubSet(set<string>& expr_tables,
                                              set<string>& from_tables) {
   for (auto it = expr_tables.begin(); it != expr_tables.end(); ++it) {

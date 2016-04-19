@@ -48,7 +48,8 @@ ExprNode::ExprNode(ExprNode* expr)
       alias_(expr->alias_),
       is_null_(expr->is_null_),
       value_size_(expr->value_size_),
-      type_cast_func_(expr->type_cast_func_) {}
+      type_cast_func_(expr->type_cast_func_),
+      value_(NULL) {}
 
 bool ExprNode::MoreExprEvaluate(vector<ExprNode*> thread_condi,
                                 ExprEvalCnxt& eecnxt) {

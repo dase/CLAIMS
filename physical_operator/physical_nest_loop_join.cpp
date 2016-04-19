@@ -46,14 +46,14 @@ PhysicalNestLoopJoin::PhysicalNestLoopJoin()
 }
 
 PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
-  DELETE_PTR(state_.child_left_);
-  DELETE_PTR(state_.child_right_);
-  DELETE_PTR(state_.input_schema_left_);
-  DELETE_PTR(state_.input_schema_right_);
-  for (int i = 0; i < state_.join_condi_.size(); ++i) {
-    DELETE_PTR(state_.join_condi_[i]);
-  }
-  state_.join_condi_.clear();
+  //  DELETE_PTR(state_.child_left_);
+  //  DELETE_PTR(state_.child_right_);
+  //  DELETE_PTR(state_.input_schema_left_);
+  //  DELETE_PTR(state_.input_schema_right_);
+  //  for (int i = 0; i < state_.join_condi_.size(); ++i) {
+  //    DELETE_PTR(state_.join_condi_[i]);
+  //  }
+  //  state_.join_condi_.clear();
 }
 PhysicalNestLoopJoin::PhysicalNestLoopJoin(State state)
     : PhysicalOperator(2, 2), state_(state), join_condi_process_(NULL) {
@@ -63,16 +63,15 @@ PhysicalNestLoopJoin::State::State(PhysicalOperatorBase *child_left,
                                    PhysicalOperatorBase *child_right,
                                    Schema *input_schema_left,
                                    Schema *input_schema_right,
-                                   Schema *output_schema,
-                                   std::vector<ExprNode *> join_condi,
-                                   unsigned block_size)
+                                   Schema *output_schema, unsigned block_size,
+                                   std::vector<ExprNode *> join_condi)
     : child_left_(child_left),
       child_right_(child_right),
       input_schema_left_(input_schema_left),
       input_schema_right_(input_schema_right),
       output_schema_(output_schema),
-      join_condi_(join_condi),
-      block_size_(block_size) {}
+      block_size_(block_size),
+      join_condi_(join_condi) {}
 
 /**
  * @brief  Method description : describe the open method which gets results from
@@ -248,10 +247,7 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
 bool PhysicalNestLoopJoin::Close() {
   InitExpandedStatus();
   DestoryAllContext();
-  if (NULL != block_buffer_) {
-    delete block_buffer_;
-    block_buffer_ = NULL;
-  }
+  DELETE_PTR(block_buffer_);
   state_.child_left_->Close();
   state_.child_right_->Close();
   return true;

@@ -91,10 +91,6 @@ LogicalCrossJoin::~LogicalCrossJoin() {
     delete right_child_;
     right_child_ = NULL;
   }
-  for (auto it = join_condi_.begin(); it != join_condi_.end(); ++it) {
-    DELETE_PTR(*it);
-  }
-  join_condi_.clear();
 }
 
 /**
