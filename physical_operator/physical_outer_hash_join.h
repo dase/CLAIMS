@@ -194,9 +194,11 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
   unsigned tuples_in_hashtable;
   unsigned water_mark;
   unsigned long int first_arrive_thread_ = 0;
-  atomic<long long> working_thread_count_{0};
-  unsigned buket_num_ = 0;
-  bool first_done_ = false;
+  // atomic<long long> working_thread_count_{0};
+  std::set<unsigned long> working_threads_;
+  Lock working_;
+  atomic<unsigned> buket_num_{0};
+  atomic<bool> first_done_{false};
   Lock lock_thread_;
   Lock set_;
 

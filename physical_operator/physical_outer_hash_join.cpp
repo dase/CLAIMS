@@ -170,11 +170,10 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
   void* value_in_hashtable;
 
   JoinThreadContext* jtc = CreateOrReuseContext(crm_numa_sensitive);
-  //  new_come_.acquire();
-  //  working_tread_count_++;
-  //  cout << "new thread coming : " << working_tread_count_ << endl;
-  //  new_come_.release();
 
+  working_.acquire();
+  working_threads_.insert(pthread_self());
+  working_.release();
   const Schema* input_schema = state_.input_schema_left_->duplicateSchema();
   const Operate* oper = input_schema->getcolumn(state_.join_index_left_[0])
                             .operate->duplicateOperator();
@@ -245,9 +244,6 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
    * it should go on operates on last matched tuple not sent due to block for
    * send was full, so we need hashtable_iterator_ preserved.
    */
-  working_thread_count_++;
-  cout << "there are " << working_thread_count_ << "threads in working."
-       << endl;
   while (true) {
     // Right join uses right table(child) as outer loop tuple
     // As for left join, we just exchange the table order in the AST
@@ -288,13 +284,13 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                   tuple_from_right_child, (char*)result_tuple + copyed_bytes);
             }
           } else {
-            working_thread_count_--;
+            // working_thread_count_--;
             return true;
           }
         }
         jtc->hashtable_iterator_.increase_cur_();
       }
-      // if nothing_join is true, we should produce a null left tuple with right
+      // If nothing_join is true, we should produce a null left tuple with right
       // tuple
       if (nothing_join == true) {
         if (NULL != (result_tuple = block->allocateTuple(
@@ -326,7 +322,6 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
           delete null_tuple;
           null_tuple = NULL;
         } else {
-          working_thread_count_--;
           return true;
         }
       }
@@ -352,105 +347,104 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
       // use.
       lock_thread_.acquire();
       if (first_arrive_thread_ == 0) first_arrive_thread_ = pthread_self();
-      cout << "first arrive thread : " << first_arrive_thread_ << endl;
       lock_thread_.release();
 
       // Once thread finds no blocks to use, the semaphore(working_thread_count)
-      // should -1.
-      working_thread_count_--;
+      // should -1. That is to say, remove the pID from "working_thread_".
+      working_.acquire();
+      auto worker_it = working_threads_.find(pthread_self());
+      if (worker_it != working_threads_.end()) {
+        working_threads_.erase(worker_it);
+      }
+      working_.release();
 
       // The first arrived thread should wait until other threads finish their
       // jobs.
+      /*
       while (first_arrive_thread_ == pthread_self() &&
              working_thread_count_ != 0) {
         usleep(1);
         // cout << "first thread is waiting..." << endl;
         // cout << "working tread count is " << working_thread_count_ << endl;
       }
-
+      */
+      while (first_arrive_thread_ == pthread_self() &&
+             working_threads_.size() != 0) {
+        usleep(1);
+      }
       // The other threads should wait until the first arrived thread finish
       // its extra job;
       while (first_arrive_thread_ != pthread_self() && (!first_done_)) {
         usleep(1);
-        cout << "other thread is waiting..." << endl;
       }
 
-      if (first_arrive_thread_ == pthread_self()) {
-        if (block->Empty() == true && first_done_ == true) {
-          return false;
-        } else {
-          // the first arrived thread will turn the first_done_ into true to let
-          // other threads know the extra job has been done.
-          cout << "all done!!!!!!!" << endl;
-          first_done_ = true;
+      if (block->Empty() == true && first_done_ == true) {
+        return false;
+      } else {
+        // the first arrived thread will turn the first_done_ into true to let
+        // other threads know they can do the extra job--
 
-          // full outer join will scan the hash table(left table) again,
-          // and find which tuples are not in the joined_tuple set.
-          // Then generate new tuple with hash table tuple + null right tuple.
-          if (join_type_ == 2) {
-            jtc->hashtable_iterator_ = hashtable_->CreateIterator();
-            // TODO(yuyang) :Not all bucket number is used.
-            for (unsigned bucket_num = bucket_num;
-                 bucket_num < state_.hashtable_bucket_num_; bucket_num++) {
-              hashtable_->placeIterator(jtc->hashtable_iterator_, bucket_num);
-              while (NULL != (tuple_in_hashtable =
-                                  jtc->hashtable_iterator_.readCurrent())) {
-                unsigned long row_id_in_hashtable = 0;
-                memcpy(&row_id_in_hashtable, tuple_in_hashtable,
-                       sizeof(unsigned long));
-                auto it = joined_tuple_.find(row_id_in_hashtable);
-                if (it == joined_tuple_.end()) {
-                  if (NULL != (result_tuple = block->allocateTuple(
-                                   state_.output_schema_->getTupleMaxSize()))) {
-                    unsigned null_tuple_size = 0;
-                    void* null_tuple =
-                        malloc(state_.input_schema_right_->getTupleMaxSize());
-                    for (int count = 0;
-                         count < state_.input_schema_right_->columns.size();
-                         count++) {
-                      void* temp_record =
-                          malloc(state_.input_schema_right_->columns[count]
-                                     .get_length());
-                      if (state_.input_schema_right_->columns[count]
-                              .operate->setNull(temp_record)) {
-                        unsigned temp_record_length =
-                            state_.input_schema_right_->columns[count]
-                                .get_length();
-                        memcpy((char*)null_tuple + null_tuple_size, temp_record,
-                               state_.input_schema_right_->columns[count]
+        first_done_ = true;
+
+        // full outer join will scan the hash table(left table) again,
+        // and find which tuples are not in the joined_tuple set.
+        // Then generate new tuple with hash table tuple + null right tuple.
+        if (join_type_ == 2) {
+          jtc->hashtable_iterator_ = hashtable_->CreateIterator();
+          // TODO(yuyang) :Not all bucket number is used.
+          for (unsigned bucket_num = bucket_num;
+               bucket_num < state_.hashtable_bucket_num_; bucket_num++) {
+            hashtable_->placeIterator(jtc->hashtable_iterator_, bucket_num);
+            while (NULL != (tuple_in_hashtable =
+                                jtc->hashtable_iterator_.readCurrent())) {
+              unsigned long row_id_in_hashtable = 0;
+              memcpy(&row_id_in_hashtable, tuple_in_hashtable,
+                     sizeof(unsigned long));
+              auto it = joined_tuple_.find(row_id_in_hashtable);
+              if (it == joined_tuple_.end()) {
+                if (NULL != (result_tuple = block->allocateTuple(
+                                 state_.output_schema_->getTupleMaxSize()))) {
+                  unsigned null_tuple_size = 0;
+                  void* null_tuple =
+                      malloc(state_.input_schema_right_->getTupleMaxSize());
+                  for (int count = 0;
+                       count < state_.input_schema_right_->columns.size();
+                       count++) {
+                    void* temp_record =
+                        malloc(state_.input_schema_right_->columns[count]
                                    .get_length());
-                        null_tuple_size +=
-                            state_.input_schema_right_->columns[count]
-                                .get_length();
-                      }
-                      delete temp_record;
-                      temp_record = NULL;
+                    if (state_.input_schema_right_->columns[count]
+                            .operate->setNull(temp_record)) {
+                      unsigned temp_record_length =
+                          state_.input_schema_right_->columns[count]
+                              .get_length();
+                      memcpy((char*)null_tuple + null_tuple_size, temp_record,
+                             state_.input_schema_right_->columns[count]
+                                 .get_length());
+                      null_tuple_size +=
+                          state_.input_schema_right_->columns[count]
+                              .get_length();
                     }
-                    const unsigned copyed_bytes =
-                        state_.input_schema_left_->copyTuple(tuple_in_hashtable,
-                                                             result_tuple);
-                    state_.input_schema_right_->copyTuple(
-                        null_tuple, (char*)result_tuple + copyed_bytes);
-                    produced_tuples++;
-                    delete null_tuple;
-                    null_tuple = NULL;
-                  } else {
-                    return true;
+                    delete temp_record;
+                    temp_record = NULL;
                   }
+                  const unsigned copyed_bytes =
+                      state_.input_schema_left_->copyTuple(tuple_in_hashtable,
+                                                           result_tuple);
+                  state_.input_schema_right_->copyTuple(
+                      null_tuple, (char*)result_tuple + copyed_bytes);
+                  produced_tuples++;
+                  delete null_tuple;
+                  null_tuple = NULL;
+                } else {
+                  return true;
                 }
-                jtc->hashtable_iterator_.increase_cur_();
               }
+              jtc->hashtable_iterator_.increase_cur_();
             }
           }
-          return true;
         }
-      } else {
-        if (block->Empty() == true) {
-          return false;
-        } else {
-          // working_thread_count_--;
-          return true;
-        }
+        return true;
       }
     }
     delete jtc->r_block_stream_iterator_;
