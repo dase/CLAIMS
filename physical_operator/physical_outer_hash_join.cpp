@@ -170,6 +170,10 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
   void* value_in_hashtable;
 
   JoinThreadContext* jtc = CreateOrReuseContext(crm_numa_sensitive);
+  //  new_come_.acquire();
+  //  working_tread_count_++;
+  //  cout << "new thread coming : " << working_tread_count_ << endl;
+  //  new_come_.release();
 
   const Schema* input_schema = state_.input_schema_left_->duplicateSchema();
   const Operate* oper = input_schema->getcolumn(state_.join_index_left_[0])
@@ -201,7 +205,6 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
   }
 #ifdef _DEBUG_
   tuples_in_hashtable = 0;
-
   produced_tuples = 0;
   consumed_tuples_from_right = 0;
 #endif
@@ -242,9 +245,9 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
    * it should go on operates on last matched tuple not sent due to block for
    * send was full, so we need hashtable_iterator_ preserved.
    */
-  sem_.acquire();
-  this->working_tread_count_++;
-  sem_.release();
+  working_thread_count_++;
+  cout << "there are " << working_thread_count_ << "threads in working."
+       << endl;
   while (true) {
     // Right join uses right table(child) as outer loop tuple
     // As for left join, we just exchange the table order in the AST
@@ -272,7 +275,6 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
             joined_tuple_.insert(joined_row_id);
             set_.release();
           }
-
           if (NULL != (result_tuple = block->allocateTuple(
                            state_.output_schema_->getTupleMaxSize()))) {
             produced_tuples++;
@@ -286,6 +288,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                   tuple_from_right_child, (char*)result_tuple + copyed_bytes);
             }
           } else {
+            working_thread_count_--;
             return true;
           }
         }
@@ -320,10 +323,10 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
           state_.input_schema_right_->copyTuple(
               tuple_from_right_child, (char*)result_tuple + copyed_bytes);
           produced_tuples++;
-
           delete null_tuple;
           null_tuple = NULL;
         } else {
+          working_thread_count_--;
           return true;
         }
       }
@@ -344,32 +347,49 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
     jtc->r_block_for_asking_->setEmpty();
     jtc->hashtable_iterator_ = hashtable_->CreateIterator();
     if (state_.child_right_->Next(jtc->r_block_for_asking_) == false) {
+      // Mark the first thread that can not get data from
+      // Next(jtc->r_block_for_asking).It means no blocks for join operator to
+      // use.
       lock_thread_.acquire();
       if (first_arrive_thread_ == 0) first_arrive_thread_ = pthread_self();
+      cout << "first arrive thread : " << first_arrive_thread_ << endl;
       lock_thread_.release();
 
-      sem_.acquire();
-      working_tread_count_--;
-      sem_.release();
+      // Once thread finds no blocks to use, the semaphore(working_thread_count)
+      // should -1.
+      working_thread_count_--;
 
+      // The first arrived thread should wait until other threads finish their
+      // jobs.
       while (first_arrive_thread_ == pthread_self() &&
-             working_tread_count_ != 0) {
+             working_thread_count_ != 0) {
+        usleep(1);
+        // cout << "first thread is waiting..." << endl;
+        // cout << "working tread count is " << working_thread_count_ << endl;
       }
+
+      // The other threads should wait until the first arrived thread finish
+      // its extra job;
       while (first_arrive_thread_ != pthread_self() && (!first_done_)) {
         usleep(1);
+        cout << "other thread is waiting..." << endl;
       }
 
       if (first_arrive_thread_ == pthread_self()) {
         if (block->Empty() == true && first_done_ == true) {
           return false;
         } else {
+          // the first arrived thread will turn the first_done_ into true to let
+          // other threads know the extra job has been done.
+          cout << "all done!!!!!!!" << endl;
           first_done_ = true;
-          // full outer join need another loop for tuples in the hashtable
+
+          // full outer join will scan the hash table(left table) again,
+          // and find which tuples are not in the joined_tuple set.
+          // Then generate new tuple with hash table tuple + null right tuple.
           if (join_type_ == 2) {
-            //            cout << "there are " << joined_tuple_.size() << "
-            //            tuples in set"
-            //                 << endl;
             jtc->hashtable_iterator_ = hashtable_->CreateIterator();
+            // TODO(yuyang) :Not all bucket number is used.
             for (unsigned bucket_num = bucket_num;
                  bucket_num < state_.hashtable_bucket_num_; bucket_num++) {
               hashtable_->placeIterator(jtc->hashtable_iterator_, bucket_num);
@@ -379,17 +399,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                 memcpy(&row_id_in_hashtable, tuple_in_hashtable,
                        sizeof(unsigned long));
                 auto it = joined_tuple_.find(row_id_in_hashtable);
-                // cout << "We find " << *it << " in set" << endl;
                 if (it == joined_tuple_.end()) {
-                  //                  cout << "Can't find " <<
-                  //                  row_id_in_hashtable << endl;
-                  //                  for (auto j = joined_tuple_.begin(); j !=
-                  //                  joined_tuple_.end();
-                  //                       j++) {
-                  //                    //                    cout << "set
-                  //                    include: " << *j << endl;
-                  //                  }
-                  // ----------------------------------
                   if (NULL != (result_tuple = block->allocateTuple(
                                    state_.output_schema_->getTupleMaxSize()))) {
                     unsigned null_tuple_size = 0;
@@ -422,14 +432,11 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                     state_.input_schema_right_->copyTuple(
                         null_tuple, (char*)result_tuple + copyed_bytes);
                     produced_tuples++;
-                    //                    cout << "produced tuples = " <<
-                    //                    produced_tuples << endl;
                     delete null_tuple;
                     null_tuple = NULL;
                   } else {
                     return true;
                   }
-                  // ----------------------------------
                 }
                 jtc->hashtable_iterator_.increase_cur_();
               }
@@ -438,13 +445,10 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
           return true;
         }
       } else {
-        //        while (first_done_ == false) {
-        //          // cout << first_done_ << endl;
-        //          usleep(1);
-        //        }
         if (block->Empty() == true) {
           return false;
         } else {
+          // working_thread_count_--;
           return true;
         }
       }

@@ -34,6 +34,7 @@
 #include <map>
 #include <list>
 #include <set>
+#include <atomic>
 #include "../Debug.h"
 #include "../utility/rdtsc.h"
 #include "../common/hash.h"
@@ -42,6 +43,7 @@
 #include "../common/expression/expr_node.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
+using std::atomic;
 namespace claims {
 namespace physical_operator {
 
@@ -192,11 +194,10 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
   unsigned tuples_in_hashtable;
   unsigned water_mark;
   unsigned long int first_arrive_thread_ = 0;
-  unsigned working_tread_count_ = 0;
+  atomic<long long> working_thread_count_{0};
   unsigned buket_num_ = 0;
   bool first_done_ = false;
   Lock lock_thread_;
-  Lock sem_;
   Lock set_;
 
 #ifdef TIME

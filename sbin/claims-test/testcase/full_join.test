@@ -1,0 +1,6 @@
+select * from A full join B on A.id = B.id;
+select * from A full join B on A.num = B.name;
+select * from A full join B on A.id = B.id AND A.num = B.name;
+select * from A full join B on A.strdate = B.strdate;
+
+exit;
