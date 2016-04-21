@@ -59,8 +59,11 @@ void ExprColumn::InitExprAtLogicalPlan(
   if (return_type_ == t_string) {
     value_size_ = std::max(schema->getcolumn(attr_id_).get_length(),
                            static_cast<unsigned int>(BASE_DATA_SIZE));
+  } else if (return_type_ == t_decimal) {
+  	value_size_ = schema->getcolumn(attr_id_).size;
   } else {
     value_size_ = schema->getcolumn(attr_id_).get_length();
+
   }
   is_null_ = false;
 }
