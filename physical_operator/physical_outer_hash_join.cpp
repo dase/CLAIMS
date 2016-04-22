@@ -378,7 +378,8 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
         usleep(1);
       }
 
-      if (block->Empty() == true && first_done_ == true) {
+      if (block->Empty() == true && first_done_ == true &&
+          bucket_num_ >= (state_.hashtable_bucket_num_ - 1)) {
         return false;
       } else {
         // the first arrived thread will turn the first_done_ into true to let
@@ -392,9 +393,13 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
         if (join_type_ == 2) {
           jtc->hashtable_iterator_ = hashtable_->CreateIterator();
           // TODO(yuyang) :Not all bucket number is used.
-          for (unsigned bucket_num = bucket_num;
-               bucket_num < state_.hashtable_bucket_num_; bucket_num++) {
-            hashtable_->placeIterator(jtc->hashtable_iterator_, bucket_num);
+          while (bucket_num_ < state_.hashtable_bucket_num_) {
+            //            cout << "bucket_num is " << bucket_num_ << ", "
+            //                 << state_.hashtable_bucket_num_ << endl;
+            left_join_.acquire();
+            hashtable_->placeIterator(jtc->hashtable_iterator_, bucket_num_);
+            bucket_num_++;
+            left_join_.release();
             while (NULL != (tuple_in_hashtable =
                                 jtc->hashtable_iterator_.readCurrent())) {
               unsigned long row_id_in_hashtable = 0;

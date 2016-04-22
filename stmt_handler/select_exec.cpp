@@ -118,7 +118,10 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   cout << "--------------begin output result -------------------" << endl;
 #endif
 
-  physical_plan->Open();
+  if (false == physical_plan->Open()) {
+    LOG(ERROR) << "failed to open physical plan " << std::endl;
+    assert(false);
+  }
   while (physical_plan->Next(NULL)) {
   }
   exec_result->result_ = physical_plan->GetResultSet();

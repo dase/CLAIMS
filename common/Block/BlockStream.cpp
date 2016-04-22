@@ -6,8 +6,11 @@
  */
 #include <malloc.h>
 #include <assert.h>
+#include <glog/logging.h>
+#include <algorithm>
 #include "../../configure.h"
 #include "./BlockStream.h"
+
 BlockStreamFix::BlockStreamFix(unsigned block_size, unsigned tuple_size)
     : BlockStreamBase(block_size), tuple_size_(tuple_size) {
   free_ = start;
@@ -55,19 +58,9 @@ void* BlockStreamFix::getBlockDataAddress() { return start; }
 bool BlockStreamFix::switchBlock(BlockStreamBase& block) {
   BlockStreamFix* blockfix = (BlockStreamFix*)&block;
   assert(blockfix->BlockSize == BlockSize);
-
-  /* swap the data pointer */
-  char* data_temp;
-  data_temp = blockfix->start;
-  blockfix->start = (this->start);
-  this->start = data_temp;
-
-  /* swap the free pointer */
-  char* free_temp;
-  free_temp = blockfix->free_;
-  blockfix->free_ = this->free_;
-  this->free_ = free_temp;
-
+  std::swap(blockfix->start, start);
+  std::swap(blockfix->free_, free_);
+  std::swap(blockfix->tuple_size_, tuple_size_);
   return true;
 }
 
@@ -111,6 +104,7 @@ bool BlockStreamFix::serialize(Block& block) const {
     printf("tuple count=%d in serialize()\n", tail->tuple_count);
     assert(false);
   }
+  //  LOG(ERROR) << "||||" << tail->tuple_count;
 
   //	/* the number of tuples*/
   //	int*

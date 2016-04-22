@@ -1,5 +1,5 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS\
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
 
@@ -19,7 +19,8 @@ libfilehandle_a_SOURCES = 	\
 	disk_file_handle_imp.cpp 		disk_file_handle_imp.h \
 	file_handle_imp.cpp \
 	file_handle_imp.h 				file_handle_imp_factory.h \
-	hdfs_file_handle_imp.cpp 		hdfs_file_handle_imp.h 
+	hdfs_file_handle_imp.cpp 		hdfs_file_handle_imp.h \
+	hdfs_connector.h				hdfs_connector.cpp
 
 
 SUBDIRS = test

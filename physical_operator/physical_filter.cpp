@@ -156,16 +156,18 @@ bool PhysicalFilter::Next(BlockStreamBase* block) {
         delete tc->block_stream_iterator_;
         tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
       } else {
-        if (!block->Empty())
+        if (!block->Empty()) {
           return true;
-        else
+        } else {
           return false;
+        }
       }
     }
     ProcessInLogic(block, tc);
-    if (block->Full())
+    if (block->Full()) {
       // for case (1)
       return true;
+    }
   }
 }
 

@@ -72,6 +72,7 @@ mode_data_case=(
 '''
 
 mode_data_case=( 
+
                  (1, "/home/claims/data/tpc-h/sf1/1partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
                 ,(1, "/home/claims/data/tpc-h/sf1/4partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
                 ,(1, "/home/claims/data/tpc-h/sf1/8partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))

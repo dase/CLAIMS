@@ -83,7 +83,7 @@ ExchangeMerger::~ExchangeMerger() {
  * for this stage
  */
 bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
-  unsigned long long int start = curtick();
+  uint64_t start = curtick();
   RegisterExpandedThreadToAllBarriers();
   if (TryEntryIntoSerializedSection()) {  // first arrived thread dose
     exhausted_lowers = 0;
@@ -248,7 +248,8 @@ void ExchangeMerger::Print() {
 }
 bool ExchangeMerger::PrepareSocket() {
   struct sockaddr_in my_addr;
-
+  struct sockaddr_in my_addr2;
+  socklen_t len = sizeof(my_addr2);
   // sock_fd_ is the socket of this node
   if ((sock_fd_ = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     LOG(ERROR) << "socket creation error!" << endl;
@@ -257,18 +258,18 @@ bool ExchangeMerger::PrepareSocket() {
   my_addr.sin_family = AF_INET;
 
   /* apply for the port dynamically.*/
-  if ((socket_port_ = PortManager::getInstance()->applyPort()) == 0) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_
-               << " Fails to apply a port for the socket. Reason: the "
-                  " PortManager is exhausted !" << endl;
-    return false;
-  }
-  LOG(INFO) << " exchange_id = " << state_.exchange_id_
-            << " partition_offset = " << partition_offset_
-            << " succeed applying one port !" << endl;
-
-  my_addr.sin_port = htons(socket_port_);
+  /*  if ((socket_port_ = PortManager::getInstance()->applyPort()) == 0) {
+      LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                 << " partition_offset = " << partition_offset_
+                 << " Fails to apply a port for the socket. Reason: the "
+                    " PortManager is exhausted !" << endl;
+      return false;
+    }
+    LOG(INFO) << " exchange_id = " << state_.exchange_id_
+              << " partition_offset = " << partition_offset_
+              << " succeed applying one port !" << endl;
+  */
+  my_addr.sin_port = htons(0);
   my_addr.sin_addr.s_addr = INADDR_ANY;
   bzero(&(my_addr.sin_zero), 8);
 
@@ -278,11 +279,19 @@ bool ExchangeMerger::PrepareSocket() {
 
   if (bind(sock_fd_, (struct sockaddr*)&my_addr, sizeof(struct sockaddr)) ==
       -1) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_ << " bind errors!"
-               << endl;
+    PLOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                << " partition_offset = " << partition_offset_
+                << " bind errors!" << endl;
     return false;
   }
+
+  if (getsockname(sock_fd_, (struct sockaddr*)&my_addr2, &len) == -1) {
+    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+               << " partition_offset = " << partition_offset_
+               << " getsockname error!" << endl;
+    return false;
+  }
+  socket_port_ = ntohs(my_addr2.sin_port);
 
   if (listen(sock_fd_, lower_num_) == -1) {
     LOG(ERROR) << " exchange_id = " << state_.exchange_id_
@@ -412,19 +421,21 @@ bool ExchangeMerger::CreateReceiverThread() {
   int error = 0;
   error = pthread_create(&receiver_thread_id_, NULL, Receiver, this);
   if (0 != error) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_
-               << " merger Failed to create receiver thread." << endl;
+    PLOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                << " partition_offset = " << partition_offset_
+                << " merger Failed to create receiver thread." << endl;
     return false;
   }
   return true;
 }
 void ExchangeMerger::CancelReceiverThread() {
+  assert(receiver_thread_id_ != 0);
   pthread_cancel(receiver_thread_id_);
   void* res = 0;
-  while (res != PTHREAD_CANCELED) {
-    pthread_join(receiver_thread_id_, &res);
-  }
+  pthread_join(receiver_thread_id_, &res);
+  //  } else {
+  //    LOG(ERROR) << "exchange merger cancel thread error" << endl;
+  //  }
 }
 
 /**
@@ -543,7 +554,7 @@ void* ExchangeMerger::Receiver(void* arg) {
                   Pthis->block_for_socket_[socket_fd_index]->GetCurSize(),
               Pthis->block_for_socket_[socket_fd_index]->GetRestSizeToHandle());
           if (byte_received == -1) {
-            if (errno == EAGAIN) {
+            if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
               /*We have read all the data,so go back to the loop.*/
               break;
             }

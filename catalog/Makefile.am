@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME}/boost/serialization \
--I${HADOOP_HOME}/src/c++/libhdfs\
+-I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux\
 -I${THERON_HOME}/Include \
@@ -45,4 +45,3 @@ libcatalog_a_SOURCES = \
 # if it is need to include stat folder and Test folder, add stat and Test at next two lines
 SUBDIRS = stat
 DIST_SUBDIRS = stat
-

@@ -197,10 +197,11 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
   // atomic<long long> working_thread_count_{0};
   std::set<unsigned long> working_threads_;
   Lock working_;
-  atomic<unsigned> buket_num_{0};
+  atomic<unsigned> bucket_num_{0};
   atomic<bool> first_done_{false};
   Lock lock_thread_;
   Lock set_;
+  Lock left_join_;
 
 #ifdef TIME
   unsigned long long timer;
