@@ -256,6 +256,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                   state_.input_schema_right_->getColumnAddess(
                       state_.join_index_right_[0], tuple_from_right_child),
                   state_.hashtable_bucket_num_);
+      // Hash table stores all tuples from left table.
       while (NULL !=
              (tuple_in_hashtable = jtc->hashtable_iterator_.readCurrent())) {
         cff_(tuple_in_hashtable, tuple_from_right_child, &key_exit,
@@ -263,7 +264,8 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
              state_.hashtable_schema_, state_.input_schema_right_, eftt_);
         if (key_exit) {
           nothing_join = false;
-          // mark the row_id of joined tuple in hash table(left table)
+          // Put the row_id of hash table(left table) which have been joined
+          // into a set.
           if (join_type_ == 2) {
             unsigned long joined_row_id = 0;
             memcpy(&joined_row_id, tuple_in_hashtable, sizeof(unsigned long));
@@ -284,14 +286,13 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                   tuple_from_right_child, (char*)result_tuple + copyed_bytes);
             }
           } else {
-            // working_thread_count_--;
             return true;
           }
         }
         jtc->hashtable_iterator_.increase_cur_();
       }
-      // If nothing_join is true, we should produce a null left tuple with right
-      // tuple
+      // As for right join, if nothing_join is true, we should produce a null
+      // left tuple with right tuple.
       if (nothing_join == true) {
         if (NULL != (result_tuple = block->allocateTuple(
                          state_.output_schema_->getTupleMaxSize()))) {
@@ -340,7 +341,8 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
       }
     }
     jtc->r_block_for_asking_->setEmpty();
-    jtc->hashtable_iterator_ = hashtable_->CreateIterator();
+    if (false == first_done_)
+      jtc->hashtable_iterator_ = hashtable_->CreateIterator();
     if (state_.child_right_->Next(jtc->r_block_for_asking_) == false) {
       // Mark the first thread that can not get data from
       // Next(jtc->r_block_for_asking).It means no blocks for join operator to
@@ -372,12 +374,13 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
              working_threads_.size() != 0) {
         usleep(1);
       }
-      // The other threads should wait until the first arrived thread finish
-      // its extra job;
+      // The other threads should wait until the first arrived thread turn the
+      // first_done_ into true.
       while (first_arrive_thread_ != pthread_self() && (!first_done_)) {
         usleep(1);
       }
 
+      // When the block is empty and all the hash bucket has been
       if (block->Empty() == true && first_done_ == true &&
           bucket_num_ >= (state_.hashtable_bucket_num_ - 1)) {
         return false;
@@ -391,15 +394,18 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
         // and find which tuples are not in the joined_tuple set.
         // Then generate new tuple with hash table tuple + null right tuple.
         if (join_type_ == 2) {
-          jtc->hashtable_iterator_ = hashtable_->CreateIterator();
+          // jtc->hashtable_iterator_ = hashtable_->CreateIterator();
           // TODO(yuyang) :Not all bucket number is used.
           while (bucket_num_ < state_.hashtable_bucket_num_) {
             //            cout << "bucket_num is " << bucket_num_ << ", "
             //                 << state_.hashtable_bucket_num_ << endl;
-            left_join_.acquire();
-            hashtable_->placeIterator(jtc->hashtable_iterator_, bucket_num_);
-            bucket_num_++;
-            left_join_.release();
+            if (NULL == (jtc->hashtable_iterator_.readCurrent())) {
+              jtc->hashtable_iterator_ = hashtable_->CreateIterator();
+              left_join_.acquire();
+              hashtable_->placeIterator(jtc->hashtable_iterator_, bucket_num_);
+              bucket_num_++;
+              left_join_.release();
+            }
             while (NULL != (tuple_in_hashtable =
                                 jtc->hashtable_iterator_.readCurrent())) {
               unsigned long row_id_in_hashtable = 0;
