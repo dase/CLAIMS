@@ -370,19 +370,23 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
         // cout << "working tread count is " << working_thread_count_ << endl;
       }
       */
-      while (first_arrive_thread_ == pthread_self() &&
-             working_threads_.size() != 0) {
-        usleep(1);
+      if (join_type_ == 2) {
+        while (first_arrive_thread_ == pthread_self() &&
+               working_threads_.size() != 0) {
+          usleep(1);
+        }
+        // The other threads should wait until the first arrived thread turn the
+        // first_done_ into true.
+        while (first_arrive_thread_ != pthread_self() && (!first_done_)) {
+          usleep(1);
+        }
       }
-      // The other threads should wait until the first arrived thread turn the
-      // first_done_ into true.
-      while (first_arrive_thread_ != pthread_self() && (!first_done_)) {
-        usleep(1);
-      }
-
       // When the block is empty and all the hash bucket has been
       if (block->Empty() == true && first_done_ == true &&
-          bucket_num_ >= (state_.hashtable_bucket_num_ - 1)) {
+          bucket_num_ >= (state_.hashtable_bucket_num_ - 1) &&
+          join_type_ == 2) {
+        return false;
+      } else if (block->Empty() == true && join_type_ != 2) {
         return false;
       } else {
         // the first arrived thread will turn the first_done_ into true to let
