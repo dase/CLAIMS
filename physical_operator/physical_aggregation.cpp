@@ -53,21 +53,14 @@ PhysicalAggregation::PhysicalAggregation(State state)
       state_(state),
       hashtable_(NULL),
       hash_(NULL),
-      bucket_cur_(0),
-      block_for_asking(NULL),
-      private_hashtable(NULL) {
+      bucket_cur_(0) {
   set_phy_oper_type(kPhysicalAggregation);
   InitExpandedStatus();
   assert(state_.hash_schema_);
 }
 
 PhysicalAggregation::PhysicalAggregation()
-    : PhysicalOperator(4, 3),
-      hashtable_(NULL),
-      hash_(NULL),
-      bucket_cur_(0),
-      block_for_asking(NULL),
-      private_hashtable(NULL) {
+    : PhysicalOperator(4, 3), hashtable_(NULL), hash_(NULL), bucket_cur_(0) {
   set_phy_oper_type(kPhysicalAggregation);
   InitExpandedStatus();
 }
@@ -200,7 +193,7 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
    */
   RETURN_IF_CANCELLED(exec_status);
 
-  private_hashtable =
+  BasicHashTable *private_hashtable =
       new BasicHashTable(state_.num_of_buckets_, state_.bucket_size_,
                          state_.hash_schema_->getTupleMaxSize());
 
@@ -220,7 +213,7 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
   BasicHashTable::Iterator ht_it = hashtable_->CreateIterator();
   BasicHashTable::Iterator pht_it = private_hashtable->CreateIterator();
   int64_t one = 1;
-  block_for_asking =
+  BlockStreamBase *block_for_asking =
       BlockStreamBase::createBlock(state_.input_schema_, state_.block_size_);
   block_for_asking->setEmpty();
 
@@ -496,14 +489,7 @@ bool PhysicalAggregation::Close(SegmentExecStatus *const exec_status) {
     delete hashtable_;
     hashtable_ = NULL;
   }
-  if (NULL != block_for_asking) {
-    delete block_for_asking;
-    block_for_asking = NULL;
-  }
-  if (NULL != private_hashtable) {
-    delete private_hashtable;
-    private_hashtable = NULL;
-  }
+
   state_.child_->Close(exec_status);
   return true;
 }

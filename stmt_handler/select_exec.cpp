@@ -293,6 +293,14 @@ void* SelectExec::SendAllSegments(void* arg) {
         reinterpret_cast<ExchangeSender*>(physical_sender_oper)
             ->SetPartitionOffset(i);
         segment_id = select_exec->get_stmt_exec_status()->GenSegmentId();
+
+        // new SegmentExecStatus and add it to StmtExecStatus
+        SegmentExecStatus* seg_exec_status = new SegmentExecStatus(make_pair(
+            select_exec->get_stmt_exec_status()->get_query_id(),
+            segment_id * kMaxNodeNum + a_plan_segment->lower_node_id_list_[i]));
+
+        select_exec->get_stmt_exec_status()->AddSegExecStatus(seg_exec_status);
+        // send plan
         if (Environment::getInstance()
                 ->get_iterator_executor_master()
                 ->ExecuteBlockStreamIteratorsOnSite(
@@ -306,12 +314,6 @@ void* SelectExec::SendAllSegments(void* arg) {
           ret = -1;
           return &ret;
         }
-        // new SegmentExecStatus and add it to StmtExecStatus
-        SegmentExecStatus* seg_exec_status = new SegmentExecStatus(make_pair(
-            select_exec->get_stmt_exec_status()->get_query_id(),
-            segment_id * kMaxNodeNum + a_plan_segment->lower_node_id_list_[i]));
-
-        select_exec->get_stmt_exec_status()->AddSegExecStatus(seg_exec_status);
 
         LOG(INFO) << "sending plan of "
                   << select_exec->get_stmt_exec_status()->get_query_id()

@@ -50,18 +50,14 @@ namespace physical_operator {
 unsigned PhysicalSort::order_by_pos_ = 0;
 PhysicalSort::State *PhysicalSort::cmp_state_ = NULL;
 OperFuncInfo PhysicalSort::fcinfo = NULL;
-PhysicalSort::PhysicalSort()
-    : PhysicalOperator(3, 2), block_buffer_(NULL), block_for_asking(NULL) {
+PhysicalSort::PhysicalSort() : PhysicalOperator(3, 2), block_buffer_(NULL) {
   set_phy_oper_type(kPhysicalSort);
   lock_ = new Lock();
   InitExpandedStatus();
 }
 
 PhysicalSort::PhysicalSort(State state)
-    : PhysicalOperator(3, 2),
-      state_(state),
-      block_buffer_(NULL),
-      block_for_asking(NULL) {
+    : PhysicalOperator(3, 2), state_(state), block_buffer_(NULL) {
   set_phy_oper_type(kPhysicalSort);
   cmp_state_ = &state_;
   lock_ = new Lock();
@@ -156,6 +152,7 @@ bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
     block_buffer_ = new DynamicBlockBuffer();
   }
   BarrierArrive(0);
+  BlockStreamBase *block_for_asking;
   if (CreateBlock(block_for_asking) == false) {
     LOG(ERROR) << "error in the create block stream!!!" << endl;
     return 0;
@@ -187,6 +184,10 @@ bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
     }
   }
 
+  if (NULL != block_for_asking) {
+    delete block_for_asking;
+    block_for_asking = NULL;
+  }
   lock_->acquire();
   all_tuples_.insert(all_tuples_.end(), thread_tuple.begin(),
                      thread_tuple.end());
@@ -272,10 +273,7 @@ bool PhysicalSort::Close(SegmentExecStatus *const exec_status) {
     delete block_buffer_;
     block_buffer_ = NULL;
   }
-  if (NULL != block_for_asking) {
-    delete block_for_asking;
-    block_for_asking = NULL;
-  }
+
   state_.child_->Close(exec_status);
   return true;
 }

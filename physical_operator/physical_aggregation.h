@@ -117,8 +117,6 @@ class PhysicalAggregation : public PhysicalOperator {
  private:
   BasicHashTable *hashtable_;
   PartitionFunction *hash_;
-  BlockStreamBase *block_for_asking;
-  BasicHashTable *private_hashtable;
   // hashtable traverse and in the next func
   Lock hashtable_cur_lock_;
   unsigned bucket_cur_;
