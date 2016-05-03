@@ -61,6 +61,7 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
     BlockStreamBase* r_block_for_asking_;
     BlockStreamBase::BlockStreamTraverseIterator* r_block_stream_iterator_;
     BasicHashTable::Iterator hashtable_iterator_;
+    unsigned long current_bucket_{0};
   };
 
   class State {
@@ -199,6 +200,9 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
   Lock working_;
   atomic<unsigned> bucket_num_{0};
   atomic<bool> first_done_{false};
+  atomic<unsigned long> hash_table_num_{0};
+  atomic<unsigned long> right_table_num_{0};
+  // bool checked_bucket_[1048577]{false};
   Lock lock_thread_;
   Lock set_;
   Lock left_join_;
