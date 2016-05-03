@@ -31,17 +31,10 @@ ExprUnary::ExprUnary(ExprUnary* expr)
       oper_type_(expr->oper_type_),
       arg0_(expr->arg0_->ExprCopy()),
       data_type_oper_func_(expr->data_type_oper_func_) {}
-void* ExprUnary::ExprEvaluate(void* tuple, Schema* schema) {
+
+void* ExprUnary::ExprEvaluate(ExprEvalCnxt& eecnxt, void* last_value) {
   OperFuncInfoData oper_info;
-  oper_info.args_[0] = arg0_->ExprEvaluate(tuple, schema);
-  oper_info.args_num_ = 1;
-  oper_info.result_ = value_;
-  data_type_oper_func_(&oper_info);
-  return type_cast_func_(oper_info.result_, value_);
-}
-void* ExprUnary::ExprEvaluate(void* tuple, Schema* schema, void* last_value) {
-  OperFuncInfoData oper_info;
-  oper_info.args_[1] = arg0_->ExprEvaluate(tuple, schema);
+  oper_info.args_[1] = arg0_->ExprEvaluate(eecnxt);
   oper_info.args_[0] = last_value;
   oper_info.args_num_ = 2;
   oper_info.result_ = last_value;
@@ -57,11 +50,19 @@ void* ExprUnary::ExprEvaluate(void* value, void* last_value) {
   data_type_oper_func_(&oper_info);
   return last_value;
 }
-void ExprUnary::InitExprAtLogicalPlan(
-    data_type return_type, const std::map<std::string, int>& column_index,
-    Schema* schema) {
-  return_type_ = return_type;
-  arg0_->InitExprAtLogicalPlan(get_type_, column_index, schema);
+void* ExprUnary::ExprEvaluate(ExprEvalCnxt& eecnxt) {
+  OperFuncInfoData oper_info;
+  oper_info.args_[0] = arg0_->ExprEvaluate(eecnxt);
+  oper_info.args_num_ = 1;
+  oper_info.result_ = value_;
+  data_type_oper_func_(&oper_info);
+  return type_cast_func_(oper_info.result_, value_);
+}
+
+void ExprUnary::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
+  return_type_ = licnxt.return_type_;
+  licnxt.return_type_ = get_type_;
+  arg0_->InitExprAtLogicalPlan(licnxt);
   value_size_ = arg0_->value_size_;
   is_null_ = arg0_->is_null_;
 }

@@ -23,15 +23,14 @@ ExprConst::ExprConst(ExprNodeType expr_node_type, data_type actual_type,
     : ExprNode(expr_node_type, actual_type, alias), const_value_(const_value) {}
 ExprConst::ExprConst(ExprConst* expr)
     : ExprNode(expr), const_value_(expr->const_value_) {}
-void* ExprConst::ExprEvaluate(void* tuple, Schema* schema) { return value_; }
+void* ExprConst::ExprEvaluate(ExprEvalCnxt& eecnxt) { return value_; }
 
-void ExprConst::InitExprAtLogicalPlan(
-    data_type return_type, const std::map<std::string, int>& column_index,
-    Schema* schema) {
-  return_type_ = return_type;
+void ExprConst::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
+  return_type_ = licnxt.return_type_;
   value_size_ = max(static_cast<int>(const_value_.size()), BASE_DATA_SIZE);
   is_null_ = false;
 }
+
 /*
  * for const, the value has been type_casted at InitExprAtPhysicalPlan(),
  *  so later, just to return the value_ is ok, because this can avoid

@@ -153,9 +153,9 @@ void PhysicalProject::ProcessInLogic(BlockStreamBase* block,
         void* result = tc->thread_qual_[i]->FuncId(
             tc->thread_qual_[i], tuple_from_child, state_.schema_input_);
 #else
+      tc->expr_eval_cnxt_.tuple[0] = tuple_from_child;
       for (int i = 0; i < tc->thread_expr_.size(); ++i) {
-        void* result = tc->thread_expr_[i]->ExprEvaluate(tuple_from_child,
-                                                         state_.schema_input_);
+        void* result = tc->thread_expr_[i]->ExprEvaluate(tc->expr_eval_cnxt_);
 
 #endif
         CopyNewValue(tuple, result,
@@ -183,6 +183,8 @@ ThreadContext* PhysicalProject::CreateContext() {
   ptc->temp_block_ =
       BlockStreamBase::createBlock(state_.schema_output_, state_.block_size_);
   ptc->block_stream_iterator_ = ptc->block_for_asking_->createIterator();
+
+  ptc->expr_eval_cnxt_.schema[0] = state_.schema_input_;
 #ifdef NEWCONDI
   ptc->thread_qual_ = state_.expr_tree_;
   for (int i = 0; i < state_.expr_tree_.size(); i++) {

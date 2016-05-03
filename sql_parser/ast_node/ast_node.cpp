@@ -123,13 +123,31 @@ RetCode AstNode::GetEqualJoinPair(
   }
   return rSuccess;
 }
+RetCode AstNode::GetJoinCondition(vector<ExprNode*>& condition,
+                                  const vector<AstNode*>& join_condition,
+                                  LogicalOperator* left_lplan,
+                                  LogicalOperator* right_lplan) {
+  RetCode ret = rSuccess;
+  ExprNode* expr_node = NULL;
+  for (auto it = join_condition.begin(); it != join_condition.end(); ++it) {
+    ret = (*it)->GetLogicalPlan(expr_node, left_lplan, right_lplan);
+    if (rSuccess != ret) {
+      LOG(ERROR) << "get join condition upon from list, due to [err: " << ret
+                 << " ] !" << endl;
+      return ret;
+    }
+    assert(NULL != expr_node);
+    condition.push_back(expr_node);
+  }
+  return rSuccess;
+}
 RetCode AstNode::GetFilterCondition(vector<ExprNode*>& condition,
                                     const vector<AstNode*>& normal_condition,
                                     LogicalOperator* logic_plan) {
   RetCode ret = rSuccess;
   ExprNode* expr_node = NULL;
   for (auto it = normal_condition.begin(); it != normal_condition.end(); ++it) {
-    ret = (*it)->GetLogicalPlan(expr_node, logic_plan);
+    ret = (*it)->GetLogicalPlan(expr_node, logic_plan, NULL);
     if (rSuccess != ret) {
       LOG(ERROR) << "get normal condition upon from list, due to [err: " << ret
                  << " ] !" << endl;
@@ -185,7 +203,7 @@ RetCode AstStmtList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   }
   return rSuccess;
 }
-RetCode AstStmtList::PushDownCondition(PushDownConditionContext* pdccnxt) {
+RetCode AstStmtList::PushDownCondition(PushDownConditionContext& pdccnxt) {
   if (NULL != stmt_) {
     stmt_->PushDownCondition(pdccnxt);
   }
@@ -499,7 +517,10 @@ void SemanticContext::PrintContext(string flag) {
   cout << "---------------------\n" << endl;
 }
 
-PushDownConditionContext::PushDownConditionContext() { from_tables_.clear(); }
+PushDownConditionContext::PushDownConditionContext() {
+  from_tables_.clear();
+  sub_expr_info_.clear();
+}
 bool PushDownConditionContext::IsTableSubSet(set<string>& expr_tables,
                                              set<string>& from_tables) {
   for (auto it = expr_tables.begin(); it != expr_tables.end(); ++it) {

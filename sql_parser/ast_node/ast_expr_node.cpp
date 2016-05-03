@@ -104,7 +104,8 @@ void AstExprConst::ReplaceAggregation(AstNode*& agg_column,
 }
 
 RetCode AstExprConst::GetLogicalPlan(ExprNode*& logic_expr,
-                                     LogicalOperator* child_logic_plan) {
+                                     LogicalOperator* const left_lplan,
+                                     LogicalOperator* const right_lplan) {
   data_type actual_type = t_string;
   if (expr_type_ == "CONST_INT") {
     if (atol(data_.c_str()) > INT_MAX) {
@@ -249,7 +250,8 @@ void AstExprUnary::GetRefTable(set<string>& ref_table) {
 }
 
 RetCode AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
-                                     LogicalOperator* child_logic_plan) {
+                                     LogicalOperator* const left_lplan,
+                                     LogicalOperator* const right_lplan) {
   data_type get_type, actual_type;
   OperType oper;
   oper = OperType::oper_none;
@@ -292,7 +294,7 @@ RetCode AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
     child_logic_expr =
         new ExprConst(ExprNodeType::t_qexpr, t_u_long, "COUNT(1)", "1");
   } else {
-    ret = arg0_->GetLogicalPlan(child_logic_expr, child_logic_plan);
+    ret = arg0_->GetLogicalPlan(child_logic_expr, left_lplan, right_lplan);
   }
   if (rSuccess != ret) {
     return ret;
@@ -448,15 +450,16 @@ void AstExprCalBinary::GetRefTable(set<string>& ref_table) {
 }
 
 RetCode AstExprCalBinary::GetLogicalPlan(ExprNode*& logic_expr,
-                                         LogicalOperator* child_logic_plan) {
+                                         LogicalOperator* const left_lplan,
+                                         LogicalOperator* const right_lplan) {
   ExprNode* left_expr_node = NULL;
   ExprNode* right_expr_node = NULL;
   RetCode ret = rSuccess;
-  ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
+  ret = arg0_->GetLogicalPlan(left_expr_node, left_lplan, right_lplan);
   if (rSuccess != ret) {
     return ret;
   }
-  ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
+  ret = arg1_->GetLogicalPlan(right_expr_node, left_lplan, right_lplan);
   if (rSuccess != ret) {
     return ret;
   }
@@ -665,7 +668,8 @@ void AstExprCmpBinary::GetRefTable(set<string>& ref_table) {
 }
 
 RetCode AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
-                                         LogicalOperator* child_logic_plan) {
+                                         LogicalOperator* const left_lplan,
+                                         LogicalOperator* const right_lplan) {
   ExprNode* left_expr_node = NULL;
   ExprNode* right_expr_node = NULL;
   data_type get_type = t_boolean;
@@ -687,11 +691,11 @@ RetCode AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
     oper = OperType::oper_not_equal;
   }
   if (OperType::oper_none != oper) {
-    ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
+    ret = arg0_->GetLogicalPlan(left_expr_node, left_lplan, right_lplan);
     if (rSuccess != ret) {
       return ret;
     }
-    ret = arg1_->GetLogicalPlan(right_expr_node, child_logic_plan);
+    ret = arg1_->GetLogicalPlan(right_expr_node, left_lplan, right_lplan);
     if (rSuccess != ret) {
       return ret;
     }
@@ -707,7 +711,7 @@ RetCode AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
     vector<ExprNode*> left_node, tmp_node;
     vector<vector<ExprNode*> > right_node;
     // just one expr at left
-    ret = arg0_->GetLogicalPlan(left_expr_node, child_logic_plan);
+    ret = arg0_->GetLogicalPlan(left_expr_node, left_lplan, right_lplan);
     if (rSuccess != ret) {
       return ret;
     }
@@ -715,7 +719,8 @@ RetCode AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
     // one column per tuple
     for (AstNode* lnode = arg1_; lnode != NULL;) {
       AstExprList* list_node = reinterpret_cast<AstExprList*>(lnode);
-      ret = list_node->expr_->GetLogicalPlan(right_expr_node, child_logic_plan);
+      ret = list_node->expr_->GetLogicalPlan(right_expr_node, left_lplan,
+                                             right_lplan);
       if (rSuccess != ret) {
         return ret;
       }
@@ -743,7 +748,8 @@ RetCode AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
     // collect several left expressions
     for (AstNode* lnode = arg0_; lnode != NULL;) {
       AstExprList* list_node = reinterpret_cast<AstExprList*>(lnode);
-      ret = list_node->expr_->GetLogicalPlan(left_expr_node, child_logic_plan);
+      ret = list_node->expr_->GetLogicalPlan(left_expr_node, left_lplan,
+                                             right_lplan);
       if (rSuccess != ret) {
         return ret;
       }
@@ -755,8 +761,8 @@ RetCode AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
       AstExprList* list_node = reinterpret_cast<AstExprList*>(lnode);
       for (AstNode* llnode = list_node->expr_; llnode != NULL;) {
         AstExprList* llist_node = reinterpret_cast<AstExprList*>(llnode);
-        ret = llist_node->expr_->GetLogicalPlan(right_expr_node,
-                                                child_logic_plan);
+        ret = llist_node->expr_->GetLogicalPlan(right_expr_node, left_lplan,
+                                                right_lplan);
         if (rSuccess != ret) {
           return ret;
         }
@@ -785,6 +791,7 @@ RetCode AstExprCmpBinary::GetLogicalPlan(ExprNode*& logic_expr,
   }
   return rSuccess;
 }
+
 RetCode AstExprCmpBinary::SolveSelectAlias(
     SelectAliasSolver* const select_alias_solver) {
   if (NULL != arg0_) {
@@ -1054,33 +1061,34 @@ void AstExprFunc::GetRefTable(set<string>& ref_table) {
 }
 
 RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
-                                    LogicalOperator* child_logic_plan) {
+                                    LogicalOperator* const left_lplan,
+                                    LogicalOperator* const right_lplan) {
   ExprNode* arg0_logic_expr = NULL;
   ExprNode* arg1_logic_expr = NULL;
   ExprNode* arg2_logic_expr = NULL;
 
   if (expr_type_ == "UPPER") {
     if (NULL != arg0_) {
-      arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+      arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg1_) {
-      arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg2_) {
-      arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+      arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     }
     logic_expr = new ExprUnary(ExprNodeType::t_qexpr_unary, t_string, expr_str_,
                                OperType::oper_upper, arg0_logic_expr);
   } else if (expr_type_ == "SUBSTRING_EXPR_EXPR" ||
              expr_type_ == "SUBSTRING_EXPR_FROM_EXPR") {
     if (NULL != arg0_) {
-      arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+      arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg1_) {
-      arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg2_) {
-      arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+      arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     }
     arg2_logic_expr = new ExprConst(ExprNodeType::t_qexpr, t_int, string("64"),
                                     string("64"));  // 64 is the size of value
@@ -1091,13 +1099,13 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
   } else if (expr_type_ == "SUBSTRING_EXPR_EXPR_EXPR" ||
              expr_type_ == "SUBSTRING_EXPR_FROM_EXPR_FOR_EXPR") {
     if (NULL != arg0_) {
-      arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+      arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg1_) {
-      arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg2_) {
-      arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+      arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     }
     logic_expr =
         new ExprTernary(ExprNodeType::t_qexpr_ternary, t_string, expr_str_,
@@ -1105,39 +1113,39 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
                         arg1_logic_expr, arg2_logic_expr);
   } else if (expr_type_ == "TRIM_TRAILING") {
     if (NULL != arg0_) {
-      arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+      arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg1_) {
-      arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg2_) {
-      arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+      arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     }
     logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cal, t_string, t_string,
                                 expr_str_, OperType::oper_trailing_trim,
                                 arg0_logic_expr, arg1_logic_expr);
   } else if (expr_type_ == "TRIM_LEADING") {
     if (NULL != arg0_) {
-      arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+      arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg1_) {
-      arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg2_) {
-      arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+      arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     }
     logic_expr = new ExprBinary(ExprNodeType::t_qexpr_cal, t_string, t_string,
                                 expr_str_, OperType::oper_leading_trim,
                                 arg0_logic_expr, arg1_logic_expr);
   } else if (expr_type_ == "TRIM_BOTH") {
     if (NULL != arg0_) {
-      arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+      arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg1_) {
-      arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg2_) {
-      arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+      arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     }
     if (NULL == arg0_) {
       arg0_logic_expr =
@@ -1150,13 +1158,13 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
                                 arg0_logic_expr, arg1_logic_expr);
   } else if (expr_type_ == "BETWEEN_AND") {
     if (NULL != arg0_) {
-      arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+      arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg1_) {
-      arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     }
     if (NULL != arg2_) {
-      arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+      arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     }
     data_type get_type = TypeConversionMatrix::type_conversion_matrix
         [arg0_logic_expr->actual_type_][arg1_logic_expr->actual_type_];
@@ -1174,13 +1182,13 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
     std::vector<ExprNode*> case_then;
     for (AstNode* it = arg1_; it != NULL;) {
       AstExprFunc* fnode = reinterpret_cast<AstExprFunc*>(it);
-      fnode->arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
-      fnode->arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      fnode->arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
+      fnode->arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
       case_when.push_back(arg0_logic_expr);
       case_then.push_back(arg1_logic_expr);
       it = fnode->arg2_;
     }
-    arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+    arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     case_then.push_back(arg2_logic_expr);
     logic_expr = new ExprCaseWhen(ExprNodeType::t_qexpr_case_when,
                                   case_then[0]->actual_type_, expr_str_,
@@ -1190,8 +1198,8 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
     std::vector<ExprNode*> case_then;
     for (AstNode* it = arg1_; it != NULL;) {
       AstExprFunc* fnode = reinterpret_cast<AstExprFunc*>(it);
-      fnode->arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
-      fnode->arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      fnode->arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
+      fnode->arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
       case_when.push_back(arg0_logic_expr);
       case_then.push_back(arg1_logic_expr);
       it = fnode->arg2_;
@@ -1210,11 +1218,11 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
     std::vector<ExprNode*> case_then;
     ExprNode* arg_logic_expr = NULL;
     assert(arg0_ != NULL);
-    arg0_->GetLogicalPlan(arg_logic_expr, child_logic_plan);
+    arg0_->GetLogicalPlan(arg_logic_expr, left_lplan, right_lplan);
     for (AstNode* it = arg1_; it != NULL;) {
       AstExprFunc* fnode = reinterpret_cast<AstExprFunc*>(it);
-      fnode->arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
-      fnode->arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      fnode->arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
+      fnode->arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
       data_type get_type = TypeConversionMatrix::type_conversion_matrix
           [arg_logic_expr->actual_type_][arg0_logic_expr->actual_type_];
       ExprBinary* tmp_node = new ExprBinary(
@@ -1237,11 +1245,11 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
     std::vector<ExprNode*> case_then;
     ExprNode* arg_logic_expr = NULL;
     assert(arg0_ != NULL);
-    arg0_->GetLogicalPlan(arg_logic_expr, child_logic_plan);
+    arg0_->GetLogicalPlan(arg_logic_expr, left_lplan, right_lplan);
     for (AstNode* it = arg1_; it != NULL;) {
       AstExprFunc* fnode = reinterpret_cast<AstExprFunc*>(it);
-      fnode->arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
-      fnode->arg1_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+      fnode->arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
+      fnode->arg1_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
       data_type get_type = TypeConversionMatrix::type_conversion_matrix
           [arg_logic_expr->actual_type_][arg0_logic_expr->actual_type_];
       ExprBinary* tmp_node = new ExprBinary(
@@ -1251,16 +1259,16 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
       case_then.push_back(arg1_logic_expr);
       it = fnode->arg2_;
     }
-    arg2_->GetLogicalPlan(arg2_logic_expr, child_logic_plan);
+    arg2_->GetLogicalPlan(arg2_logic_expr, left_lplan, right_lplan);
     case_then.push_back(arg2_logic_expr);
     logic_expr = new ExprCaseWhen(ExprNodeType::t_qexpr_case_when,
                                   case_then[0]->actual_type_, expr_str_,
                                   case_when, case_then);
 
   } else if (expr_type_ == "DATE_ADD") {
-    arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+    arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     AstExprFunc* fnode = reinterpret_cast<AstExprFunc*>(arg1_);
-    fnode->arg0_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+    fnode->arg0_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     if (fnode->expr_type_ == "INTERVAL_DAY") {
       logic_expr = new ExprDate(
           ExprNodeType::t_qexpr_date_add_sub, t_date, t_date_day, expr_str_,
@@ -1286,9 +1294,9 @@ RetCode AstExprFunc::GetLogicalPlan(ExprNode*& logic_expr,
       assert(false);
     }
   } else if (expr_type_ == "DATE_SUB") {
-    arg0_->GetLogicalPlan(arg0_logic_expr, child_logic_plan);
+    arg0_->GetLogicalPlan(arg0_logic_expr, left_lplan, right_lplan);
     AstExprFunc* fnode = reinterpret_cast<AstExprFunc*>(arg1_);
-    fnode->arg0_->GetLogicalPlan(arg1_logic_expr, child_logic_plan);
+    fnode->arg0_->GetLogicalPlan(arg1_logic_expr, left_lplan, right_lplan);
     if (fnode->expr_type_ == "INTERVAL_DAY") {
       logic_expr = new ExprDate(
           ExprNodeType::t_qexpr_date_add_sub, t_date, t_date_day, expr_str_,
