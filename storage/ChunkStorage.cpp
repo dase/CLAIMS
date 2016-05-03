@@ -6,12 +6,16 @@
  */
 #include <hdfs.h>
 #include "ChunkStorage.h"
+
+#include "../common/file_handle/hdfs_connector.h"
 #include "BlockManager.h"
 
 #include "../Debug.h"
 #include "../utility/warmup.h"
 #include "../utility/rdtsc.h"
 #include "../Config.h"
+
+using claims::common::HdfsConnector;
 
 bool ChunkReaderIterator::nextBlock() {
   lock_.acquire();
@@ -224,7 +228,10 @@ HDFSChunkReaderIterator::HDFSChunkReaderIterator(const ChunkID& chunk_id,
                                                  const unsigned& block_size)
     : ChunkReaderIterator(chunk_id, block_size, chunk_size) {
   block_buffer_ = new Block(block_size_);
-  fs_ = hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  //  fs_ = hdfsConnect(Config::hdfs_master_ip.c_str(),
+  //  Config::hdfs_master_port);
+
+  fs_ = HdfsConnector::Instance();
   hdfs_fd_ = hdfsOpenFile(fs_, chunk_id.partition_id.getName().c_str(),
                           O_RDONLY, 0, 0, 0);
   if (!hdfs_fd_) {
@@ -251,7 +258,7 @@ HDFSChunkReaderIterator::HDFSChunkReaderIterator(const ChunkID& chunk_id,
 HDFSChunkReaderIterator::~HDFSChunkReaderIterator() {
   block_buffer_->~Block();
   hdfsCloseFile(fs_, hdfs_fd_);
-  hdfsDisconnect(fs_);
+  //  hdfsDisconnect(fs_);
 }
 bool HDFSChunkReaderIterator::nextBlock(BlockStreamBase*& block) {
   if (cur_block_ >= number_of_blocks_) {

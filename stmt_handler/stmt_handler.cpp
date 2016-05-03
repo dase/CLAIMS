@@ -31,6 +31,7 @@
 #include <string>
 #include "../stmt_handler/stmt_handler.h"
 
+#include "../common/memory_handle.h"
 #include "../stmt_handler/create_projection_exec.h"
 #include "../stmt_handler/desc_exec.h"
 #include "../stmt_handler/drop_table_exec.h"
@@ -126,6 +127,7 @@ RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
     return ret;
   }
   ret = stmt_exec_->Execute(exec_result);
+  DELETE_PTR(sql_parser_);
   if (rSuccess != ret) {
     return ret;
   }

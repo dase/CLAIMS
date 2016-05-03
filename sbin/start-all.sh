@@ -1,9 +1,13 @@
 #!/bin/sh  
 
-cd $CLAIMS_HOME/sbin/2-claims-conf/
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+cd 2-claims-conf/
 source ./load-config.sh
 source ./generate-config.sh
-  
+cd ../../
+# now in CLAIMS_HOME
+
 # start cluster
 for node in $master $slaves
 do

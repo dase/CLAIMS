@@ -6,10 +6,11 @@
  */
 #include <malloc.h>
 #include <assert.h>
+#include <glog/logging.h>
+#include <algorithm>
 #include "../../configure.h"
 #include "./BlockStream.h"
 
-#include <algorithm>
 BlockStreamFix::BlockStreamFix(unsigned block_size, unsigned tuple_size)
     : BlockStreamBase(block_size), tuple_size_(tuple_size) {
   free_ = start;
@@ -103,6 +104,7 @@ bool BlockStreamFix::serialize(Block& block) const {
     printf("tuple count=%d in serialize()\n", tail->tuple_count);
     assert(false);
   }
+  //  LOG(ERROR) << "||||" << tail->tuple_count;
 
   //	/* the number of tuples*/
   //	int*

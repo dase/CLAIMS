@@ -83,7 +83,7 @@ ExchangeMerger::~ExchangeMerger() {
  * for this stage
  */
 bool ExchangeMerger::Open(const PartitionOffset& partition_offset) {
-  unsigned long long int start = curtick();
+  uint64_t start = curtick();
   RegisterExpandedThreadToAllBarriers();
   if (TryEntryIntoSerializedSection()) {  // first arrived thread dose
     exhausted_lowers = 0;
@@ -258,17 +258,17 @@ bool ExchangeMerger::PrepareSocket() {
   my_addr.sin_family = AF_INET;
 
   /* apply for the port dynamically.*/
-/*  if ((socket_port_ = PortManager::getInstance()->applyPort()) == 0) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_
-               << " Fails to apply a port for the socket. Reason: the "
-                  " PortManager is exhausted !" << endl;
-    return false;
-  }
-  LOG(INFO) << " exchange_id = " << state_.exchange_id_
-            << " partition_offset = " << partition_offset_
-            << " succeed applying one port !" << endl;
-*/
+  /*  if ((socket_port_ = PortManager::getInstance()->applyPort()) == 0) {
+      LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                 << " partition_offset = " << partition_offset_
+                 << " Fails to apply a port for the socket. Reason: the "
+                    " PortManager is exhausted !" << endl;
+      return false;
+    }
+    LOG(INFO) << " exchange_id = " << state_.exchange_id_
+              << " partition_offset = " << partition_offset_
+              << " succeed applying one port !" << endl;
+  */
   my_addr.sin_port = htons(0);
   my_addr.sin_addr.s_addr = INADDR_ANY;
   bzero(&(my_addr.sin_zero), 8);
@@ -279,18 +279,17 @@ bool ExchangeMerger::PrepareSocket() {
 
   if (bind(sock_fd_, (struct sockaddr*)&my_addr, sizeof(struct sockaddr)) ==
       -1) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_ << " bind errors!"
-               << endl;
+    PLOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                << " partition_offset = " << partition_offset_
+                << " bind errors!" << endl;
     return false;
   }
 
-  if(getsockname(sock_fd_, (struct sockaddr*)&my_addr2, &len) == -1)
-  {
-      LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_ << " getsockname error!"
-               << endl;
-	  return false;
+  if (getsockname(sock_fd_, (struct sockaddr*)&my_addr2, &len) == -1) {
+    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+               << " partition_offset = " << partition_offset_
+               << " getsockname error!" << endl;
+    return false;
   }
   socket_port_ = ntohs(my_addr2.sin_port);
 
@@ -422,15 +421,15 @@ bool ExchangeMerger::CreateReceiverThread() {
   int error = 0;
   error = pthread_create(&receiver_thread_id_, NULL, Receiver, this);
   if (0 != error) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
-               << " partition_offset = " << partition_offset_
-               << " merger Failed to create receiver thread." << endl;
+    PLOG(ERROR) << " exchange_id = " << state_.exchange_id_
+                << " partition_offset = " << partition_offset_
+                << " merger Failed to create receiver thread." << endl;
     return false;
   }
   return true;
 }
 void ExchangeMerger::CancelReceiverThread() {
-  //  if (receiver_thread_id_ != 0) {
+  assert(receiver_thread_id_ != 0);
   pthread_cancel(receiver_thread_id_);
   void* res = 0;
   pthread_join(receiver_thread_id_, &res);

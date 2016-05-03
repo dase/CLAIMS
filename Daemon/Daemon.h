@@ -21,6 +21,8 @@
 using claims::utility::LockGuard;
 
 struct remote_command {
+  remote_command() {}
+  remote_command(std::string s, int fd) : cmd(s), socket_fd(fd) {}
   std::string cmd;
   int socket_fd;
 };

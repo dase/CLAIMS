@@ -42,15 +42,24 @@ class DiskFileHandleImp : public FileHandleImp {
   friend FileHandleImpFactory;
 
  private:
-  DiskFileHandleImp() : fd_(-1) {}
+  explicit DiskFileHandleImp(std::string file_name)
+      : fd_(-1), FileHandleImp(file_name) {}
 
  public:
   virtual ~DiskFileHandleImp();
-  virtual RetCode Open(std::string file_name, FileOpenFlag open_flag);
   // see more in FileHandleImp class
-  virtual RetCode Write(const void* buffer, const size_t length);
+  virtual RetCode Append(const void* buffer, const size_t length);
 
-  virtual RetCode AtomicWrite(const void* buffer, const size_t length);
+  virtual RetCode AtomicAppend(const void* buffer, const size_t length,
+                               function<void()> lock_func,
+                               function<void()> unlock_func);
+
+  virtual RetCode OverWrite(const void* buffer, const size_t length);
+
+  virtual RetCode AtomicOverWrite(const void* buffer, const size_t length,
+                                  function<void()> lock_func,
+                                  function<void()> unlock_func);
+
   virtual RetCode Close();
   // see more in FileHandleImp class
   virtual RetCode ReadTotalFile(void*& buffer, size_t* length);
@@ -59,13 +68,19 @@ class DiskFileHandleImp : public FileHandleImp {
   virtual bool CanAccess(std::string file_name) {
     return 0 == access(file_name.c_str(), 0);
   }
-  virtual RetCode SetPosition(size_t pos);
 
   virtual RetCode DeleteFile();
 
+  virtual RetCode SwitchStatus(FileStatus status_to_be);
+
+ protected:
+  virtual RetCode SetPosition(size_t pos);
+
+ private:
+  RetCode Write(const void* buffer, const size_t length);
+
  private:
   int fd_;
-  FileOpenFlag open_flag_ = kReadFile;
 };
 
 }  // namespace common

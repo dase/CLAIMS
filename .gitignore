@@ -80,6 +80,10 @@ sbin/.claimssserver.pid
 sbin/2-claims-conf/config-*
 sbin/claims-test/claims_log/
 sbin/claims-test/test_for_DI_GetTuple
+sbin/claims-test/testresult/
 sbin/claims-test/testresult/*.result
+sbin/2-claims-conf/claims_log/
+sbin/2-claims-conf/test_for_DI_GetTuple
 sbin/logs/
+test_for_DI_GetTuple
 sbin/claims_log/

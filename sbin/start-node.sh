@@ -1,9 +1,12 @@
 #!/bin/sh
 
-cd $CLAIMS_HOME/sbin/2-claims-conf
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+cd 2-claims-conf
 source ./load-config.sh
 source ./generate-config.sh
-cd ../
+cd ../../
+# now in CLAIMS_HOME
 
 timestr=$(date +%Y-%m-%d)
 
@@ -24,18 +27,19 @@ echo "-----------------------------------"
 
 echo -e "\033[31m`pwd`\033[0m"
 
-thisip=`sed '/^ip\s*=/!d;s/.*=//' $1`
+thisip=${1#*config-}
 thislog=$logpath/claimsserver-$thisip-$timestr.log
 
-./stop-node.sh
+./sbin/stop-node.sh
 
 # for debug begin ######
-cd $CLAIMS_HOME/install
+cd install
 ulimit -c unlimited
+cd ../
 # for debug end ########
 
 echo "========run claimsserver on:[$thisip] time:[$(date '+%Y-%m-%d %H:%M:%S')]========" >> $thislog
-$CLAIMS_HOME/install/claimsserver -c $1 >> $thislog &
+./install/claimsserver -c $1 >> $thislog &
 claimsserverpid=$!
 echo "claimsserver=$claimsserverpid" > $runclaimsprocid
 echo -e "$thisip start claimsserver pid:[$claimsserverpid][\033[32mOK\033[0m]"

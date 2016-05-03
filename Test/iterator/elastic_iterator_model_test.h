@@ -201,7 +201,7 @@ TEST_F(ElasticIteratorModelTest, FilteredJoin) {
   ResultSet rs;
   std::string message;
   client_.submit(
-      "select count(*) from PART,LINEITEM where PART.row_id%10=1 and "
+      "select count(*) from PART,LINEITEM where PART.row_id%10=1 and  "
       "LINEITEM.row_id % 10 =1 and PART.row_id = LINEITEM.row_id;",
       message, rs);
   DynamicBlockBuffer::Iterator it = rs.createIterator();
@@ -326,6 +326,28 @@ TEST_F(ElasticIteratorModelTest, droptestdata) {
   EXPECT_EQ("drop table successfully!\n", message);
   cout << message << endl;
 }
+
+// TEST_F(ElasticIteratorModelTest, CreateTempTableForTableFileConnectorTest) {
+//  string table_name = "sfdfsf";
+//  string create_table_stmt =
+//      "create table " + table_name + " (a int , b varchar(12));";
+//  string create_prj_stmt1 = "create projection on " + table_name +
+//                            " (a  , b ) number = 2 partitioned on a ;";
+//  string create_prj_stmt2 = "create projection on " + table_name +
+//                            " (a ) number = 3 partitioned on a ;";
+//
+//  ResultSet rs;
+//  string message = "";
+//  client_.submit(create_table_stmt.c_str(), message, rs);
+//  EXPECT_EQ("create table successfully\n", message);
+//  cout << message << endl;
+//  client_.submit(create_prj_stmt1.c_str(), message, rs);
+//  EXPECT_EQ("create projection successfully\n", message);
+//  cout << message << endl;
+//  client_.submit(create_prj_stmt2.c_str(), message, rs);
+//  EXPECT_EQ("create projection successfully\n", message);
+//  cout << message << endl;
+//}
 
 // add by cswang 19 Oct, 2015
 
