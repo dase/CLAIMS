@@ -107,10 +107,10 @@ PlanContext LogicalFilter::GetPlanContext() {
   }
 #else
   LogicInitCnxt licnxt;
-  licnxt.return_type_ = t_boolean;
   GetColumnToId(plan_context.attribute_list_, licnxt.column_id0_);
   licnxt.schema0_ = plan_context.GetSchema();
   for (int i = 0; i < condition_.size(); ++i) {
+    licnxt.return_type_ = t_boolean;
     condition_[i]->InitExprAtLogicalPlan(licnxt);
   }
 #endif
