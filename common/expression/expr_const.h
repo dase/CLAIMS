@@ -28,10 +28,10 @@ class ExprConst : public ExprNode {
   explicit ExprConst(ExprConst* expr_const);
   ExprConst() {}
   ~ExprConst() {}
-  void* ExprEvaluate(void* tuple, Schema* schema);
-  void InitExprAtLogicalPlan(data_type return_type,
-                             const std::map<std::string, int>& column_index,
-                             Schema* schema);
+  void* ExprEvaluate(ExprEvalCnxt& eecnxt);
+
+  void InitExprAtLogicalPlan(LogicInitCnxt& licnxt);
+
   void InitExprAtPhysicalPlan();
   ExprNode* ExprCopy();
 

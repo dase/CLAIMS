@@ -37,44 +37,46 @@ ExprIn::ExprIn(ExprIn* expr)
   }
 }
 
-void* ExprIn::ExprItemEvaluate(void* tuple, Schema* schema,
-                               ExprBinary* cmp_expr, ExprNode* right_node) {
+void* ExprIn::ExprItemEvaluate(ExprEvalCnxt& eecnxt, ExprBinary* cmp_expr,
+                               ExprNode* right_node) {
   OperFuncInfoData oper_info;
-  oper_info.args_[0] = cmp_expr->arg0_->ExprEvaluate(tuple, schema);
-  oper_info.args_[1] = right_node->ExprEvaluate(tuple, schema);
+  oper_info.args_[0] = cmp_expr->arg0_->ExprEvaluate(eecnxt);
+  oper_info.args_[1] = right_node->ExprEvaluate(eecnxt);
   oper_info.args_num_ = 2;
   oper_info.result_ = value_;
   cmp_expr->data_type_oper_func_(&oper_info);
   //    return TypeCastFunc_(oper_info.result_, value_);
   return oper_info.result_;
 }
-void* ExprIn::ExprEvaluate(void* tuple, Schema* schema) {
+
+void* ExprIn::ExprEvaluate(ExprEvalCnxt& eecnxt) {
   bool result = false;
   bool tmp_result = true;
   for (int i = 0; i < right_node_.size() && !result; ++i) {
     tmp_result = true;
     for (int j = 0; j < right_node_[i].size() && tmp_result; ++j) {
       tmp_result = *(static_cast<bool*>(
-          ExprItemEvaluate(tuple, schema, cmp_expr_[j], right_node_[i][j])));
+          ExprItemEvaluate(eecnxt, cmp_expr_[j], right_node_[i][j])));
     }
     result = tmp_result;
   }
   return type_cast_func_(&result, value_);
 }
 
-void ExprIn::InitExprAtLogicalPlan(
-    data_type return_type, const std::map<std::string, int>& column_index,
-    Schema* schema) {
-  return_type_ = return_type;
+void ExprIn::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
+  return_type_ = licnxt.return_type_;
   value_size_ = BASE_DATA_SIZE;
   is_null_ = false;
+
+  licnxt.return_type_ = t_boolean;
   for (int i = 0; i < cmp_expr_.size(); i++) {
-    cmp_expr_[i]->InitExprAtLogicalPlan(t_boolean, column_index, schema);
+    cmp_expr_[i]->InitExprAtLogicalPlan(licnxt);
   }
+
   for (int i = 0; i < right_node_.size(); i++) {
     for (int j = 0; j < right_node_[i].size(); j++) {
-      right_node_[i][j]->InitExprAtLogicalPlan(cmp_expr_[j]->get_type_,
-                                               column_index, schema);
+      licnxt.return_type_ = cmp_expr_[j]->get_type_;
+      right_node_[i][j]->InitExprAtLogicalPlan(licnxt);
     }
   }
 }

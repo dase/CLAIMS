@@ -837,7 +837,8 @@ inline void string_substring(OperFuncInfo fcinfo) {
   assert(fcinfo->args_num_ == 3);
   strncpy((char *)fcinfo->result_,
           ((char *)fcinfo->args_[0]) + (*(int *)fcinfo->args_[1]),
-          (*(int *)fcinfo->args_[2]) - (*(int *)fcinfo->args_[1]));
+          (*(int *)fcinfo->args_[2]));
+  *((char *)fcinfo->result_ + (*(int *)fcinfo->args_[2])) = '\0';
 }
 
 /*****************string********************/

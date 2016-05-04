@@ -29,19 +29,19 @@
 #include "../logical_operator/logical_scan.h"
 #include <stdio.h>
 #include <glog/logging.h>
-#include <iosfwd>
 #include <iostream>
-
+#include <string>
 #include <vector>
 
 #include "../catalog/catalog.h"
 #include "../IDsGenerator.h"
+#include "../logical_operator/logical_operator.h"
 #include "../logical_operator/plan_partition_info.h"
 #include "../physical_operator/exchange_merger.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_projection_scan.h"
 #include "../Resource/NodeTracker.h"
-
+using std::string;
 using claims::physical_operator::ExchangeMerger;
 using claims::physical_operator::PhysicalProjectionScan;
 namespace claims {
@@ -70,11 +70,11 @@ LogicalScan::LogicalScan(ProjectionDescriptor* projection,
   scan_attribute_list_ = projection->getAttributeList();
   target_projection_ = projection;
 }
-LogicalScan::LogicalScan(ProjectionDescriptor* projection,
-                         const string table_alias, const float sample_rate)
+LogicalScan::LogicalScan(ProjectionDescriptor* const projection,
+                         string table_alias, const float sample_rate)
     : LogicalOperator(kLogicalScan),
-      sample_rate_(sample_rate),
       table_alias_(table_alias),
+      sample_rate_(sample_rate),
       plan_context_(NULL) {
   scan_attribute_list_ = projection->getAttributeList();
   ChangeAliasAttr();

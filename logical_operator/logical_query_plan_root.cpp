@@ -197,7 +197,7 @@ PlanContext LogicalQueryPlanRoot::GetPlanContext() {
   LOG(INFO) << "Communication cost: " << ret.commu_cost_
             << " predicted ouput size= "
             << ret.plan_partitioner_.GetAggregatedDataCardinality() << endl;
-  plan_context_ = new PlanContext;
+  plan_context_ = new PlanContext();
   *plan_context_ = ret;
   lock_->release();
   return ret;

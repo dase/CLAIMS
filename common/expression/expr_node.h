@@ -95,13 +95,28 @@ enum OperType {
   oper_min,
   oper_agg_count,
 };
+struct ExprEvalCnxt {
+  void* tuple[2];
+  Schema* schema[2];
+};
+struct LogicInitCnxt {
+  LogicInitCnxt() : return_type_(t_int), schema0_(NULL), schema1_(NULL) {
+    column_id0_.clear();
+    column_id1_.clear();
+  }
+  data_type return_type_;
+  std::map<std::string, int> column_id0_;
+  std::map<std::string, int> column_id1_;
+  Schema* schema0_;  // shouldn't be deleted
+  Schema* schema1_;  // shouldn't be deleted
+};
 class ExprNode {
  public:
   ExprNode(ExprNodeType expr_node_type, data_type actual_type, string alias);
   ExprNode(ExprNodeType expr_node_type, data_type actual_type,
            data_type get_type, string alias);
   explicit ExprNode(ExprNode* expr);
-  ExprNode() {}
+  ExprNode() : value_(NULL) {}
   virtual ~ExprNode() {
     if (value_ != NULL) {
       free(value_);
@@ -115,11 +130,12 @@ class ExprNode {
   bool is_null_;
   TypeCastFunc type_cast_func_;
   std::string alias_;
-  bool MoreExprEvaluate(vector<ExprNode*> condi, void* tuple, Schema* schema);
-  virtual void* ExprEvaluate(void* tuple, Schema* schema) { return NULL; }
-  virtual void InitExprAtLogicalPlan(
-      data_type return_type, const std::map<std::string, int>& column_index,
-      Schema* schema) {}
+  bool MoreExprEvaluate(vector<ExprNode*> condi, ExprEvalCnxt& eecnxt);
+
+  virtual void* ExprEvaluate(ExprEvalCnxt& eecnxt) { return NULL; }
+
+  virtual void InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {}
+
   virtual void InitExprAtPhysicalPlan() {}
   virtual ExprNode* ExprCopy() { return NULL; }
   bool IsEqualAttr(const Attribute& attr);

@@ -124,11 +124,11 @@ TEST_F(ElasticIteratorModelTest, AggregationSmallGroups) {
                  message, rs);
   EXPECT_EQ(3, rs.getNumberOftuples());
 }
-TEST_F(ElasticIteratorModelTest, Join) {
+TEST_F(ElasticIteratorModelTest, EqualJoin) {
   ResultSet rs;
   std::string message;
   client_.submit(
-      "select count(*) from PART,LINEITEM where PART.row_id=LINEITEM.row_id;",
+      "select count(*) from LINEITEM,PART where PART.row_id=LINEITEM.row_id;",
       message, rs);
   DynamicBlockBuffer::Iterator it = rs.createIterator();
   BlockStreamBase::BlockStreamTraverseIterator *b_it =

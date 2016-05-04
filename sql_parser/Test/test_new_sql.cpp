@@ -59,7 +59,8 @@ int TestNewSql() {
       raw_ast->Print();
       cout << "--------------begin push down condition ------------" << endl;
 #endif
-      raw_ast->PushDownCondition(NULL);
+      PushDownConditionContext pdccnxt;
+      raw_ast->PushDownCondition(pdccnxt);
 #ifdef PRINTCONTEXT
       raw_ast->Print();
       cout << "--------------begin logical plan -------------------" << endl;
