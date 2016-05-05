@@ -56,6 +56,7 @@ using claims::common::ExprUnary;
 using claims::common::OperType;
 using claims::common::ExprConst;
 using claims::common::ExprColumn;
+using claims::common::LogicInitCnxt;
 
 using claims::physical_operator::PhysicalAggregation;
 namespace claims {
@@ -129,16 +130,17 @@ PlanContext LogicalAggregation::GetPlanContext() {
 
   ChangeAggAttrsForAVG();
   // initialize expression of group_by_attrs and aggregation_attrs
-  Schema* input_schema = GetSchema(child_context.attribute_list_);
-  map<string, int> column_to_id;
-  GetColumnToId(child_context.attribute_list_, column_to_id);
+  LogicInitCnxt licnxt;
+  licnxt.schema0_ = child_context.GetSchema();
+  GetColumnToId(child_context.attribute_list_, licnxt.column_id0_);
+
   for (int i = 0; i < group_by_attrs_.size(); ++i) {
-    group_by_attrs_[i]->InitExprAtLogicalPlan(group_by_attrs_[i]->actual_type_,
-                                              column_to_id, input_schema);
+    licnxt.return_type_ = group_by_attrs_[i]->actual_type_;
+    group_by_attrs_[i]->InitExprAtLogicalPlan(licnxt);
   }
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
-    aggregation_attrs_[i]->InitExprAtLogicalPlan(
-        aggregation_attrs_[i]->actual_type_, column_to_id, input_schema);
+    licnxt.return_type_ = aggregation_attrs_[i]->actual_type_;
+    aggregation_attrs_[i]->InitExprAtLogicalPlan(licnxt);
   }
 
   if (CanOmitHashRepartition(child_context)) {
@@ -247,14 +249,15 @@ void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
     Schema* input_schema) {
   ExprNode* group_by_node = NULL;
   ExprUnary* agg_node = NULL;
-  map<string, int> column_to_id;
+  LogicInitCnxt licnxt;
+  licnxt.schema0_ = input_schema;
   int group_by_size = group_by_attrs_.size();
   // map column name to id
   for (int i = 0; i < group_by_size; ++i) {
-    column_to_id["NULL_MID." + group_by_attrs_[i]->alias_] = i;
+    licnxt.column_id0_["NULL_MID." + group_by_attrs_[i]->alias_] = i;
   }
   for (int i = 0; i < aggregation_attrs_.size(); ++i) {
-    column_to_id["NULL_MID." + aggregation_attrs_[i]->alias_] =
+    licnxt.column_id0_["NULL_MID." + aggregation_attrs_[i]->alias_] =
         i + group_by_size;
   }
   // reconstruct group by attributes and initialize them
@@ -262,8 +265,8 @@ void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
     group_by_node = new ExprColumn(
         ExprNodeType::t_qcolcumns, group_by_attrs_[i]->actual_type_,
         group_by_attrs_[i]->alias_, "NULL_MID", group_by_attrs_[i]->alias_);
-    group_by_node->InitExprAtLogicalPlan(group_by_node->actual_type_,
-                                         column_to_id, input_schema);
+    licnxt.return_type_ = group_by_node->actual_type_;
+    group_by_node->InitExprAtLogicalPlan(licnxt);
     group_by_attrs.push_back(group_by_node);
   }
   // reconstruct aggregation attributes and initialize them
@@ -275,8 +278,8 @@ void LogicalAggregation::SetGroupbyAndAggAttrsForGlobalAgg(
                        aggregation_attrs_[i]->actual_type_,
                        aggregation_attrs_[i]->alias_, "NULL_MID",
                        aggregation_attrs_[i]->alias_));
-    agg_node->InitExprAtLogicalPlan(agg_node->actual_type_, column_to_id,
-                                    input_schema);
+    licnxt.return_type_ = agg_node->actual_type_;
+    agg_node->InitExprAtLogicalPlan(licnxt);
     aggregation_attrs.push_back(agg_node);
   }
 }

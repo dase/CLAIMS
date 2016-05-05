@@ -51,6 +51,7 @@
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
 #include "../common/expression/expr_node.h"
+using claims::common::ExprEvalCnxt;
 using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
@@ -67,6 +68,7 @@ class PhysicalFilter : public PhysicalOperator {
     BlockStreamBase::BlockStreamTraverseIterator* block_stream_iterator_;
     vector<QNode*> thread_qual_;
     vector<ExprNode*> thread_condi_;
+    ExprEvalCnxt expr_eval_cnxt_;
     ~FilterThreadContext();
   };
 

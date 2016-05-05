@@ -35,12 +35,14 @@
 #include "../catalog/stat/StatManager.h"
 #include "../IDsGenerator.h"
 #include "../common/AttributeComparator.h"
+#include "../common/expression/expr_node.h"
 #include "../common/TypePromotionMap.h"
 #include "../common/TypeCast.h"
 #include "../common/Expression/initquery.h"
 #include "../physical_operator/exchange_merger.h"
 #include "../physical_operator/physical_filter.h"
 
+using claims::common::LogicInitCnxt;
 using claims::physical_operator::ExchangeMerger;
 using claims::physical_operator::PhysicalFilter;
 namespace claims {
@@ -95,17 +97,21 @@ PlanContext LogicalFilter::GetPlanContext() {
       }
     }
   }
-  std::map<std::string, int> column_to_id;
-  GetColumnToId(plan_context.attribute_list_, column_to_id);
-  Schema* input_schema = GetSchema(plan_context.attribute_list_);
+//  std::map<std::string, int> column_to_id;
+//  GetColumnToId(plan_context.attribute_list_, column_to_id);
+//  Schema* input_schema = GetSchema(plan_context.attribute_list_);
 #ifdef NEWCONDI
   for (int i = 0; i < condi_.size(); ++i) {
     // Initialize expression of logical execution plan.
     InitExprAtLogicalPlan(condi_[i], t_boolean, column_to_id, input_schema);
   }
 #else
+  LogicInitCnxt licnxt;
+  licnxt.return_type_ = t_boolean;
+  GetColumnToId(plan_context.attribute_list_, licnxt.column_id0_);
+  licnxt.schema0_ = plan_context.GetSchema();
   for (int i = 0; i < condition_.size(); ++i) {
-    condition_[i]->InitExprAtLogicalPlan(t_boolean, column_to_id, input_schema);
+    condition_[i]->InitExprAtLogicalPlan(licnxt);
   }
 #endif
   plan_context_ = new PlanContext();

@@ -30,44 +30,31 @@
 #include "../physical_operator/physical_nest_loop_join.h"
 
 #include <boost/serialization/base_object.hpp>
+#include <vector>
+
+#include "../common/expression/expr_node.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
 #include "../Debug.h"
 
+using claims::common::ExprEvalCnxt;
+using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
+
 class PhysicalNestLoopJoin : public PhysicalOperator {
  protected:
   class NestLoopJoinContext : public ThreadContext {
    public:
+    NestLoopJoinContext(const vector<ExprNode *> &join_condi,
+                        const Schema *left_schema, const Schema *right_schema);
+    ~NestLoopJoinContext();
     BlockStreamBase *block_for_asking_;
     BlockStreamBase::BlockStreamTraverseIterator *block_stream_iterator_;
     DynamicBlockBuffer::Iterator buffer_iterator_;
     BlockStreamBase::BlockStreamTraverseIterator *buffer_stream_iterator_;
-  };
-
-  struct RemainingBlock {
-    RemainingBlock(BlockStreamBase *bsb_right,
-                   BlockStreamBase::BlockStreamTraverseIterator *bsti)
-        : bsb_right_(bsb_right),
-          blockstream_iterator_(bsti),
-          buffer_iterator_(NULL),
-          buffer_stream_iterator_(NULL) {}
-    RemainingBlock()
-        : bsb_right_(NULL),
-          blockstream_iterator_(NULL),
-          buffer_iterator_(NULL),
-          buffer_stream_iterator_(NULL) {}
-    RemainingBlock(const RemainingBlock &r) {
-      bsb_right_ = r.bsb_right_;
-      blockstream_iterator_ = r.blockstream_iterator_;
-      buffer_iterator_ = r.buffer_iterator_;
-      buffer_stream_iterator_ = r.buffer_stream_iterator_;
-    }
-    BlockStreamBase *bsb_right_;
-    BlockStreamBase::BlockStreamTraverseIterator *blockstream_iterator_;
-    DynamicBlockBuffer::Iterator *buffer_iterator_;
-    BlockStreamBase::BlockStreamTraverseIterator *buffer_stream_iterator_;
+    vector<ExprNode *> join_condi_;
+    ExprEvalCnxt expr_eval_cnxt_;
   };
 
  public:
@@ -77,21 +64,25 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
    public:
     State(PhysicalOperatorBase *child_left, PhysicalOperatorBase *child_right,
           Schema *input_schema_left, Schema *input_schema_right,
-          Schema *output_schema, unsigned block_size);
+          Schema *output_schema, unsigned block_size,
+          std::vector<ExprNode *> join_condi);
     State() {}
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(const Archive &ar, const unsigned int version) {
       ar &child_left_ &child_right_ &input_schema_left_ &input_schema_right_ &
-          output_schema_ &block_size_;
+          output_schema_ &block_size_ &join_condi_;
     }
 
    public:
     PhysicalOperatorBase *child_left_, *child_right_;
     Schema *input_schema_left_, *input_schema_right_;
     Schema *output_schema_;
+    std::vector<ExprNode *> join_condi_;
     unsigned block_size_;
   };
+  typedef bool (*JoinCondiProcess)(void *tuple_left, void *tuple_right,
+                                   NestLoopJoinContext *const nljcnxt);
 
  public:
   PhysicalNestLoopJoin();
@@ -103,26 +94,17 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   void Print();
 
  private:
+  static bool WithJoinCondi(void *tuple_left, void *tuple_right,
+                            NestLoopJoinContext *const nljcnxt);
+  static bool WithoutJoinCondi(void *tuple_left, void *tuple_right,
+                               NestLoopJoinContext *const nljcnxt);
   bool CreateBlockStream(BlockStreamBase *&, Schema *&schema) const;
-  bool AtomicPopRemainingBlock(RemainingBlock &rb);
-  void AtomicPushRemainingBlock(RemainingBlock rb);
-  BlockStreamBase *AtomicPopFreeBlockStream();
-  void AtomicPushFreeBlockStream(BlockStreamBase *block);
-  BlockStreamBase *AtomicPopFreeHtBlockStream();
-  void AtomicPushFreeHtBlockStream(BlockStreamBase *block);
+  ThreadContext *CreateContext();
 
   DynamicBlockBuffer *block_buffer_;
-  std::map<unsigned, unsigned> joinIndex_left_to_output_;
-  /* payload_left map to the output*/
-  std::map<unsigned, unsigned> payload_left_to_output_;
-  /* payload_right map to the output*/
-  std::map<unsigned, unsigned> payload_right_to_output_;
-
   State state_;
-  Lock lock_;
-  unsigned produced_tuples_;
-  unsigned consumed_tuples_from_right_;
-  unsigned consumed_tuples_from_left_;
+  JoinCondiProcess join_condi_process_;
+
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(const Archive &ar, const unsigned int version) {
