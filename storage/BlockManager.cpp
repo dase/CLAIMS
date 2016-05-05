@@ -7,6 +7,7 @@
 #include <sstream>
 #include "BlockManager.h"
 
+#include "../common/file_handle/hdfs_connector.h"
 #include "../Environment.h"
 #include "../common/rename.h"
 #include "../common/Message.h"
@@ -17,6 +18,7 @@
 using claims::common::rLoadFromHdfsOpenFailed;
 using claims::common::rLoadFromDiskOpenFailed;
 using claims::common::rUnbindPartitionFailed;
+using claims::common::HdfsConnector;
 
 BlockManager* BlockManager::blockmanager_ = NULL;
 
@@ -182,8 +184,9 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name) {
   file_name_former = file_name.substr(0, pos);
   file_name_latter = file_name.substr(pos + 1, file_name.length());
   int offset = atoi(file_name_latter.c_str());
-  hdfsFS fs =
-      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  //  hdfsFS fs =
+  //      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  hdfsFS fs = HdfsConnector::Instance();
   hdfsFile readFile =
       hdfsOpenFile(fs, file_name_former.c_str(), O_RDONLY, 0, 0, 0);
   hdfsFileInfo* hdfsfile = hdfsGetPathInfo(fs, file_name_former.c_str());
@@ -206,7 +209,7 @@ ChunkInfo BlockManager::loadFromHdfs(string file_name) {
     ci.hook = 0;
   }
   hdfsCloseFile(fs, readFile);
-  hdfsDisconnect(fs);
+  //  hdfsDisconnect(fs);
   return ci;
 }
 
@@ -215,8 +218,9 @@ int BlockManager::LoadFromHdfs(const ChunkID& chunk_id, void* const& desc,
   lock.acquire();
   int ret;
   uint64_t offset = chunk_id.chunk_off;
-  hdfsFS fs =
-      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  //  hdfsFS fs =
+  //      hdfsConnect(Config::hdfs_master_ip.c_str(), Config::hdfs_master_port);
+  hdfsFS fs = HdfsConnector::Instance();
   hdfsFile readFile = hdfsOpenFile(
       fs, chunk_id.partition_id.getPathAndName().c_str(), O_RDONLY, 0, 0, 0);
   hdfsFileInfo* hdfsfile = hdfsGetPathInfo(
@@ -229,6 +233,7 @@ int BlockManager::LoadFromHdfs(const ChunkID& chunk_id, void* const& desc,
     ELOG(rLoadFromHdfsOpenFailed,
          chunk_id.partition_id.getPathAndName().c_str());
     hdfsDisconnect(fs);
+
     lock.release();
     return -1;
   }  //加错误码;
@@ -247,7 +252,7 @@ int BlockManager::LoadFromHdfs(const ChunkID& chunk_id, void* const& desc,
     ret = -1;
   }
   hdfsCloseFile(fs, readFile);
-  hdfsDisconnect(fs);
+  //  hdfsDisconnect(fs);
   lock.release();
   return ret;
 }

@@ -1,12 +1,16 @@
 #!/bin/sh
 
-cd $CLAIMS_HOME/sbin/2-claims-conf/
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+
+cd 2-claims-conf/
 source ./load-config.sh
-cd ../
+cd ../../
+# now in CLAIMS_HOME
 
 if [ "$1" = "all" ]; then
 
- claimspids=`ps x | grep -w $CLAIMS_HOME/install/claimsserver | grep -v grep | awk '{print $1}'`
+ claimspids=`ps x | grep -w ./install/claimsserver | grep -v grep | awk '{print $1}'`
  if [ "$claimspids" != "" ]; then
   for claimspid in $claimspids
   do
@@ -18,7 +22,7 @@ if [ "$1" = "all" ]; then
  if [ -f "$runclaimsprocid" ]; then
   rm -f $runclaimsprocid
  fi
- clientpids=`ps x | grep -w $CLAIMS_HOME/install/client | grep -v grep | awk '{print $1}'`
+ clientpids=`ps x | grep -w ./install/client | grep -v grep | awk '{print $1}'`
  if [ "$clientpids" != "" ]; then
   for clientpid in $clientpids
   do
@@ -26,7 +30,7 @@ if [ "$1" = "all" ]; then
    kill -9 $clientpid
   done
  fi
- gtestpids=`ps x | grep -w $CLAIMS_HOME/install/test | grep -v grep | awk '{print $1}'`
+ gtestpids=`ps x | grep -w ./install/test | grep -v grep | awk '{print $1}'`
  if [ "$gtestpids" != "" ]; then
   for gtestpid in $gtestpids
   do

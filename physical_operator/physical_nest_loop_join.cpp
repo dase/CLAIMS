@@ -28,36 +28,50 @@
 
 #include "../physical_operator/physical_nest_loop_join.h"
 
+#include <vector>
 #include "../Executor/expander_tracker.h"
 #include "../common/Block/BlockStream.h"
+#include "../common/expression/expr_node.h"
+
+using claims::common::ExprNode;
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "../common/log/logging.h"
 
 namespace claims {
 namespace physical_operator {
 
-PhysicalNestLoopJoin::PhysicalNestLoopJoin() : PhysicalOperator(2, 2) {
+PhysicalNestLoopJoin::PhysicalNestLoopJoin()
+    : PhysicalOperator(2, 2), join_condi_process_(NULL) {
   InitExpandedStatus();
 }
 
 PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
-  // TODO Auto-generated destructor stub
+  //  DELETE_PTR(state_.child_left_);
+  //  DELETE_PTR(state_.child_right_);
+  //  DELETE_PTR(state_.input_schema_left_);
+  //  DELETE_PTR(state_.input_schema_right_);
+  //  for (int i = 0; i < state_.join_condi_.size(); ++i) {
+  //    DELETE_PTR(state_.join_condi_[i]);
+  //  }
+  //  state_.join_condi_.clear();
 }
 PhysicalNestLoopJoin::PhysicalNestLoopJoin(State state)
-    : PhysicalOperator(2, 2), state_(state) {
+    : PhysicalOperator(2, 2), state_(state), join_condi_process_(NULL) {
   InitExpandedStatus();
 }
 PhysicalNestLoopJoin::State::State(PhysicalOperatorBase *child_left,
                                    PhysicalOperatorBase *child_right,
                                    Schema *input_schema_left,
                                    Schema *input_schema_right,
-                                   Schema *output_schema, unsigned block_size)
+                                   Schema *output_schema, unsigned block_size,
+                                   std::vector<ExprNode *> join_condi)
     : child_left_(child_left),
       child_right_(child_right),
       input_schema_left_(input_schema_left),
       input_schema_right_(input_schema_right),
       output_schema_(output_schema),
-      block_size_(block_size) {}
+      block_size_(block_size),
+      join_condi_(join_condi) {}
 
 /**
  * @brief  Method description : describe the open method which gets results from
@@ -75,12 +89,18 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     winning_thread = true;
     timer = curtick();
     block_buffer_ = new DynamicBlockBuffer();
+    if (state_.join_condi_.size() == 0) {
+      join_condi_process_ = WithoutJoinCondi;
+    } else {
+      join_condi_process_ = WithJoinCondi;
+    }
     LOG(INFO) << "[NestloopJoin]: [the first thread opens the nestloopJoin "
                  "physical operator]" << std::endl;
   }
   state_.child_left_->Open(partition_offset);
   BarrierArrive(0);
-  NestLoopJoinContext *jtc = new NestLoopJoinContext();
+
+  NestLoopJoinContext *jtc = CreateOrReuseContext(crm_numa_sensitive);
   // create a new block to hold the results from the left child
   // and add results to the dynamic buffer
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
@@ -117,9 +137,6 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   // jtc->buffer_stream_iterator_ =
   //    jtc->buffer_iterator_.nextBlock()->createIterator();
 
-  InitContext(jtc);  // rename this function, here means to store the thread
-                     // context in the operator context
-
   state_.child_right_->Open(partition_offset);
 
   return true;
@@ -142,6 +159,7 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
   void *tuple_from_buffer_child = NULL;
   void *tuple_from_right_child = NULL;
   void *result_tuple = NULL;
+  bool pass = false;
   BlockStreamBase *buffer_block = NULL;
   NestLoopJoinContext *jtc =
       reinterpret_cast<NestLoopJoinContext *>(GetContext());
@@ -151,19 +169,25 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
       while (1) {
         while (NULL != (tuple_from_buffer_child =
                             jtc->buffer_stream_iterator_->currentTuple())) {
-          if (NULL != (result_tuple = block->allocateTuple(
-                           state_.output_schema_->getTupleMaxSize()))) {
-            const unsigned copyed_bytes = state_.input_schema_left_->copyTuple(
-                tuple_from_buffer_child, result_tuple);
-            state_.input_schema_right_->copyTuple(
-                tuple_from_right_child,
-                reinterpret_cast<char *>(result_tuple + copyed_bytes));
-          } else {
-            //            LOG(INFO) << "[NestloopJoin]:  [a block of the result
-            //            is full of "
-            //                         "the nest loop join result ]" <<
-            //                         std::endl;
-            return true;
+          pass = join_condi_process_(tuple_from_buffer_child,
+                                     tuple_from_right_child, jtc);
+          if (pass) {
+            if (NULL != (result_tuple = block->allocateTuple(
+                             state_.output_schema_->getTupleMaxSize()))) {
+              const unsigned copyed_bytes =
+                  state_.input_schema_left_->copyTuple(tuple_from_buffer_child,
+                                                       result_tuple);
+              state_.input_schema_right_->copyTuple(
+                  tuple_from_right_child,
+                  reinterpret_cast<char *>(result_tuple + copyed_bytes));
+            } else {
+              //            LOG(INFO) << "[NestloopJoin]:  [a block of the
+              //            result
+              //            is full of "
+              //                         "the nest loop join result ]" <<
+              //                         std::endl;
+              return true;
+            }
           }
           jtc->buffer_stream_iterator_->increase_cur_();
         }
@@ -223,15 +247,29 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
 bool PhysicalNestLoopJoin::Close() {
   InitExpandedStatus();
   DestoryAllContext();
-  if (NULL != block_buffer_) {
-    delete block_buffer_;
-    block_buffer_ = NULL;
-  }
+  DELETE_PTR(block_buffer_);
   state_.child_left_->Close();
   state_.child_right_->Close();
   return true;
 }
-
+bool PhysicalNestLoopJoin::WithJoinCondi(void *tuple_left, void *tuple_right,
+                                         NestLoopJoinContext *const nljcnxt) {
+  nljcnxt->expr_eval_cnxt_.tuple[0] = tuple_left;
+  nljcnxt->expr_eval_cnxt_.tuple[1] = tuple_right;
+  bool pass = false;
+  for (int i = 0; i < nljcnxt->join_condi_.size(); ++i) {
+    pass = *(bool *)(nljcnxt->join_condi_[i]->ExprEvaluate(
+        nljcnxt->expr_eval_cnxt_));
+    if (pass == false) {
+      return false;
+    }
+  }
+  return true;
+}
+bool PhysicalNestLoopJoin::WithoutJoinCondi(
+    void *tuple_left, void *tuple_right, NestLoopJoinContext *const nljcnxt) {
+  return true;
+}
 /**
  * @brief  Method description : create a block buffer based on the given left
  * or right input schema
@@ -248,7 +286,36 @@ bool PhysicalNestLoopJoin::CreateBlockStream(BlockStreamBase *&target,
     return true;
   }
 }
-
+PhysicalNestLoopJoin::NestLoopJoinContext::NestLoopJoinContext(
+    const vector<ExprNode *> &join_condi, const Schema *left_schema,
+    const Schema *right_schema)
+    : block_for_asking_(NULL),
+      block_stream_iterator_(NULL),
+      buffer_stream_iterator_(NULL) {
+  ExprNode *new_node = NULL;
+  for (int i = 0; i < join_condi.size(); ++i) {
+    new_node = join_condi[i]->ExprCopy();
+    new_node->InitExprAtPhysicalPlan();
+    join_condi_.push_back(new_node);
+  }
+  expr_eval_cnxt_.schema[0] = left_schema;
+  expr_eval_cnxt_.schema[1] = right_schema;
+}
+PhysicalNestLoopJoin::NestLoopJoinContext::~NestLoopJoinContext() {
+  DELETE_PTR(block_for_asking_);
+  DELETE_PTR(block_stream_iterator_);
+  DELETE_PTR(buffer_stream_iterator_);
+  for (int i = 0; i < join_condi_.size(); ++i) {
+    DELETE_PTR(join_condi_[i]);
+  }
+  join_condi_.clear();
+}
+ThreadContext *PhysicalNestLoopJoin::CreateContext() {
+  NestLoopJoinContext *jtc =
+      new NestLoopJoinContext(state_.join_condi_, state_.input_schema_left_,
+                              state_.input_schema_right_);
+  return jtc;
+}
 void PhysicalNestLoopJoin::Print() {
   printf("NestLoopJoin\n");
   printf("------Join Left-------\n");

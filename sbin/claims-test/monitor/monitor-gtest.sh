@@ -1,35 +1,36 @@
 #!/bin/sh
 
-cd $CLAIMS_HOME/sbin/2-claims-conf
+CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $CURRDIR
+cd ../../2-claims-conf
 source ./load-config.sh
+cd ../../
+# now in CLAIMS_HOME
 
 while [ 1 ]
 do
- procid=`pgrep claimsserver`
+ procid=`ps x | grep -w ./install/claimsserver | grep -v grep | awk '{print $1}'`
  if [ "$procid" = "" ]; then
   echo "claimsserver is aborted. Try to restart..."
-  cd $CLAIMS_HOME/sbin
-  ./4-stop-all.sh
+  ./sbin/stop-all.sh
   if [ "$local_disk_mode" = "1" ]; then
   rm $data*
   fi
-  if [ -d "$CLAIMS_HOME/install" ]; then
-    cd $CLAIMS_HOME/install
-    if [ ! -f "claimsserver" ]; then
-     cd $CLAIMS_HOME/sbin
-     ./1-compile.sh
+  if [ -d "install" ]; then
+    if [ ! -f "install/claimsserver" ]; then
+     ./sbin/1-compile.sh
     fi
   else
-    cd $CLAIMS_HOME/sbin
-    ./1-compile.sh
-  fi 
-  cd $CLAIMS_HOME/sbin
-  ./5-start-all.sh
+    ./sbin/1-compile.sh
+  fi
+  ./sbin/3-deploy.sh 
+  ./sbin/start-all.sh
   sleep 3 
-  cd $CLAIMS_HOME/sbin/claims-test
+  cd sbin/claims-test
   ./claimstest.sh 1 1 load_tpch_sf1_1p
+  cd ../../
  else
   echo "claimsserver is running..."
-  $CLAIMS_HOME/install/test --ip $master --port $client_listener_port
+  ./install/test --ip $master --port $client_listener_port
  fi
 done

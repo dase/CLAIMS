@@ -50,11 +50,11 @@ class FileHandleImpFactory {
     static FileHandleImpFactory factory;
     return factory;
   }
-  FileHandleImp* CreateFileHandleImp(FilePlatform platform) {
+  FileHandleImp* CreateFileHandleImp(FilePlatform platform, string file_name) {
     if (kHdfs == platform)
-      return new HdfsFileHandleImp();
+      return new HdfsFileHandleImp(file_name);
     else if (kDisk == platform)
-      return new DiskFileHandleImp();
+      return new DiskFileHandleImp(file_name);
     assert(false && "FilePlatform flag is invalid");
     return NULL;
   }

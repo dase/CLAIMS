@@ -31,6 +31,8 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
+
+#include "../../common/error_define.h"
 #include "../../utility/Timer.h"
 #include "../../common/error_no.h"
 using std::cout;

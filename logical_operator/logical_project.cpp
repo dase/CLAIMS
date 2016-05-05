@@ -45,6 +45,7 @@
 
 using claims::common::ExprColumn;
 using claims::common::ExprNode;
+using claims::common::LogicInitCnxt;
 using claims::physical_operator::PhysicalProject;
 namespace claims {
 namespace logical_operator {
@@ -117,12 +118,12 @@ PlanContext LogicalProject::GetPlanContext() {
    */
   for (int i = 0; i < expression_tree_.size(); ++i) {
     column_type* column = NULL;
-    if (t_string == expression_tree_[i]->return_type ||
-        t_decimal == expression_tree_[i]->return_type) {
-      column = new column_type(expression_tree_[i]->return_type,
+    if (t_string == expression_tree_[i]->return_type_ ||
+        t_decimal == expression_tree_[i]->return_type_) {
+      column = new column_type(expression_tree_[i]->return_type_,
                                expression_tree_[i]->length);
     } else {
-      column = new column_type(expression_tree_[i]->return_type);
+      column = new column_type(expression_tree_[i]->return_type_);
     }
     // set TableID
     const unsigned kTableID = INTERMEIDATE_TABLEID;
@@ -134,12 +135,13 @@ PlanContext LogicalProject::GetPlanContext() {
   }
 #else
   ret_attrs.clear();
-  map<string, int> column_to_id;
+  LogicInitCnxt licnxt;
+  licnxt.schema0_ = input_schema;
   int mid_table_id = MIDINADE_TABLE_ID++;
-  GetColumnToId(child_plan_context.attribute_list_, column_to_id);
+  GetColumnToId(child_plan_context.attribute_list_, licnxt.column_id0_);
   for (int i = 0; i < expr_list_.size(); ++i) {
-    expr_list_[i]->InitExprAtLogicalPlan(expr_list_[i]->actual_type_,
-                                         column_to_id, input_schema);
+    licnxt.return_type_ = expr_list_[i]->actual_type_;
+    expr_list_[i]->InitExprAtLogicalPlan(licnxt);
     ret_attrs.push_back(expr_list_[i]->ExprNodeToAttr(i, mid_table_id));
 
     // update partition key

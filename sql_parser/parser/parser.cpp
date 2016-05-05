@@ -12,6 +12,7 @@
 #include "./sql.lex.h"
 #include "./parser.h"
 
+#include "../../common/memory_handle.h"
 #include "../ast_node/ast_node.h"
 
 extern int yyparse(struct ParseResult* result);
@@ -38,7 +39,7 @@ Parser::Parser(string sql_stmt, string& result_info) : sql_stmt_(sql_stmt) {
   // CreateAst();
 }
 
-Parser::~Parser() { delete ast_root_; }
+Parser::~Parser() { DELETE_PTR(ast_root_); }
 
 AstNode* Parser::GetRawAST() { return ast_root_; }
 

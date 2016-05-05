@@ -224,7 +224,8 @@ RetCode InsertExec::Execute(ExecutedResult *exec_result) {
              position < table_desc_->getNumberOfAttribute(); position++) {
           // check value count
           if (insert_value == NULL) {
-            LOG(ERROR) << "Value count is too few" << endl;
+            LOG(ERROR) << "Value count is too few. Expected value count is "
+                       << table_desc_->getNumberOfAttribute() << endl;
             exec_result->SetError("Value count is too few");
             return claims::common::rFailure;
           }

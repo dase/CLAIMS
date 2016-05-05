@@ -27,11 +27,12 @@ LDADD = 	../catalog/libcatalog.a \
 
 noinst_LIBRARIES=libloader.a
 libloader_a_SOURCES = \
-	data_injector.cpp \
-	data_injector.h 				file_connector.h \
-	single_file_connector.cpp 		single_file_connector.h \
+	data_injector.cpp 				data_injector.h \
+	single_file_connector.h 		single_file_connector.cpp \
+	single_thread_single_file_connector.h single_thread_single_file_connector.cpp \
 	table_file_connector.cpp 		table_file_connector.h  \
 	validity.h 						validity.cpp
+	
 
 SUBDIRS = test
 DIST_SUBDIRS = test

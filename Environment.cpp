@@ -46,7 +46,9 @@ Environment::Environment(bool ismaster) : ismaster_(ismaster) {
   if (ismaster) {
     logging_->log("Initializing the Coordinator...");
     initializeCoordinator();
+    logging_->log("Initializing the catalog ...");
     catalog_ = claims::catalog::Catalog::getInstance();
+    logging_->log("restore the catalog ...");
     if (rSuccess != catalog_->restoreCatalog()) {
       LOG(ERROR) << "failed to restore catalog" << std::endl;
       cerr << "ERROR: restore catalog failed" << endl;

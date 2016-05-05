@@ -44,6 +44,7 @@
 #include "../utility/lock.h"
 #include "../utility/rdtsc.h"
 using claims::common::DataTypeOperFunc;
+using claims::common::ExprEvalCnxt;
 using std::vector;
 using std::pair;
 using claims::common::ExprNode;
@@ -86,6 +87,7 @@ class PhysicalSort : public PhysicalOperator {
     vector<std::pair<ExprNode*, int>> order_by_attrs_copy_;
 
     DataTypeOperFunc (*compare_funcs_)[2];
+    ExprEvalCnxt eecnxt_, eecnxt1_;
 
    private:
     friend class boost::serialization::access;

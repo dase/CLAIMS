@@ -34,32 +34,31 @@ ExprCaseWhen::ExprCaseWhen(ExprCaseWhen* expr)
     case_then_[i] = case_then_[i]->ExprCopy();
   }
 }
-void* ExprCaseWhen::ExprEvaluate(void* tuple, Schema* schema) {
+
+void* ExprCaseWhen::ExprEvaluate(ExprEvalCnxt& eecnxt) {
   ExprNode* then = case_then_[case_then_.size() - 1];
   void* result;
   for (int i = 0; i < case_when_.size(); i++) {
-    if (*static_cast<bool*>(case_when_[i]->ExprEvaluate(tuple, schema)) ==
-        true) {
+    if (*static_cast<bool*>(case_when_[i]->ExprEvaluate(eecnxt)) == true) {
       then = case_then_[i];
       break;
     }
   }  // case_then_ shouldn't be NULL, checked before
-  result = then->ExprEvaluate(tuple, schema);
+  result = then->ExprEvaluate(eecnxt);
   return type_cast_func_(result, value_);
 }
 
-void ExprCaseWhen::InitExprAtLogicalPlan(
-    data_type return_type, const std::map<std::string, int>& column_index,
-    Schema* schema) {
-  return_type_ = return_type;
+void ExprCaseWhen::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
+  return_type_ = licnxt.return_type_;
   value_size_ = 0;
   is_null_ = false;
   for (int i = 0; i < case_when_.size(); i++) {
-    case_when_[i]->InitExprAtLogicalPlan(t_boolean, column_index, schema);
+    licnxt.return_type_ = t_boolean;
+    case_when_[i]->InitExprAtLogicalPlan(licnxt);
   }
   for (int i = 0; i < case_then_.size(); i++) {
-    case_then_[i]->InitExprAtLogicalPlan(case_then_[i]->get_type_, column_index,
-                                         schema);
+    licnxt.return_type_ = case_then_[i]->get_type_;
+    case_then_[i]->InitExprAtLogicalPlan(licnxt);
     value_size_ = std::max(value_size_, case_then_[i]->value_size_);
     is_null_ = (is_null_ || case_then_[i]->is_null_);
   }

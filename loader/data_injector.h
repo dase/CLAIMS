@@ -33,10 +33,10 @@
 #include <string>
 
 #include "../common/error_define.h"
-#include "../common/file_handle/file_handle_imp.h"
 #include "../common/hash.h"
 #include "../catalog/table.h"
 #include "./validity.h"
+#include "../common/file_handle/file_handle_imp.h"
 
 using claims::common::FileOpenFlag;
 using claims::catalog::TableDescriptor;
@@ -51,8 +51,7 @@ class ExecutedResult;
 
 namespace claims {
 namespace loader {
-
-class FileConnector;
+class TableFileConnector;
 class DataInjector {
  public:
   struct LoadTask {
@@ -181,7 +180,7 @@ class DataInjector {
 
  private:
   TableDescriptor* table_;
-  FileConnector* connector_;
+  TableFileConnector& connector_;
 
   Schema* table_schema_;
   vector<Schema*> projections_schema_;
@@ -199,7 +198,7 @@ class DataInjector {
 
   string col_separator_;
   string row_separator_;
-  uint64_t row_id_in_table_;
+  uint64_t& row_id_in_table_;
 
   // support multi-thread
   std::list<LoadTask>* task_lists_ = NULL;

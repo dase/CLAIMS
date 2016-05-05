@@ -42,6 +42,7 @@
 #include "../common/Expression/execfunc.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
+using claims::common::ExprEvalCnxt;
 using claims::common::ExprNode;
 namespace claims {
 namespace physical_operator {
@@ -60,6 +61,7 @@ class PhysicalProject : public PhysicalOperator {
     BlockStreamBase::BlockStreamTraverseIterator *block_stream_iterator_;
     vector<QNode *> thread_qual_;
     vector<ExprNode *> thread_expr_;
+    ExprEvalCnxt expr_eval_cnxt_;
 
     ~ProjectThreadContext() {
       if (NULL != block_for_asking_) {

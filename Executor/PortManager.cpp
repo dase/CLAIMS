@@ -45,11 +45,6 @@ int PortManager::applyPort(){
 	if(free_ports.size()==0)
 		return -1;
 	int ret=free_ports.back();
-	while(isPortOccupied(ret))
-	{
-		free_ports.pop_back();
-		ret=free_ports.back();
-	}
 	free_ports.pop_back();
 	l.release();
 	return ret;
@@ -59,9 +54,3 @@ void PortManager::returnPort(unsigned port){
 	free_ports.push_back(port);
 	l.release();
 }
-
-bool PortManager::isPortOccupied(unsigned port)
-{
-	return false;
-}
-

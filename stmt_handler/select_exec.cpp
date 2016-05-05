@@ -80,7 +80,8 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   select_ast_->Print();
   cout << "--------------begin push down condition ------------" << endl;
 #endif
-  ret = select_ast_->PushDownCondition(NULL);
+  PushDownConditionContext pdccnxt;
+  ret = select_ast_->PushDownCondition(pdccnxt);
   if (rSuccess != ret) {
     exec_result->error_info_ = "push down condition error";
     exec_result->status_ = false;
@@ -118,12 +119,14 @@ RetCode SelectExec::Execute(ExecutedResult* exec_result) {
   cout << "--------------begin output result -------------------" << endl;
 #endif
 
-  physical_plan->Open();
+  if (false == physical_plan->Open()) {
+    LOG(ERROR) << "failed to open physical plan " << std::endl;
+    assert(false);
+  }
   while (physical_plan->Next(NULL)) {
   }
   exec_result->result_ = physical_plan->GetResultSet();
   physical_plan->Close();
-
   delete logic_plan;
   delete physical_plan;
   return rSuccess;

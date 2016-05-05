@@ -35,10 +35,10 @@ class ExprDate : public ExprNode {
     delete arg0_;
     delete arg1_;
   }
-  void* ExprEvaluate(void* tuple, Schema* schema);
-  void InitExprAtLogicalPlan(data_type return_type,
-                             const std::map<std::string, int>& column_index,
-                             Schema* schema);
+  void* ExprEvaluate(ExprEvalCnxt& eecnxt);
+
+  void InitExprAtLogicalPlan(LogicInitCnxt& licnxt);
+
   void InitExprAtPhysicalPlan();
   ExprNode* ExprCopy();
 

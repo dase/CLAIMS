@@ -84,12 +84,14 @@ PhysicalSort::State::State(Schema *input_schema, PhysicalOperatorBase *child,
 // TODO(FZH): every time compare 2 tuples, it should be calculated, it may be
 // calculated before there and fetch the result straightly here.
 bool PhysicalSort::Compare(void *a_tuple, void *b_tuple) {
+  cmp_state_->eecnxt_.tuple[0] = a_tuple;
+  cmp_state_->eecnxt1_.tuple[0] = b_tuple;
   void *a_result =
       cmp_state_->order_by_attrs_[order_by_pos_].first->ExprEvaluate(
-          a_tuple, cmp_state_->input_schema_);
+          cmp_state_->eecnxt_);
   void *b_result =
       cmp_state_->order_by_attrs_copy_[order_by_pos_].first->ExprEvaluate(
-          b_tuple, cmp_state_->input_schema_);
+          cmp_state_->eecnxt1_);
   fcinfo->args_[0] = a_result;
   fcinfo->args_[1] = b_result;
   fcinfo->args_num_ = 2;
@@ -207,6 +209,9 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
           [state_.order_by_attrs_[i].first->get_type_][OperType::oper_great];
     }
     //    int64_t time = curtick();
+    state_.eecnxt_.schema[0] = state_.input_schema_;
+    state_.eecnxt1_.schema[0] = state_.input_schema_;
+
     Order();
   }
   BarrierArrive(2);

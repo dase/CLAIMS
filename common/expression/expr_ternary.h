@@ -36,10 +36,10 @@ class ExprTernary : public ExprNode {
     delete arg1_;
     delete arg2_;
   }
-  void* ExprEvaluate(void* tuple, Schema* schema);
-  void InitExprAtLogicalPlan(data_type return_type,
-                             const std::map<std::string, int>& column_index,
-                             Schema* schema);
+  void* ExprEvaluate(ExprEvalCnxt& eecnxt);
+
+  void InitExprAtLogicalPlan(LogicInitCnxt& licnxt);
+
   void InitExprAtPhysicalPlan();
   ExprNode* ExprCopy();
 
