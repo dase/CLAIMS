@@ -52,8 +52,8 @@ void ExprCaseWhen::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
   return_type_ = licnxt.return_type_;
   value_size_ = 0;
   is_null_ = false;
-  licnxt.return_type_ = t_boolean;
   for (int i = 0; i < case_when_.size(); i++) {
+    licnxt.return_type_ = t_boolean;
     case_when_[i]->InitExprAtLogicalPlan(licnxt);
   }
   for (int i = 0; i < case_then_.size(); i++) {
