@@ -49,6 +49,7 @@ void ExprBinary::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
   return_type_ = licnxt.return_type_;
   licnxt.return_type_ = get_type_;
   arg0_->InitExprAtLogicalPlan(licnxt);
+  licnxt.return_type_ = get_type_;
   arg1_->InitExprAtLogicalPlan(licnxt);
   value_size_ = std::max(arg0_->value_size_, arg1_->value_size_);
   is_null_ = (arg0_->is_null_ || arg1_->is_null_);
