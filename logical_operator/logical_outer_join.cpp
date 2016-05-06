@@ -371,7 +371,7 @@ PhysicalOperatorBase* LogicalOuterJoin::GetPhysicalPlan(
   state.join_index_left_ = GetLeftJoinKeyIds();
   state.join_index_right_ = GetRightJoinKeyIds();
 
-  cout << "In logical plan : join_condi_.size = " << join_condi_.size();
+  // cout << "In logical plan : join_condi_.size = " << join_condi_.size();
   state.join_condi_ = join_condi_;
   switch (join_policy_) {
     case kNoRepartition: {

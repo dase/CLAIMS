@@ -493,11 +493,11 @@ bool PhysicalOuterHashJoin::Close() {
 #endif
   LOG(INFO) << "Consumes" << consumed_tuples_from_left
             << "tuples from left child!" << endl;
-  cout << "hash table num :" << hash_table_num_ << endl;
-  cout << "bucket num : " << bucket_num_ << endl;
-  cout << "joined_tuple num is: " << joined_tuple_.size() << endl;
-  cout << "right table num is: " << right_table_num_ << endl;
-  cout << "produced tuple num is: " << produced_tuples << endl;
+  //  cout << "hash table num :" << hash_table_num_ << endl;
+  //  cout << "bucket num : " << bucket_num_ << endl;
+  //  cout << "joined_tuple num is: " << joined_tuple_.size() << endl;
+  //  cout << "right table num is: " << right_table_num_ << endl;
+  //  cout << "produced tuple num is: " << produced_tuples << endl;
   //  for (int i = 0; i < 1048577; i++) {
   //    if (checked_bucket_[i] == false) {
   //      cout << "checked bucket " << i << " failed!!" << endl;
@@ -585,7 +585,7 @@ ThreadContext* PhysicalOuterHashJoin::CreateContext() {
       state_.input_schema_right_, state_.block_size_);
   jtc->r_block_stream_iterator_ = jtc->r_block_for_asking_->createIterator();
   ExprNode* new_node = NULL;
-  cout << "state_.join_condi_ = " << state_.join_condi_.size() << endl;
+  // cout << "state_.join_condi_ = " << state_.join_condi_.size() << endl;
   for (int i = 0; i < state_.join_condi_.size(); ++i) {
     new_node = state_.join_condi_[i]->ExprCopy();
     new_node->InitExprAtPhysicalPlan();
