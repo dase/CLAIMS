@@ -159,8 +159,16 @@ bool PartitionStorage::AtomicPartitionReaderIterator::NextBlock(
   if (NULL != chunk_it_ && chunk_it_->GetNextBlockAccessor(ba)) {
     lock_.release();
     ba->GetBlock(block);
+    if (NULL != ba) {
+      delete ba;
+      ba = NULL;
+    }
     return true;
   } else {
+    if (NULL != chunk_it_) {
+      delete chunk_it_;
+      chunk_it_ = NULL;
+    }
     if ((chunk_it_ = PartitionReaderIterator::NextChunk()) > 0) {
       lock_.release();
       return NextBlock(block);

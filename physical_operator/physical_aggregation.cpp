@@ -209,13 +209,17 @@ bool PhysicalAggregation::Open(const PartitionOffset &partition_offset) {
   int64_t one = 1;
   BlockStreamBase *block_for_asking =
       BlockStreamBase::createBlock(state_.input_schema_, state_.block_size_);
+  BlockStreamBase::BlockStreamTraverseIterator *bsti = NULL;
   block_for_asking->setEmpty();
 
   start = curtick();
   // traverse every block from child
   while (state_.child_->Next(block_for_asking)) {
-    BlockStreamBase::BlockStreamTraverseIterator *bsti =
-        block_for_asking->createIterator();
+    if (NULL != bsti) {
+      delete bsti;
+      bsti = NULL;
+    }
+    bsti = block_for_asking->createIterator();
     bsti->reset();
     // traverse every tuple from block
     while (NULL != (cur = bsti->currentTuple())) {

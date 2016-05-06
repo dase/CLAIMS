@@ -197,6 +197,7 @@ bool PhysicalHashJoin::Open(const PartitionOffset& partition_offset) {
     }
     jtc->l_block_for_asking_->setEmpty();
   }
+  DELETE_PTR(oper);
 #ifdef _DEBUG_
   tuples_in_hashtable = 0;
 

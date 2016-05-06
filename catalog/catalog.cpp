@@ -219,10 +219,12 @@ bool Catalog::IsDataFileExist() {
       if ('T' == file_ptr->d_name[0]) {
         LOG(INFO) << "The data disk file started with 'T': "
                   << file_ptr->d_name[0] << " is existed" << endl;
+        closedir(dir);
         return true;
       }
     }
     LOG(INFO) << "There are no data file in disk" << endl;
+    closedir(dir);
     return false;
   } else {
     int file_num;

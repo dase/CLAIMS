@@ -27,6 +27,8 @@
  */
 
 #include "../physical_operator/physical_limit.h"
+
+#include "../common/memory_handle.h"
 #include "../utility/rdtsc.h"
 
 namespace claims {
@@ -70,10 +72,11 @@ bool PhysicalLimit::Open(const PartitionOffset& kPartitionOffset) {
 // implementation, the child iterator sub-tree leaded by exchange
 // lower iterator cannot be closed if not all the blocks are called.
 bool PhysicalLimit::Next(BlockStreamBase* block) {
+  BlockStreamBase::BlockStreamTraverseIterator* it = NULL;
   while (state_.child_->Next(block_for_asking_)) {
     void* tuple_from_child;
-    BlockStreamBase::BlockStreamTraverseIterator* it =
-        block_for_asking_->createIterator();
+    DELETE_PTR(it);
+    it = block_for_asking_->createIterator();
     while (NULL != (tuple_from_child = it->currentTuple())) {
       if (!LimitExhausted()) {
         if (!ShouldSkip()) {
@@ -86,7 +89,7 @@ bool PhysicalLimit::Next(BlockStreamBase* block) {
             tuple_cur_++;
             it->increase_cur_();
           } else {
-            it->~BlockStreamTraverseIterator();
+            DELETE_PTR(it);
             return true;
           }
         } else {
