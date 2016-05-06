@@ -10,7 +10,9 @@ def listresult():
             print sql
             handle.writelines(sql + ',\n')
             filelst = glob.glob('./testresult/'+sql+'-*')
+            filelst.sort()
             for resfile in filelst:
+                print resfile
                 fobj = open(resfile, 'r')
                 line = fobj.readline()
                 while line:
