@@ -26,10 +26,11 @@
  *
  */
 
-#include "../physical_operator/physical_outer_hash_join.h"
 #include <glog/logging.h>
+#include <vector>
 #include <iosfwd>
 
+#include "../physical_operator/physical_outer_hash_join.h"
 #include "../codegen/ExpressionGenerator.h"
 #include "../Config.h"
 #include "../Executor/expander_tracker.h"
@@ -64,15 +65,20 @@ PhysicalOuterHashJoin::PhysicalOuterHashJoin()
   InitExpandedStatus();
 }
 
-PhysicalOuterHashJoin::~PhysicalOuterHashJoin() {}
+PhysicalOuterHashJoin::~PhysicalOuterHashJoin() {
+  for (int i = 0; i < state_.join_condi_.size(); ++i) {
+    DELETE_PTR(state_.join_condi_[i]);
+  }
+  state_.join_condi_.clear();
+}
 
 PhysicalOuterHashJoin::State::State(
     PhysicalOperatorBase* child_left, PhysicalOperatorBase* child_right,
     Schema* input_schema_left, Schema* input_schema_right,
     Schema* output_schema, Schema* ht_schema,
     std::vector<unsigned> joinIndex_left, std::vector<unsigned> joinIndex_right,
-    std::vector<unsigned> payload_left, std::vector<unsigned> payload_right,
-    unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size)
+    unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size,
+    vector<ExprNode*> join_condi)
     : child_left_(child_left),
       child_right_(child_right),
       input_schema_left_(input_schema_left),
@@ -81,11 +87,10 @@ PhysicalOuterHashJoin::State::State(
       hashtable_schema_(ht_schema),
       join_index_left_(joinIndex_left),
       join_index_right_(joinIndex_right),
-      payload_left_(payload_left),
-      payload_right_(payload_right),
       hashtable_bucket_num_(ht_nbuckets),
       hashtable_bucket_size_(ht_bucketsize),
-      block_size_(block_size) {}
+      block_size_(block_size),
+      join_condi_(join_condi) {}
 
 bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
 #ifdef TIME
@@ -100,19 +105,6 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
     winning_thread = true;
     ExpanderTracker::getInstance()->addNewStageEndpoint(
         pthread_self(), LocalStageEndPoint(stage_desc, "Hash join build", 0));
-    unsigned output_index = 0;
-    for (unsigned i = 0; i < state_.join_index_left_.size(); i++) {
-      join_index_left_to_output_[i] = output_index;
-      output_index++;
-    }
-    for (unsigned i = 0; i < state_.payload_left_.size(); i++) {
-      payload_left_to_output_[i] = output_index;
-      output_index++;
-    }
-    for (unsigned i = 0; i < state_.payload_right_.size(); i++) {
-      payload_right_to_output_[i] = output_index;
-      output_index++;
-    }
     hash_func_ = PartitionFunctionFactory::createBoostHashFunction(
         state_.hashtable_bucket_num_);
     unsigned long long hash_table_build = curtick();
@@ -123,6 +115,7 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
     consumed_tuples_from_left = 0;
 #endif
 
+#ifdef CodeGen
     QNode* expr = createEqualJoinExpression(
         state_.hashtable_schema_, state_.input_schema_right_,
         state_.join_index_left_, state_.join_index_right_);
@@ -143,6 +136,7 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
       LOG(INFO) << "Codegen(Join) failed!" << endl;
     }
     delete expr;
+#endif
   }
 
   /**
@@ -246,7 +240,6 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
    */
   while (true) {
     // Right join uses right table(child) as outer loop tuple
-    // As for left join, we just exchange the table order in the AST.
     while (NULL != (tuple_from_right_child =
                         jtc->r_block_stream_iterator_->currentTuple())) {
       bool nothing_join = true;
@@ -256,13 +249,16 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                   state_.input_schema_right_->getColumnAddess(
                       state_.join_index_right_[0], tuple_from_right_child),
                   state_.hashtable_bucket_num_);
-      // Hash table stores all tuples from left table. For each tuple from right
-      // child, loop through the exactly hash table bucket.
       while (NULL !=
              (tuple_in_hashtable = jtc->hashtable_iterator_.readCurrent())) {
+#ifdef CodeGen
         cff_(tuple_in_hashtable, tuple_from_right_child, &key_exit,
              state_.join_index_left_, state_.join_index_right_,
              state_.hashtable_schema_, state_.input_schema_right_, eftt_);
+#else
+        key_exit =
+            JoinCondiProcess(tuple_in_hashtable, tuple_from_right_child, jtc);
+#endif
         if (key_exit) {
           nothing_join = false;
           // Put the row_id of hash table(left table) which has been matched
@@ -434,8 +430,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                     null_tuple_size +=
                         state_.input_schema_right_->columns[count].get_length();
                   }
-                  delete temp_record;
-                  temp_record = NULL;
+                  DELETE_PTR(temp_record);
                 }
 
                 const unsigned copyed_bytes =
@@ -444,8 +439,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
                 state_.input_schema_right_->copyTuple(
                     null_tuple, (char*)result_tuple + copyed_bytes);
                 produced_tuples++;
-                delete null_tuple;
-                null_tuple = NULL;
+                DELETE_PTR(null_tuple);
               } else {
                 // cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
                 // cout << "block has no space!!!!" << endl;
@@ -499,11 +493,11 @@ bool PhysicalOuterHashJoin::Close() {
 #endif
   LOG(INFO) << "Consumes" << consumed_tuples_from_left
             << "tuples from left child!" << endl;
-  //  cout << "hash table num :" << hash_table_num_ << endl;
-  //  cout << "bucket num : " << bucket_num_ << endl;
-  //  cout << "joined_tuple num is: " << joined_tuple_.size() << endl;
-  //  cout << "right table num is: " << right_table_num_ << endl;
-  //  cout << "produced tuple num is: " << produced_tuples << endl;
+  cout << "hash table num :" << hash_table_num_ << endl;
+  cout << "bucket num : " << bucket_num_ << endl;
+  cout << "joined_tuple num is: " << joined_tuple_.size() << endl;
+  cout << "right table num is: " << right_table_num_ << endl;
+  cout << "produced tuple num is: " << produced_tuples << endl;
   //  for (int i = 0; i < 1048577; i++) {
   //    if (checked_bucket_[i] == false) {
   //      cout << "checked bucket " << i << " failed!!" << endl;
@@ -557,11 +551,29 @@ inline void PhysicalOuterHashJoin::IsMatchCodegen(
   func(l_tuple_addr, r_tuple_addr, return_addr);
 }
 
+inline bool PhysicalOuterHashJoin::JoinCondiProcess(
+    void* tuple_left, void* tuple_right, JoinThreadContext* const hjtc) {
+  hjtc->expr_eval_cnxt_.tuple[0] = tuple_left;
+  hjtc->expr_eval_cnxt_.tuple[1] = tuple_right;
+  bool pass = false;
+  for (int i = 0; i < hjtc->join_condi_.size(); ++i) {
+    pass = *(bool*)(hjtc->join_condi_[i]->ExprEvaluate(hjtc->expr_eval_cnxt_));
+    if (pass == false) {
+      return false;
+    }
+  }
+  return true;
+}
+
 PhysicalOuterHashJoin::JoinThreadContext::~JoinThreadContext() {
   delete l_block_for_asking_;
   delete l_block_stream_iterator_;
   delete r_block_for_asking_;
   delete r_block_stream_iterator_;
+  for (int i = 0; i < join_condi_.size(); ++i) {
+    DELETE_PTR(join_condi_[i]);
+  }
+  join_condi_.clear();
 }
 
 ThreadContext* PhysicalOuterHashJoin::CreateContext() {
@@ -572,7 +584,15 @@ ThreadContext* PhysicalOuterHashJoin::CreateContext() {
   jtc->r_block_for_asking_ = BlockStreamBase::createBlock(
       state_.input_schema_right_, state_.block_size_);
   jtc->r_block_stream_iterator_ = jtc->r_block_for_asking_->createIterator();
-
+  ExprNode* new_node = NULL;
+  cout << "state_.join_condi_ = " << state_.join_condi_.size() << endl;
+  for (int i = 0; i < state_.join_condi_.size(); ++i) {
+    new_node = state_.join_condi_[i]->ExprCopy();
+    new_node->InitExprAtPhysicalPlan();
+    jtc->join_condi_.push_back(new_node);
+  }
+  jtc->expr_eval_cnxt_.schema[0] = state_.input_schema_left_;
+  jtc->expr_eval_cnxt_.schema[1] = state_.input_schema_right_;
   return jtc;
 }
 

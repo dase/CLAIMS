@@ -42,12 +42,13 @@ class ExprIn : public ExprNode {
     cmp_expr_.clear();
     right_node_.clear();
   }
-  void* ExprItemEvaluate(void* tuple, Schema* schema, ExprBinary* cmp_expr,
+  void* ExprEvaluate(ExprEvalCnxt& eecnxt);
+
+  void InitExprAtLogicalPlan(LogicInitCnxt& licnxt);
+
+  void* ExprItemEvaluate(ExprEvalCnxt& eecnxt, ExprBinary* cmp_expr,
                          ExprNode* right_node);
-  void* ExprEvaluate(void* tuple, Schema* schema);
-  void InitExprAtLogicalPlan(data_type return_type,
-                             const std::map<std::string, int>& column_index,
-                             Schema* schema);
+
   void InitExprAtPhysicalPlan();
   ExprNode* ExprCopy();
 

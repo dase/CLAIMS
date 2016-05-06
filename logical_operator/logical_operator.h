@@ -55,7 +55,8 @@ enum OperatorType {
   kLogicalCrossJoin,
   kLogicalLimit,
   kLogicalSubquery,
-  kLogicalDeleteFilter
+  kLogicalDeleteFilter,
+  kLogicalOuterJoin
 };
 
 typedef PhysicalOperatorBase* PhysicalPlan;
@@ -74,8 +75,9 @@ typedef struct PhysicalPlanDescriptor {
  */
 class LogicalOperator {
  public:
-  LogicalOperator(){};
-  LogicalOperator(OperatorType operator_type) : operator_type_(operator_type) {
+  LogicalOperator() {}
+  LogicalOperator(OperatorType operator_type) {
+    operator_type_ = operator_type;
     lock_ = new Lock();
   }
   virtual ~LogicalOperator() {
@@ -131,7 +133,7 @@ class LogicalOperator {
   Lock* lock_;
   //  static std::atomic_uint MIDINADE_TABLE_ID;
 
- private:
+ protected:
   OperatorType operator_type_;
 };
 

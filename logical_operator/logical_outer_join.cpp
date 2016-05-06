@@ -33,6 +33,7 @@
 #include <string>
 
 #include "../catalog/stat/StatManager.h"
+#include "../common/expression/expr_node.h"
 #include "../Config.h"
 #include "../IDsGenerator.h"
 #include "../common/Logging.h"
@@ -42,6 +43,7 @@
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_outer_hash_join.h"
 
+using claims::common::LogicInitCnxt;
 using claims::physical_operator::ExchangeMerger;
 using claims::physical_operator::Expander;
 using claims::physical_operator::PhysicalHashJoin;
@@ -54,7 +56,7 @@ namespace logical_operator {
 LogicalOuterJoin::LogicalOuterJoin(
     std::vector<LogicalEqualJoin::JoinPair> joinpair_list,
     LogicalOperator* left_input, LogicalOperator* right_input, int join_type)
-    : LogicalOperator(kLogicalEqualJoin),
+    : LogicalOperator(kLogicalOuterJoin),
       joinkey_pair_list_(joinpair_list),
       left_child_(left_input),
       right_child_(right_input),
@@ -66,6 +68,18 @@ LogicalOuterJoin::LogicalOuterJoin(
     right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
   }
 }
+LogicalOuterJoin::LogicalOuterJoin(
+    std::vector<LogicalEqualJoin::JoinPair> joinpair_list,
+    LogicalOperator* left_input, LogicalOperator* right_input, int join_type,
+    vector<ExprNode*> join_condi)
+    : LogicalOperator(kLogicalOuterJoin),
+      joinkey_pair_list_(joinpair_list),
+      left_child_(left_input),
+      right_child_(right_input),
+      join_policy_(kNull),
+      plan_context_(NULL),
+      join_type_(join_type),
+      join_condi_(join_condi) {}
 LogicalOuterJoin::~LogicalOuterJoin() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -155,13 +169,6 @@ PlanContext LogicalOuterJoin::GetPlanContext() {
           left_dataflow.plan_partitioner_.get_partition_list());
       ret.plan_partitioner_.set_partition_func(
           left_dataflow.plan_partitioner_.get_partition_func());
-      //      if (0 == join_type_) {
-      //        ret.plan_partitioner_.set_partition_key(left_partition_key);
-      //        ret.plan_partitioner_.AddShadowPartitionKey(right_partition_key);
-      //      } else {
-      //        ret.plan_partitioner_.set_partition_key(right_partition_key);
-      //        ret.plan_partitioner_.AddShadowPartitionKey(left_partition_key);
-      //      }
       ret.plan_partitioner_.set_partition_key(left_partition_key);
       ret.plan_partitioner_.AddShadowPartitionKey(right_partition_key);
       /**
@@ -191,13 +198,6 @@ PlanContext LogicalOuterJoin::GetPlanContext() {
           right_dataflow.plan_partitioner_.get_partition_list());
       ret.plan_partitioner_.set_partition_func(
           right_dataflow.plan_partitioner_.get_partition_func());
-      //      if (join_type_ == 0) {
-      //        ret.plan_partitioner_.set_partition_key(
-      //            joinkey_pair_list_[0].left_join_attr_);
-      //      } else if (join_type_ == 1) {
-      //        ret.plan_partitioner_.set_partition_key(
-      //            right_dataflow.plan_partitioner_.get_partition_key());
-      //      }
       ret.plan_partitioner_.set_partition_key(
           right_dataflow.plan_partitioner_.get_partition_key());
       //  ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
@@ -227,13 +227,6 @@ PlanContext LogicalOuterJoin::GetPlanContext() {
           left_dataflow.plan_partitioner_.get_partition_list());
       ret.plan_partitioner_.set_partition_func(
           left_dataflow.plan_partitioner_.get_partition_func());
-      //      if (join_type_ == 0) {
-      //        ret.plan_partitioner_.set_partition_key(
-      //            left_dataflow.plan_partitioner_.get_partition_key());
-      //      } else if (join_type_ == 1) {
-      //        ret.plan_partitioner_.set_partition_key(
-      //            joinkey_pair_list_[0].right_join_attr_);
-      //      }
       ret.plan_partitioner_.set_partition_key(
           left_dataflow.plan_partitioner_.get_partition_key());
       //   ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
@@ -284,6 +277,16 @@ PlanContext LogicalOuterJoin::GetPlanContext() {
       assert(false);
       break;
     }
+  }
+
+  LogicInitCnxt licnxt;
+  GetColumnToId(left_dataflow.attribute_list_, licnxt.column_id0_);
+  GetColumnToId(right_dataflow.attribute_list_, licnxt.column_id1_);
+  licnxt.schema0_ = left_dataflow.GetSchema();
+  licnxt.schema1_ = right_dataflow.GetSchema();
+  for (int i = 0; i < join_condi_.size(); ++i) {
+    licnxt.return_type_ = join_condi_[i]->actual_type_;
+    join_condi_[i]->InitExprAtLogicalPlan(licnxt);
   }
 
   plan_context_ = new PlanContext();
@@ -368,8 +371,8 @@ PhysicalOperatorBase* LogicalOuterJoin::GetPhysicalPlan(
   state.join_index_left_ = GetLeftJoinKeyIds();
   state.join_index_right_ = GetRightJoinKeyIds();
 
-  state.payload_left_ = GetLeftPayloadIds();
-  state.payload_right_ = GetRightPayloadIds();
+  cout << "In logical plan : join_condi_.size = " << join_condi_.size();
+  state.join_condi_ = join_condi_;
   switch (join_policy_) {
     case kNoRepartition: {
       state.child_left_ = child_iterator_left;

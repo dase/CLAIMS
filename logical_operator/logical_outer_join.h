@@ -78,6 +78,9 @@ class LogicalOuterJoin : public LogicalOperator {
   LogicalOuterJoin(std::vector<LogicalEqualJoin::JoinPair>,
                    LogicalOperator* left_input, LogicalOperator* right_input,
                    int join_type);
+  LogicalOuterJoin(std::vector<LogicalEqualJoin::JoinPair>,
+                   LogicalOperator* left_input, LogicalOperator* right_input,
+                   int join_type, vector<ExprNode*> join_condi);
   virtual ~LogicalOuterJoin();
   /**
    * @brief Method description: Get the child information.
@@ -181,6 +184,7 @@ class LogicalOuterJoin : public LogicalOperator {
       const Attribute& attr_left, const Attribute& attr_right) const;
 
  private:
+  std::vector<ExprNode*> join_condi_;
   std::vector<LogicalEqualJoin::JoinPair> joinkey_pair_list_;
   std::vector<Attribute> left_join_key_list_;
   std::vector<Attribute> right_join_key_list_;
@@ -189,6 +193,7 @@ class LogicalOuterJoin : public LogicalOperator {
   JoinPolicy join_policy_;
   PlanContext* plan_context_;
   // join_type_ = 0 means left join while join_type = 1 means right join
+  // join_type_ = 2 means full join
   int join_type_;
 };
 }  // namespace logical_operator
