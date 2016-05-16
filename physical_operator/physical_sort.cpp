@@ -170,6 +170,10 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
     while (NULL != (tuple_ptr = block_it->nextTuple())) {
       thread_tuple.push_back(tuple_ptr);
     }
+    if (NULL != block_it) {
+      delete block_it;
+      block_it = NULL;
+    }
     if (CreateBlock(block_for_asking) == false) {
       LOG(ERROR) << "error in the create block stream!!!" << endl;
       return 0;

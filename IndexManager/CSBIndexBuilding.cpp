@@ -37,12 +37,12 @@ bool bottomLayerCollecting::Open(const PartitionOffset& partition_offset)
 		computeOutputSchema();
 		/* this is the first expanded thread*/
 		PartitionStorage* partition_handle_;
-		if((partition_handle_=BlockManager::getInstance()->getPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
+		if((partition_handle_=BlockManager::getInstance()->GetPartitionHandle(PartitionID(state_.projection_id_,partition_offset)))==0){
 			printf("The partition[%s] does not exists!\n",PartitionID(state_.projection_id_,partition_offset).getName().c_str());
 			SetReturnStatus(false);
 		}
 		else{
-			partition_reader_iterator_=partition_handle_->createAtomicReaderIterator();
+			partition_reader_iterator_=partition_handle_->CreateAtomicReaderIterator();
 		}
 		SetReturnStatus(true);
 	}
@@ -174,15 +174,15 @@ BlockStreamBase* bottomLayerCollecting::AtomicPopBlockStream()
 
 bool bottomLayerCollecting::askForNextBlock(BlockStreamBase* & block, remaining_block& rb)
 {
-	if (chunk_reader_iterator_==0||chunk_reader_iterator_->nextBlock(block) == false)
+	if (chunk_reader_iterator_==0||chunk_reader_iterator_->NextBlock(block) == false)
 	{
-		chunk_reader_iterator_ = partition_reader_iterator_->nextChunk();
+		chunk_reader_iterator_ = partition_reader_iterator_->NextChunk();
 
 		if (chunk_reader_iterator_ == 0){
 			printf("Has been falsed!!!!!!!!!!!!!*&S*DF&(SD&F(S<><<<><><><><><>\n");
 			return false;
 		}
-		chunk_reader_iterator_->nextBlock(block);
+		chunk_reader_iterator_->NextBlock(block);
 		lock_.acquire();
 		rb.chunk_offset = ++chunk_offset_;
 		block_offset_ = 0;

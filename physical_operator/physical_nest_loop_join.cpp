@@ -126,7 +126,7 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     return true;  // the
   }
   BarrierArrive(1);  // ??ERROR
-                     //	join_thread_context* jtc=new join_thread_context();
+  //	join_thread_context* jtc=new join_thread_context();
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_right_);
   jtc->block_for_asking_->setEmpty();
   jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
@@ -192,7 +192,11 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
           jtc->buffer_stream_iterator_->increase_cur_();
         }
 
-        jtc->buffer_stream_iterator_->~BlockStreamTraverseIterator();
+        //        jtc->buffer_stream_iterator_->~BlockStreamTraverseIterator();
+        if (jtc->buffer_stream_iterator_ != NULL) {
+          delete jtc->buffer_stream_iterator_;
+          jtc->buffer_stream_iterator_ = NULL;
+        }
         if (NULL != (buffer_block = jtc->buffer_iterator_.nextBlock())) {
           jtc->buffer_stream_iterator_ = buffer_block->createIterator();
         } else {
@@ -208,6 +212,10 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
             false &&
             "[NestloopJoin]: this block shouldn't be NULL in nest loop join!");
       }
+      if (jtc->buffer_stream_iterator_ != NULL) {
+        delete jtc->buffer_stream_iterator_;
+        jtc->buffer_stream_iterator_ = NULL;
+      }
       jtc->buffer_stream_iterator_ = buffer_block->createIterator();
       jtc->block_stream_iterator_->increase_cur_();
     }
@@ -222,6 +230,10 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
         jtc->block_for_asking_->setEmpty();
       }
       return false;
+    }
+    if (jtc->buffer_stream_iterator_ != NULL) {
+      delete jtc->buffer_stream_iterator_;
+      jtc->buffer_stream_iterator_ = NULL;
     }
     jtc->buffer_stream_iterator_ = buffer_block->createIterator();
 
@@ -239,7 +251,11 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
         return true;
       }
     }
-    jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
+    //    jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
+    if (jtc->block_stream_iterator_ != NULL) {
+      delete jtc->block_stream_iterator_;
+      jtc->block_stream_iterator_ = NULL;
+    }
     jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
   }
   return Next(block);

@@ -197,6 +197,7 @@ bool ExchangeSenderPipeline::Next(BlockStreamBase* no_block) {
           state_.schema_->copyTuple(tuple_from_child,
                                     tuple_in_cur_block_stream);
         }
+        DELETE_PTR(traverse_iterator);  // by hAN MEMORY LEAK
       } else if (state_.partition_schema_.isBroadcastPartition()) {
         /**
          * for boardcast case, all block from child should inserted into all
