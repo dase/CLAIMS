@@ -58,7 +58,7 @@ PS_SUPPKEY,
 PS_AVAILQTY,
 PS_SUPPLYCOST,
 PS_COMMENT
-) number = 1 partitioned on PS_PARTKEY;
+) number = 4 partitioned on PS_PARTKEY;
 load table PARTSUPP from "/home/imdb/rawData/tpch-raw-data/tpch_sf1/partsupp.tbl" with '|','\n';
 
 create table CUSTOMER(

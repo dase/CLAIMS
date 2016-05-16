@@ -180,9 +180,11 @@ inline void IncreaseByOne(void* target, void* increment) {
 template <>
 inline void IncreaseByOne<char*>(void* target, void* increment) {}
 
+static Decimal decimalone(1, 0, "1");
+
 template <>
 inline void IncreaseByOne<Decimal*>(void* target, void* increment) {
-  *(Decimal*)target = ((Decimal*)target)->op_add(Decimal(1, 0, "1"));
+  *(Decimal*)target = ((Decimal*)target)->op_add(decimalone);
 }
 template <typename T>  //暂时先实现这点
 inline void ADD_IncreaseByOne(void* target, void* increment) {
@@ -195,7 +197,7 @@ inline void ADD_IncreaseByOne<char*>(void* target, void* increment) {}
 template <>
 inline void ADD_IncreaseByOne<Decimal*>(void* target, void* increment) {
   *(Decimal*)target = ((Decimal*)target)->op_add(*(Decimal*)increment);  // add
-  *(Decimal*)target = ((Decimal*)target)->op_add(Decimal(1, 0, "1"));
+  *(Decimal*)target = ((Decimal*)target)->op_add(decimalone);
 }
 // template<>
 // inline void ADD_IncreaseByOne<date*>(void* target, void* increment)
@@ -1103,28 +1105,8 @@ class OperateDecimal : public Operate {
     *(Decimal*)desc = *(Decimal*)src;
   }
   inline std::string toString(void* value) {
-    if (this->nullable == true && ((Decimal*)value)->isNull()) return "NULL";
-    /*
-     char buf[43] = {"\0"};
-     ExportSerializeOutput out(buf, 43);
-     ((NValue*)value)->serializeToExport(out, &size);
-     return std::string(buf + 4);
-     */
-    return ((Decimal*)value)->ToString(((Decimal*)value)->GetScale());
+    return ((Decimal*)value)->toString(this->scale_);
   };
-
-  /*
-   static std::string toString(const NValue v, unsigned n_o_d_d = 12) {
-   //		if (this->nullable == true && compare(v, (void*)(&NULL_DECIMAL))
-   //==
-   // 0)
-   //			return "NULL";
-   char buf[43] = {"\0"};
-   ExportSerializeOutput out(buf, 43);
-   (v).serializeToExport(out, &n_o_d_d);
-   return std::string(buf + 4);
-   }
-   */
   void toValue(void* target, const char* str) {
     if (((strcmp(str, "") == 0)||(strcmp(str, "NULL") == 0)) && this->nullable == true)
       *(Decimal*)target = Decimal::CreateNullDecimal();
@@ -1221,7 +1203,10 @@ class OperateDecimal : public Operate {
    */
   RetCode CheckSet(string& str) const;
   void SetDefault(string& str) const { str = string("0"); }
-
+  /*
+private:
+	//bool CheckStr(string str) const;
+*/
  private:
   int precision_;
   int scale_;
