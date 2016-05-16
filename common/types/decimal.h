@@ -36,20 +36,23 @@ using namespace std;
 namespace claims {
 namespace common {
 
-#define CLAIMS_COMMON_DECIMAL_TTSIZE 4
-#define CLAIMS_COMMON_DECIMAL_TTLSIZE 8
-#define CLAIMS_COMMON_DECIMAL_MAXSCALE 30
-#define CLAIMS_COMMON_DECIMAL_MAXPRCISION 72
-#define CLAIMS_COMMON_DECIMAL_PSUBS \
-  (CLAIMS_COMMON_DECIMAL_MAXPRCISION - CLAIMS_COMMON_DECIMAL_MAXSCALE)
+#define DECIMAL_TTSIZE 4
+#define DECIMAL_TTLSIZE 8
+#define DECIMAL_MAXSCALE 30
+#define DECIMAL_MAXPRCISION 72
+#define DECIMAL_PSUBS \
+  (DECIMAL_MAXPRCISION - DECIMAL_MAXSCALE)
 
 #define NWORDS 1
 
+#define DECIMAL_POS 	0x00
+#define DECIMAL_NEG 	0x01
+#define DECIMAL_NAN 	0x02
 // The int used for storage and return values
-typedef ttmath::Int<CLAIMS_COMMON_DECIMAL_TTSIZE> TTInt;
+typedef ttmath::Int<DECIMAL_TTSIZE> TTInt;
 // Long integer with space for multiplication and division without
 // carry/overflow
-typedef ttmath::Int<CLAIMS_COMMON_DECIMAL_TTLSIZE> TTLInt;
+typedef ttmath::Int<DECIMAL_TTLSIZE> TTLInt;
 
 //#define DECIM_DEBUG
 
@@ -62,86 +65,18 @@ typedef ttmath::Int<CLAIMS_COMMON_DECIMAL_TTLSIZE> TTLInt;
 #define DEBUGOUT(A)
 #endif
 
-#define MAXVAL(A,B) ((A)>(B)?(A):(B))
-#define MINVAL(A,B) ((A)<(B)?(A):(B))
-
-/**-----------------------------------------
- 					  e/E
-				      /   \
-                          .      esign
-				   /  \        \
-                       /    \         ePower
-                   whole     fractinal
-                     /
-                 issign
- --------------------------------------------
- 		-123.456e-7
- 		=>{
-			 is_sign = true;
-			 whole="123";
-			 fractinal = "456";
-			 esign = true;
-			 ePower = "7";
-		 }
- */
-class DecimalString {
- public:
-  DecimalString(bool isSign = false, string wholePart = "",
-                string fractinalPart = "", bool eSign = false,
-                string ePower = "")
-      : is_sign_(isSign),
-        whole_part_(wholePart),
-        fractional_part_(fractinalPart),
-        e_sign_(eSign),
-        e_power_(ePower) {}
-
-  DecimalString& operator=(const DecimalString& rhs) {
-    if (this == &rhs) return *this;
-    this->is_sign_ = rhs.is_sign_;
-    this->whole_part_ = rhs.whole_part_;
-    this->fractional_part_ = rhs.fractional_part_;
-    this->e_sign_ = rhs.e_sign_;
-    this->e_power_ = rhs.e_power_;
-    return *this;
-  }
-
-  void PrintValue() {
-    cout << setw(20) << "is_sign_:[" << is_sign_ << "]" << endl;
-    cout << setw(20) << "whole_part_:[" << whole_part_ << "]" << endl;
-    cout << setw(20) << "fractional_part_:[" << fractional_part_ << "]" << endl;
-    cout << setw(20) << "e_sign_:[" << e_sign_ << "]" << endl;
-    cout << setw(20) << "e_power_:[" << e_power_ << "]" << endl;
-  }
-
-  void clear() {
-    is_sign_ = false;
-    whole_part_ = "";
-    fractional_part_ = "";
-    e_sign_ = false;
-    e_power_ = "";
-  }
-
- public:
-  bool is_sign_;
-  string whole_part_;
-  string fractional_part_;
-  bool e_sign_;
-  string e_power_;
-};
 
 /*
  *
  */
 class Decimal {
  public:
-  Decimal();
+
   Decimal(int precision, int scale, string valstr);
+  Decimal(int precision, int scale, const char * valstr);
   virtual ~Decimal();
-  static bool StringToDecimal(int p, int s, string strdec, bool* pissign = NULL,
-                              string* pwhole = NULL, string* pfractinal = NULL);
-  static bool StringToDecimal(string strdec, DecimalString& decstr);
-  string ToString(unsigned number_of_fractinal_digits =
-                      CLAIMS_COMMON_DECIMAL_MAXSCALE) const;
+  bool StrtoDecimal(int p, int s, const char *cp);
+  string toString(unsigned number_of_fractinal_digits) const;
   static Decimal CreateNullDecimal();
   bool isNull() const;
 
@@ -163,10 +98,6 @@ class Decimal {
 
   Decimal& operator=(const Decimal& rhs);
 
-  void SetPrecsion(int p){ const_cast<int&>(precision_) = p; }
-  void SetScale(int s){ const_cast<int&>(scale_) = s; }
-  int GetScale(){return scale_;}
-
   void PrintValue(int ifra);
 
   const TTInt& GetTTInt() const {
@@ -175,19 +106,17 @@ class Decimal {
   }
 
  private:
+  Decimal();
   void SetTTInt(TTInt value) { this->word[0] = value; }
-  void SetTTInt(bool issign, string whole, string fractinal);
-  TTInt Round(unsigned num) const;
 
  private:
   static const TTInt kMaxScaleFactor;
-  static const int kMaxDecScale = CLAIMS_COMMON_DECIMAL_MAXSCALE;
+  static const int kMaxDecScale = DECIMAL_MAXSCALE;
 
-  const int precision_;
-  const int scale_;
+  // Mark decimal NULL or not
+  const char decimal_sign_;
   TTInt word[NWORDS];
 };
-
 
 inline int Decimal::compare(const Decimal rhs) const {
   const TTInt l = this->GetTTInt();

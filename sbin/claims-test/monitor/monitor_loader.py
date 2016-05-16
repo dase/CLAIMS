@@ -98,8 +98,6 @@ runtest="cd %s/sbin/claims-test; ./claimstest.sh %d %d %s;"
 
 def autotest():
     for i in mode_data_case:
-        if i[0]==0:
-            continue
         command1=config_disk_mode%(user, hostname, i[0])+config_data%(user, hostname, i[1])+deploy%(user, hostname)
         print command1
         os.system(command1)
