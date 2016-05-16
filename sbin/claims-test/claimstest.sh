@@ -38,33 +38,11 @@ fi
 echo "loops=[$runloops];""concurrency=[$concurrency_count]"
 
 thislog=$logpath/client.$(date +%Y-%m-%d).log
-<<<<<<< HEAD
-cd $CLAIMS_HOME/sbin/claims-test
-<<<<<<< HEAD
-for((loop=1;loop<=runloops;loop++))
-do
-{
- for((cur=1;cur<=concurrency_count;cur++))  
- do
- {
-  datestr=`date '+%Y-%m-%d %H:%M:%S'`
-  thisstartstr="========run test:[$3] [$loop-$cur] time: $datestr========"
-  echo -e "\033[33m$thisstartstr\033[0m"
-#  echo $thisstartstr >> $thislog
-  $CLAIMS_HOME/install/client $master $client_listener_port < $CLAIMS_HOME/sbin/claims-test/testcase/$3.test > $CLAIMS_HOME/sbin/claims-test/testresult/$3-$loop-$cur.result
-  sleep 1
-=======
-if [ ! -d "testresult" ]; then
- mkdir -p "testresult"
-fi
->>>>>>> for_auto_test_neW
-=======
 cd sbin/claims-test
 if [ ! -d "testresult" ]; then
  mkdir -p "testresult"
 fi
 cd ../../
->>>>>>> for_auto_test_new
 
 for((loop=1;loop<=runloops;loop++))
 do
