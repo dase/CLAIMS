@@ -219,12 +219,10 @@ bool Catalog::IsDataFileExist() {
       if ('T' == file_ptr->d_name[0]) {
         LOG(INFO) << "The data disk file started with 'T': "
                   << file_ptr->d_name[0] << " is existed" << endl;
-        closedir(dir);
         return true;
       }
     }
     LOG(INFO) << "There are no data file in disk" << endl;
-    closedir(dir);
     return false;
   } else {
     int file_num;
@@ -261,6 +259,10 @@ RetCode Catalog::restoreCatalog() {
     return rCatalogNotFound;
   } else if (!read_connector_->CanAccess()) {
     LOG(INFO) << "The catalog file and data file all are not existed" << endl;
+    return rSuccess;
+  } else if (!IsDataFileExist()) {
+    LOG(WARNING) << "There are no data file while catalog file exists. "
+                    "The catalog file will be overwrite" << endl;
     return rSuccess;
   } else {
     EXEC_AND_ONLY_LOG_ERROR(ret, read_connector_->Open(),
