@@ -101,10 +101,8 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
           target_id);
   assert(target_node_addr.second != 0);
   try {
-    cout << "remote actor begin" << endl;
     auto target_actor =
         remote_actor(target_node_addr.first.c_str(), target_node_addr.second);
-    cout << "REMOTE actor is OK" << endl;
     self->sync_send(target_actor, AskExchAtom::value, exchange_id)
         .await(
             /// should add overtime!

@@ -347,11 +347,8 @@ RetCode SelectExec::IsUpperExchangeRegistered(
     assert(target_node_addr.second != 0);
     actor target_actor;
     try {
-      cout << "111remote actor begin" << endl;
       target_actor =
           remote_actor(target_node_addr.first.c_str(), target_node_addr.second);
-      cout << "111remote actor end" << endl;
-
     } catch (caf::network_error& e) {
       PLOG(ERROR) << "111master socket related errors occur " << endl;
       assert(false);
