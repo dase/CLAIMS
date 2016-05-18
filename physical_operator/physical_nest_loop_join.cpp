@@ -26,13 +26,13 @@
  *
  */
 
-#include "../physical_operator/physical_nest_loop_join.h"
-
 #include <vector>
+#include <stack>
+#include "../physical_operator/physical_nest_loop_join.h"
 #include "../Executor/expander_tracker.h"
 #include "../common/Block/BlockStream.h"
+#include "../physical_operator/physical_operator_base.h"
 #include "../common/expression/expr_node.h"
-
 using claims::common::ExprNode;
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "../common/log/logging.h"
@@ -41,7 +41,8 @@ namespace claims {
 namespace physical_operator {
 
 PhysicalNestLoopJoin::PhysicalNestLoopJoin()
-    : PhysicalOperator(2, 2), join_condi_process_(NULL) {
+    : PhysicalOperator(2, 2), block_buffer_(NULL), join_condi_process_(NULL) {
+  set_phy_oper_type(kPhysicalNestLoopJoin);
   InitExpandedStatus();
 }
 
@@ -56,7 +57,11 @@ PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
   //  state_.join_condi_.clear();
 }
 PhysicalNestLoopJoin::PhysicalNestLoopJoin(State state)
-    : PhysicalOperator(2, 2), state_(state), join_condi_process_(NULL) {
+    : PhysicalOperator(2, 2),
+      state_(state),
+      block_buffer_(NULL),
+      join_condi_process_(NULL) {
+  set_phy_oper_type(kPhysicalNestLoopJoin);
   InitExpandedStatus();
 }
 PhysicalNestLoopJoin::State::State(PhysicalOperatorBase *child_left,
@@ -79,7 +84,10 @@ PhysicalNestLoopJoin::State::State(PhysicalOperatorBase *child_left,
  * block buffer is a dynamic block buffer since all the expanded threads will
  * share the same block buffer.
  */
-bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
+bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
+                                const PartitionOffset &partition_offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
   unsigned long long int timer;
   bool winning_thread = false;
@@ -97,14 +105,27 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
     LOG(INFO) << "[NestloopJoin]: [the first thread opens the nestloopJoin "
                  "physical operator]" << std::endl;
   }
-  state_.child_left_->Open(partition_offset);
+  RETURN_IF_CANCELLED(exec_status);
+
+  state_.child_left_->Open(exec_status, partition_offset);
+  RETURN_IF_CANCELLED(exec_status);
+
   BarrierArrive(0);
 
   NestLoopJoinContext *jtc = CreateOrReuseContext(crm_numa_sensitive);
   // create a new block to hold the results from the left child
   // and add results to the dynamic buffer
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
-  while (state_.child_left_->Next(jtc->block_for_asking_)) {
+
+  while (state_.child_left_->Next(exec_status, jtc->block_for_asking_)) {
+    if (exec_status->is_cancelled()) {
+      if (NULL != jtc->block_for_asking_) {
+        delete jtc->block_for_asking_;
+        jtc->block_for_asking_ = NULL;
+      }
+      return false;
+    }
+
     block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
     CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
   }
@@ -137,12 +158,15 @@ bool PhysicalNestLoopJoin::Open(const PartitionOffset &partition_offset) {
   // jtc->buffer_stream_iterator_ =
   //    jtc->buffer_iterator_.nextBlock()->createIterator();
 
-  state_.child_right_->Open(partition_offset);
-
+  InitContext(jtc);  // rename this function, here means to store the thread
+                     // context in the operator context
+  RETURN_IF_CANCELLED(exec_status);
+  state_.child_right_->Open(exec_status, partition_offset);
   return true;
 }
 
-bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
+bool PhysicalNestLoopJoin::Next(SegmentExecStatus *const exec_status,
+                                BlockStreamBase *block) {
   /**
    * @brief it describes the sequence of the nestloop join. As the intermediate
    * result of the left child has been stored in the dynamic block buffer in the
@@ -156,6 +180,8 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
    * @ return
    * @details   (additional)
    */
+  RETURN_IF_CANCELLED(exec_status);
+
   void *tuple_from_buffer_child = NULL;
   void *tuple_from_right_child = NULL;
   void *result_tuple = NULL;
@@ -164,6 +190,8 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
   NestLoopJoinContext *jtc =
       reinterpret_cast<NestLoopJoinContext *>(GetContext());
   while (1) {
+    RETURN_IF_CANCELLED(exec_status);
+
     while (NULL != (tuple_from_right_child =
                         jtc->block_stream_iterator_->currentTuple())) {
       while (1) {
@@ -226,7 +254,7 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
       LOG(WARNING) << "[NestloopJoin]: the buffer is empty in nest loop join!";
       // for getting all right child's data
       jtc->block_for_asking_->setEmpty();
-      while (state_.child_right_->Next(jtc->block_for_asking_)) {
+      while (state_.child_right_->Next(exec_status, jtc->block_for_asking_)) {
         jtc->block_for_asking_->setEmpty();
       }
       return false;
@@ -239,7 +267,8 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
 
     // ask block from right child
     jtc->block_for_asking_->setEmpty();
-    if (false == state_.child_right_->Next(jtc->block_for_asking_)) {
+    if (false ==
+        state_.child_right_->Next(exec_status, jtc->block_for_asking_)) {
       if (true == block->Empty()) {
         LOG(WARNING) << "[NestloopJoin]: [no join result is stored in the "
                         "block after traverse the right child operator]"
@@ -258,14 +287,14 @@ bool PhysicalNestLoopJoin::Next(BlockStreamBase *block) {
     }
     jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
   }
-  return Next(block);
+  return Next(exec_status, block);
 }
-bool PhysicalNestLoopJoin::Close() {
+bool PhysicalNestLoopJoin::Close(SegmentExecStatus *const exec_status) {
   InitExpandedStatus();
   DestoryAllContext();
   DELETE_PTR(block_buffer_);
-  state_.child_left_->Close();
-  state_.child_right_->Close();
+  state_.child_left_->Close(exec_status);
+  state_.child_right_->Close(exec_status);
   return true;
 }
 bool PhysicalNestLoopJoin::WithJoinCondi(void *tuple_left, void *tuple_right,
@@ -338,6 +367,16 @@ void PhysicalNestLoopJoin::Print() {
   state_.child_left_->Print();
   printf("------Join Right-------\n");
   state_.child_right_->Print();
+}
+RetCode PhysicalNestLoopJoin::GetAllSegments(stack<Segment *> *all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_right_) {
+    ret = state_.child_right_->GetAllSegments(all_segments);
+  }
+  if (NULL != state_.child_left_) {
+    ret = state_.child_left_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 
 }  // namespace physical_operator

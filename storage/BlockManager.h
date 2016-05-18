@@ -8,32 +8,23 @@
 #ifndef BLOCKMANAGER_H_
 #define BLOCKMANAGER_H_
 
-#include <Theron/Theron.h>
-#include <Theron/Defines.h>
 #include <boost/unordered_map.hpp>
 #include <string>
 #include <vector>
 #include <iostream>
 #include <map>
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
-using namespace std;
-
 #include <stdio.h>
-
 #include "hdfs.h"
 #include "MemoryManager.h"
 #include "DiskStore.h"
 #include "BlockManagerId.h"
 #include "PartitionStorage.h"
-
 #include "../Debug.h"
 #include "../common/ids.h"
 #include "../common/Message.h"
-#include "../common/TimeOutReceiver.h"
 #include "../common/Logging.h"
 #include "../utility/lock.h"
+using namespace std;
 
 struct ChunkInfo {
   ChunkID chunkId;
@@ -57,33 +48,6 @@ class BlockManager {
     // 在磁盘上还是在哪里
     storageLevel level_;
     BlockInfo(storageLevel level) { level_ = level; }
-  };
-  friend class BlockManagerWorkerActor;
-  class BlockManagerWorkerActor : public Theron::Actor {
-    friend class BlockManager;
-
-   public:
-    BlockManagerWorkerActor(Theron::Framework *framework, const char *name,
-                            BlockManager *bm);
-    virtual ~BlockManagerWorkerActor();
-
-    bool _reigisterToMaster(BlockManagerId *bMId);
-    bool _sendHeartBeat();
-    bool _reportBlockStatus(string blockId);
-    string _askformatch(string filename, BlockManagerId bmi);
-
-   private:
-    void getBlock(const Message256 &message, const Theron::Address from){};
-    void putBlock(const Message256 &message, const Theron::Address from){};
-    void BindingPartition(const PartitionBindingMessage &message,
-                          const Theron::Address from);
-    void UnbindingPartition(const PartitionUnbindingMessage &message,
-                            const Theron::Address from);
-
-   private:
-    TimeOutReceiver *tor_;
-    string receiverId_;
-    BlockManager *bm_;
   };
 
  public:
@@ -116,8 +80,8 @@ class BlockManager {
   ChunkInfo loadFromHdfs(string file_name);
 
   int LoadFromHdfs(const ChunkID &, void *const &desc, const unsigned &);
-
   int LoadFromDisk(const ChunkID &, void *const &desc, const unsigned &) const;
+
   // 将这个blockId所代表的数据存进内存或者磁盘，所以其中有个参数肯定是storagelevel
   bool put(string blockId, storageLevel level, void *value);
 
@@ -138,18 +102,11 @@ class BlockManager {
   // 这里blockmanager只是管理的是block的id，这个block到底是由memorystore管理
   // 还是diskstore，在blockmanager中再去划分
   map<string, BlockInfo *> blockInfoPool_;
-
-  BlockManagerWorkerActor *worker_;
   BlockManagerId *blockManagerId_;
-
   MemoryChunkStore *memstore_;
   DiskStore *diskstore_;
-
   /* poc测试 filename和projectid的映射*/
   map<string, string> file_proj_;
-
-  Theron::Framework *framework_;
-  Theron::Actor *actor_;
 
   boost::unordered_map<PartitionID, PartitionStorage *>
       partition_id_to_storage_;

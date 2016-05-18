@@ -27,16 +27,23 @@
  */
 
 #include "../physical_operator/physical_limit.h"
-
 #include "../common/memory_handle.h"
+#include <stack>
+#include "../common/error_define.h"
+#include "../physical_operator/physical_operator_base.h"
 #include "../utility/rdtsc.h"
+using claims::common::rSuccess;
 
 namespace claims {
 namespace physical_operator {
 
-PhysicalLimit::PhysicalLimit() : received_tuples_(0), block_for_asking_(NULL) {}
+PhysicalLimit::PhysicalLimit() : received_tuples_(0), block_for_asking_(NULL) {
+  set_phy_oper_type(kPhysicalLimit);
+}
 PhysicalLimit::PhysicalLimit(State state)
-    : state_(state), received_tuples_(0), block_for_asking_(NULL) {}
+    : state_(state), received_tuples_(0), block_for_asking_(NULL) {
+  set_phy_oper_type(kPhysicalLimit);
+}
 
 PhysicalLimit::State::State(Schema* schema, PhysicalOperatorBase* child,
                             unsigned long limits, unsigned block_size,
@@ -55,12 +62,17 @@ PhysicalLimit::~PhysicalLimit() {
 /**
  * Initialize of the position of current tuple and target tuple
  */
-bool PhysicalLimit::Open(const PartitionOffset& kPartitionOffset) {
+bool PhysicalLimit::Open(SegmentExecStatus* const exec_status,
+                         const PartitionOffset& kPartitionOffset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   tuple_cur_ = 0;
   block_for_asking_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   received_tuples_ = 0;
-  return state_.child_->Open(kPartitionOffset);
+  RETURN_IF_CANCELLED(exec_status);
+
+  return state_.child_->Open(exec_status, kPartitionOffset);
 }
 /**
  * if the limit has already been exhausted, the current loop breaks
@@ -71,9 +83,16 @@ bool PhysicalLimit::Open(const PartitionOffset& kPartitionOffset) {
 // that the limit is exhausted is not necessary. However, in the current
 // implementation, the child iterator sub-tree leaded by exchange
 // lower iterator cannot be closed if not all the blocks are called.
-bool PhysicalLimit::Next(BlockStreamBase* block) {
+// if the size of the result after limit overflow one block, error may occur
+// (fzh)
+bool PhysicalLimit::Next(SegmentExecStatus* const exec_status,
+                         BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
   BlockStreamBase::BlockStreamTraverseIterator* it = NULL;
-  while (state_.child_->Next(block_for_asking_)) {
+
+  while (state_.child_->Next(exec_status, block_for_asking_)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     void* tuple_from_child;
     DELETE_PTR(it);
     it = block_for_asking_->createIterator();
@@ -106,8 +125,8 @@ bool PhysicalLimit::Next(BlockStreamBase* block) {
   return !block->Empty();
 }
 
-bool PhysicalLimit::Close() {
-  state_.child_->Close();
+bool PhysicalLimit::Close(SegmentExecStatus* const exec_status) {
+  state_.child_->Close(exec_status);
   block_for_asking_->~BlockStreamBase();
   return true;
 }
@@ -117,6 +136,12 @@ void PhysicalLimit::Print() {
          state_.limit_tuples_);
   state_.child_->Print();
 }
-
+RetCode PhysicalLimit::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
 }  // namespace physical_operator
 }  // namespace claims

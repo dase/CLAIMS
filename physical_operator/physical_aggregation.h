@@ -33,7 +33,9 @@
 
 #include <vector>
 #include <map>
+#include <stack>
 
+#include "../common/error_define.h"
 #include "../common/expression/expr_node.h"
 #include "../common/expression/expr_unary.h"
 #include "../physical_operator/physical_operator_base.h"
@@ -45,8 +47,10 @@
 #include "../common/Schema/Schema.h"
 #include "../common/Expression/queryfunc.h"
 #include "../physical_operator/physical_operator.h"
+
 using claims::common::ExprUnary;
 using claims::common::ExprNode;
+
 namespace claims {
 namespace physical_operator {
 #define NEWCONDI
@@ -100,10 +104,12 @@ class PhysicalAggregation : public PhysicalOperator {
   PhysicalAggregation();
   virtual ~PhysicalAggregation();
 
-  bool Open(const PartitionOffset &partition_offset);
-  bool Next(BlockStreamBase *block);
-  bool Close();
+  bool Open(SegmentExecStatus *const exec_status,
+            const PartitionOffset &partition_offset);
+  bool Next(SegmentExecStatus *const exec_status, BlockStreamBase *block);
+  bool Close(SegmentExecStatus *const exec_status);
   void Print();
+  RetCode GetAllSegments(stack<Segment *> *all_segments);
 
  public:
   State state_;
@@ -111,7 +117,6 @@ class PhysicalAggregation : public PhysicalOperator {
  private:
   BasicHashTable *hashtable_;
   PartitionFunction *hash_;
-
   // hashtable traverse and in the next func
   Lock hashtable_cur_lock_;
   unsigned bucket_cur_;

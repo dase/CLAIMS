@@ -1,0 +1,5 @@
+select count(*) from PART,REGION where REGION.row_id>3;
+select count(*) as a from LINEITEM where row_id < 3000000 order by a ;
+select count(*),sum(L_QUANTITY) from LINEITEM;
+select count(*) from (select row_id from REGION where row_id>33) as a, (select row_id from NATION where row_id>40) as b;
+exit;

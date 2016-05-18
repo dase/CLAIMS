@@ -21,20 +21,33 @@
  *      Author: wangli
  */
 
+#include "../common/error_define.h"
 #include "../physical_operator/result_printer.h"
+#include <stack>
+using claims::common::rSuccess;
 namespace claims {
 namespace physical_operator {
-ResultPrinter::ResultPrinter() : block_buffer_(0) {}
-ResultPrinter::ResultPrinter(State state) : state_(state), block_buffer_(0) {}
+ResultPrinter::ResultPrinter() : block_buffer_(0) {
+  set_phy_oper_type(kPhysicalResult);
+}
+ResultPrinter::ResultPrinter(State state) : state_(state), block_buffer_(0) {
+  set_phy_oper_type(kPhysicalResult);
+}
 
 ResultPrinter::~ResultPrinter() {}
-bool ResultPrinter::Open(const PartitionOffset& offset) {
+bool ResultPrinter::Open(SegmentExecStatus* const exec_status,
+                         const PartitionOffset& offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   block_buffer_ =
       BlockStreamBase::createBlock(state_.schema_, state_.block_size_);
   tuple_count_ = 0;
-  return state_.child_->Open(offset);
+  return state_.child_->Open(exec_status, offset);
 }
-bool ResultPrinter::Next(BlockStreamBase*) {
+bool ResultPrinter::Next(SegmentExecStatus* const exec_status,
+                         BlockStreamBase*) {
+  RETURN_IF_CANCELLED(exec_status);
+
   printf("Query result:\n");
   printf(
       "========================================================================"
@@ -49,7 +62,9 @@ bool ResultPrinter::Next(BlockStreamBase*) {
   //	getchar();
 
   unsigned block_count(0);
-  while (state_.child_->Next(block_buffer_)) {
+  while (state_.child_->Next(exec_status, block_buffer_)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     unsigned tuple_in_block(0);
     BlockStreamBase::BlockStreamTraverseIterator* it =
         block_buffer_->createIterator();
@@ -66,11 +81,11 @@ bool ResultPrinter::Next(BlockStreamBase*) {
   }
   return false;
 }
-bool ResultPrinter::Close() {
+bool ResultPrinter::Close(SegmentExecStatus* const exec_status) {
   printf("tuple count:%d\n", tuple_count_);
   block_buffer_->~BlockStreamBase();
   cout << "----------total tuples: " << tuple_count_ << "----------\n";
-  return state_.child_->Close();
+  return state_.child_->Close(exec_status);
 }
 void ResultPrinter::Print() {
   printf("Print:\n");
@@ -80,6 +95,14 @@ void ResultPrinter::Print() {
 ResultPrinter::State::~State() {
   delete schema_;
   if (child_ > 0) delete child_;
+}
+
+RetCode ResultPrinter::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  // namespace physical_operator
 }  // namespace claims

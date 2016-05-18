@@ -333,6 +333,8 @@ const int rLimitParaCouldnotLessZero = -14137;
 const int rLimitParaShouldNaturalNumber = -14138;
 const int rCreateProjectionOnDelTableFailed = -14138;
 const int rNULLDropTableName = -14139;
+const int rStmtCancelled = -14140;
+const int rUnknowStmtType = -14141;
 }  // end namespace common
 }  // end namespace claims
 

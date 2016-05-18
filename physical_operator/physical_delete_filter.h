@@ -33,10 +33,13 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <stack>
+
 #include "../../common/hash.h"
 #include "../../common/hashtable.h"
 #include "../utility/rdtsc.h"
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/error_define.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
 
@@ -109,10 +112,12 @@ class PhysicalDeleteFilter : public PhysicalOperator {
   PhysicalDeleteFilter();
   virtual ~PhysicalDeleteFilter();
 
-  bool Open(const PartitionOffset& partition_offset = 0);
-  bool Next(BlockStreamBase* block);
-  bool Close();
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partition_offset = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   ThreadContext* CreateContext();

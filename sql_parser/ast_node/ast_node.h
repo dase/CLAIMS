@@ -49,7 +49,6 @@ using claims::common::rSuccess;
 // namespace claims {
 // namespace sql_parser {
 
-typedef int RetCode;
 enum AstNodeType {
   AST_NODE,
   AST_STMT_LIST,

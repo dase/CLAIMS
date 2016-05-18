@@ -78,9 +78,16 @@ InOperator::State::State(PhysicalOperatorBase* child_set,
       ht_nbuckets_(1024),
       ht_bucket_size_(64) {}
 
-bool InOperator::Open(const PartitionOffset& partition_offset) {
-  state_.child_set_->Open(partition_offset);
-  state_.child_in_->Open(partition_offset);
+bool InOperator::Open(SegmentExecStatus* const exec_status,
+                      const PartitionOffset& partition_offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
+  state_.child_set_->Open(exec_status, partition_offset);
+  RETURN_IF_CANCELLED(exec_status);
+
+  state_.child_in_->Open(exec_status, partition_offset);
+  RETURN_IF_CANCELLED(exec_status);
+
   AtomicPushFreeHtBlockStream(BlockStreamBase::createBlock(
       state_.schema_child_set_, state_.block_size_));
   AtomicPushFreeBlockStream(BlockStreamBase::createBlock(
@@ -92,13 +99,20 @@ bool InOperator::Open(const PartitionOffset& partition_offset) {
         PartitionFunctionFactory::createBoostHashFunction(state_.ht_nbuckets_);
     vector<unsigned> ht_index;
     ht_index.push_back(state_.index_child_set_);
+
+    RETURN_IF_CANCELLED(exec_status);
+
     hash_table_ = new BasicHashTable(
         state_.ht_nbuckets_, state_.ht_bucket_size_,
         (state_.schema_child_set_->getSubSchema(ht_index))->getTupleMaxSize());
     ht_index.clear();
     open_finished_ = true;
   } else {
-    while (!open_finished_) usleep(1);
+    while (!open_finished_) {
+      RETURN_IF_CANCELLED(exec_status);
+
+      usleep(1);
+    }
   }
 
   void* cur_tuple = NULL;
@@ -106,7 +120,11 @@ bool InOperator::Open(const PartitionOffset& partition_offset) {
   unsigned bn = 0;
 
   BlockStreamBase* bsb = AtomicPopFreeHtBlockStream();
-  while (state_.child_set_->Next(bsb)) {
+  RETURN_IF_CANCELLED(exec_status);
+
+  while (state_.child_set_->Next(exec_status, bsb)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     BlockStreamBase::BlockStreamTraverseIterator* bsti = bsb->createIterator();
     bsti->reset();
     while (cur_tuple = bsti->nextTuple()) {
@@ -128,7 +146,8 @@ bool InOperator::Open(const PartitionOffset& partition_offset) {
   return true;
 }
 
-bool InOperator::Next(BlockStreamBase* block) {
+bool InOperator::Next(SegmentExecStatus* const exec_status,
+                      BlockStreamBase* block) {
   unsigned bn;
   RemainingBlock rb;
   void* tuple_from_child_in = NULL;
@@ -175,7 +194,11 @@ bool InOperator::Next(BlockStreamBase* block) {
 
   BlockStreamBase* block_for_asking = AtomicPopFreeBlockStream();
   block_for_asking->setEmpty();
-  while (state_.child_in_->Next(block_for_asking)) {
+  RETURN_IF_CANCELLED(exec_status);
+
+  while (state_.child_in_->Next(exec_status, block_for_asking)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator =
         block_for_asking->createIterator();
     while ((tuple_from_child_in = traverse_iterator->currentTuple()) > 0) {
@@ -218,7 +241,7 @@ bool InOperator::Next(BlockStreamBase* block) {
   return false;
 }
 
-bool InOperator::Close() {
+bool InOperator::Close(SegmentExecStatus* const exec_status) {
   sema_open_.post();
   open_finished_ = false;
   //	barrier_->~Barrier();
@@ -227,8 +250,8 @@ bool InOperator::Close() {
   remaining_block_list_.clear();
   //	hash->~PartitionFunction();
   hash_table_->~BasicHashTable();
-  state_.child_set_->Close();
-  state_.child_in_->Close();
+  state_.child_set_->Close(exec_status);
+  state_.child_in_->Close(exec_status);
   return true;
 }
 

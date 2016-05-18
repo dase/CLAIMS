@@ -1,7 +1,6 @@
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
--I${THERON_HOME}/Include \
 -I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
@@ -19,12 +18,12 @@ LDADD = ../Executor/libexecutor.a \
 		../common/Schema/libschema.a \
 		../common/Block/libblock.a	\
 		../utility/libutility.a \
-		../codegen/codegen.a\
+		../codegen/codegen.a \
+		../stmt_handler/libstmthandler.a	\
 		${HADOOP_HOME}/lib/native/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
-		${BOOST_HOME}/stage/lib/libboost_serialization.so \
-		${THERON_HOME}/Lib/libtherond.a
+		${BOOST_HOME}/stage/lib/libboost_serialization.so 
 		
 noinst_LIBRARIES=libphysicalqueryplan.a
 libphysicalqueryplan_a_SOURCES = \
@@ -48,7 +47,8 @@ libphysicalqueryplan_a_SOURCES = \
 	physical_filter.cpp 					physical_filter.h \
 	physical_projection_scan.cpp 			physical_projection_scan.h \
 	physical_nest_loop_join.h				physical_nest_loop_join.cpp	\
-	physical_delete_filter.h                physical_delete_filter.cpp
+	physical_delete_filter.h                physical_delete_filter.cpp	\
+	segment.cpp 							segment.h
 			
 SUBDIRS = 
 DIST_SUBDIRS = 

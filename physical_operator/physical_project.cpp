@@ -28,17 +28,22 @@
 
 #include "../physical_operator/physical_project.h"
 
+#include <stack>
 #include <vector>
 using claims::common::ExprNode;
 
 #include "../common/expression/expr_node.h"
 namespace claims {
 namespace physical_operator {
-PhysicalProject::PhysicalProject() { InitExpandedStatus(); }
+PhysicalProject::PhysicalProject() {
+  set_phy_oper_type(kPhysicalProject);
+  InitExpandedStatus();
+}
 
 PhysicalProject::~PhysicalProject() {}
 
 PhysicalProject::PhysicalProject(State state) : state_(state) {
+  set_phy_oper_type(kPhysicalProject);
   InitExpandedStatus();
 }
 
@@ -65,11 +70,14 @@ PhysicalProject::State::State(Schema* schema_input, Schema* schema_output,
  * Call back child Open().
  */
 
-bool PhysicalProject::Open(const PartitionOffset& kPartitionOffset) {
+bool PhysicalProject::Open(SegmentExecStatus* const exec_status,
+                           const PartitionOffset& kPartitionOffset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
   ProjectThreadContext* ptc = reinterpret_cast<ProjectThreadContext*>(
       CreateOrReuseContext(crm_core_sensitive));
-  bool ret = state_.child_->Open(kPartitionOffset);
+  bool ret = state_.child_->Open(exec_status, kPartitionOffset);
   SetReturnStatus(ret);
   BarrierArrive();  //  Synchronization point
   return GetReturnStatus();
@@ -82,7 +90,10 @@ bool PhysicalProject::Open(const PartitionOffset& kPartitionOffset) {
  * case(2): block_for_asking_ is exhausted (should fetch a new block from
  * child and continue to process)
  */
-bool PhysicalProject::Next(BlockStreamBase* block) {
+bool PhysicalProject::Next(SegmentExecStatus* const exec_status,
+                           BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   unsigned total_length_ = state_.schema_output_->getTupleMaxSize();
 
   void* tuple_from_child;
@@ -90,10 +101,12 @@ bool PhysicalProject::Next(BlockStreamBase* block) {
   ProjectThreadContext* tc =
       reinterpret_cast<ProjectThreadContext*>(GetContext());
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
+
     if (tc->block_stream_iterator_->currentTuple() == 0) {
       /* mark the block as processed by setting it empty*/
       tc->block_for_asking_->setEmpty();
-      if (state_.child_->Next(tc->block_for_asking_)) {
+      if (state_.child_->Next(exec_status, tc->block_for_asking_)) {
         delete tc->block_stream_iterator_;
         tc->block_stream_iterator_ = tc->block_for_asking_->createIterator();
       } else {
@@ -112,10 +125,10 @@ bool PhysicalProject::Next(BlockStreamBase* block) {
   return false;
 }
 
-bool PhysicalProject::Close() {
+bool PhysicalProject::Close(SegmentExecStatus* const exec_status) {
   InitExpandedStatus();
   DestoryAllContext();
-  return state_.child_->Close();
+  return state_.child_->Close(exec_status);
 }
 
 bool PhysicalProject::CopyNewValue(void* tuple, void* result, int length) {
@@ -200,6 +213,12 @@ ThreadContext* PhysicalProject::CreateContext() {
 #endif
   return ptc;
 }
-
+RetCode PhysicalProject::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
 }  // namespace physical_operator
 }  // namespace claims

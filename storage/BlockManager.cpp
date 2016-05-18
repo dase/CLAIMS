@@ -6,7 +6,7 @@
  */
 #include <sstream>
 #include "BlockManager.h"
-
+#include <assert.h>
 #include "../common/file_handle/hdfs_connector.h"
 #include "../Environment.h"
 #include "../common/rename.h"
@@ -29,24 +29,11 @@ BlockManager* BlockManager::getInstance() {
   return blockmanager_;
 }
 BlockManager::BlockManager() {
-  framework_ =
-      new Theron::Framework(*Environment::getInstance()->getEndPoint());
-  std::ostringstream actor_name;
-  actor_name << "blockManagerWorkerActor://"
-             << Environment::getInstance()->getNodeID();
-
-  actor_ =
-      new BlockManagerWorkerActor(framework_, actor_name.str().c_str(), this);
   logging_ = new StorageManagerLogging();
-  logging_->log("BlockManagerSlave is initialized. The ActorName=%s",
-                actor_name.str().c_str());
-
   memstore_ = MemoryChunkStore::GetInstance();
 }
 BlockManager::~BlockManager() {
-  blockmanager_ = NULL;
-  delete actor_;
-  delete framework_;
+  blockmanager_ = 0;
   delete logging_;
   delete memstore_;
 }
@@ -64,7 +51,7 @@ void BlockManager::initialize() {
   /// the version written by zhanglei/////////////////////////////////
   //	blockManagerId_=new BlockManagerId();
   // 2，注册
-  registerToMaster(blockManagerId_);
+  //  registerToMaster(blockManagerId_);
   // 3，开启心跳监听
   heartBeat();
   ///////////////////////////////////////////////////////////////////
@@ -84,7 +71,8 @@ void BlockManager::initialize() {
 }
 
 void BlockManager::registerToMaster(BlockManagerId* blockManagerId) {
-  worker_->_reigisterToMaster(blockManagerId);
+  assert(false);
+  //  worker_->_reigisterToMaster(blockManagerId);
 }
 
 void BlockManager::heartBeat() {
@@ -92,7 +80,7 @@ void BlockManager::heartBeat() {
   //	while(true){
   // 可以在这里有个配置property的指定，然后优化网络
   //		sleep(3);
-  worker_->_sendHeartBeat();
+  //  worker_->_sendHeartBeat();
   //	}
   reregister();
 }
@@ -122,7 +110,7 @@ bool BlockManager::reportBlockStatus(string blockId) {
 
 // 向master发送blocks的信息，当收到master的回应的时候
 bool BlockManager::tryToReportBlockStatus(string blockId) {
-  worker_->_reportBlockStatus(blockId);
+  //  worker_->_reportBlockStatus(blockId);
   return true;
 }
 
@@ -176,6 +164,55 @@ bool BlockManager::put(string blockId, storageLevel level, void* value) {
   return true;
 }
 
+//// 这个函数返回一个构造好的chunkid和每个chunk的指针
+//// 这个里面的chunkId肯定是要在blockManager注册然后汇报信息的
+//// put的话也是会这样的，可以将这个函数中调用put然后统一汇报信息的接口
+// vector<ChunkInfo> BlockManager::loadFromHdfs(string file_name){
+//	// 由此函数得到的<blockId,指针>
+//	vector<ChunkInfo> vci;
+//	map<string, void *>::iterator it_;
+//	it_=bufferpool_.find(file_name);
+//	if(it_!=bufferpool_.end()){
+////		rt=bufferpool_[file_name];
+//	}
+//	else{
+//		hdfsFS fs=hdfsConnect(HDFS_N,9000);
+//		hdfsFile
+// readFile=hdfsOpenFile(fs,file_name.c_str(),O_RDONLY,0,0,0);
+//		hdfsFileInfo *hdfsfile=hdfsGetPathInfo(fs,file_name.c_str());
+////		char
+///***path=hdfsGetHosts(fs,"/home/hayue/input/3_64m",0,201326592+12);
+//		cout<<"file size: "<<hdfsfile->mSize<<endl;
+//		if(!readFile){
+//			cout<<"open file error"<<endl;
+//		}
+//		unsigned length=0;
+//		int offset=0;
+//		while(length<hdfsfile->mSize){
+//			ChunkInfo ci;
+//			void *rt=malloc(CHUNK_SIZE);		//newmalloc
+//			tSize
+// bytes_num=hdfsPread(fs,readFile,length,rt,CHUNK_SIZE);
+//			cout<<"split interface: "<<bytes_num<<endl;
+//			ostringstream chunkid;
+//			chunkid<<file_name.c_str()<<"_"<<offset++;
+//			ci.chunkId=chunkid.str().c_str();
+//			ci.hook=rt;
+//			vci.push_back(ci);
+//			cout<<ci.chunkId.c_str()<<"---"<<length<<endl;
+//			length=length+CHUNK_SIZE;
+//		}
+////		hdfsSeek(fs,readFile,CHUNK_SIZE);
+//		hdfsCloseFile(fs,readFile);
+////		cout<<bytes_num<<endl;
+////		bufferpool_[file_name]=rt;
+//	}
+//	return vci;
+//}
+
+// 这个函数返回一个构造好的chunkid和每个chunk的指针
+// 这个里面的chunkId肯定是要在blockManager注册然后汇报信息的
+// put的话也是会这样的，可以将这个函数中调用put然后统一汇报信息的接口
 ChunkInfo BlockManager::loadFromHdfs(string file_name) {
   // 由此函数得到的<blockId,指针>
   ChunkInfo ci;
@@ -295,11 +332,12 @@ int BlockManager::LoadFromDisk(const ChunkID& chunk_id, void* const& desc,
 BlockManagerId* BlockManager::getId() { return blockManagerId_; }
 
 string BlockManager::askForMatch(string filename, BlockManagerId bmi) {
-  if (!file_proj_.count(filename.c_str())) {
-    string rt = worker_->_askformatch(filename, bmi);
-    file_proj_[filename.c_str()] = rt;
-  }
-  return file_proj_[filename.c_str()];
+  assert(false);
+  //  if (!file_proj_.count(filename.c_str())) {
+  //    string rt = worker_->_askformatch(filename, bmi);
+  //    file_proj_[filename.c_str()] = rt;
+  //  }
+  //  return file_proj_[filename.c_str()];
 }
 
 bool BlockManager::ContainsPartition(const PartitionID& part) const {
@@ -360,43 +398,4 @@ PartitionStorage* BlockManager::GetPartitionHandle(
     return NULL;
   }
   return it->second;
-}
-BlockManager::BlockManagerWorkerActor::BlockManagerWorkerActor(
-    Theron::Framework* framework, const char* name, BlockManager* bm)
-    : Actor(*framework, name), bm_(bm) {
-  RegisterHandler(this, &BlockManagerWorkerActor::getBlock);
-  RegisterHandler(this, &BlockManagerWorkerActor::putBlock);
-  RegisterHandler(this, &BlockManagerWorkerActor::BindingPartition);
-  RegisterHandler(this, &BlockManagerWorkerActor::UnbindingPartition);
-}
-
-BlockManager::BlockManagerWorkerActor::~BlockManagerWorkerActor() {}
-
-bool BlockManager::BlockManagerWorkerActor::_reigisterToMaster(
-    BlockManagerId* bMId) {
-  return true;
-}
-
-bool BlockManager::BlockManagerWorkerActor::_sendHeartBeat() { return true; }
-
-bool BlockManager::BlockManagerWorkerActor::_reportBlockStatus(string blockId) {
-  return true;
-}
-
-string BlockManager::BlockManagerWorkerActor::_askformatch(string filename,
-                                                           BlockManagerId bmi) {
-  return string("Hello~");
-}
-void BlockManager::BlockManagerWorkerActor::BindingPartition(
-    const PartitionBindingMessage& message, const Theron::Address from) {
-  bm_->AddPartition(message.partition_id, message.number_of_chunks,
-                    message.storage_level);
-  Send(int(0), from);
-}
-
-void BlockManager::BlockManagerWorkerActor::UnbindingPartition(
-    const PartitionUnbindingMessage& message, const Theron::Address from) {
-  bm_->RemovePartition(message.partition_id);
-
-  Send(int(0), from);
 }

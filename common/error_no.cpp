@@ -313,11 +313,12 @@ ErrorInit::ErrorInit() {
   DefineErrorAndMessage(rTableNotExisted, "table not exist");
   DefineErrorAndMessage(rNULLDropTableName,
                         "The table name in the drop table statment is NULL");
-
   DefineErrorAndMessage(rLimitParaCouldnotLessZero,
                         "limit parameter couldn't zero.");
   DefineErrorAndMessage(rLimitParaShouldNaturalNumber,
                         "limit parameter should be natural number.");
+  DefineErrorAndMessage(rStmtCancelled, "this stmt is cancelled");
+  DefineErrorAndMessage(rUnknowStmtType, "the type of the stmt doesn't know");
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common

@@ -7,7 +7,6 @@
 
 #ifndef ENVIRONMENT_H_
 #define ENVIRONMENT_H_
-#include "Executor/Coordinator.h"
 #include "Executor/IteratorExecutorMaster.h"
 #include "Executor/IteratorExecutorSlave.h"
 #include "storage/BlockManager.h"
@@ -15,17 +14,29 @@
 #include "Resource/ResourceManagerMaster.h"
 #include "Resource/ResourceManagerSlave.h"
 #include "IndexManager/IndexManager.h"
-#include "Executor/AdaptiveEndPoint.h"
 #include "Executor/PortManager.h"
 #include "common/Logging.h"
 #include "utility/thread_pool.h"
 #include "Client/ClaimsServer.h"
+#include "exec_tracker/stmt_exec_tracker.h"
+#include "exec_tracker/segment_exec_tracker.h"
 #include "Executor/exchange_tracker.h"
 #include "Executor/expander_tracker.h"
+#include "node_manager/master_node.h"
+#include "node_manager/slave_node.h"
 #include "Resource/BufferManager.h"
 
 using claims::catalog::Catalog;
-// class Catalog;
+using claims::MasterNode;
+using claims::SegmentExecTracker;
+using claims::SlaveNode;
+using claims::StmtExecTracker;
+class Catalog;
+class IteratorExecutorSlave;
+class BlockManager;
+class ResourceManagerMaster;
+class InstanceResourceManager;
+class BlockManagerMaster;
 
 class Environment {
  public:
@@ -33,7 +44,6 @@ class Environment {
   static Environment* getInstance(bool ismaster = 0);
   std::string getIp();
   unsigned getPort();
-  AdaptiveEndPoint* getEndPoint();
   ExchangeTracker* getExchangeTracker();
   ResourceManagerMaster* getResourceManagerMaster();
   InstanceResourceManager* getResourceManagerSlave();
@@ -41,12 +51,21 @@ class Environment {
   claims::catalog::Catalog* getCatalog() const;
   ThreadPool* getThreadPool() const;
   IteratorExecutorSlave* getIteratorExecutorSlave() const;
-  explicit Environment(bool ismaster = false);
+  Environment(bool ismaster = false);
+  MasterNode* get_master_node() { return master_node_; }
+  SlaveNode* get_slave_node() { return slave_node_; }
+  BlockManager* get_block_manager() { return blockManager_; }
+  IteratorExecutorMaster* get_iterator_executor_master() {
+    return iteratorExecutorMaster;
+  }
+  BlockManagerMaster* get_block_manager_master() { return blockManagerMaster_; }
+
+  StmtExecTracker* get_stmt_exec_tracker() { return stmt_exec_tracker_; }
+  SegmentExecTracker* get_segment_exec_tracker() { return seg_exec_tracker_; }
 
  private:
+  void AnnounceCafMessage();
   void readConfigFile();
-  void initializeEndPoint();
-  void initializeCoordinator();
   void initializeStorage();
   void initializeResourceManager();
   void initializeBufferManager();
@@ -55,12 +74,11 @@ class Environment {
   void initializeExpressionSystem();
   void destoryClientListener();
   bool initializeThreadPool();
+  void InitMembership();
 
  private:
   static Environment* _instance;
   PortManager* portManager;
-  AdaptiveEndPoint* endpoint;
-  Coordinator* coordinator;
   std::string ip;
   unsigned port;
   IteratorExecutorSlave* iteratorExecutorSlave;
@@ -81,7 +99,11 @@ class Environment {
   ClientListener* listener_;
 
   ThreadPool* thread_pool_;
+  MasterNode* master_node_;
+  SlaveNode* slave_node_;
 
+  StmtExecTracker* stmt_exec_tracker_;
+  SegmentExecTracker* seg_exec_tracker_;
   /**
    * TODO: the master and slave pair, such as ResouceManagerMaster and
    * ResourceManagerSlave, should have a

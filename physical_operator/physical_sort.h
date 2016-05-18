@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <stack>
 #include <utility>
 #include <vector>
 
@@ -41,6 +42,7 @@
 #include "../common/Block/BlockStream.h"
 #include "../common/Block/DynamicBlockBuffer.h"
 #include "../common/expression/expr_node.h"
+
 #include "../utility/lock.h"
 #include "../utility/rdtsc.h"
 using claims::common::DataTypeOperFunc;
@@ -49,6 +51,7 @@ using std::vector;
 using std::pair;
 using claims::common::ExprNode;
 using claims::common::OperFuncInfo;
+
 namespace claims {
 namespace physical_operator {
 #define NEWCONDI
@@ -108,19 +111,20 @@ class PhysicalSort : public PhysicalOperator {
    *          partiton the function operates on.
    * @return  true in all cases.
    */
-  bool Open(const PartitionOffset& part_off = 0);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& part_off = 0);
   /**
    * @brief Method description: Send the sorted data to father operator.
    * @param   BlockStreamBase *block, the info of block
    * @return  false if there's no tuple to function and the block is empty,
    *          otherwise true.
    */
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
   /**
    * @brief Method description: Close child opertor.
    * @return  true.
    */
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
 
  private:
@@ -145,11 +149,12 @@ class PhysicalSort : public PhysicalOperator {
    *                            state_.block_size_.
    */
   bool CreateBlock(BlockStreamBase*&) const;
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   State state_;
   /* store the data in the buffer!*/
-  DynamicBlockBuffer block_buffer_;
+  DynamicBlockBuffer* block_buffer_;
   unsigned all_cur_;
   int64_t thread_id_;
   vector<void*> all_tuples_;

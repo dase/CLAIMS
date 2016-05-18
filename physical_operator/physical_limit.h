@@ -29,6 +29,8 @@
 #ifndef PHYSICAL_OPERATOR_PHYSICAL_LIMIT_H_
 #define PHYSICAL_OPERATOR_PHYSICAL_LIMIT_H_
 
+#include <stack>
+#include "../common/error_define.h"
 #include "../physical_operator/physical_operator_base.h"
 
 namespace claims {
@@ -71,20 +73,22 @@ class PhysicalLimit : public PhysicalOperatorBase {
    * @brief Method description: Initialize the position of current tuple and
    * target tuple
    */
-  bool Open(const PartitionOffset& kPartitionOffset);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& kPartitionOffset);
 
   /**
    * @brief Method description:find limit_tuple tuples from start_position and
    * return them
    * @return : given tuples.
    */
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
 
   /**
    * @brief Method description: revoke resource
    */
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   /**

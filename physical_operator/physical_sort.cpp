@@ -32,6 +32,7 @@
 
 #include "../physical_operator/physical_sort.h"
 #include <glog/logging.h>
+#include <stack>
 #include <utility>
 #include <vector>
 
@@ -49,13 +50,15 @@ namespace physical_operator {
 unsigned PhysicalSort::order_by_pos_ = 0;
 PhysicalSort::State *PhysicalSort::cmp_state_ = NULL;
 OperFuncInfo PhysicalSort::fcinfo = NULL;
-PhysicalSort::PhysicalSort() : PhysicalOperator(3, 2) {
+PhysicalSort::PhysicalSort() : PhysicalOperator(3, 2), block_buffer_(NULL) {
+  set_phy_oper_type(kPhysicalSort);
   lock_ = new Lock();
   InitExpandedStatus();
 }
 
 PhysicalSort::PhysicalSort(State state)
-    : PhysicalOperator(3, 2), state_(state) {
+    : PhysicalOperator(3, 2), state_(state), block_buffer_(NULL) {
+  set_phy_oper_type(kPhysicalSort);
   cmp_state_ = &state_;
   lock_ = new Lock();
   InitExpandedStatus();
@@ -139,21 +142,26 @@ void PhysicalSort::Order() {
  *    by specifying the column to be sorted
  * 3, whether to register the buffer into the blockmanager.
  * */
-bool PhysicalSort::Open(const PartitionOffset &part_off) {
+bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
+                        const PartitionOffset &part_off) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
   if (TryEntryIntoSerializedSection(0)) {
     all_cur_ = 0;
     thread_id_ = -1;
     all_tuples_.clear();
+    block_buffer_ = new DynamicBlockBuffer();
   }
   BarrierArrive(0);
-  BlockStreamBase *block_for_asking = NULL;
+  BlockStreamBase *block_for_asking;
   if (CreateBlock(block_for_asking) == false) {
     LOG(ERROR) << "error in the create block stream!!!" << endl;
     return 0;
   }
   //  state_.partition_offset_ = part_off;
-  state_.child_->Open(part_off);
+  state_.child_->Open(exec_status, part_off);
+  RETURN_IF_CANCELLED(exec_status);
 
   /**
    *  phase 1: store the data in the buffer!
@@ -164,8 +172,10 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
   void *tuple_ptr = NULL;
   BlockStreamBase::BlockStreamTraverseIterator *block_it;
 
-  while (state_.child_->Next(block_for_asking)) {
-    block_buffer_.atomicAppendNewBlock(block_for_asking);
+  while (state_.child_->Next(exec_status, block_for_asking)) {
+    RETURN_IF_CANCELLED(exec_status);
+
+    block_buffer_->atomicAppendNewBlock(block_for_asking);
     block_it = block_for_asking->createIterator();
     while (NULL != (tuple_ptr = block_it->nextTuple())) {
       thread_tuple.push_back(tuple_ptr);
@@ -180,6 +190,10 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
     }
   }
 
+  if (NULL != block_for_asking) {
+    delete block_for_asking;
+    block_for_asking = NULL;
+  }
   lock_->acquire();
   all_tuples_.insert(all_tuples_.end(), thread_tuple.begin(),
                      thread_tuple.end());
@@ -215,6 +229,7 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
     //    int64_t time = curtick();
     state_.eecnxt_.schema[0] = state_.input_schema_;
     state_.eecnxt1_.schema[0] = state_.input_schema_;
+    RETURN_IF_CANCELLED(exec_status);
 
     Order();
   }
@@ -222,7 +237,10 @@ bool PhysicalSort::Open(const PartitionOffset &part_off) {
   return true;
 }
 // just only thread can fetch this result
-bool PhysicalSort::Next(BlockStreamBase *block) {
+bool PhysicalSort::Next(SegmentExecStatus *const exec_status,
+                        BlockStreamBase *block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   lock_->acquire();
   if (thread_id_ == -1) {
     thread_id_ = pthread_self();
@@ -258,8 +276,13 @@ bool PhysicalSort::Next(BlockStreamBase *block) {
   return false;
 }
 
-bool PhysicalSort::Close() {
-  state_.child_->Close();
+bool PhysicalSort::Close(SegmentExecStatus *const exec_status) {
+  if (NULL != block_buffer_) {
+    delete block_buffer_;
+    block_buffer_ = NULL;
+  }
+
+  state_.child_->Close(exec_status);
   return true;
 }
 
@@ -280,5 +303,13 @@ bool PhysicalSort::CreateBlock(BlockStreamBase *&target) const {
       BlockStreamBase::createBlock(state_.input_schema_, state_.block_size_);
   return target != 0;
 }
+RetCode PhysicalSort::GetAllSegments(stack<Segment *> *all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
+
 }  // namespace physical_operator
 }  // namespace claims

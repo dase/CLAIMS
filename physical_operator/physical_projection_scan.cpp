@@ -34,6 +34,8 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <limits.h>
+#include <stack>
+
 #include "../common/rename.h"
 #include "../storage/BlockManager.h"
 #include "../Config.h"
@@ -49,11 +51,13 @@ namespace claims {
 namespace physical_operator {
 PhysicalProjectionScan::PhysicalProjectionScan(State state)
     : state_(state), partition_reader_iterator_(NULL), perf_info_(NULL) {
+  set_phy_oper_type(kPhysicalScan);
   InitExpandedStatus();
 }
 
 PhysicalProjectionScan::PhysicalProjectionScan()
     : partition_reader_iterator_(NULL), perf_info_(NULL) {
+  set_phy_oper_type(kPhysicalScan);
   InitExpandedStatus();
 }
 
@@ -81,7 +85,10 @@ PhysicalProjectionScan::State::State(ProjectionID projection_id, Schema* schema,
  * decide if it generates a buffer.
  */
 
-bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
+bool PhysicalProjectionScan::Open(SegmentExecStatus* const exec_status,
+                                  const PartitionOffset& kPartitionOffset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   RegisterExpandedThreadToAllBarriers();
 
   if (TryEntryIntoSerializedSection()) {
@@ -132,7 +139,10 @@ bool PhysicalProjectionScan::Open(const PartitionOffset& kPartitionOffset) {
 
 // TODO(Hanzhang): According to AVOID_CONTENTION_IN_SCAN, we choose the
 // strategy. We need finish case(1).
-bool PhysicalProjectionScan::Next(BlockStreamBase* block) {
+bool PhysicalProjectionScan::Next(SegmentExecStatus* const exec_status,
+                                  BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   unsigned long long total_start = curtick();
 #ifdef AVOID_CONTENTION_IN_SCAN
   ScanThreadContext* stc = reinterpret_cast<ScanThreadContext*>(GetContext());
@@ -179,12 +189,13 @@ bool PhysicalProjectionScan::Next(BlockStreamBase* block) {
   }
   perf_info_->processed_one_block();
   // case(2)
+  RETURN_IF_CANCELLED(exec_status);
   return partition_reader_iterator_->NextBlock(block);
 
 #endif
 }
 
-bool PhysicalProjectionScan::Close() {
+bool PhysicalProjectionScan::Close(SegmentExecStatus* const exec_status) {
   if (NULL != partition_reader_iterator_) {
     delete partition_reader_iterator_;
     partition_reader_iterator_ = NULL;
@@ -204,6 +215,8 @@ bool PhysicalProjectionScan::PassSample() const {
   if ((rand() / (float)RAND_MAX) < state_.sample_rate_) return true;
   return false;
 }
-
+RetCode PhysicalProjectionScan::GetAllSegments(stack<Segment*>* all_segments) {
+  return rSuccess;
+}
 }  // namespace physical_operator
 }  // namespace claims
