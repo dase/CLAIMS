@@ -33,37 +33,37 @@ class ExprTypeCast {
 /***************int****************************/
 
 inline void *int_to_int(void *value, void *tovalue) {
-  if (*(int *)value == NULL_INT)  // in order to judge the return result is
-                                  // NULL,so void * is NULL will be simple
-    return NULL;
+  //  if (*(int *)value == NULL_INT)  // in order to judge the return result is
+  //                                  // NULL,so void * is NULL will be simple
+  //    return NULL;
   *(int *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_smallint(void *value, void *tovalue) {
-  if (*(int *)value == NULL_INT) return NULL;
+  //  if (*(int *)value == NULL_INT) return NULL;
   *(short int *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_float(void *value, void *tovalue) {
-  if (*(int *)value == NULL_INT) return NULL;
+  //  if (*(int *)value == NULL_INT) return NULL;
   *(float *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_double(void *value, void *tovalue) {
-  if (*(int *)value == NULL_INT) return NULL;
+  //  if (*(int *)value == NULL_INT) return NULL;
   *(double *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_ulong(void *value, void *tovalue) {
-  if (*(int *)value == NULL_INT) return NULL;
+  //  if (*(int *)value == NULL_INT) return NULL;
   *(unsigned long *)tovalue = *(int *)value;
   return tovalue;
 }
 inline void *int_to_decimal(void *value, void *tovalue) {
-  if (*(int *)value == NULL_INT) return NULL;
+  //  if (*(int *)value == NULL_INT) return NULL;
   stringstream va;
   va << *(int *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS - 1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -113,7 +113,7 @@ inline void *string_to_string(void *value, void *tovalue) {
 }
 inline void *string_to_decimal(void *value, void *tovalue) {
   *(Decimal *)tovalue =
-      Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1,/* Invailed scale */
+      Decimal(CLAIMS_COMMON_DECIMAL_PSUBS - 1, -1, /* Invailed scale */
               string((char *)value));
   return tovalue;
 }
@@ -172,7 +172,7 @@ inline void *ulong_to_double(void *value, void *tovalue) {
 inline void *ulong_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(unsigned long *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS - 1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -219,7 +219,7 @@ inline void *smallInt_to_boolean(void *value, void *tovalue) {
 inline void *smallInt_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(short int *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS - 1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -277,7 +277,7 @@ inline void *double_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va.precision(30);
   va << *(double *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS-1, -1, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS - 1, -1, va.str());
   va.clear();
   return tovalue;
 }
@@ -311,8 +311,7 @@ inline void *boolean_to_ulong(void *value, void *tovalue) {
 inline void *boolean_to_decimal(void *value, void *tovalue) {
   stringstream va;
   va << *(bool *)value;
-  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS,
-                                0, va.str());
+  *(Decimal *)tovalue = Decimal(CLAIMS_COMMON_DECIMAL_PSUBS, 0, va.str());
   va.clear();
   return tovalue;
 }

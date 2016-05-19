@@ -273,6 +273,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
           if (NULL != (result_tuple = block->allocateTuple(
                            state_.output_schema_->getTupleMaxSize()))) {
             produced_tuples++;
+            // cout << "joined tuple here!" << endl;
             if (memcat_) {
               memcat_(result_tuple, tuple_in_hashtable, tuple_from_right_child);
             } else {
@@ -320,6 +321,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
           state_.input_schema_right_->copyTuple(
               tuple_from_right_child, (char*)result_tuple + copyed_bytes);
           produced_tuples++;
+          // cout << "NULL tuple here!" << endl;
           delete null_tuple;
           null_tuple = NULL;
         } else {
