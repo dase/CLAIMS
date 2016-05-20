@@ -58,26 +58,24 @@ RetCode StmtExecTracker::RegisterStmtES(StmtExecStatus* stmtes) {
   return 0;
 }
 
-RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id, bool is_locked) {
-  if (!is_locked) {
-    lock_.acquire();
-  }
+RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id) {
+  lock_.acquire();
+
   auto it = query_id_to_stmtes_.find(query_id);
   if (it == query_id_to_stmtes_.end()) {
     LOG(WARNING) << "invalide query id at UnRegisterStmtES" << endl;
   }
   query_id_to_stmtes_.erase(it);
-  if (!is_locked) {
-    lock_.release();
-  }
+  lock_.release();
+
   LOG(INFO) << "query id= " << query_id
             << " has erased from StmtEs! then left stmt = "
             << query_id_to_stmtes_.size() << endl;
   return 0;
 }
-
+// for invoking from outside, so should add lock
 RetCode StmtExecTracker::CancelStmtExec(u_int64_t query_id) {
-  //  lock_.acquire();
+  lock_.acquire();
   auto it = query_id_to_stmtes_.find(query_id);
   if (it == query_id_to_stmtes_.end()) {
     LOG(WARNING) << "inval query id at cancel query of stmt exec tracker"
@@ -87,7 +85,7 @@ RetCode StmtExecTracker::CancelStmtExec(u_int64_t query_id) {
     return -1;
   }
   it->second->CancelStmtExec();
-  //  lock_.release();
+  lock_.release();
   return 0;
 }
 
@@ -98,21 +96,23 @@ void StmtExecTracker::CheckStmtExecStatus(caf::event_based_actor* self,
       [=](CheckStmtESAtom) {
         stmtes->lock_.acquire();
         for (auto it = stmtes->query_id_to_stmtes_.begin();
-             it != stmtes->query_id_to_stmtes_.end(); ++it) {
+             it != stmtes->query_id_to_stmtes_.end();) {
           if (it->second->CouldBeDeleted()) {
             delete it->second;
             it->second = NULL;
-            stmtes->UnRegisterStmtES(it->first);
+            // pay attention to erase()
+            it = stmtes->query_id_to_stmtes_.erase(it);
           } else {
             if (it->second->HaveErrorCase(stmtes->logic_time_)) {
               assert(false);
-              stmtes->CancelStmtExec(it->first);
+              it->second->CancelStmtExec();
             }
+            ++it;
           }
         }
         stmtes->lock_.release();
         stmtes->logic_time_++;
-        self->delayed_send(self, std::chrono::milliseconds(2000),
+        self->delayed_send(self, std::chrono::milliseconds(kCheckIntervalTime),
                            CheckStmtESAtom::value);
       },
       [=](ExitAtom) { self->quit(); },
@@ -123,6 +123,7 @@ void StmtExecTracker::CheckStmtExecStatus(caf::event_based_actor* self,
   self->send(self, CheckStmtESAtom::value);
 }
 
+// first find stmt_exec_status, then update status
 bool StmtExecTracker::UpdateSegExecStatus(
     NodeSegmentID node_segment_id, SegmentExecStatus::ExecStatus exec_status,
     string exec_info) {

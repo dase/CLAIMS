@@ -54,6 +54,7 @@ StmtExecStatus::StmtExecStatus(string sql_stmt)
 StmtExecStatus::~StmtExecStatus() {
   // due to the query result should return, so shouldn't be deleted here
   // if (NULL != query_result_) delete query_result_;
+  LOG(INFO) << "begin to delete stmt ! " << query_id_ << endl;
   lock_.acquire();
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
@@ -62,6 +63,7 @@ StmtExecStatus::~StmtExecStatus() {
   }
   node_seg_id_to_seges_.clear();
   lock_.release();
+  LOG(INFO) << "end   to delete stmt ! " << query_id_ << endl;
 }
 
 RetCode StmtExecStatus::CancelStmtExec() {
@@ -111,7 +113,7 @@ RetCode StmtExecStatus::RegisterToTracker() {
 
 RetCode StmtExecStatus::UnRegisterFromTracker() {
   return Environment::getInstance()->get_stmt_exec_tracker()->UnRegisterStmtES(
-      query_id_, false);
+      query_id_);
 }
 void StmtExecStatus::AddSegExecStatus(SegmentExecStatus* seg_exec_status) {
   lock_.acquire();
@@ -119,7 +121,9 @@ void StmtExecStatus::AddSegExecStatus(SegmentExecStatus* seg_exec_status) {
       make_pair(seg_exec_status->get_node_segment_id(), seg_exec_status));
   lock_.release();
 }
-
+// if remote segment status is error, then cancel corresponding statement
+// once the statement is cancelled, update the segment's status to be cancelled,
+// and returning false for canceling remote segment
 bool StmtExecStatus::UpdateSegExecStatus(
     NodeSegmentID node_segment_id, SegmentExecStatus::ExecStatus exec_status,
     string exec_info, u_int64_t logic_time) {
@@ -139,7 +143,6 @@ bool StmtExecStatus::UpdateSegExecStatus(
   } else {
     it->second->UpdateStatus(exec_status, exec_info, logic_time);
   }
-  //  lock_.release();
   return true;
 }
 

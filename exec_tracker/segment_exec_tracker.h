@@ -29,22 +29,20 @@
 #ifndef EXEC_TRACKER_SEGMENT_EXEC_TRACKER_H_
 #define EXEC_TRACKER_SEGMENT_EXEC_TRACKER_H_
 #include "../exec_tracker/segment_exec_tracker.h"
+
 #include <boost/unordered/unordered_map.hpp>
 #include <string>
 #include <utility>
-
-#include "caf/all.hpp"
-
 #include "../common/error_define.h"
 #include "../node_manager/base_node.h"
 #include "../utility/lock.h"
-using boost::unordered::unordered_map;
 using caf::actor;
 using std::pair;
 using std::string;
 
 namespace claims {
 // first=query_id, second=segment_id*kMaxNodeNum + node_id
+#define kReportIntervalTime 1000
 typedef std::pair<u_int64_t, u_int64_t> NodeSegmentID;
 class SegmentExecStatus;
 class SegmentExecTracker {
@@ -55,6 +53,7 @@ class SegmentExecTracker {
   RetCode RegisterSegES(NodeSegmentID node_segment_id,
                         SegmentExecStatus* seg_exec_status);
   RetCode UnRegisterSegES(NodeSegmentID node_segment_id);
+  // report all remote_segment_status located at slave node
   static void ReportAllSegStatus(caf::event_based_actor* self,
                                  SegmentExecTracker* seg_exec_tracker);
 

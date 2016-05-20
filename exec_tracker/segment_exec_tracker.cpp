@@ -94,7 +94,7 @@ void SegmentExecTracker::ReportAllSegStatus(
           }
         }
         seg_exec_tracker->map_lock_.release();
-        self->delayed_send(self, std::chrono::milliseconds(1000),
+        self->delayed_send(self, std::chrono::milliseconds(kReportIntervalTime),
                            ReportSegESAtom::value);
       },
       [=](ExitAtom) { self->quit(); },

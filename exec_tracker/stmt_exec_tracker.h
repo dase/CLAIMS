@@ -29,10 +29,9 @@
 #ifndef EXEC_TRACKER_STMT_EXEC_TRACKER_H_
 #define EXEC_TRACKER_STMT_EXEC_TRACKER_H_
 #include "../exec_tracker/stmt_exec_tracker.h"
-
-#include <boost/unordered/unordered_map.hpp>
+#include <sys/types.h>
 #include <string>
-
+#include <unordered_map>
 #include "./segment_exec_status.h"
 #include "./stmt_exec_status.h"
 #include "../common/Block/ResultSet.h"
@@ -40,19 +39,26 @@
 #include "../exec_tracker/segment_exec_tracker.h"
 #include "../utility/lock.h"
 using std::string;
-
 namespace claims {
 #define kMaxNodeNum 10000
+#define kCheckIntervalTime 2000
+/// tracker the execution status of every statement, each StmtExecStatus should
+/// register to it
 class StmtExecTracker {
  public:
   StmtExecTracker();
   virtual ~StmtExecTracker();
   u_int64_t GenQueryId() { return query_id_gen_++; }
   RetCode RegisterStmtES(StmtExecStatus* stmtes);
-  RetCode UnRegisterStmtES(u_int64_t query_id, bool is_locked = true);
+  RetCode UnRegisterStmtES(u_int64_t query_id);
   RetCode CancelStmtExec(u_int64_t query_id);
+
+  // check every StmtExecStatus in caf's thread, should be static due to used
+  // for spawning caf thread
   static void CheckStmtExecStatus(caf::event_based_actor* self,
                                   StmtExecTracker* stmtes);
+  // according to StmtExecTracker to find corresponding stmt_status, then to
+  // update segment_status
   bool UpdateSegExecStatus(NodeSegmentID node_segment_id,
                            SegmentExecStatus::ExecStatus exec_status,
                            string exec_info);
@@ -62,7 +68,7 @@ class StmtExecTracker {
   std::atomic_ullong logic_time_;
   actor stmt_exec_tracker_actor_;
   std::atomic_ullong query_id_gen_;
-  boost::unordered_map<u_int64_t, StmtExecStatus*> query_id_to_stmtes_;
+  std::unordered_map<u_int64_t, StmtExecStatus*> query_id_to_stmtes_;
   Lock lock_;
 };
 
