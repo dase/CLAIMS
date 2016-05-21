@@ -13,6 +13,8 @@
 #include "caf/io/all.hpp"
 #include "../node_manager/base_node.h"
 #include "caf/all.hpp"
+
+#include "../common/memory_handle.h"
 using caf::io::remote_actor;
 using claims::SendPlanAtom;
 IteratorExecutorMaster* IteratorExecutorMaster::_instance = 0;
@@ -38,17 +40,15 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSites(
 bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(
     PhysicalOperatorBase* it, NodeID target_id, u_int64_t query_id = 0,
     u_int32_t segment_id = 0) {
-  PhysicalQueryPlan* im = new PhysicalQueryPlan(
+  PhysicalQueryPlan* physical_plan = new PhysicalQueryPlan(
       it, target_id, query_id, segment_id,
-      Environment::getInstance()->get_slave_node()->GetNodeAddr());
-  string str = PhysicalQueryPlan::TextSerializePlan(*im);
+      Environment::getInstance()->get_slave_node()->get_node_id());
+  string str = PhysicalQueryPlan::TextSerializePlan(*physical_plan);
   caf::scoped_actor self;
-  auto node_addr =
-      Environment::getInstance()->get_master_node()->GetNodeAddrFromId(
-          target_id);
-
   try {
-    auto target_actor = remote_actor(node_addr.first.c_str(), node_addr.second);
+    auto target_actor =
+        Environment::getInstance()->get_master_node()->GetNodeActorFromId(
+            target_id);
     self->send(target_actor, SendPlanAtom::value, str);
   } catch (caf::bind_failure& e) {
     LOG(ERROR)
@@ -57,7 +57,7 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(
     LOG(ERROR) << "master sending plan connect to remote node error due to "
                   "network error!";
   }
-
+  DELETE_PTR(physical_plan);
   LOG(INFO) << "master send serialized plan to target slave : " << target_id
             << " succeed!" << endl;
   return true;

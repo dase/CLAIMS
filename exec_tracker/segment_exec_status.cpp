@@ -35,30 +35,24 @@
 #include "../exec_tracker/stmt_exec_tracker.h"
 #include "../Environment.h"
 using caf::io::remote_actor;
-// using std::ostringstream;
 using std::string;
 using std::endl;
 #include "caf/io/all.hpp"
 namespace claims {
 
 SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id,
-                                     NodeAddr coor_addr)
+                                     unsigned int coor_node_id)
     : node_segment_id_(node_segment_id),
-      coor_addr_(coor_addr),
+      coor_node_id_(coor_node_id),
       exec_info_("ok"),
       exec_status_(ExecStatus::kOk),
       ret_code_(0),
       logic_time_(0),
       stop_report_(false) {
   //  RegisterToTracker();
-  try {
-    coor_actor_ = remote_actor(coor_addr_.first, coor_addr_.second);
-  } catch (caf::network_error& e) {
-    LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
-                 << " cann't connect to node  ( " << coor_addr_.first << " , "
-                 << coor_addr_.second
-                 << " ) when SegmentExecStatus connect remote actor";
-  }
+  coor_actor_ =
+      Environment::getInstance()->get_slave_node()->GetNodeActorFromId(
+          coor_node_id);
 }
 SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id)
     : node_segment_id_(node_segment_id),
@@ -127,8 +121,8 @@ RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
 
   } catch (caf::network_error& e) {
     LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
-                 << " cann't connect to node  ( " << coor_addr_.first << " , "
-                 << coor_addr_.second << " ) when report status";
+                 << " cann't connect to node  ( " << coor_node_id_
+                 << " ) when report status";
   }
   lock_.release();
 
@@ -179,8 +173,8 @@ RetCode SegmentExecStatus::ReportStatus() {
 
   } catch (caf::network_error& e) {
     LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
-                 << " cann't connect to node ( " << coor_addr_.first << " , "
-                 << coor_addr_.second << " ) when report status";
+                 << " cann't connect to node ( " << coor_node_id_
+                 << " ) when report status";
   }
 
   // for making sure kError or kDone be the last message sended to remote

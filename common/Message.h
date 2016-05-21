@@ -378,17 +378,17 @@ class PhysicalQueryPlan {
  public:
   PhysicalQueryPlan(PhysicalOperatorBase* it, NodeID node_id,
                     u_int64_t query_id, u_int32_t segment_id,
-                    NodeAddr coor_addr)
+                    unsigned int coor_node_id)
       : block_stream_iterator_root_(it),
         target_node_id_(node_id),
         query_id_(query_id),
         segment_id_(segment_id),
-        coor_addr_(coor_addr) {}
+        coor_node_id_(coor_node_id) {}
   PhysicalQueryPlan(const PhysicalQueryPlan& r) {
     block_stream_iterator_root_ = r.block_stream_iterator_root_;
     target_node_id_ = r.target_node_id_;
     query_id_ = r.query_id_;
-    coor_addr_ = r.coor_addr_;
+    coor_node_id_ = r.coor_node_id_;
     segment_id_ = r.segment_id_;
   }
 
@@ -436,13 +436,13 @@ class PhysicalQueryPlan {
   NodeID target_node_id_;
   u_int64_t query_id_;
   u_int32_t segment_id_;
-  NodeAddr coor_addr_;
+  unsigned int coor_node_id_;
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     Register_Schemas(ar);
     Register_Block_Stream_Iterator(ar);
-    ar& block_stream_iterator_root_& target_node_id_& query_id_& coor_addr_&
+    ar& block_stream_iterator_root_& target_node_id_& query_id_& coor_node_id_&
         segment_id_;
     //		ar & block_stream_iterator_root_;
   }

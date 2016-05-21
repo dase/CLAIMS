@@ -38,12 +38,14 @@
 #include "caf/io/all.hpp"
 
 #include "../common/ids.h"
+#include "../utility/lock.h"
 using std::pair;
 using std::string;
 using std::cout;
 using std::endl;
 using std::map;
 using std::vector;
+using caf::actor;
 namespace claims {
 using OkAtom = caf::atom_constant<caf::atom("ok")>;
 using RegisterAtom = caf::atom_constant<caf::atom("register")>;
@@ -75,7 +77,9 @@ class BaseNode {
   void ReadNodeAddr();
   NodeAddr GetMasterAddr();
   void ReadMasterAddr();
-  NodeAddr GetNodeAddrFromId(const unsigned int& id);
+  NodeAddr GetNodeAddrFromId(const unsigned int id);
+  actor& GetNodeActorFromId(const unsigned int id);
+  actor& GetMasterActor() { return master_actor_; }
   vector<NodeID> GetAllNodeID();
 
   bool operator==(const BaseNode& r) const {
@@ -97,9 +101,12 @@ class BaseNode {
   unsigned int node_id_;
   NodeAddr node_addr_;
   NodeAddr master_addr_;
+  Lock lock_;
+  actor master_actor_;
 
  public:
-  map<int, pair<string, uint16_t>> node_id_to_addr_;
+  std::unordered_map<int, pair<string, uint16_t>> node_id_to_addr_;
+  std::unordered_map<int, actor> node_id_to_actor_;
 };
 
 }  // namespace claims

@@ -335,6 +335,13 @@ const int rCreateProjectionOnDelTableFailed = -14138;
 const int rNULLDropTableName = -14139;
 const int rStmtCancelled = -14140;
 const int rUnknowStmtType = -14141;
+
+// for node_manager
+const int rConRemoteActorError = -14300;
+const int rRegisterToMasterTimeOut = -14301;
+const int rRegisterToMasterError = -14302;
+// for exec_tracker
+
 }  // end namespace common
 }  // end namespace claims
 

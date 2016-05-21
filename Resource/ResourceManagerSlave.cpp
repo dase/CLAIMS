@@ -22,9 +22,8 @@ InstanceResourceManager::~InstanceResourceManager() {}
 void InstanceResourceManager::ReportStorageBudget(
     StorageBudgetMessage& message) {
   caf::scoped_actor self;
-  auto master_addr =
-      Environment::getInstance()->get_slave_node()->GetMasterAddr();
-  auto master_actor = remote_actor(master_addr.first, master_addr.second);
+  auto master_actor =
+      Environment::getInstance()->get_slave_node()->GetMasterActor();
   self->sync_send(master_actor, StorageBudgetAtom::value, message).await(
 
       [=](OkAtom) { cout << "reporting storage budget is ok!" << endl; },
