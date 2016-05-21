@@ -341,7 +341,7 @@ const int rConRemoteActorError = -14300;
 const int rRegisterToMasterTimeOut = -14301;
 const int rRegisterToMasterError = -14302;
 // for exec_tracker
-
+const int rCouldnotFindCancelQueryId = -14400;
 }  // end namespace common
 }  // end namespace claims
 

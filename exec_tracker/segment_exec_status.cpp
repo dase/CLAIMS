@@ -81,15 +81,14 @@ RetCode SegmentExecStatus::CancelSegExec() {
   //  lock_.release();
   LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
             << " need be cancelled!" << endl;
-  return 0;
+  return rSuccess;
 }
 // make sure that kCancel or kDone is the last message transfer to stmt
 RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
                                         string exec_info) {
   if (kCancelled == exec_status_ || stop_report_) {
     lock_.release();
-
-    return 0;
+    return rSuccess;
   }
   //  lock_.acquire();
   try {

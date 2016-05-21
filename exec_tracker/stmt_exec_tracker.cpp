@@ -31,13 +31,14 @@
 #include <string>
 #include <iostream>
 #include <utility>
-
+#include "../common/error_define.h"
 #include "../Environment.h"
 #include "../node_manager/base_node.h"
 #include "caf/all.hpp"
 #include "caf/local_actor.hpp"
 using std::make_pair;
 using std::string;
+using claims::common::rCouldnotFindCancelQueryId;
 namespace claims {
 
 StmtExecTracker::StmtExecTracker() : query_id_gen_(0), logic_time_(0) {
@@ -55,12 +56,11 @@ RetCode StmtExecTracker::RegisterStmtES(StmtExecStatus* stmtes) {
   lock_.acquire();
   query_id_to_stmtes_.insert(make_pair(stmtes->get_query_id(), stmtes));
   lock_.release();
-  return 0;
+  return rSuccess;
 }
 
 RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id) {
   lock_.acquire();
-
   auto it = query_id_to_stmtes_.find(query_id);
   if (it == query_id_to_stmtes_.end()) {
     LOG(WARNING) << "invalide query id at UnRegisterStmtES" << endl;
@@ -71,7 +71,7 @@ RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id) {
   LOG(INFO) << "query id= " << query_id
             << " has erased from StmtEs! then left stmt = "
             << query_id_to_stmtes_.size() << endl;
-  return 0;
+  return rSuccess;
 }
 // for invoking from outside, so should add lock
 RetCode StmtExecTracker::CancelStmtExec(u_int64_t query_id) {
@@ -82,11 +82,11 @@ RetCode StmtExecTracker::CancelStmtExec(u_int64_t query_id) {
                  << endl;
     lock_.release();
     assert(false);
-    return -1;
+    return rCouldnotFindCancelQueryId;
   }
   it->second->CancelStmtExec();
   lock_.release();
-  return 0;
+  return rSuccess;
 }
 
 void StmtExecTracker::CheckStmtExecStatus(caf::event_based_actor* self,

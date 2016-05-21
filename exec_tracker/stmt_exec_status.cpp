@@ -68,7 +68,7 @@ StmtExecStatus::~StmtExecStatus() {
 
 RetCode StmtExecStatus::CancelStmtExec() {
   if (ExecStatus::kCancelled == exec_status_) {
-    return 0;
+    return rSuccess;
   }
   exec_status_ = kCancelled;
   //  LOG(INFO) << query_id_ << " query should be cancelled!";
