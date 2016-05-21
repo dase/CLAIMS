@@ -47,7 +47,9 @@ BaseNode::BaseNode() : node_id_(-1) {
   ReadMasterAddr();
 }
 BaseNode::BaseNode(string node_ip, uint16_t node_port)
-    : node_addr_(make_pair(node_ip, node_port)), node_id_(-1) {}
+    : node_addr_(make_pair(node_ip, node_port)), node_id_(-1) {
+  ReadMasterAddr();
+}
 BaseNode::~BaseNode() {}
 
 NodeAddr BaseNode::GetNodeAddr() { return node_addr_; }

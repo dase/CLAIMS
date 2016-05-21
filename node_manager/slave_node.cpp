@@ -159,6 +159,13 @@ SlaveNode::~SlaveNode() { instance_ = NULL; }
 void SlaveNode::CreateActor() {
   auto slave_actor = caf::spawn<SlaveNodeActor>(this);
   try {
+    master_actor_ =
+        caf::io::remote_actor(master_addr_.first, master_addr_.second);
+  } catch (caf::network_error& e) {
+    LOG(ERROR) << "slave node create remote_actor error due to network error!";
+    assert(false);
+  }
+  try {
     caf::io::publish(slave_actor, get_node_port(), nullptr, 1);
     LOG(INFO) << "slave node publish port " << get_node_port()
               << " successfully!";
@@ -167,21 +174,14 @@ void SlaveNode::CreateActor() {
   } catch (caf::network_error& e) {
     LOG(ERROR) << "slave node publish error due to network error!";
   }
-  try {
-    master_actor_ =
-        caf::io::remote_actor(master_addr_.first, master_addr_.second);
-  } catch (caf::network_error& e) {
-    LOG(ERROR) << "slave node create remote_actor error due to network error!";
-    assert(false);
-  }
 }
 
 RetCode SlaveNode::RegisterToMaster() {
   RetCode ret = 0;
   caf::scoped_actor self;
   try {
-    self->sync_send(master_actor_, RegisterAtom::value, get_node_ip(),
-                    get_node_port())
+    self->sync_send(remote_actor(master_addr_.first, master_addr_.second),
+                    RegisterAtom::value, get_node_ip(), get_node_port())
         .await([=](OkAtom, const unsigned int& id, const BaseNode& node) {
                  set_node_id(id);
                  node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
