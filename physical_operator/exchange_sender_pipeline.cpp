@@ -415,13 +415,16 @@ void* ExchangeSenderPipeline::Sender(void* arg) {
             break;
           } else {
             if (recvbytes < block_for_sending->GetRestSizeToHandle()) {
-              /* the block is not entirely sent. */
+/* the block is not entirely sent. */
+#ifdef GLOG_STATUS
+
               LOG(INFO)
                   << "(exchange_id = " << Pthis->state_.exchange_id_
                   << " , partition_offset = " << Pthis->state_.partition_offset_
                   << " ) doesn't send a block completely, actual send bytes = "
                   << recvbytes << " rest bytes = "
                   << block_for_sending->GetRestSizeToHandle() << std::endl;
+#endif
               block_for_sending->IncreaseActualSize(recvbytes);
               continue;
             } else {

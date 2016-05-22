@@ -54,7 +54,6 @@ StmtExecStatus::StmtExecStatus(string sql_stmt)
 StmtExecStatus::~StmtExecStatus() {
   // due to the query result should return, so shouldn't be deleted here
   // if (NULL != query_result_) delete query_result_;
-  LOG(INFO) << "begin to delete stmt ! " << query_id_ << endl;
   lock_.acquire();
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
@@ -63,7 +62,6 @@ StmtExecStatus::~StmtExecStatus() {
   }
   node_seg_id_to_seges_.clear();
   lock_.release();
-  LOG(INFO) << "end   to delete stmt ! " << query_id_ << endl;
 }
 
 RetCode StmtExecStatus::CancelStmtExec() {
