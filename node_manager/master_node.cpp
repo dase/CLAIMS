@@ -115,7 +115,7 @@ void MasterNode::CreateActor() {
   master_actor_ = caf::spawn<MasterNodeActor>(this);
   try {
     caf::io::publish(master_actor_, get_node_port(), nullptr, 1);
-    LOG(INFO) << "master ip port publish succeed!";
+    LOG(INFO) << "master ip port" << get_node_port() << " publish succeed!";
   } catch (caf::bind_failure& e) {
     LOG(ERROR) << "the specified port " << get_node_port() << " is used!";
   } catch (caf::network_error& e) {
@@ -133,8 +133,8 @@ RetCode MasterNode::BroastNodeInfo(const unsigned int& node_id,
                                    const uint16_t& node_port) {
   caf::scoped_actor self;
   for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
-    self->send(GetNodeActorFromId(it->first), BroadcastNodeAtom::value, node_id,
-               node_ip, node_port);
+    self->send(node_id_to_actor_.at(it->first), BroadcastNodeAtom::value,
+               node_id, node_ip, node_port);
   }
   return rSuccess;
 }
@@ -151,8 +151,7 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
   } catch (caf::network_error& e) {
     LOG(WARNING) << "cann't connect to node ( " << node_ip << " , " << node_port
                  << " ) and create remote actor failed!!";
-    lock_.release();
-    return rConRemoteActorError;
+    assert(false);
   }
   LOG(INFO) << "slave : register one node( " << node_id_gen_ << " < " << node_ip
             << " " << node_port << " > )" << std::endl;

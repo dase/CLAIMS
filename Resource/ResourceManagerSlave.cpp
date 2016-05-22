@@ -6,6 +6,9 @@
  */
 
 #include "ResourceManagerSlave.h"
+
+#include <glog/logging.h>
+
 #include "../Environment.h"
 #include "../node_manager/base_node.h"
 #include "caf/io/all.hpp"
@@ -26,7 +29,7 @@ void InstanceResourceManager::ReportStorageBudget(
       Environment::getInstance()->get_slave_node()->GetMasterActor();
   self->sync_send(master_actor, StorageBudgetAtom::value, message).await(
 
-      [=](OkAtom) { cout << "reporting storage budget is ok!" << endl; },
+      [=](OkAtom) { LOG(INFO) << "reporting storage budget is ok!" << endl; },
       after(std::chrono::seconds(30)) >>
           [=]() {
             LOG(WARNING) << "reporting storage budget, but timeout 30s !!"

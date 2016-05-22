@@ -29,11 +29,11 @@
 #ifndef NODE_MANAGER_BASE_NODE_H_
 #define NODE_MANAGER_BASE_NODE_H_
 #include "./base_node.h"
-
 #include <string>
 #include <utility>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
 
