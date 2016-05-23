@@ -53,6 +53,8 @@ void ExprColumn::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
     if (return_type_ == t_string) {
       value_size_ = std::max(licnxt.schema0_->getcolumn(attr_id_).get_length(),
                              static_cast<unsigned int>(BASE_DATA_SIZE));
+	} else if (return_type_ == t_decimal) {
+      value_size_ = licnxt.schema0_->getcolumn(attr_id_).size;
     } else {
       value_size_ = licnxt.schema0_->getcolumn(attr_id_).get_length();
     }
@@ -66,6 +68,8 @@ void ExprColumn::InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {
         value_size_ =
             std::max(licnxt.schema1_->getcolumn(attr_id_).get_length(),
                      static_cast<unsigned int>(BASE_DATA_SIZE));
+	  } else if (return_type_ == t_decimal) {
+        value_size_ = licnxt.schema1_->getcolumn(attr_id_).size;
       } else {
         value_size_ = licnxt.schema1_->getcolumn(attr_id_).get_length();
       }

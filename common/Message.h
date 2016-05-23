@@ -21,29 +21,38 @@
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <sstream>
 #include <assert.h>
-#include "Theron/Defines.h"
-#include "Theron/Theron.h"
+#include <string.h>
+#include <iosfwd>
+#include <string>
+#include <utility>
+
+#include "../common/memory_handle.h"
 #include "serialization/RegisterDerivedClass.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../Debug.h"
+#include "../Environment.h"
+#include "../node_manager/base_node.h"
 #include "../storage/StorageLevel.h"
 #include "ids.h"
-
+using claims::NodeAddr;
 using claims::physical_operator::PhysicalOperatorBase;
 
 // It's better to use fixed length information for implementation concern.
-THERON_DECLARE_REGISTERED_MESSAGE(ExchangeID)
 struct StorageBudgetMessage {
-  explicit StorageBudgetMessage(const int& disk_budget,
-                                const int& memory_budget, const int& nodeid)
+  StorageBudgetMessage(const int& disk_budget, const int& memory_budget,
+                       const int& nodeid)
       : disk_budget(disk_budget),
         memory_budget(memory_budget),
         nodeid(nodeid) {}
+  StorageBudgetMessage() : nodeid(1000000), disk_budget(0), memory_budget(0) {}
   int disk_budget;
   int memory_budget;
   int nodeid;
+  bool operator==(const StorageBudgetMessage& lhs) const {
+    return lhs.nodeid == nodeid && lhs.memory_budget == memory_budget &&
+           disk_budget == lhs.disk_budget;
+  }
 };
-THERON_DECLARE_REGISTERED_MESSAGE(StorageBudgetMessage)
 
 struct PartitionBindingMessage {
   PartitionBindingMessage(const PartitionID& pid, const unsigned& num,
@@ -53,13 +62,11 @@ struct PartitionBindingMessage {
   unsigned number_of_chunks;
   StorageLevel storage_level;
 };
-THERON_DECLARE_REGISTERED_MESSAGE(PartitionBindingMessage)
 
 struct PartitionUnbindingMessage {
   PartitionUnbindingMessage(const PartitionID& pid) : partition_id(pid){};
   PartitionID partition_id;
 };
-THERON_DECLARE_REGISTERED_MESSAGE(PartitionUnbindingMessage)
 
 struct RegisterStorageRespond {
   explicit RegisterStorageRespond(const char* const text) {
@@ -68,7 +75,6 @@ struct RegisterStorageRespond {
   }
   char mText[REGISTER_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(RegisterStorageRespond)
 
 struct HeartBeatMessage {
   explicit HeartBeatMessage(const char* const text) {
@@ -77,7 +83,6 @@ struct HeartBeatMessage {
   }
   char mText[HEARTBEAT_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(HeartBeatMessage)
 
 struct HeartBeatRespond {
   explicit HeartBeatRespond(const char* const text) {
@@ -86,7 +91,6 @@ struct HeartBeatRespond {
   }
   char mText[HEARTBEAT_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(HeartBeatRespond)
 
 struct BlockStatusMessage {
   explicit BlockStatusMessage(const char* const text) {
@@ -95,7 +99,6 @@ struct BlockStatusMessage {
   }
   char mText[BLOCK_STATUS_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(BlockStatusMessage)
 
 struct BlockStatusRespond {
   explicit BlockStatusRespond(const char* const text) {
@@ -104,7 +107,6 @@ struct BlockStatusRespond {
   }
   char mText[BLOCK_STATUS_MESSAGE_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(BlockStatusRespond)
 
 struct MatcherMessage {
   explicit MatcherMessage(const char* const filename, const char* const bmi) {
@@ -116,7 +118,6 @@ struct MatcherMessage {
   char filenameText[MATCHER_MESSAGE_FILENAME_LEN];
   char bmiText[MATCHER_MESSAGE_BMI_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(MatcherMessage)
 
 struct MatcherRespond {
   explicit MatcherRespond(const char* const text) {
@@ -125,7 +126,6 @@ struct MatcherRespond {
   }
   char mText[MATCHER_MESSAGE_PROJECT_LEN];
 };
-THERON_DECLARE_REGISTERED_MESSAGE(MatcherRespond)
 
 /* NodeRegisterMessage has the same function compared with NodeConnectionMessage
  * except for that
@@ -148,22 +148,18 @@ struct NodeRegisterMessage {
   unsigned ip;
   unsigned port;
 };
-THERON_DECLARE_REGISTERED_MESSAGE(NodeRegisterMessage)
 struct Message256 {
   unsigned length;
   char message[256 - sizeof(unsigned)];
   static unsigned Capacity() { return 256 - sizeof(unsigned); }
 };
-THERON_DECLARE_REGISTERED_MESSAGE(Message256)
+
 struct Message4K  // temporary ways to expand the the serialization capacity
     {
   unsigned length;
   char message[4096 * 50 - sizeof(unsigned)];
   static unsigned Capacity() { return 4096 * 50 - sizeof(unsigned); }
 };
-THERON_DECLARE_REGISTERED_MESSAGE(Message4K)
-THERON_DECLARE_REGISTERED_MESSAGE(int)
-THERON_DECLARE_REGISTERED_MESSAGE(unsigned long long int)
 template <typename T>
 static T Deserialize(Message256 input) {
   std::string received(input.message, input.length);
@@ -287,6 +283,21 @@ static Message4K Serialize4K(T& object) {
   //
   //	return ret;
 }
+template <typename T>
+string TextSerialize(const T& obj) {
+  stringstream ss;
+  boost::archive::text_oarchive oa(ss);
+  oa << obj;
+  return ss.str();
+}
+template <typename T>
+T TextDeserialize(const string& obj) {
+  T ret;
+  stringstream ss(obj);
+  boost::archive::text_iarchive ia(ss);
+  ia >> ret;
+  return ret;
+}
 
 class CreateTableRespond {
  public:
@@ -365,10 +376,20 @@ class RegisterSlaveMessage {
  */
 class PhysicalQueryPlan {
  public:
-  PhysicalQueryPlan(PhysicalOperatorBase* it)
-      : block_stream_iterator_root_(it){};
+  PhysicalQueryPlan(PhysicalOperatorBase* it, NodeID node_id,
+                    u_int64_t query_id, u_int32_t segment_id,
+                    NodeAddr coor_addr)
+      : block_stream_iterator_root_(it),
+        target_node_id_(node_id),
+        query_id_(query_id),
+        segment_id_(segment_id),
+        coor_addr_(coor_addr) {}
   PhysicalQueryPlan(const PhysicalQueryPlan& r) {
     block_stream_iterator_root_ = r.block_stream_iterator_root_;
+    target_node_id_ = r.target_node_id_;
+    query_id_ = r.query_id_;
+    coor_addr_ = r.coor_addr_;
+    segment_id_ = r.segment_id_;
   }
 
   PhysicalQueryPlan() : block_stream_iterator_root_(0){};
@@ -384,7 +405,7 @@ class PhysicalQueryPlan {
    * the undesirable destruction of iterator caused by the default destructor of
    * IteratorMessage
    */
-  void destory() { block_stream_iterator_root_->~PhysicalOperatorBase(); }
+  void destory() { DELETE_PTR(block_stream_iterator_root_); }
   void run();
   static PhysicalQueryPlan deserialize(Message256 message) {
     return Deserialize<PhysicalQueryPlan>(message);
@@ -403,14 +424,26 @@ class PhysicalQueryPlan {
     return Serialize4K<PhysicalQueryPlan>(input);
   }
 
+  static string TextSerializePlan(const PhysicalQueryPlan& input) {
+    return TextSerialize<PhysicalQueryPlan>(input);
+  }
+  static PhysicalQueryPlan TextDeserializePlan(const string& message) {
+    return TextDeserialize<PhysicalQueryPlan>(message);
+  }
+
  private:
   PhysicalOperatorBase* block_stream_iterator_root_;
+  NodeID target_node_id_;
+  u_int64_t query_id_;
+  u_int32_t segment_id_;
+  NodeAddr coor_addr_;
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     Register_Schemas(ar);
     Register_Block_Stream_Iterator(ar);
-    ar& block_stream_iterator_root_;
+    ar& block_stream_iterator_root_& target_node_id_& query_id_& coor_addr_&
+        segment_id_;
     //		ar & block_stream_iterator_root_;
   }
 };

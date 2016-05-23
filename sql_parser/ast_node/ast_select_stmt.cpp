@@ -311,7 +311,9 @@ RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
     if (!equal_join_condition_.empty()) {
       vector<LogicalEqualJoin::JoinPair> join_pair;
       join_pair.clear();
-      ret = GetEqualJoinPair(join_pair, next_lplan, args_lplan,
+      // "args_lplan" and "next_lplan" order in GetEqualJoinPair' should be
+      // same as "arg_lplan" and "next_lplan" in "new LogicalJoin"
+      ret = GetEqualJoinPair(join_pair, args_lplan, next_lplan,
                              equal_join_condition_);
       if (rSuccess != ret) {
         return ret;

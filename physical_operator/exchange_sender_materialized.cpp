@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <iosfwd>
 #include <sstream>
+#include <stack>
 #include <string>
 #include "../configure.h"
 #include "../common/rename.h"
@@ -46,16 +47,31 @@
 #include "../Environment.h"
 #include "../Executor/exchange_tracker.h"
 #include "../physical_operator/exchange_sender.h"
+
 namespace claims {
 namespace physical_operator {
 ExchangeSenderMaterialized::ExchangeSenderMaterialized(State state)
-    : state_(state), ExchangeSender() {}
+    : state_(state),
+      ExchangeSender(),
+      block_for_sending_(NULL),
+      block_for_serialization_(NULL),
+      block_stream_for_asking_(NULL),
+      partitioned_block_stream_(NULL),
+      partitioned_data_buffer_(NULL),
+      socket_fd_upper_list_(NULL) {
+  set_phy_oper_type(kphysicalExchangeSender);
+}
 
 ExchangeSenderMaterialized::~ExchangeSenderMaterialized() {}
 
-ExchangeSenderMaterialized::ExchangeSenderMaterialized() {}
-bool ExchangeSenderMaterialized::Open(const PartitionOffset&) {
-  state_.child_->Open(state_.partition_offset_);
+ExchangeSenderMaterialized::ExchangeSenderMaterialized() {
+  set_phy_oper_type(kphysicalExchangeSender);
+}
+bool ExchangeSenderMaterialized::Open(SegmentExecStatus* const exec_status,
+                                      const PartitionOffset&) {
+  RETURN_IF_CANCELLED(exec_status);
+
+  state_.child_->Open(exec_status, state_.partition_offset_);
 
   /** get the number of mergers **/
   nuppers_ = state_.upper_id_list_.size();
@@ -94,26 +110,36 @@ bool ExchangeSenderMaterialized::Open(const PartitionOffset&) {
       nuppers_, block_stream_for_asking_->getSerializedBlockSize(), 1000);
 
   /** connect to the mergers **/
+  RETURN_IF_CANCELLED(exec_status);
+
   for (unsigned upper_id = 0; upper_id < state_.upper_id_list_.size();
        upper_id++) {
+    RETURN_IF_CANCELLED(exec_status);
+
     if (!ConnectToUpper(ExchangeID(state_.exchange_id_, upper_id),
                         state_.upper_id_list_[upper_id],
                         socket_fd_upper_list_[upper_id])) {
       return false;
     }
   }
+  RETURN_IF_CANCELLED(exec_status);
 
   /** create the Sender thread **/
   CreateWorkerThread();
 
   return true;
 }
-bool ExchangeSenderMaterialized::Next(BlockStreamBase* no_block) {
+bool ExchangeSenderMaterialized::Next(SegmentExecStatus* const exec_status,
+                                      BlockStreamBase* no_block) {
   void* tuple_from_child;
   void* tuple_in_cur_block_stream;
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
+
     block_stream_for_asking_->setEmpty();
-    if (state_.child_->Next(block_stream_for_asking_)) {
+    if (state_.child_->Next(exec_status, block_stream_for_asking_)) {
+      RETURN_IF_CANCELLED(exec_status);
+
       /** a new block is obtained from child iterator **/
       if (state_.partition_schema_.isHashPartition()) {
         BlockStreamBase::BlockStreamTraverseIterator* traverse_iterator =
@@ -156,6 +182,8 @@ bool ExchangeSenderMaterialized::Next(BlockStreamBase* no_block) {
         }
       }
     } else {
+      RETURN_IF_CANCELLED(exec_status);
+
       /* the child iterator is exhausted. We add the remaining data in
        * partitioned data blocks into the buffer*/
       for (unsigned i = 0; i < nuppers_; i++) {
@@ -184,6 +212,8 @@ bool ExchangeSenderMaterialized::Next(BlockStreamBase* no_block) {
       child_exhausted_ = true;
 
       while (!partitioned_data_buffer_->isEmpty()) {
+        RETURN_IF_CANCELLED(exec_status);
+
         usleep(1);
       }
       /*
@@ -194,6 +224,8 @@ bool ExchangeSenderMaterialized::Next(BlockStreamBase* no_block) {
       LOG(INFO) << "Waiting for close notification!" << std::endl;
 
       for (unsigned i = 0; i < nuppers_; i++) {
+        RETURN_IF_CANCELLED(exec_status);
+
         WaitingForCloseNotification(socket_fd_upper_list_[i]);
       }
       return false;
@@ -201,25 +233,25 @@ bool ExchangeSenderMaterialized::Next(BlockStreamBase* no_block) {
   }
 }
 
-bool ExchangeSenderMaterialized::Close() {
+bool ExchangeSenderMaterialized::Close(SegmentExecStatus* const exec_status) {
   Logging_ExpandableBlockStreamExchangeLM(
       "The sender thread is killed in the close() function!");
 
+  assert(false);
   /* close the files*/
   CloseDiskFiles();
   /* Delete the files */
   DeleteDiskFiles();
 
-  state_.child_->Close();
-
+  state_.child_->Close(exec_status);
   delete block_stream_for_asking_;
   delete block_for_sending_;
   delete block_for_serialization_;
   for (unsigned i = 0; i < nuppers_; i++) {
     delete partitioned_block_stream_[i];
   }
-  delete partitioned_data_buffer_;
   delete[] partitioned_block_stream_;
+  delete partitioned_data_buffer_;
   delete[] socket_fd_upper_list_;
 
   return true;
@@ -361,7 +393,7 @@ void* ExchangeSenderMaterialized::debug(void* arg) {
 bool ExchangeSenderMaterialized::CreateWorkerThread() {
   if (true == g_thread_pool_used) {
     Environment::getInstance()->getThreadPool()->AddTask(MaterializeAndSend,
-                                                          this);
+                                                         this);
   } else {
     int error;
     error = pthread_create(&sender_thread_id_, NULL, MaterializeAndSend, this);
@@ -403,6 +435,14 @@ std::string ExchangeSenderMaterialized::GetPartititionedFileName(
   file_name << temp_file_dir << "exchange_" << state_.exchange_id_ << "_"
             << state_.partition_offset_ << "_" << partition_index;
   return file_name.str();
+}
+RetCode ExchangeSenderMaterialized::GetAllSegments(
+    stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    return state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  // namespace physical_operator
 }  // namespace claims

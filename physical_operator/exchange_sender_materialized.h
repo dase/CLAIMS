@@ -34,6 +34,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/utility.hpp>
+#include <stack>
 #include <string>
 #include "../../common/Schema/Schema.h"
 #include "../../Executor/IteratorExecutorMaster.h"
@@ -43,6 +44,7 @@
 #include "../../common/Block/BlockStreamBuffer.h"
 #include "../../common/Logging.h"
 #include "../../common/partition_functions.h"
+#include "../common/error_define.h"
 #include "../physical_operator/exchange_sender.h"
 
 namespace claims {
@@ -86,9 +88,14 @@ class ExchangeSenderMaterialized : public ExchangeSender {
   explicit ExchangeSenderMaterialized(State state);
   ExchangeSenderMaterialized();
   virtual ~ExchangeSenderMaterialized();
-  bool Open(const PartitionOffset& part_off = 0);
-  bool Next(BlockStreamBase* no_block);
-  bool Close();
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& part_off = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* no_block);
+  bool Close(SegmentExecStatus* const exec_status);
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
+  void SetPartitionOffset(const int par_off) {
+    state_.partition_offset_ = par_off;
+  }
 
  private:
   void Send();

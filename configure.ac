@@ -4,7 +4,7 @@ AM_PROG_AR
 AC_PROG_LIBTOOL
 CPPFLAGS="-w -O2 -DTHERON_XS -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS"
 AM_CONDITIONAL(OPT_TCMALLOC, true)
-CXXFLAGS=${CXXFLAGS="-g -std=c++11"}
+CXXFLAGS=${CXXFLAGS="-g  -std=c++11"}
 AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
@@ -27,6 +27,7 @@ AC_CONFIG_FILES([
   common/types/Makefile 
   common/types/Test/Makefile 
   common/types/ttmath/Makefile 
+  node_manager/Makefile
   Daemon/Makefile 
   Executor/Makefile 
   Executor/Test/Makefile 
@@ -39,6 +40,7 @@ AC_CONFIG_FILES([
   logical_operator/Makefile 
   Resource/Makefile 
   storage/Makefile 
+  exec_tracker/Makefile
   sql_parser/Makefile
   sql_parser/ast_node/Makefile
   sql_parser/parser/Makefile

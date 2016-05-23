@@ -58,6 +58,6 @@ do
  }&
  done
  wait
- echo -e "\033[33mtest loop:[$loop] end time:[`date '+%Y-%m-%d %H:%M:%S'`]\033[0m"
+ echo -e "\033[36mtest loop:[$loop] end time:[`date '+%Y-%m-%d %H:%M:%S'`]\033[0m"
 }
 done

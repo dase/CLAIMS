@@ -27,6 +27,8 @@
 #include <string>
 #include <vector>
 #include <iostream>  // NOLINT
+#include <stack>
+
 #include "../utility/rdtsc.h"
 using std::vector;
 using std::string;
@@ -36,13 +38,22 @@ using std::endl;
 namespace claims {
 namespace physical_operator {
 ResultCollector::ResultCollector()
-    : finished_thread_count_(0), registered_thread_count_(0) {
+    : finished_thread_count_(0),
+      registered_thread_count_(0),
+      block_buffer_(NULL),
+      thread_id_(0) {
+  set_phy_oper_type(kPhysicalResult);
   sema_open_.set_value(1);
   sema_open_finished_.set_value(0);
   sema_input_complete_.set_value(0);
 }
 ResultCollector::ResultCollector(State state)
-    : finished_thread_count_(0), registered_thread_count_(0), state_(state) {
+    : finished_thread_count_(0),
+      registered_thread_count_(0),
+      state_(state),
+      block_buffer_(NULL),
+      thread_id_(0) {
+  set_phy_oper_type(kPhysicalResult);
   sema_open_.set_value(1);
   sema_open_finished_.set_value(0);
   sema_input_complete_.set_value(0);
@@ -70,7 +81,10 @@ ResultCollector::State::State(Schema* input, PhysicalOperatorBase* child,
       partition_offset_(partitoin_offset),
       column_header_(column_header) {}
 
-bool ResultCollector::Open(const PartitionOffset& part_offset) {
+bool ResultCollector::Open(SegmentExecStatus* const exec_status,
+                           const PartitionOffset& part_offset) {
+  RETURN_IF_CANCELLED(exec_status);
+
   state_.partition_offset_ = part_offset;
 
   if (sema_open_.try_wait()) {
@@ -83,22 +97,31 @@ bool ResultCollector::Open(const PartitionOffset& part_offset) {
     }
   }
   registered_thread_count_++;
+  RETURN_IF_CANCELLED(exec_status);
+
+  exec_status_ = exec_status;
   if (true == g_thread_pool_used) {
     Environment::getInstance()->getThreadPool()->AddTask(CollectResult, this);
   } else {
-    pthread_t tid;
-    pthread_create(&tid, NULL, CollectResult, this);
+    pthread_create(&thread_id_, NULL, CollectResult, this);
   }
   unsigned long long int start = curtick();
+
   sema_input_complete_.wait();
   block_buffer_->query_time_ = getSecond(start);
   return true;
 }
 
-bool ResultCollector::Next(BlockStreamBase* block) { return false; }
+bool ResultCollector::Next(SegmentExecStatus* const exec_status,
+                           BlockStreamBase* block) {
+  return false;
+}
 
-bool ResultCollector::Close() {
-  state_.child_->Close();
+bool ResultCollector::Close(SegmentExecStatus* const exec_status) {
+  if (0 != thread_id_) {
+    pthread_join(thread_id_, NULL);
+  }
+  state_.child_->Close(exec_status);
   sema_input_complete_.set_value(0);
   return true;
 }
@@ -134,8 +157,10 @@ void ResultCollector::DeallocateBlockStream(BlockStreamBase*& target) const {
 
 void* ResultCollector::CollectResult(void* arg) {
   ResultCollector* Pthis = (ResultCollector*)arg;
-  Pthis->state_.child_->Open(Pthis->state_.partition_offset_);
-  BlockStreamBase* block_for_asking;
+
+  Pthis->state_.child_->Open(Pthis->exec_status_,
+                             Pthis->state_.partition_offset_);
+  BlockStreamBase* block_for_asking = NULL;
   if (false == Pthis->CreateBlockStream(block_for_asking)) {
     assert(false);
     return 0;
@@ -145,13 +170,17 @@ void* ResultCollector::CollectResult(void* arg) {
   unsigned long long start = 0;
   start = curtick();
 
-  while (Pthis->state_.child_->Next(block_for_asking)) {
+  while (Pthis->state_.child_->Next(Pthis->exec_status_, block_for_asking)) {
     Pthis->block_buffer_->atomicAppendNewBlock(block_for_asking);
     if (false == Pthis->CreateBlockStream(block_for_asking)) {
       assert(false);
       return 0;
     }
+    if (Pthis->exec_status_->is_cancelled()) {
+      break;
+    }
   }
+  DELETE_PTR(block_for_asking);
   Pthis->sema_input_complete_.post();
   double eclipsed_seconds = getSecond(start);
   Pthis->block_buffer_->query_time_ = eclipsed_seconds;
@@ -178,6 +207,13 @@ unsigned long ResultCollector::GetNumberOftuples() const {
 ResultCollector::State::~State() {
   //  delete input_;
   //  delete child_;
+}
+RetCode ResultCollector::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    ret = state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  //  namespace physical_operator
 }  //  namespace claims

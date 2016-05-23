@@ -92,7 +92,8 @@ PhysicalOuterHashJoin::State::State(
       block_size_(block_size),
       join_condi_(join_condi) {}
 
-bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
+bool PhysicalOuterHashJoin::Open(SegmentExecStatus* const exec_status,
+                                 const PartitionOffset& partition_offset) {
 #ifdef TIME
   startTimer(&timer);
 #endif
@@ -149,7 +150,7 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
    * serialization, then continue processing. Tong
    */
   LOG(INFO) << "join operator begin to open left child" << endl;
-  state_.child_left_->Open(partition_offset);
+  state_.child_left_->Open(exec_status, partition_offset);
   LOG(INFO) << "join operator finished opening left child" << endl;
   BarrierArrive(0);
   BasicHashTable::Iterator tmp_it = hashtable_->CreateIterator();
@@ -175,9 +176,12 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
 
   unsigned long long int start = curtick();
   unsigned long long int processed_tuple_count = 0;
+  RETURN_IF_CANCELLED(exec_status);
 
   LOG(INFO) << "join operator begin to call left child's next()" << endl;
-  while (state_.child_left_->Next(jtc->l_block_for_asking_)) {
+  while (state_.child_left_->Next(exec_status, jtc->l_block_for_asking_)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     delete jtc->l_block_stream_iterator_;
     jtc->l_block_stream_iterator_ = jtc->l_block_for_asking_->createIterator();
     while (cur = jtc->l_block_stream_iterator_->nextTuple()) {
@@ -208,12 +212,13 @@ bool PhysicalOuterHashJoin::Open(const PartitionOffset& partition_offset) {
   }
 
   BarrierArrive(1);
-  state_.child_right_->Open(partition_offset);
+  state_.child_right_->Open(exec_status, partition_offset);
   LOG(INFO) << "join operator finished opening right child" << endl;
   return true;
 }
 
-bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
+bool PhysicalOuterHashJoin::Next(SegmentExecStatus* const exec_status,
+                                 BlockStreamBase* block) {
   void* result_tuple = NULL;
   void* tuple_from_right_child;
   void* tuple_in_hashtable;
@@ -239,6 +244,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
    * send was full, so we need hashtable_iterator_ preserved.
    */
   while (true) {
+    RETURN_IF_CANCELLED(exec_status);
     // Right join uses right table(child) as outer loop tuple
     while (NULL != (tuple_from_right_child =
                         jtc->r_block_stream_iterator_->currentTuple())) {
@@ -349,7 +355,8 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
       jtc->hashtable_iterator_ = hashtable_->CreateIterator();
 
     // Get another right block.
-    if (state_.child_right_->Next(jtc->r_block_for_asking_) == false) {
+    if (state_.child_right_->Next(exec_status, jtc->r_block_for_asking_) ==
+        false) {
       // Mark the first thread that can not get data from
       // Next(jtc->r_block_for_asking).It means no blocks from right child
       lock_thread_.acquire();
@@ -487,7 +494,7 @@ bool PhysicalOuterHashJoin::Next(BlockStreamBase* block) {
   }
 }
 
-bool PhysicalOuterHashJoin::Close() {
+bool PhysicalOuterHashJoin::Close(SegmentExecStatus* const exec_status) {
 #ifdef TIME
   stopTimer(&timer);
   LOG(INFO) << "time consuming: " << timer << ", "
@@ -507,9 +514,12 @@ bool PhysicalOuterHashJoin::Close() {
   //  }
   InitExpandedStatus();
   DestoryAllContext();
-  delete hashtable_;
-  state_.child_left_->Close();
-  state_.child_right_->Close();
+  if (NULL != hashtable_) {
+    delete hashtable_;
+    hashtable_ = NULL;
+  }
+  state_.child_left_->Close(exec_status);
+  state_.child_right_->Close(exec_status);
   return true;
 }
 
@@ -598,5 +608,15 @@ ThreadContext* PhysicalOuterHashJoin::CreateContext() {
   return jtc;
 }
 
+RetCode PhysicalOuterHashJoin::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_right_) {
+    ret = state_.child_right_->GetAllSegments(all_segments);
+  }
+  if (NULL != state_.child_left_) {
+    ret = state_.child_left_->GetAllSegments(all_segments);
+  }
+  return ret;
+}
 }  // namespace physical_operator
 }  // namespace claims

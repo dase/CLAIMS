@@ -35,12 +35,14 @@
 #include <list>
 #include <set>
 #include <atomic>
+#include <stack>
 #include "../Debug.h"
 #include "../utility/rdtsc.h"
+#include "../codegen/ExpressionGenerator.h"
 #include "../common/hash.h"
 #include "../common/hashtable.h"
-#include "../codegen/ExpressionGenerator.h"
 #include "../common/expression/expr_node.h"
+#include "../common/error_define.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
 using std::atomic;
@@ -123,7 +125,8 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
    *          partiton the function operates on.
    * @return  true in all cases.
    */
-  bool Open(const PartitionOffset& partition_offset = 0);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partition_offset = 0);
   /**
    * @brief Method description: Get tuples from right child, use algorithm to
    *                            find whether there's a left tuple that matches
@@ -134,14 +137,15 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
    * @return  false if there's no tuple to function and the block is empty,
    *          otherwise true.
    */
-  bool Next(BlockStreamBase* block);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
   /**
    * @brief Method description: Initialize thread status, destroy contexts,
    *                            delete hashtable, and close childs.
    * @return  true.
    */
-  bool Close();
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   /**

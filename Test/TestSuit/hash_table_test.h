@@ -13,15 +13,12 @@
 #include "../../common/ids.h"
 #include "../../common/hash.h"
 #include "../../common/Block/BlockStreamBuffer.h"
-<<<<<<< HEAD
-#include "../../Catalog/Column.h"
-=======
 
-#include "../../catalog/Column.h"
+#include "../../catalog/column.h"
 
->>>>>>> FETCH_HEAD
 #include "../../physical_operator/physical_operator_base.h"
 #include "../../storage/PartitionStorage.h"
+#include "../../storage/PartitionReaderIterator.h"
 #include "../../storage/BlockManager.h"
 
 #define block_size (1024 * 1024)
@@ -209,13 +206,14 @@ static void startup_catalog() {
     }
   }
 }
+
 struct Arg {
   BlockStreamBuffer* buffer;
   BasicHashTable** hash_table;
   Schema* schema;
   PartitionFunction* hash;
   PhysicalOperatorBase* iterator;
-  PartitionStorage::PartitionReaderItetaor* partition_reader;
+  PartitionReaderIterator* partition_reader;
   Barrier* barrier;
   unsigned tid;
 };
@@ -245,7 +243,7 @@ void* insert_into_hash_table_from_projection(void* argment) {
   unsigned nbuckets = arg.hash->getNumberOfPartitions();
   unsigned long long int start = curtick();
   printf("tuple length=%d\n", arg.schema->getTupleMaxSize());
-  while (arg.partition_reader->nextBlock(fetched_block)) {
+  while (arg.partition_reader->NextBlock(fetched_block)) {
     void* tuple;
     BlockStreamBase::BlockStreamTraverseIterator* it =
         fetched_block->createIterator();
@@ -315,9 +313,9 @@ static double projection_scan(unsigned degree_of_parallelism) {
   //	arg.hash_table=hashtable;
   arg.schema = schema;
   arg.partition_reader = BlockManager::getInstance()
-                             ->getPartitionHandle(PartitionID(
+                             ->GetPartitionHandle(PartitionID(
                                  table->getProjectoin(1)->getProjectionID(), 0))
-                             ->createAtomicReaderIterator();
+                             ->CreateAtomicReaderIterator();
   arg.barrier = new Barrier(nthreads);
   pthread_t pid[1000];
   unsigned long long int start = curtick();

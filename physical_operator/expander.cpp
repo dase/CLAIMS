@@ -43,13 +43,17 @@ Expander::Expander(State state)
       block_stream_buffer_(0),
       finished_thread_count_(0),
       thread_count_(0),
-      coordinate_pid_(0) {}
+      is_registered_(false) {
+  set_phy_oper_type(kphysicalExpander);
+}
 
 Expander::Expander()
     : block_stream_buffer_(0),
       finished_thread_count_(0),
       thread_count_(0),
-      coordinate_pid_(0) {}
+      is_registered_(false) {
+  set_phy_oper_type(kphysicalExpander);
+}
 
 Expander::~Expander() {
   if (NULL != state_.child_) {
@@ -74,7 +78,8 @@ Expander::State::State(Schema* schema, PhysicalOperatorBase* child,
  * @param partitoin_offset means to solve corresponding partition
  * every Expander should register to ExpanderTracker
  */
-bool Expander::Open(const PartitionOffset& partitoin_offset) {
+bool Expander::Open(SegmentExecStatus* const exec_status,
+                    const PartitionOffset& partitoin_offset) {
   received_tuples_ = 0;
   state_.partition_offset_ = partitoin_offset;
   input_data_complete_ = false;
@@ -84,13 +89,18 @@ bool Expander::Open(const PartitionOffset& partitoin_offset) {
       state_.block_size_, state_.block_count_in_buffer_ * 10, state_.schema_);
 
   in_work_expanded_thread_list_.clear();
+  RETURN_IF_CANCELLED(exec_status);
+
   expander_id_ = ExpanderTracker::getInstance()->registerNewExpander(
       block_stream_buffer_, this);
+  is_registered_ = true;
   LOG(INFO) << expander_id_
             << "Expander open, thread count= " << state_.init_thread_count_
             << std::endl;
-
+  exec_status_ = exec_status;
   for (unsigned i = 0; i < state_.init_thread_count_; i++) {
+    RETURN_IF_CANCELLED(exec_status);
+
     if (CreateWorkingThread() == false) {
       LOG(INFO) << "expander_id_ = " << expander_id_
                 << " Failed to create initial expanded thread*" << std::endl;
@@ -102,8 +112,13 @@ bool Expander::Open(const PartitionOffset& partitoin_offset) {
 /**
  * fetch one block from buffer and return, until it is exhausted.
  */
-bool Expander::Next(BlockStreamBase* block) {
+bool Expander::Next(SegmentExecStatus* const exec_status,
+                    BlockStreamBase* block) {
+  RETURN_IF_CANCELLED(exec_status);
+
   while (!block_stream_buffer_->getBlock(*block)) {
+    RETURN_IF_CANCELLED(exec_status);
+
     if (ChildExhausted()) {
       return false;
     } else {
@@ -113,13 +128,15 @@ bool Expander::Next(BlockStreamBase* block) {
   return true;
 }
 
-bool Expander::Close() {
-  LOG(INFO) << "Expander: " << expander_id_ << " received "
-            << block_stream_buffer_->getReceivedDataSizeInKbytes() << " kByte "
-            << received_tuples_ << " tuples!" << std::endl;
-  ExpanderTracker::getInstance()->unregisterExpander(expander_id_);
+bool Expander::Close(SegmentExecStatus* const exec_status) {
+  // for making sure every thread have exited from next()
   if (true == g_thread_pool_used) {
-    // do nothing
+    while (!in_work_expanded_thread_list_.empty() ||
+           !being_called_bacl_expanded_thread_list_.empty()) {
+      LOG(WARNING) << "there are thread working now when expander close(), so "
+                      "waiting!!!";
+      usleep(300);
+    }
   } else {
     for (std::set<pthread_t>::iterator it =
              in_work_expanded_thread_list_.begin();
@@ -131,24 +148,35 @@ bool Expander::Close() {
                    << " A expander thread is killed before close!" << std::endl;
     }
   }
-
-  assert(input_data_complete_);
-  input_data_complete_ = false;
-  one_thread_finished_ = false;
-  assert(in_work_expanded_thread_list_.empty());
-  assert(being_called_bacl_expanded_thread_list_.empty());
-  finished_thread_count_ = 0;
-
+  if (!exec_status->is_cancelled()) {
+    LOG(INFO) << "Expander: " << expander_id_ << " received "
+              << block_stream_buffer_->getReceivedDataSizeInKbytes()
+              << " kByte " << received_tuples_ << " tuples!" << std::endl;
+  }
+  if (is_registered_) {
+    ExpanderTracker::getInstance()->unregisterExpander(expander_id_);
+    is_registered_ = false;
+  }
+  if (!exec_status->is_cancelled()) {
+    assert(input_data_complete_);
+    input_data_complete_ = false;
+    one_thread_finished_ = false;
+    assert(in_work_expanded_thread_list_.empty());
+    assert(being_called_bacl_expanded_thread_list_.empty());
+    finished_thread_count_ = 0;
+  }
   /*
    * check if all the information in ExpanderTrack has properly removed
    */
-  assert(!ExpanderTracker::getInstance()->trackExpander(expander_id_));
+  if (!exec_status->is_cancelled()) {
+    assert(!ExpanderTracker::getInstance()->trackExpander(expander_id_));
+  }
   if (NULL != block_stream_buffer_) {
     delete block_stream_buffer_;
     block_stream_buffer_ = NULL;
   }
   LOG(INFO) << expander_id_ << " Buffer is freed in Expander!" << std::endl;
-  state_.child_->Close();
+  state_.child_->Close(exec_status);
   thread_count_ = 0;
   LOG(INFO) << expander_id_ << "<<<<<<<Expander closed!>>>>>>>>>>" << std::endl;
   return true;
@@ -176,6 +204,7 @@ void* Expander::ExpandedWork(void* arg) {
   Pthis->AddIntoWorkingThreadList(pid);
   ExpanderTracker::getInstance()->registerNewExpandedThreadStatus(
       pid, Pthis->expander_id_);
+
   unsigned block_count = 0;
   (reinterpret_cast<ExpanderContext*>(arg))->sem_.post();
 
@@ -188,7 +217,8 @@ void* Expander::ExpandedWork(void* arg) {
             << " begins to open child!" << std::endl;
   ticks start_open = curtick();
 
-  Pthis->state_.child_->Open(Pthis->state_.partition_offset_);
+  Pthis->state_.child_->Open(Pthis->exec_status_,
+                             Pthis->state_.partition_offset_);
 
   LOG(INFO) << Pthis->expander_id_ << ", pid= " << pid
             << " finished opening child" << std::endl;
@@ -208,7 +238,7 @@ void* Expander::ExpandedWork(void* arg) {
         Pthis->state_.schema_, Pthis->state_.block_size_);
     block_for_asking->setEmpty();
 
-    while (Pthis->state_.child_->Next(block_for_asking)) {
+    while (Pthis->state_.child_->Next(Pthis->exec_status_, block_for_asking)) {
       if (!block_for_asking->Empty()) {
         Pthis->lock_.acquire();
         Pthis->received_tuples_ += block_for_asking->getTuplesInBlock();
@@ -226,7 +256,6 @@ void* Expander::ExpandedWork(void* arg) {
       delete block_for_asking;
       block_for_asking = NULL;
     }
-
     if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
             pthread_self())) {
       LOG(INFO) << Pthis->expander_id_ << " <<<<<<<<<<<<<<<<Expander detected "
@@ -252,7 +281,8 @@ void* Expander::ExpandedWork(void* arg) {
        *input data.
        *
        */
-      Pthis->block_stream_buffer_->setInputComplete();
+      if (NULL != Pthis->block_stream_buffer_)
+        Pthis->block_stream_buffer_->setInputComplete();
       LOG(INFO) << pthread_self() << " Produced " << block_count << "blocks"
                 << std::endl;
       Pthis->lock_.release();
@@ -286,12 +316,12 @@ bool Expander::ChildExhausted() {
              this->block_stream_buffer_->Empty();
   lock_.release();
   exclusive_expanding_.release();
-  if (ret == true && coordinate_pid_ != 0) {
-    void* res;
-    pthread_join(coordinate_pid_, &res);
-    coordinate_pid_ = 0;
-    return ChildExhausted();
-  }
+  //  if (ret == true && coordinate_pid_ != 0) {
+  //    void* res;
+  //    pthread_join(coordinate_pid_, &res);
+  //    coordinate_pid_ = 0;
+  //    return ChildExhausted();
+  //  }
   if (ret) {
     LOG(INFO) << expander_id_ << " child iterator is exhausted!" << std::endl;
   }
@@ -303,7 +333,9 @@ bool Expander::ChildExhausted() {
  */
 bool Expander::CreateWorkingThread() {
   pthread_t tid = 0;
-
+  if (exec_status_->is_cancelled()) {
+    return false;
+  }
   ExpanderContext para;
   para.pthis_ = this;
   ticks start = curtick();
@@ -441,6 +473,13 @@ bool Expander::Shrink() {
 
     return true;
   }
+}
+RetCode Expander::GetAllSegments(stack<Segment*>* all_segments) {
+  RetCode ret = rSuccess;
+  if (NULL != state_.child_) {
+    return state_.child_->GetAllSegments(all_segments);
+  }
+  return ret;
 }
 }  // namespace physical_operator
 }  // namespace claims

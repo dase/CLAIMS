@@ -22,6 +22,7 @@
  *      Author: wangli
  *       Email: wangli1426@gmail.com
  */
+#include <stack>
 
 #ifndef PHYSICAL_QUERY_PLAN_BLOCKSTREAMRESULTCOLLECTOR_H_
 #define PHYSICAL_QUERY_PLAN_BLOCKSTREAMRESULTCOLLECTOR_H_
@@ -48,8 +49,7 @@ class ResultCollector : public PhysicalOperatorBase {
     friend class ResultCollector;
 
    public:
-    State(Schema* input, PhysicalOperatorBase* child,
-          const unsigned block_size,
+    State(Schema* input, PhysicalOperatorBase* child, const unsigned block_size,
           vector<string> column_header = vector<string>(),
           const PartitionOffset partitoin_offset = 0);
     State();
@@ -76,10 +76,12 @@ class ResultCollector : public PhysicalOperatorBase {
   ResultCollector();
   ResultCollector(State);
   virtual ~ResultCollector();
-  bool Open(const PartitionOffset& part_off = 0);
-  bool Next(BlockStreamBase* block);
-  bool Close();
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& part_off = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
   /**
    * @brief Get query result data set.
@@ -109,6 +111,9 @@ class ResultCollector : public PhysicalOperatorBase {
 
  private:
   State state_;
+  pthread_t thread_id_;
+
+  SegmentExecStatus* exec_status_;
   /**
    *  It is the resposibility of the user to free the resultset.
    */
@@ -126,8 +131,7 @@ class ResultCollector : public PhysicalOperatorBase {
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar& boost::serialization::base_object<PhysicalOperatorBase>(*this) &
-        state_;
+    ar& boost::serialization::base_object<PhysicalOperatorBase>(*this) & state_;
   }
 };
 

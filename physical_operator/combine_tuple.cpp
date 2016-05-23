@@ -40,7 +40,8 @@ CombineTuple::State::State(std::vector<Schema *> input_schemas,
 
 CombineTuple::~CombineTuple() {}
 
-bool CombineTuple::Open(const PartitionOffset &partition_offset) {
+bool CombineTuple::Open(SegmentExecStatus *const exec_status,
+                        const PartitionOffset &partition_offset) {
   // first
   std::vector<BlockStreamBase *> v_b;
   for (unsigned i = 0; i < state_.children_.size(); i++) {
@@ -51,7 +52,7 @@ bool CombineTuple::Open(const PartitionOffset &partition_offset) {
   free_block_stream_list_.push_back(v_b);
 
   for (unsigned i = 0; i < state_.children_.size(); i++) {
-    if (!state_.children_[i]->Open(partition_offset)) {
+    if (!state_.children_[i]->Open(exec_status, partition_offset)) {
       // TODO: handle the failure
       return false;
     }
@@ -59,7 +60,8 @@ bool CombineTuple::Open(const PartitionOffset &partition_offset) {
   return true;
 }
 
-bool CombineTuple::Next(BlockStreamBase *block) {
+bool CombineTuple::Next(SegmentExecStatus *const exec_status,
+                        BlockStreamBase *block) {
   unsigned total_length_ = 0;
   for (unsigned i = 0; i < state_.input_schemas_.size(); i++) {
     total_length_ += state_.input_schemas_[i]->getTupleMaxSize();
@@ -76,7 +78,7 @@ bool CombineTuple::Next(BlockStreamBase *block) {
       for (unsigned j = 0; j < state_.children_.size(); j++) {
         if ((cur = rb.bsti_list_[j]->currentTuple()) == 0) {
           rb.buffer_[j]->setEmpty();
-          if (state_.children_[j]->Next(rb.buffer_[j]) == false) {
+          if (state_.children_[j]->Next(exec_status, rb.buffer_[j]) == false) {
             if (!block->Empty()) {
               AtomicPushRemainingBlock(rb);
               return true;
@@ -122,12 +124,12 @@ bool CombineTuple::Next(BlockStreamBase *block) {
 
   AtomicPushRemainingBlock(RemainingBlock(v_bsb, rb.bsti_list_));
 
-  return Next(block);
+  return Next(exec_status, block);
 }
 
-bool CombineTuple::Close() {
+bool CombineTuple::Close(SegmentExecStatus *const exec_status) {
   for (unsigned i = 0; i < state_.children_.size(); i++) {
-    state_.children_[i]->Close();
+    state_.children_[i]->Close(exec_status);
   }
   return true;
 }

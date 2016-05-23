@@ -82,9 +82,10 @@ class CombineTuple : public PhysicalOperatorBase {
   CombineTuple(){};
   virtual ~CombineTuple();
 
-  bool Open(const PartitionOffset &partition_offset = 0);
-  bool Next(BlockStreamBase *block);
-  bool Close();
+  bool Open(SegmentExecStatus *const exec_status,
+            const PartitionOffset &partition_offset = 0);
+  bool Next(SegmentExecStatus *const exec_status, BlockStreamBase *block);
+  bool Close(SegmentExecStatus *const exec_status);
 
  private:
   bool AtomicPopRemainingBlock(RemainingBlock &rb);

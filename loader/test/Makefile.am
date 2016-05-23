@@ -19,8 +19,7 @@ LDADD = ../../catalog/libcatalog.a \
 		${HADOOP_HOME}/lib/native/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
-		${BOOST_HOME}/stage/lib/libboost_serialization.so \
-		${THERON_HOME}/Lib/libtherond.a 
+		${BOOST_HOME}/stage/lib/libboost_serialization.so 
 
 noinst_LIBRARIES=libtest.a
 libtest_a_SOURCES = \

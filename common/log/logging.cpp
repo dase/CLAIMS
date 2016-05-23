@@ -16,9 +16,11 @@
 namespace claims {
 namespace common {
 
-#define LOGDIR "claims_log"  // set output log directory
+#define MKDIR \
+  "mkdir -p " \
+  "claims_log"
 
-#define MKDIR "mkdir -p claims_log"
+const char* LOGDIR = "claims_log";
 void GlogSignalHandle(const char* data, int size) {
   std::string str = std::string(data, size);
   /*

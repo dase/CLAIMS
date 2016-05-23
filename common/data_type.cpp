@@ -486,6 +486,14 @@ RetCode OperateUSmallInt::CheckSet(string& str) const {
 /*
  * ToDo There is still some work for decimal type
  */
+
+/*
+bool OperateDecimal::CheckStr(string str) const {
+	
+	return true;
+}
+*/
+
 RetCode OperateDecimal::CheckSet(string& str) const {
   RetCode ret = rSuccess;
   if ((str == "" || str == "NULL") && nullable) return rSuccess;
@@ -494,12 +502,15 @@ RetCode OperateDecimal::CheckSet(string& str) const {
     ELOG(ret, str);
     return ret;
   }
-  if (Decimal::StringToDecimal(this->precision_, this->scale_, str)) {
+  // it is checked in StrtoDecimal in class Decimal, it will be zero if str is invalied
+  /*
+  if (CheckStr(str)) {
     ret = rSuccess;
   } else {
     ret = rInvalidInsertData;
     ELOG(ret, str);
   }
+  */
   return ret;
 }
 

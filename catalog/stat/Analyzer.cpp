@@ -8,6 +8,7 @@
 #include "../../catalog/stat/Analyzer.h"
 #include <algorithm>
 #include <cstdlib>
+#include <utility>
 #include <vector>
 
 #include "../../catalog/attribute.h"
@@ -22,8 +23,9 @@
 #include "../../logical_operator/logical_query_plan_root.h"
 #include "../../logical_operator/logical_scan.h"
 #include "../../physical_operator/physical_aggregation.h"
-
+#include "../../exec_tracker/segment_exec_status.h"
 using namespace claims::catalog;
+using claims::SegmentExecStatus;
 using namespace claims::logical_operator;
 using claims::physical_operator::PhysicalAggregation;
 using std::map;
@@ -81,10 +83,10 @@ void Analyzer::analyse(const AttributeID& attrID) {
       collector_node_id, aggregation, LogicalQueryPlanRoot::kResultCollector);
   PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
-
-  collector->Open();
-  collector->Next(0);
-  collector->Close();
+  SegmentExecStatus* exec_status = new SegmentExecStatus(make_pair(0, 0));
+  collector->Open(exec_status);
+  collector->Next(exec_status, 0);
+  collector->Close(exec_status);
 
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
@@ -267,9 +269,11 @@ void Analyzer::compute_table_stat(const TableID& tab_id) {
 
   PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
-  collector->Open();
-  collector->Next(0);
-  collector->Close();
+  SegmentExecStatus* exec_status = new SegmentExecStatus(make_pair(0, 0));
+
+  collector->Open(exec_status);
+  collector->Next(exec_status, 0);
+  collector->Close(exec_status);
 
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
@@ -398,9 +402,11 @@ unsigned long Analyzer::getDistinctCardinality(const AttributeID& attr_id) {
 
   PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
-  collector->Open();
-  collector->Next(0);
-  collector->Close();
+  SegmentExecStatus* exec_status = new SegmentExecStatus(make_pair(0, 0));
+
+  collector->Open(exec_status);
+  collector->Next(exec_status, 0);
+  collector->Close(exec_status);
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
   BlockStreamBase::BlockStreamTraverseIterator* b_it =
@@ -464,10 +470,11 @@ Histogram* Analyzer::computeHistogram(const AttributeID& attr_id,
 
   PhysicalOperatorBase* collector =
       root->GetPhysicalPlan(1024 * 64 - sizeof(unsigned));
+  SegmentExecStatus* exec_status = new SegmentExecStatus(make_pair(0, 0));
 
-  collector->Open();
-  collector->Next(0);
-  collector->Close();
+  collector->Open(exec_status);
+  collector->Next(exec_status, 0);
+  collector->Close(exec_status);
   ResultSet* resultset = collector->GetResultSet();
   ResultSet::Iterator it = resultset->createIterator();
 

@@ -8,9 +8,9 @@ SELECT
         C_PHONE,
         C_COMMENT
 FROM
-        CUSTOMER,
-        ORDERS,
         LINEITEM,
+        ORDERS,
+        CUSTOMER,
         NATION
 WHERE
         C_CUSTKEY = O_CUSTKEY

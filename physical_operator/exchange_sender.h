@@ -45,9 +45,12 @@ class ExchangeSender : public PhysicalOperatorBase {
  public:
   ExchangeSender();
   virtual ~ExchangeSender();
-  virtual bool Open(const PartitionOffset& part_off = 0) = 0;
-  virtual bool Next(BlockStreamBase* no_block) = 0;
-  virtual bool Close() = 0;
+  virtual bool Open(SegmentExecStatus* const exec_status,
+                    const PartitionOffset& part_off = 0) = 0;
+  virtual bool Next(SegmentExecStatus* const exec_status,
+                    BlockStreamBase* no_block) = 0;
+  virtual bool Close(SegmentExecStatus* const exec_status) = 0;
+  virtual void SetPartitionOffset(const int par_off) = 0;
 
  protected:
   // build socket connection with upper mergers
