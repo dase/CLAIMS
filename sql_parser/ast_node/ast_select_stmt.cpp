@@ -50,6 +50,7 @@
 #include "../../logical_operator/logical_sort.h"
 #include "../../logical_operator/logical_subquery.h"
 #include "../../logical_operator/logical_delete_filter.h"
+#include "../../logical_operator/logical_outer_join.h"
 
 #include "../ast_node/ast_expr_node.h"
 #include "../ast_node/ast_node.h"
@@ -310,7 +311,9 @@ RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
     if (!equal_join_condition_.empty()) {
       vector<LogicalEqualJoin::JoinPair> join_pair;
       join_pair.clear();
-      ret = GetEqualJoinPair(join_pair, next_lplan, args_lplan,
+      // "args_lplan" and "next_lplan" order in GetEqualJoinPair' should be
+      // same as "arg_lplan" and "next_lplan" in "new LogicalJoin"
+      ret = GetEqualJoinPair(join_pair, args_lplan, next_lplan,
                              equal_join_condition_);
       if (rSuccess != ret) {
         return ret;
@@ -327,8 +330,26 @@ RetCode AstFromList::GetLogicalPlan(LogicalOperator*& logic_plan) {
       if (rSuccess != ret) {
         return ret;
       }
-      logic_plan =
-          new LogicalEqualJoin(join_pair, next_lplan, args_lplan, condition);
+      // judge from join_type "left" "right"
+      string join_type = "";
+      // this->args_ can be AST_TABLE, but treat as join.
+      if (AST_JOIN == (static_cast<AstJoin*>(this->args_))->ast_node_type_) {
+        join_type = (static_cast<AstJoin*>(this->args_))->join_type_;
+      }
+      if (-1 != join_type.find("left")) {
+        int join = 0;
+        logic_plan = new LogicalOuterJoin(join_pair, args_lplan, next_lplan, 0,
+                                          condition);
+      } else if (-1 != join_type.find("right")) {
+        logic_plan = new LogicalOuterJoin(join_pair, args_lplan, next_lplan, 1,
+                                          condition);
+      } else if (-1 != join_type.find("full")) {
+        logic_plan = new LogicalOuterJoin(join_pair, args_lplan, next_lplan, 2,
+                                          condition);
+      } else {
+        logic_plan =
+            new LogicalEqualJoin(join_pair, args_lplan, next_lplan, condition);
+      }
     } else {
       vector<ExprNode*> condition;
       condition.clear();
@@ -629,12 +650,17 @@ AstJoin::AstJoin(AstNodeType ast_node_type, int join_type, AstNode* left_table,
     }
     if (bit_num[3] == 1) {
       join_type_ = join_type_ + "left ";
+      left_table_ = right_table;
+      right_table_ = left_table;
     }
     if (bit_num[4] == 1) {
       join_type_ = join_type_ + "right ";
     }
     if (bit_num[5] == 1) {
       join_type_ = join_type_ + "natural ";
+    }
+    if (bit_num[6] == 1) {
+      join_type_ = join_type_ + "full ";
     }
   }
   join_type_ = join_type_ + "join";
@@ -711,7 +737,13 @@ RetCode AstJoin::SemanticAnalisys(SemanticContext* sem_cnxt) {
 }
 RetCode AstJoin::PushDownCondition(PushDownConditionContext& pdccnxt) {
   PushDownConditionContext cur_pdccnxt;
-  cur_pdccnxt.sub_expr_info_ = pdccnxt.sub_expr_info_;
+  // cout << "join type = " << join_type_ << endl;
+  // pdccnxt.sub_expr_info -- conditions from where clause
+  if (-1 == join_type_.find("outer")) {
+    cur_pdccnxt.sub_expr_info_ = pdccnxt.sub_expr_info_;
+  }
+
+  // join_condition_->condition -- conditions from on clause
   if (NULL != join_condition_) {
     cur_pdccnxt.GetSubExprInfo(
         reinterpret_cast<AstJoinCondition*>(join_condition_)->condition_);
@@ -721,19 +753,39 @@ RetCode AstJoin::PushDownCondition(PushDownConditionContext& pdccnxt) {
   PushDownConditionContext child_pdccnxt;
   child_pdccnxt.sub_expr_info_ = cur_pdccnxt.sub_expr_info_;
   child_pdccnxt.from_tables_.clear();
+
   left_table_->PushDownCondition(child_pdccnxt);
   cur_pdccnxt.from_tables_.insert(child_pdccnxt.from_tables_.begin(),
                                   child_pdccnxt.from_tables_.end());
 
   child_pdccnxt.from_tables_.clear();
-  right_table_->PushDownCondition(child_pdccnxt);
-  cur_pdccnxt.from_tables_.insert(child_pdccnxt.from_tables_.begin(),
-                                  child_pdccnxt.from_tables_.end());
+  if (-1 == join_type_.find("outer")) {
+    right_table_->PushDownCondition(child_pdccnxt);
+    cur_pdccnxt.from_tables_.insert(child_pdccnxt.from_tables_.begin(),
+                                    child_pdccnxt.from_tables_.end());
+  } else {
+    if (right_table_->ast_node_type_ == AST_TABLE) {
+      cur_pdccnxt.from_tables_.insert(
+          reinterpret_cast<AstTable*>(right_table_)->table_alias_);
+    }
+  }
 
+  // cout << "!!!" << cur_pdccnxt.sub_expr_info_.size() << endl;
   cur_pdccnxt.SetCondition(equal_join_condition_, normal_condition_);
+  // cout << "equal :" << equal_join_condition_.size() << endl;
+  // cout << "normal :" << normal_condition_.size() << endl;
 
   pdccnxt.from_tables_.insert(cur_pdccnxt.from_tables_.begin(),
                               cur_pdccnxt.from_tables_.end());
+  if (-1 != join_type_.find("outer")) {
+    //    cout << "When pushdown, normal condi num is: "
+    //         << pdccnxt.sub_expr_info_.size() << endl;
+
+    for (int i = 0; i < pdccnxt.sub_expr_info_.size(); i++) {
+      normal_condition_.push_back(pdccnxt.sub_expr_info_[i]->sub_expr_);
+    }
+  }
+
   return rSuccess;
 }
 RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
@@ -749,6 +801,9 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
     return ret;
   }
 
+  // cout << "equal join condition num = " << equal_join_condition_.size() <<
+  // endl;
+  // cout << "normal condition num = " << normal_condition_.size() << endl;
   if (!equal_join_condition_.empty()) {
     vector<ExprNode*> condition;
     condition.clear();
@@ -757,9 +812,13 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
     if (rSuccess != ret) {
       return ret;
     }
-    ret = GetJoinCondition(condition, normal_condition_, left_plan, right_plan);
-    if (rSuccess != ret) {
-      return ret;
+    // As for outer join, normal condition can not be processed in hash join
+    if (-1 == join_type_.find("outer")) {
+      ret =
+          GetJoinCondition(condition, normal_condition_, left_plan, right_plan);
+      if (rSuccess != ret) {
+        return ret;
+      }
     }
     vector<LogicalEqualJoin::JoinPair> join_pair;
     join_pair.clear();
@@ -768,8 +827,24 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
     if (rSuccess != ret) {
       return ret;
     }
-    logic_plan =
-        new LogicalEqualJoin(join_pair, left_plan, right_plan, condition);
+
+    // Outer join should generate a filter to deal with normal conditon.
+    if (-1 != join_type_.find("left")) {
+      logic_plan =
+          new LogicalOuterJoin(join_pair, left_plan, right_plan, 0, condition);
+      ret = GetFilterLogicalPlan(logic_plan);
+    } else if (-1 != join_type_.find("right")) {
+      logic_plan =
+          new LogicalOuterJoin(join_pair, left_plan, right_plan, 1, condition);
+      ret = GetFilterLogicalPlan(logic_plan);
+    } else if (-1 != join_type_.find("full")) {
+      logic_plan =
+          new LogicalOuterJoin(join_pair, left_plan, right_plan, 2, condition);
+      ret = GetFilterLogicalPlan(logic_plan);
+    } else {
+      logic_plan =
+          new LogicalEqualJoin(join_pair, left_plan, right_plan, condition);
+    }
   } else {
     if (!normal_condition_.empty()) {
       vector<ExprNode*> condition;
@@ -787,7 +862,19 @@ RetCode AstJoin::GetLogicalPlan(LogicalOperator*& logic_plan) {
 
   return rSuccess;
 }
-
+RetCode AstJoin::GetFilterLogicalPlan(LogicalOperator*& logic_plan) {
+  RetCode ret = rSuccess;
+  if (!normal_condition_.empty()) {
+    vector<ExprNode*> condition;
+    condition.clear();
+    ret = GetFilterCondition(condition, normal_condition_, logic_plan);
+    if (rSuccess != ret) {
+      return ret;
+    }
+    logic_plan = new LogicalFilter(logic_plan, condition);
+  }
+  return ret;
+}
 AstWhereClause::AstWhereClause(AstNodeType ast_node_type, AstNode* expr)
     : AstNode(ast_node_type), expr_(expr) {}
 

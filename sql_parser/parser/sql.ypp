@@ -5,7 +5,7 @@
 %parse-param { struct ParseResult* result}
 %glr-parser
 %expect 4
-%expect-rr 61
+%expect-rr 62
 %defines
 %{
 #include <stdlib.h>
@@ -158,6 +158,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %token FORCE
 %token FOREIGN
 %token FROM
+%token FULL
 %token FULLTEXT
 %token GRANT
 %token GROUP
@@ -380,7 +381,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %token HASH
 %token BDB
 %token OPEN
-%token FULL
+
 
 %token FSUBSTRING
 %token FTRIM
@@ -397,7 +398,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %token FMAX
 
 
-%type <intval> select_opts opt_with_rollup opt_asc_desc opt_inner_cross left_or_right 
+%type <intval> select_opts opt_with_rollup opt_asc_desc opt_inner_cross left_right_full 
 %type <intval> opt_left_or_right_outer opt_outer  
 %type <ast_node> stmt_list  select_expr_list
 %type <ast_node>  opt_where select_stmt stmt opt_groupby select_expr
@@ -601,6 +602,7 @@ outer 4
 left 8
 right 16
 nature 32
+full 64
 straight_join -1
 */
 
@@ -608,7 +610,7 @@ join_table:
 	table_reference opt_inner_cross JOIN table_factor opt_join_condition		{ $$ = new AstJoin(AST_JOIN, $2, $1, $4, $5);}
 	| table_reference STRAIGHT_JOIN table_factor 								{ $$ = new AstJoin(AST_JOIN, -1, $1, $3, NULL);}
 	| table_reference STRAIGHT_JOIN table_factor ON expr  						{ $$ = new AstJoin(AST_JOIN, -1, $1, $3, $5);}
-  	| table_reference left_or_right opt_outer JOIN table_factor join_condition	{ $$ = new AstJoin(AST_JOIN, $2 + $3, $1, $5, $6);}
+  	| table_reference left_right_full opt_outer JOIN table_factor join_condition	{ $$ = new AstJoin(AST_JOIN, $2 + $3, $1, $5, $6);}
   	| table_reference NATURAL opt_left_or_right_outer JOIN table_factor			{ $$ = new AstJoin(AST_JOIN, 32 + $3, $1, $5, NULL);}
   	;
 
@@ -621,14 +623,16 @@ opt_outer:			{ $$ = 4; }
 	| OUTER			{ $$ = 4; }
    	;
 
-left_or_right: 
+left_right_full: 
 	LEFT			{ $$ = 8; }
     | RIGHT 		{ $$ = 16; }
+    | FULL          { $$ = 64; }
     ;
 
 opt_left_or_right_outer:
 	  LEFT opt_outer	{ $$ = 8 + $2; }
-	| RIGHT opt_outer  	{ $$ = 16 + $2; }
+	| RIGHT opt_outer  	{ $$ = 16 + $2;}
+	| FULL opt_outer    { $$ = 64 + $2;}
 	| /* nil */ 		{ $$ = 0; }
 	;
 
@@ -1138,8 +1142,8 @@ show_stmt: SHOW opt_full TABLES opt_from opt_like_string	{ $$ = new AstShowStmt(
    | SHOW WARNINGS opt_limit									{ $$ = NULL; }
    | SHOW expr WARNINGS /* expr = COUNT(*) */					{ $$ = NULL; }
    ;
-opt_full: /* nil */	{ $$ = 0; }
-   | FULL	{ $$ = 1; }
+   opt_full: /* nil */	{ $$ = 0; }
+   /* | FULL	{ $$ = 1; }*/
    ;
    
 opt_from: /* nil */	{ $$ = NULL; }

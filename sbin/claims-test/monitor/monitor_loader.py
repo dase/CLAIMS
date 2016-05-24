@@ -50,37 +50,38 @@ import time
 '''
 '''
 mode_data_case=( 
-                 (0, "/home/claims/data/tpc-h/sf1/1partition/",  ((1, 1, "ddl_tpch_sf1_1partition"),)), 
-                 (0, "/home/claims/data/tpc-h/sf1/4partition/",  ((1, 1, "ddl_tpch_sf1_4partition"),)),
-                 (0, "/home/claims/data/tpc-h/sf1/8partition/",  ((1, 1, "ddl_tpch_sf1_8partition"),)),
-                 (0, "/home/claims/data/tpc-h/sf10/1partition/", ((1, 1, "ddl_tpch_sf10_1partition"),)),
-                 (0, "/home/claims/data/tpc-h/sf10/4partition/", ((1, 1, "ddl_tpch_sf10_4partition"),)),
-                 (0, "/home/claims/data/tpc-h/sf10/8partition/", ((1, 1, "ddl_tpch_sf10_8partition"),)),
-                 (0, "/home/claims/data/tpc-h/sf100/1partition/",((1, 1, "ddl_tpch_sf100_1partition"),)),
-                 (0, "/home/claims/data/tpc-h/sf100/4partition/",((1, 1, "ddl_tpch_sf100_4partition"),)),
-                 (0, "/home/claims/data/tpc-h/sf100/8partition/",((1, 1, "ddl_tpch_sf100_8partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf1/1partition/",  ((1, 1, "ddl_tpch_sf1_1partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf1/4partition/",  ((1, 1, "ddl_tpch_sf1_4partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf1/8partition/",  ((1, 1, "ddl_tpch_sf1_8partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf10/1partition/", ((1, 1, "ddl_tpch_sf10_1partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf10/4partition/", ((1, 1, "ddl_tpch_sf10_4partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf10/8partition/", ((1, 1, "ddl_tpch_sf10_8partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf100/1partition/",((1, 1, "ddl_tpch_sf100_1partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf100/4partition/",((1, 1, "ddl_tpch_sf100_4partition"),)),
-                 (1, "/home/claims/data/tpc-h/sf100/8partition/",((1, 1, "ddl_tpch_sf100_8partition"),)),
+                 (0, "/home/claims/data/tpc-h/sf1/1partition/",   ((1, 1, "ddl_tpch_sf1_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf1/4partition/",   ((1, 1, "ddl_tpch_sf1_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf1/8partition/",   ((1, 1, "ddl_tpch_sf1_8partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/1partition/",  ((1, 1, "ddl_tpch_sf10_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/4partition/",  ((1, 1, "ddl_tpch_sf10_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf10/8partition/",  ((1, 1, "ddl_tpch_sf10_8partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/1partition/", ((1, 1, "ddl_tpch_sf100_1partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/4partition/", ((1, 1, "ddl_tpch_sf100_4partition"),))
+                ,(0, "/home/claims/data/tpc-h/sf100/8partition/", ((1, 1, "ddl_tpch_sf100_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/1partition/",   ((1, 1, "ddl_tpch_sf1_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/4partition/",   ((1, 1, "ddl_tpch_sf1_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/8partition/",   ((1, 1, "ddl_tpch_sf1_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/1partition/",  ((1, 1, "ddl_tpch_sf10_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/4partition/",  ((1, 1, "ddl_tpch_sf10_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/8partition/",  ((1, 1, "ddl_tpch_sf10_8partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/1partition/", ((1, 1, "ddl_tpch_sf100_1partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/4partition/", ((1, 1, "ddl_tpch_sf100_4partition"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/8partition/", ((1, 1, "ddl_tpch_sf100_8partition"),))
                )
 '''
 
 mode_data_case=( 
-            (1, "/home/claims/data/tpc-h/sf1/1partition/",  ((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
-            (1, "/home/claims/data/tpc-h/sf1/4partition/",  ((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
-            (1, "/home/claims/data/tpc-h/sf1/8partition/",  ((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
-            (1, "/home/claims/data/tpc-h/sf10/1partition/", ((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
-            (1, "/home/claims/data/tpc-h/sf10/4partition/", ((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
-            (1, "/home/claims/data/tpc-h/sf10/8partition/", ((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
-            (1, "/home/claims/data/tpc-h/sf100/1partition/",((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
-            (1, "/home/claims/data/tpc-h/sf100/4partition/",((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
-            (1, "/home/claims/data/tpc-h/sf100/8partition/",((1, 1, "tpc_sql_1"),(1, 1, "tpc_sql_3"),(1, 1, "tpc_sql_5"),(1, 1, "tpc_sql_6"),(1, 1, "tpc_sql_10"),(1, 1, "tpc_sql_12"),(1, 1, "tpc_sql_13"),(1, 1, "tpc_sql_17"),)),
+
+                 (1, "/home/claims/data/tpc-h/sf1/1partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/4partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf1/8partition/",   ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/1partition/",  ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/4partition/",  ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf10/8partition/",  ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/1partition/", ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/4partition/", ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
+                ,(1, "/home/claims/data/tpc-h/sf100/8partition/", ((1, 1, "tpc_sql_1"), (1, 1, "tpc_sql_3"), (1, 1, "tpc_sql_5"),  (1, 1, "tpc_sql_6"), (1, 1, "tpc_sql_10"), (1, 1, "tpc_sql_12"), (1, 1, "tpc_sql_13"), (1, 1, "tpc_sql_17"),))
                )
 
 
