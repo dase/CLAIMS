@@ -26,6 +26,13 @@ ExprUnary::ExprUnary(ExprNodeType expr_node_type, data_type actual_type,
       oper_type_(oper_type),
       arg0_(arg0),
       data_type_oper_func_(NULL) {}
+ExprUnary::ExprUnary(ExprNodeType expr_node_type, data_type actual_type,
+                     data_type get_type, string alias, OperType oper_type,
+                     ExprNode* arg0)
+    : ExprNode(expr_node_type, actual_type, get_type, alias),
+      oper_type_(oper_type),
+      arg0_(arg0),
+      data_type_oper_func_(NULL) {}
 ExprUnary::ExprUnary(ExprUnary* expr)
     : ExprNode(expr),
       oper_type_(expr->oper_type_),

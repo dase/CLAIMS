@@ -46,6 +46,17 @@ using claims::common::rIncorrectData;
 using claims::common::rInvalidNullData;
 using claims::common::kErrorMessage;
 using namespace claims::common;
+int null_int_value = NULL_INT;
+float null_float_value = NULL_FLOAT;
+double null_double_value = NULL_DOUBLE;
+unsigned long null_u_long_value = ULONG_LONG_MAX;
+char null_string_value[] = {1};
+date null_date_value(NULL_DATE);
+ptime null_datetime_value(NULL_DATETIME);
+short null_small_int_value = NULL_SMALL_INT;
+unsigned short null_u_small_int_value = NULL_U_SMALL_INT;
+Decimal null_decimal_value = Decimal::CreateNullDecimal();
+int null_boolean_value = 2;
 /**
  * if a string to input is warning, we modify it to a right value
  *     and return it's warning-code

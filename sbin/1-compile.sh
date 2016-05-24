@@ -6,6 +6,7 @@ cd ../
 # now in CLAIMS_HOME
 ./build.sh clean
 ./build.sh init
+./build.sh init
 mkdir install
 cd install
 ../configure 
