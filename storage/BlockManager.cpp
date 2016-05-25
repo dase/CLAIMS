@@ -349,6 +349,7 @@ bool BlockManager::ContainsPartition(const PartitionID& part) const {
 bool BlockManager::AddPartition(const PartitionID& partition_id,
                                 const unsigned& number_of_chunks,
                                 const StorageLevel& desirable_storage_level) {
+  lock.acquire();  // test
   boost::unordered_map<PartitionID, PartitionStorage*>::const_iterator it =
       partition_id_to_storage_.find(partition_id);
   if (it != partition_id_to_storage_.cend()) {
@@ -362,6 +363,7 @@ bool BlockManager::AddPartition(const PartitionID& partition_id,
                << partition_id.getName().c_str()
                << "](desriable_storage_level =" << desirable_storage_level
                << endl;
+    lock.release();  // test
     return true;
   }
   partition_id_to_storage_[partition_id] = new PartitionStorage(
@@ -373,6 +375,7 @@ bool BlockManager::AddPartition(const PartitionID& partition_id,
              << partition_id.getName().c_str()
              << "](desriable_storage_level =" << desirable_storage_level
              << endl;
+  lock.release();  // test
   return true;
 }
 
