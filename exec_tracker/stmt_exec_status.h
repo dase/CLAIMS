@@ -48,7 +48,7 @@ class StmtExecStatus {
   virtual ~StmtExecStatus();
   u_int64_t get_query_id() { return query_id_; }
   void set_query_id(u_int64_t query_id) { query_id_ = query_id; }
-  RetCode CancelStmtExec();
+  RetCode CancelStmtExec(bool locked = false);
   RetCode RegisterToTracker();
   RetCode UnRegisterFromTracker();
   short GenSegmentId() { return segment_id_gen_++; }

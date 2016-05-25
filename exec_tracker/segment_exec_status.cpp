@@ -27,17 +27,15 @@
  */
 
 #include "./segment_exec_status.h"
-
 #include <glog/logging.h>
 #include <string>
 #include <iostream>
-
 #include "../exec_tracker/stmt_exec_tracker.h"
 #include "../Environment.h"
+#include "caf/io/all.hpp"
 using caf::io::remote_actor;
 using std::string;
 using std::endl;
-#include "caf/io/all.hpp"
 namespace claims {
 
 SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id,
@@ -136,17 +134,16 @@ RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
 }
 RetCode SegmentExecStatus::ReportStatus() {
   // if this segment is cancelled, needn't report status
-  if (kCancelled == exec_status_ || stop_report_) {
-    return 0;
-  }
   lock_.acquire();
+  if (kCancelled == exec_status_ || stop_report_) {
+    lock_.release();
+    return rSuccess;
+  }
   ExecStatus exec_status = exec_status_;
   string exec_info = exec_info_;
   lock_.release();
   try {
     caf::scoped_actor self;
-    //    coor_actor_ = remote_actor(coor_addr_.first, coor_addr_.second);
-
     self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
                     (int)exec_status, exec_info)
         .await(
@@ -187,12 +184,13 @@ RetCode SegmentExecStatus::ReportStatus() {
 }
 bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
                                      u_int64_t logic_time, bool need_report) {
+  lock_.acquire();
   if (exec_status_ == ExecStatus::kCancelled) {
     LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
               << " update status failed!";
+    lock_.release();
     return false;
   } else if (ExecStatus::kOk == exec_status_) {
-    lock_.acquire();
     logic_time_ = logic_time;
     exec_status_ = exec_status;
     exec_info_ = exec_info;
@@ -206,6 +204,7 @@ bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
       // ReportStatus();
     }
   } else {
+    lock_.release();
     LOG(WARNING) << "segment's status shouldn't be updated!!";
   }
   return true;
