@@ -41,15 +41,14 @@
 namespace claims {
 namespace physical_operator {
 
-PhysicalOuterHashJoin::PhysicalOuterHashJoin(State state, int join_type)
+PhysicalOuterHashJoin::PhysicalOuterHashJoin(State state)
     : state_(state),
       hash_func_(0),
       hashtable_(0),
       PhysicalOperator(barrier_number(2), serialized_section_number(1)),
       eftt_(0),
       memcpy_(0),
-      memcat_(0),
-      join_type_(join_type) {
+      memcat_(0) {
   // sema_open_.set_value(1);
   InitExpandedStatus();
 }
@@ -78,7 +77,7 @@ PhysicalOuterHashJoin::State::State(
     Schema* output_schema, Schema* ht_schema,
     std::vector<unsigned> joinIndex_left, std::vector<unsigned> joinIndex_right,
     unsigned ht_nbuckets, unsigned ht_bucketsize, unsigned block_size,
-    vector<ExprNode*> join_condi)
+    vector<ExprNode*> join_condi, int join_type)
     : child_left_(child_left),
       child_right_(child_right),
       input_schema_left_(input_schema_left),
@@ -90,7 +89,8 @@ PhysicalOuterHashJoin::State::State(
       hashtable_bucket_num_(ht_nbuckets),
       hashtable_bucket_size_(ht_bucketsize),
       block_size_(block_size),
-      join_condi_(join_condi) {}
+      join_condi_(join_condi),
+      join_type_(join_type) {}
 
 bool PhysicalOuterHashJoin::Open(SegmentExecStatus* const exec_status,
                                  const PartitionOffset& partition_offset) {
@@ -269,7 +269,7 @@ bool PhysicalOuterHashJoin::Next(SegmentExecStatus* const exec_status,
           nothing_join = false;
           // Put the row_id of hash table(left table) which has been matched
           // into a set.
-          if (join_type_ == 2) {
+          if (state_.join_type_ == 2) {
             unsigned long joined_row_id = 0;
             memcpy(&joined_row_id, tuple_in_hashtable, sizeof(unsigned long));
             set_.acquire();
@@ -375,7 +375,7 @@ bool PhysicalOuterHashJoin::Next(SegmentExecStatus* const exec_status,
       // As for full join, the first arrived thread should wait until other
       // threads finish their jobs.The other threads should wait until the first
       // arrived thread turn the first_done_ into true.
-      if (join_type_ == 2) {
+      if (state_.join_type_ == 2) {
         while (first_arrive_thread_ == pthread_self() &&
                working_threads_.size() != 0) {
           usleep(1);
@@ -386,19 +386,20 @@ bool PhysicalOuterHashJoin::Next(SegmentExecStatus* const exec_status,
       }
 
       // Once left or right join finds block is empty, it will exit.
-      if ((join_type_ != 2) && (block->Empty() == true)) {
+      if ((state_.join_type_ != 2) && (block->Empty() == true)) {
         return false;
-      } else if ((join_type_ != 2) && (block->Empty() == false)) {
+      } else if ((state_.join_type_ != 2) && (block->Empty() == false)) {
         return true;
       }
 
       // Full join exits when the block is empty and all the hash bucket has
       // been looped
       // through.
-      if ((join_type_ == 2) && block->Empty() == true && first_done_ == true &&
+      if ((state_.join_type_ == 2) && block->Empty() == true &&
+          first_done_ == true &&
           jtc->current_bucket_ >= (state_.hashtable_bucket_num_)) {
         return false;
-      } else if (join_type_ == 2) {
+      } else if (state_.join_type_ == 2) {
         // the first arrived thread will turn the first_done_ into true to let
         // other threads know they can do the extra job
         first_done_ = true;

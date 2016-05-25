@@ -84,15 +84,15 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
           std::vector<unsigned> joinIndex_left,
           std::vector<unsigned> joinIndex_right, unsigned ht_nbuckets,
           unsigned ht_bucketsize, unsigned block_size,
-          vector<ExprNode*> join_condi);
-    State(){};
+          vector<ExprNode*> join_condi, int join_type);
+    State() {}
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
       ar& child_left_& child_right_& input_schema_left_& input_schema_right_&
           output_schema_& hashtable_schema_& join_index_left_&
               join_index_right_& hashtable_bucket_num_& hashtable_bucket_size_&
-                  block_size_& join_condi_;
+                  block_size_& join_condi_& join_type_;
     }
 
    public:
@@ -110,8 +110,9 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
     unsigned hashtable_bucket_num_;
     unsigned hashtable_bucket_size_;
     unsigned block_size_;
+    int join_type_;
   };
-  PhysicalOuterHashJoin(State state, int join_type);
+  PhysicalOuterHashJoin(State state);
   PhysicalOuterHashJoin();
   virtual ~PhysicalOuterHashJoin();
 
@@ -180,7 +181,6 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
   PartitionFunction* hash_func_;
   BasicHashTable* hashtable_;
   Schema* hashtable_schema_;
-  int join_type_;
   std::set<unsigned long> joined_tuple_;
 
   typedef void (*ConditionFilterFunc)(void*, void*, void*, vector<unsigned>&,

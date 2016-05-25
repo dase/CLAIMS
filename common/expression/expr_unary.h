@@ -21,9 +21,9 @@ class ExprUnary : public ExprNode {
   DataTypeOperFunc data_type_oper_func_;
   ExprUnary(ExprNodeType expr_node_type, data_type actual_type, string alias,
             OperType oper_type, ExprNode* arg0);
-  ExprUnary::ExprUnary(ExprNodeType expr_node_type, data_type actual_type,
-                       data_type get_type, string alias, OperType oper_type,
-                       ExprNode* arg0);
+  ExprUnary(ExprNodeType expr_node_type, data_type actual_type,
+            data_type get_type, string alias, OperType oper_type,
+            ExprNode* arg0);
   explicit ExprUnary(ExprUnary* expr);
   ExprUnary() {}
   ~ExprUnary() { delete arg0_; }

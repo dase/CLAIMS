@@ -373,12 +373,13 @@ PhysicalOperatorBase* LogicalOuterJoin::GetPhysicalPlan(
 
   // cout << "In logical plan : join_condi_.size = " << join_condi_.size();
   state.join_condi_ = join_condi_;
+  state.join_type_ = join_type_;
   switch (join_policy_) {
     case kNoRepartition: {
       state.child_left_ = child_iterator_left;
       state.child_right_ = child_iterator_right;
 
-      join_iterator = new PhysicalOuterHashJoin(state, join_type_);
+      join_iterator = new PhysicalOuterHashJoin(state);
       break;
     }
     case kLeftRepartition: {
@@ -424,7 +425,7 @@ PhysicalOperatorBase* LogicalOuterJoin::GetPhysicalPlan(
       PhysicalOperatorBase* exchange = new ExchangeMerger(exchange_state);
       state.child_left_ = exchange;
       state.child_right_ = child_iterator_right;
-      join_iterator = new PhysicalOuterHashJoin(state, join_type_);
+      join_iterator = new PhysicalOuterHashJoin(state);
       break;
     }
     case kRightRepartition: {
@@ -477,7 +478,7 @@ PhysicalOperatorBase* LogicalOuterJoin::GetPhysicalPlan(
       PhysicalOperatorBase* exchange = new ExchangeMerger(exchange_state);
       state.child_left_ = child_iterator_left;
       state.child_right_ = exchange;
-      join_iterator = new PhysicalOuterHashJoin(state, join_type_);
+      join_iterator = new PhysicalOuterHashJoin(state);
       break;
     }
     case kCompleteRepartition: {
@@ -548,7 +549,7 @@ PhysicalOperatorBase* LogicalOuterJoin::GetPhysicalPlan(
       // finally  build the join iterator itself
       state.child_left_ = l_exchange;
       state.child_right_ = r_exchange;
-      join_iterator = new PhysicalOuterHashJoin(state, join_type_);
+      join_iterator = new PhysicalOuterHashJoin(state);
       break;
     }
     default: { break; }
