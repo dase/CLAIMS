@@ -28,17 +28,16 @@
 
 #include "../exec_tracker/segment_exec_tracker.h"
 #include <glog/logging.h>
-#include "caf/all.hpp"
-#include <iosfwd>
 #include <string>
+#include "caf/all.hpp"
 #include "../Environment.h"
 #include "../node_manager/base_node.h"
+#include "caf/io/all.hpp"
 using caf::actor_pool;
 using caf::event_based_actor;
 using caf::io::remote_actor;
 using caf::time_unit;
 using std::string;
-#include "caf/io/all.hpp"
 namespace claims {
 
 SegmentExecTracker::SegmentExecTracker() {
@@ -56,26 +55,38 @@ RetCode SegmentExecTracker::CancelSegExec(NodeSegmentID node_segment_id) {}
 RetCode SegmentExecTracker::RegisterSegES(NodeSegmentID node_segment_id,
                                           SegmentExecStatus* seg_exec_status) {
   map_lock_.acquire();
-  assert(node_segment_id_to_status_.find(node_segment_id) ==
-         node_segment_id_to_status_.end());
-  node_segment_id_to_status_.insert(
-      make_pair(node_segment_id, seg_exec_status));
-  map_lock_.release();
-  LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
-            << " has been registered to segment tracker!";
-  return 0;
+  if (node_segment_id_to_status_.find(node_segment_id) ==
+      node_segment_id_to_status_.end()) {
+    node_segment_id_to_status_.insert(
+        make_pair(node_segment_id, seg_exec_status));
+    LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
+              << " register to segment tracker successfully!";
+    map_lock_.release();
+  } else {
+    LOG(ERROR) << "node_segment_id < " << node_segment_id.first << " , "
+               << node_segment_id.second << " >already in segment tracker";
+    map_lock_.release();
+    assert(false);
+  }
+  return rSuccess;
 }
 
 RetCode SegmentExecTracker::UnRegisterSegES(NodeSegmentID node_segment_id) {
   map_lock_.acquire();
   auto it = node_segment_id_to_status_.find(node_segment_id);
-  assert(it != node_segment_id_to_status_.end());
-  node_segment_id_to_status_.erase(it);
-  map_lock_.release();
-  LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
-            << " has been erased from segment tracker! then left segment= "
-            << node_segment_id_to_status_.size();
-  return 0;
+  if (it != node_segment_id_to_status_.end()) {
+    node_segment_id_to_status_.erase(it);
+    LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
+              << " has been erased from segment tracker! then left segment= "
+              << node_segment_id_to_status_.size();
+    map_lock_.release();
+  } else {
+    LOG(ERROR) << node_segment_id.first << " , " << node_segment_id.second
+               << " couldn't be found when unregister segment status";
+    map_lock_.release();
+    assert(false);
+  }
+  return rSuccess;
 }
 // report all status of all segment that locate at this node, but if just one
 // thread occur error, how to catch it and report it?
@@ -94,7 +105,7 @@ void SegmentExecTracker::ReportAllSegStatus(
           }
         }
         seg_exec_tracker->map_lock_.release();
-        self->delayed_send(self, std::chrono::milliseconds(1000),
+        self->delayed_send(self, std::chrono::milliseconds(kReportIntervalTime),
                            ReportSegESAtom::value);
       },
       [=](ExitAtom) { self->quit(); },

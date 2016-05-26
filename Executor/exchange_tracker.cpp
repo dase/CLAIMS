@@ -57,22 +57,11 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
                                                  NodeAddress& node_addr,
                                                  actor& target_actor) {
   caf::scoped_actor self;
-  //  auto target_node_addr =
-  //      Environment::getInstance()->get_slave_node()->GetNodeAddrFromId(
-  //          target_id);
-  //  assert(target_node_addr.second != 0);
   try {
-    //    auto target_actor =
-    //        remote_actor(target_node_addr.first.c_str(),
-    //        target_node_addr.second);
     self->sync_send(target_actor, AskExchAtom::value, exchange_id)
         .await(
             /// should add overtime!
             [&](OkAtom, const string& ip, const string& port) {
-              //        LOG(INFO) << "exchange tracker received node addr < " <<
-              //        ip <<
-              //        " , "
-              //                  << port << " >" << endl;
               node_addr.ip = ip;
               node_addr.port = port;
             },
@@ -86,7 +75,9 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
 
             );
   } catch (caf::network_error& e) {
-    PLOG(ERROR) << "master socket related errors occur " << endl;
+    PLOG(ERROR)
+        << "master socket related errors occur when asking for socke conn info "
+        << endl;
     assert(false);
     return false;
   }
@@ -96,21 +87,14 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
                                                  const NodeID& target_id,
                                                  NodeAddress& node_addr) {
   caf::scoped_actor self;
-  auto target_node_addr =
-      Environment::getInstance()->get_slave_node()->GetNodeAddrFromId(
-          target_id);
-  assert(target_node_addr.second != 0);
   try {
     auto target_actor =
-        remote_actor(target_node_addr.first.c_str(), target_node_addr.second);
+        Environment::getInstance()->get_slave_node()->GetNodeActorFromId(
+            target_id);
     self->sync_send(target_actor, AskExchAtom::value, exchange_id)
         .await(
             /// should add overtime!
             [&](OkAtom, const string& ip, const string& port) {
-              //        LOG(INFO) << "exchange tracker received node addr < " <<
-              //        ip <<
-              //        " , "
-              //                  << port << " >" << endl;
               node_addr.ip = ip;
               node_addr.port = port;
             },
@@ -124,13 +108,15 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
 
             );
   } catch (caf::network_error& e) {
-    PLOG(ERROR) << "master socket related errors occur " << endl;
+    PLOG(ERROR) << "master socket related errors occur when asking for socket "
+                   "conn info!" << endl;
     assert(false);
     return false;
   }
   return node_addr.ip != "0";
 }
 NodeAddress ExchangeTracker::GetExchAddr(ExchangeID exch_id) {
+  lock_.acquire();
   NodeAddress ret;
   if (id_to_port.find(exch_id) != id_to_port.cend()) {
     ret.ip = Environment::getInstance()->getIp();
@@ -139,6 +125,7 @@ NodeAddress ExchangeTracker::GetExchAddr(ExchangeID exch_id) {
     ret.ip = "0";
     ret.port = "0";
   }
+  lock_.release();
   return ret;
 }
 void ExchangeTracker::printAllExchangeId() const {

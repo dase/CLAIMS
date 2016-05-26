@@ -32,15 +32,15 @@
 #include <atomic>
 #include <iosfwd>
 #include <string>
-
 #include "./segment_exec_status.h"
 #include "../common/Block/ResultSet.h"
 #include "../exec_tracker/segment_exec_tracker.h"
 #include "../utility/lock.h"
-using boost::unordered::unordered_map;
 using std::string;
 namespace claims {
-
+/// for monitoring the execution status of every segment, slave node has
+/// remote_segment_status, coordinator has local_segment_status, and synchronize
+/// the underlying 2 status at every reporting time
 class StmtExecStatus {
  public:
   enum ExecStatus { kError, kOk, kCancelled, kDone };
@@ -48,11 +48,13 @@ class StmtExecStatus {
   virtual ~StmtExecStatus();
   u_int64_t get_query_id() { return query_id_; }
   void set_query_id(u_int64_t query_id) { query_id_ = query_id; }
-  RetCode CancelStmtExec();
+  RetCode CancelStmtExec(bool locked = false);
   RetCode RegisterToTracker();
   RetCode UnRegisterFromTracker();
   short GenSegmentId() { return segment_id_gen_++; }
   void AddSegExecStatus(SegmentExecStatus* seg_exec_status);
+
+  // update remote_segment_status and local_segment_status
   bool UpdateSegExecStatus(NodeSegmentID node_segment_id,
                            SegmentExecStatus::ExecStatus exec_status,
                            string exec_info, u_int64_t logic_time);

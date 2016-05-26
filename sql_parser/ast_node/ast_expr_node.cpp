@@ -254,6 +254,7 @@ RetCode AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
                                      LogicalOperator* const right_lplan) {
   data_type get_type, actual_type;
   OperType oper;
+  int oper_flag = 0;
   oper = OperType::oper_none;
   if (expr_type_ == "+") {
   } else if (expr_type_ == "-") {
@@ -261,7 +262,11 @@ RetCode AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
   } else if (expr_type_ == "!" || expr_type_ == "NOT") {
     oper = OperType::oper_not;
   } else if (expr_type_ == "IS_NULL") {
+    oper = OperType::oper_is_null;
+    oper_flag = 1;
   } else if (expr_type_ == "IS_NOT_NULL") {
+    oper = OperType::oper_is_not_null;
+    oper_flag = 1;
   } else if (expr_type_ == "IS_BOOL") {
   } else if (expr_type_ == "IS_NOT_BOOL") {
   } else if (expr_type_ == "EXSIST") {
@@ -300,9 +305,15 @@ RetCode AstExprUnary::GetLogicalPlan(ExprNode*& logic_expr,
     return ret;
   }
   assert(NULL != child_logic_expr);
-  logic_expr =
-      new ExprUnary(ExprNodeType::t_qexpr_unary, child_logic_expr->actual_type_,
-                    expr_str_, oper, child_logic_expr);
+  if (oper_flag == 0) {
+    logic_expr = new ExprUnary(ExprNodeType::t_qexpr_unary,
+                               child_logic_expr->actual_type_, expr_str_, oper,
+                               child_logic_expr);
+  } else {
+    logic_expr = new ExprUnary(ExprNodeType::t_qexpr_unary, t_boolean,
+                               child_logic_expr->actual_type_, expr_str_, oper,
+                               child_logic_expr);
+  }
   return rSuccess;
 }
 RetCode AstExprUnary::SolveSelectAlias(

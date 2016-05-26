@@ -10,7 +10,7 @@ using claims::SegmentExecStatus;
 void PhysicalQueryPlan::run() {
   SegmentExecStatus* segment_exec_status = new SegmentExecStatus(
       make_pair(query_id_, segment_id_ * kMaxNodeNum + target_node_id_),
-      coor_addr_);
+      coor_node_id_);
   segment_exec_status->RegisterToTracker();
   segment_exec_status->UpdateStatus(
       SegmentExecStatus::ExecStatus::kOk,

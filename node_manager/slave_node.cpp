@@ -39,9 +39,15 @@
 #include "../storage/StorageLevel.h"
 #include "caf/all.hpp"
 #include <map>
+#include <unordered_map>
+#include "../common/error_define.h"
+using caf::io::remote_actor;
 using caf::make_message;
 using std::make_pair;
-
+using std::unordered_map;
+using claims::common::rConRemoteActorError;
+using claims::common::rRegisterToMasterTimeOut;
+using claims::common::rRegisterToMasterError;
 namespace claims {
 SlaveNode* SlaveNode::instance_ = 0;
 class SlaveNodeActor : public event_based_actor {
@@ -58,7 +64,6 @@ class SlaveNodeActor : public event_based_actor {
           quit();
         },
         [=](SendPlanAtom, string str) {
-          // should delete new_plan, but where to do it ???
           PhysicalQueryPlan* new_plan = new PhysicalQueryPlan(
               PhysicalQueryPlan::TextDeserializePlan(str));
           Environment::getInstance()
@@ -90,8 +95,7 @@ class SlaveNodeActor : public event_based_actor {
         },
         [&](BroadcastNodeAtom, const unsigned int& node_id,
             const string& node_ip, const uint16_t& node_port) {
-          slave_node_->node_id_to_addr_.insert(
-              make_pair(node_id, make_pair(node_ip, node_port)));
+          slave_node_->AddOneNode(node_id, node_ip, node_port);
         },
         [=](ReportSegESAtom, NodeSegmentID node_segment_id, int exec_status,
             string exec_info) {
@@ -124,9 +128,21 @@ SlaveNode* SlaveNode::GetInstance() {
 RetCode SlaveNode::AddOneNode(const unsigned int& node_id,
                               const string& node_ip,
                               const uint16_t& node_port) {
+  lock_.acquire();
+  RetCode ret = rSuccess;
   node_id_to_addr_.insert(make_pair(node_id, make_pair(node_ip, node_port)));
+
+  try {
+    auto actor = remote_actor(node_ip, node_port);
+    node_id_to_actor_.insert(make_pair(node_id, actor));
+  } catch (caf::network_error& e) {
+    LOG(WARNING) << "cann't connect to node ( " << node_ip << " , " << node_port
+                 << " ) and create remote actor failed!!";
+    ret = rConRemoteActorError;
+  }
   LOG(INFO) << "slave : get broadested node( " << node_id << " < " << node_ip
             << " " << node_port << " > )" << std::endl;
+  lock_.release();
   return rSuccess;
 }
 SlaveNode::SlaveNode() : BaseNode() {
@@ -142,6 +158,13 @@ SlaveNode::~SlaveNode() { instance_ = NULL; }
 void SlaveNode::CreateActor() {
   auto slave_actor = caf::spawn<SlaveNodeActor>(this);
   try {
+    master_actor_ =
+        caf::io::remote_actor(master_addr_.first, master_addr_.second);
+  } catch (caf::network_error& e) {
+    LOG(ERROR) << "slave node create remote_actor error due to network error!";
+    assert(false);
+  }
+  try {
     caf::io::publish(slave_actor, get_node_port(), nullptr, 1);
     LOG(INFO) << "slave node publish port " << get_node_port()
               << " successfully!";
@@ -156,14 +179,18 @@ RetCode SlaveNode::RegisterToMaster() {
   RetCode ret = 0;
   caf::scoped_actor self;
   try {
-    auto master_actor =
-        caf::io::remote_actor(master_addr_.first, master_addr_.second);
-    self->sync_send(master_actor, RegisterAtom::value, get_node_ip(),
+    self->sync_send(master_actor_, RegisterAtom::value, get_node_ip(),
                     get_node_port())
         .await([=](OkAtom, const unsigned int& id, const BaseNode& node) {
                  set_node_id(id);
                  node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
                                          node.node_id_to_addr_.end());
+                 for (auto it = node_id_to_addr_.begin();
+                      it != node_id_to_addr_.end(); ++it) {
+                   auto actor =
+                       remote_actor(it->second.first, it->second.second);
+                   node_id_to_actor_.insert(make_pair(it->first, actor));
+                 }
                  LOG(INFO) << "register node succeed! intsert "
                            << node.node_id_to_addr_.size() << " nodes";
                },
@@ -172,11 +199,11 @@ RetCode SlaveNode::RegisterToMaster() {
                },
                caf::after(std::chrono::seconds(kTimeout)) >>
                    [&]() {
-                     ret = -1;
+                     ret = rRegisterToMasterTimeOut;
                      LOG(WARNING) << "slave register timeout!";
                    });
   } catch (caf::network_error& e) {
-    ret = -1;
+    ret = rRegisterToMasterError;
     LOG(WARNING) << "cann't connect to " << master_addr_.first << " , "
                  << master_addr_.second << " in register";
   }

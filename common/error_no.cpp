@@ -319,6 +319,13 @@ ErrorInit::ErrorInit() {
                         "limit parameter should be natural number.");
   DefineErrorAndMessage(rStmtCancelled, "this stmt is cancelled");
   DefineErrorAndMessage(rUnknowStmtType, "the type of the stmt doesn't know");
+
+  DefineErrorAndMessage(rConRemoteActorError, "connecting remote actor failed");
+  DefineErrorAndMessage(rRegisterToMasterTimeOut, "register to master timeout");
+  DefineErrorAndMessage(rRegisterToMasterError, "register to master error");
+
+  DefineErrorAndMessage(rCouldnotFindCancelQueryId,
+                        "couldn't the query id to be cancelled");
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common

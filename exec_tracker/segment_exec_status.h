@@ -48,7 +48,7 @@ namespace claims {
 class SegmentExecStatus {
  public:
   enum ExecStatus { kError, kOk, kCancelled, kDone };
-  SegmentExecStatus(NodeSegmentID node_segment_id, NodeAddr coor_addr);
+  SegmentExecStatus(NodeSegmentID node_segment_id, unsigned int coor_node_id);
   SegmentExecStatus(NodeSegmentID node_segment_id);
   virtual ~SegmentExecStatus();
   // first cancel data source, e.t. exchange merger
@@ -73,7 +73,7 @@ class SegmentExecStatus {
   string exec_info_;
   u_int64_t logic_time_;
   actor coor_actor_;
-  NodeAddr coor_addr_;
+  unsigned int coor_node_id_;
   NodeSegmentID node_segment_id_;
   Lock lock_;
   std::atomic_bool stop_report_;

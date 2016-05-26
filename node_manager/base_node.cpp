@@ -35,6 +35,8 @@
 
 #include "../Config.h"
 #include "../Executor/PortManager.h"
+#include "caf/all.hpp"
+using caf::actor;
 using std::make_pair;
 using std::string;
 using std::vector;
@@ -45,7 +47,9 @@ BaseNode::BaseNode() : node_id_(-1) {
   ReadMasterAddr();
 }
 BaseNode::BaseNode(string node_ip, uint16_t node_port)
-    : node_addr_(make_pair(node_ip, node_port)), node_id_(-1) {}
+    : node_addr_(make_pair(node_ip, node_port)), node_id_(-1) {
+  ReadMasterAddr();
+}
 BaseNode::~BaseNode() {}
 
 NodeAddr BaseNode::GetNodeAddr() { return node_addr_; }
@@ -66,19 +70,35 @@ void BaseNode::ReadMasterAddr() {
   std::string master_port = (const char *)cfg.lookup("coordinator.port");
   master_addr_ = make_pair(master_ip, std::atoi(master_port.c_str()));
 }
-NodeAddr BaseNode::GetNodeAddrFromId(const unsigned int &id) {
-  if (node_id_to_addr_.find(id) != node_id_to_addr_.end()) {
-    return node_id_to_addr_[id];
+NodeAddr BaseNode::GetNodeAddrFromId(const unsigned int id) {
+  lock_.acquire();
+  auto it = node_id_to_addr_.find(id);
+  lock_.release();
+  if (it != node_id_to_addr_.end()) {
+    return it->second;
   } else {
     return NodeAddr("0", 0);
+  }
+}
+actor &BaseNode::GetNodeActorFromId(const unsigned int id) {
+  lock_.acquire();
+  auto it = node_id_to_actor_.find(id);
+  lock_.release();
+  if (it != node_id_to_actor_.end()) {
+    return it->second;
+  } else {
+    actor null_actor;
+    return null_actor;
   }
 }
 vector<NodeID> BaseNode::GetAllNodeID() {
   vector<NodeID> all_node_id;
   all_node_id.clear();
+  lock_.acquire();
   for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
     all_node_id.push_back(it->first);
   }
+  lock_.release();
   return all_node_id;
 }
 }  // namespace claims

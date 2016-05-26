@@ -245,7 +245,7 @@ RetCode SelectExec::Execute() {
   SegmentExecStatus* seg_exec_status = new SegmentExecStatus(
       make_pair(stmt_exec_status_->get_query_id(),
                 Environment::getInstance()->get_slave_node()->get_node_id()),
-      Environment::getInstance()->get_slave_node()->GetNodeAddr());
+      Environment::getInstance()->get_slave_node()->get_node_id());
   seg_exec_status->RegisterToTracker();
 
   physical_plan->Open(seg_exec_status);
@@ -341,19 +341,9 @@ RetCode SelectExec::IsUpperExchangeRegistered(
   int times = 0;
   /// TODO(fzh)should release the strong synchronization
   for (int i = 0; i < upper_node_id_list.size(); ++i) {
-    auto target_node_addr =
-        Environment::getInstance()->get_slave_node()->GetNodeAddrFromId(
+    auto target_actor =
+        Environment::getInstance()->get_slave_node()->GetNodeActorFromId(
             upper_node_id_list[i]);
-    assert(target_node_addr.second != 0);
-    actor target_actor;
-    try {
-      target_actor =
-          remote_actor(target_node_addr.first.c_str(), target_node_addr.second);
-    } catch (caf::network_error& e) {
-      PLOG(ERROR) << "111master socket related errors occur " << endl;
-      assert(false);
-      return false;
-    }
     while (Environment::getInstance()
                ->getExchangeTracker()
                ->AskForSocketConnectionInfo(ExchangeID(exchange_id, i),

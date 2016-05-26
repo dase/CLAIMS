@@ -27,38 +27,30 @@
  */
 
 #include "./segment_exec_status.h"
-
 #include <glog/logging.h>
 #include <string>
 #include <iostream>
-
 #include "../exec_tracker/stmt_exec_tracker.h"
 #include "../Environment.h"
+#include "caf/io/all.hpp"
 using caf::io::remote_actor;
-// using std::ostringstream;
 using std::string;
 using std::endl;
-#include "caf/io/all.hpp"
 namespace claims {
 
 SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id,
-                                     NodeAddr coor_addr)
+                                     unsigned int coor_node_id)
     : node_segment_id_(node_segment_id),
-      coor_addr_(coor_addr),
+      coor_node_id_(coor_node_id),
       exec_info_("ok"),
       exec_status_(ExecStatus::kOk),
       ret_code_(0),
       logic_time_(0),
       stop_report_(false) {
   //  RegisterToTracker();
-  try {
-    coor_actor_ = remote_actor(coor_addr_.first, coor_addr_.second);
-  } catch (caf::network_error& e) {
-    LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
-                 << " cann't connect to node  ( " << coor_addr_.first << " , "
-                 << coor_addr_.second
-                 << " ) when SegmentExecStatus connect remote actor";
-  }
+  coor_actor_ =
+      Environment::getInstance()->get_slave_node()->GetNodeActorFromId(
+          coor_node_id);
 }
 SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id)
     : node_segment_id_(node_segment_id),
@@ -87,15 +79,14 @@ RetCode SegmentExecStatus::CancelSegExec() {
   //  lock_.release();
   LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
             << " need be cancelled!" << endl;
-  return 0;
+  return rSuccess;
 }
 // make sure that kCancel or kDone is the last message transfer to stmt
 RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
                                         string exec_info) {
   if (kCancelled == exec_status_ || stop_report_) {
     lock_.release();
-
-    return 0;
+    return rSuccess;
   }
   //  lock_.acquire();
   try {
@@ -127,8 +118,8 @@ RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
 
   } catch (caf::network_error& e) {
     LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
-                 << " cann't connect to node  ( " << coor_addr_.first << " , "
-                 << coor_addr_.second << " ) when report status";
+                 << " cann't connect to node  ( " << coor_node_id_
+                 << " ) when report status";
   }
   lock_.release();
 
@@ -143,17 +134,16 @@ RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
 }
 RetCode SegmentExecStatus::ReportStatus() {
   // if this segment is cancelled, needn't report status
-  if (kCancelled == exec_status_ || stop_report_) {
-    return 0;
-  }
   lock_.acquire();
+  if (kCancelled == exec_status_ || stop_report_) {
+    lock_.release();
+    return rSuccess;
+  }
   ExecStatus exec_status = exec_status_;
   string exec_info = exec_info_;
   lock_.release();
   try {
     caf::scoped_actor self;
-    //    coor_actor_ = remote_actor(coor_addr_.first, coor_addr_.second);
-
     self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
                     (int)exec_status, exec_info)
         .await(
@@ -179,8 +169,8 @@ RetCode SegmentExecStatus::ReportStatus() {
 
   } catch (caf::network_error& e) {
     LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
-                 << " cann't connect to node ( " << coor_addr_.first << " , "
-                 << coor_addr_.second << " ) when report status";
+                 << " cann't connect to node ( " << coor_node_id_
+                 << " ) when report status";
   }
 
   // for making sure kError or kDone be the last message sended to remote
@@ -194,12 +184,13 @@ RetCode SegmentExecStatus::ReportStatus() {
 }
 bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
                                      u_int64_t logic_time, bool need_report) {
+  lock_.acquire();
   if (exec_status_ == ExecStatus::kCancelled) {
     LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
               << " update status failed!";
+    lock_.release();
     return false;
   } else if (ExecStatus::kOk == exec_status_) {
-    lock_.acquire();
     logic_time_ = logic_time;
     exec_status_ = exec_status;
     exec_info_ = exec_info;
@@ -213,6 +204,7 @@ bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
       // ReportStatus();
     }
   } else {
+    lock_.release();
     LOG(WARNING) << "segment's status shouldn't be updated!!";
   }
   return true;

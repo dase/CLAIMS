@@ -165,6 +165,7 @@ class AstJoin : public AstNode {
   RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   RetCode PushDownCondition(PushDownConditionContext& pdccnxt);
   RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
+  RetCode GetFilterLogicalPlan(LogicalOperator*& logic_plan);
 
   string join_type_;
   AstNode* left_table_;

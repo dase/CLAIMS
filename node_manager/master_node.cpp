@@ -32,17 +32,18 @@
 #include <pthread.h>
 #include <string>
 #include <utility>
+#include <vector>
 #include <iostream>
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
-#include <vector>
-
+#include "../common/error_define.h"
 #include "../common/ids.h"
 #include "../common/Message.h"
 #include "../Environment.h"
 using caf::io::remote_actor;
 using caf::make_message;
 using std::make_pair;
+using claims::common::rConRemoteActorError;
 namespace claims {
 MasterNode* MasterNode::instance_ = 0;
 class MasterNodeActor : public event_based_actor {
@@ -111,10 +112,10 @@ MasterNode::MasterNode(string node_ip, uint16_t node_port)
 
 MasterNode::~MasterNode() { instance_ = NULL; }
 void MasterNode::CreateActor() {
-  auto master_actor = caf::spawn<MasterNodeActor>(this);
+  master_actor_ = caf::spawn<MasterNodeActor>(this);
   try {
-    caf::io::publish(master_actor, get_node_port());
-    LOG(INFO) << "master ip port publish succeed!";
+    caf::io::publish(master_actor_, get_node_port(), nullptr, 1);
+    LOG(INFO) << "master ip port" << get_node_port() << " publish succeed!";
   } catch (caf::bind_failure& e) {
     LOG(ERROR) << "the specified port " << get_node_port() << " is used!";
   } catch (caf::network_error& e) {
@@ -132,30 +133,38 @@ RetCode MasterNode::BroastNodeInfo(const unsigned int& node_id,
                                    const uint16_t& node_port) {
   caf::scoped_actor self;
   for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
-    auto node_actor = remote_actor(it->second.first, it->second.second);
-    self->send(node_actor, BroadcastNodeAtom::value, node_id, node_ip,
-               node_port);
+    self->send(node_id_to_actor_.at(it->first), BroadcastNodeAtom::value,
+               node_id, node_ip, node_port);
   }
   return rSuccess;
 }
 // should be atomic
 unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
+  lock_.acquire();
   node_id_gen_++;
   BroastNodeInfo((unsigned int)node_id_gen_, node_ip, node_port);
   node_id_to_addr_.insert(
       make_pair((unsigned int)node_id_gen_, make_pair(node_ip, node_port)));
+  try {
+    auto actor = remote_actor(node_ip, node_port);
+    node_id_to_actor_.insert(make_pair((unsigned int)node_id_gen_, actor));
+  } catch (caf::network_error& e) {
+    LOG(WARNING) << "cann't connect to node ( " << node_ip << " , " << node_port
+                 << " ) and create remote actor failed!!";
+    assert(false);
+  }
   LOG(INFO) << "slave : register one node( " << node_id_gen_ << " < " << node_ip
             << " " << node_port << " > )" << std::endl;
+  lock_.release();
   return node_id_gen_;
 }
 
 void MasterNode::FinishAllNode() {
   caf::scoped_actor self;
-  for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
-    auto pong = remote_actor(it->second.first.c_str(), it->second.second);
-    self->send(pong, ExitAtom::value);
+  for (auto it = node_id_to_actor_.begin(); it != node_id_to_actor_.end();
+       ++it) {
+    self->send(it->second, ExitAtom::value);
   }
-  auto pong = remote_actor(master_addr_.first.c_str(), master_addr_.second);
-  self->send(pong, ExitAtom::value);
+  self->send(master_actor_, ExitAtom::value);
 }
 }  // namespace claims
