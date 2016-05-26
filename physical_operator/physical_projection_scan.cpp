@@ -144,6 +144,9 @@ bool PhysicalProjectionScan::Next(SegmentExecStatus* const exec_status,
   RETURN_IF_CANCELLED(exec_status);
 
   unsigned long long total_start = curtick();
+  if (!block->isIsReference()) {
+    block->setIsReference(false);
+  }
 #ifdef AVOID_CONTENTION_IN_SCAN
   ScanThreadContext* stc = reinterpret_cast<ScanThreadContext*>(GetContext());
   if (NULL == stc) {

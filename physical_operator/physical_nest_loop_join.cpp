@@ -138,14 +138,15 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
     //         << " is reference : " << jtc->block_for_asking_->isIsReference()
     //         << endl;
     block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
-    if (!jtc->block_for_asking_->isIsReference()) {
-      CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
-    } else {
-      //      cout << "temp after" << temp << endl;
-      //      delete temp;
-      CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
-      jtc->block_for_asking_->setIsReference(false);
-    }
+    //    if (!jtc->block_for_asking_->isIsReference()) {
+    CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
+    //    } else {
+    //      //      cout << "temp after" << temp << endl;
+    //      //      delete temp;
+    //      CreateBlockStream(jtc->block_for_asking_,
+    //      state_.input_schema_left_);
+    //      jtc->block_for_asking_->setIsReference(false);
+    //    }
     //    cout << "new start :" << jtc->block_for_asking_->getBlock()
     //         << " is reference : " << jtc->block_for_asking_->isIsReference()
     //         << endl;
