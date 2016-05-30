@@ -1,8 +1,6 @@
-
 AM_CPPFLAGS= -fPIC -fpermissive \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
--I${THERON_HOME}/Include \
 -I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux \
@@ -26,7 +24,6 @@ LDADD = 	../libschema.a \
 		${HADOOP_HOME}/lib/native/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 		${HADOOP_HOME}/lib/native/libhdfs.so\
-		${THERON_HOME}/Lib/libtherond.a	\
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
 		${BOOST_HOME}/stage/lib/libboost_serialization.so \
 				${GTEST_HOME}/libgtest.a

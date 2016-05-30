@@ -110,6 +110,7 @@ FOR	{ return FOR; }
 FORCE	{ return FORCE; }
 FOREIGN	{ return FOREIGN; }
 FROM	{ return FROM; }
+FULL    { return FULL; }
 FULLTEXT	{ return FULLTEXT; }
 GRANT	{ return GRANT; }
 GROUP	{ return GROUP; }

@@ -1,0 +1,26 @@
+select * from A right join B on A.id = B.id;
+select * from B left join A on A.id = B.id;
+select * from A left join B on A.id = B.id;
+select * from B right join A on A.id = B.id;
+
+select * from A left join B on A.num = B.name;
+select * from B right join A on A.num = B.name;
+select * from A right join B on A.num = B.name;
+select * from B left join A on A.num = B.name;
+
+select * from A right join B on A.id = B.id AND A.num = B.name;
+select * from B left join A on A.id = B.id AND A.num = B.name;
+select * from A right join B on A.id = B.id AND A.strdate = B.strdate;
+select * from B left join A on A.id = B.id AND A.strdate = B.strdate;
+
+select * from A right join B on A.id = B.id AND A.num = 111;
+select * from A left join B on A.id = B.id AND A.num = 111;
+select * from B right join A on A.id = B.id AND B.name = 212;
+select * from B left join A on A.id = B.id AND B.name = 212;
+select * from A right join B on A.id = B.id where B.name = 212;
+select * from A left join B on A.id = B.id where B.name = 212;
+select * from A right join B on A.id = B.id where A.num = 112;
+select * from A left join B on A.id = B.id where A.num = 112;
+
+
+exit;

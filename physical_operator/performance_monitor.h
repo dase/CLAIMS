@@ -52,9 +52,10 @@ class PerformanceMonitor : public PhysicalOperatorBase {
   };
   PerformanceMonitor(State state_);
   virtual ~PerformanceMonitor();
-  bool Open(const PartitionOffset& partition_offset = 0);
-  bool Next(BlockStreamBase* block);
-  bool Close();
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partition_offset = 0);
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
   unsigned long int GetNumberOfTuples() const;
 

@@ -128,7 +128,7 @@ TEST_F(ElasticIteratorModelTest, EqualJoin) {
   ResultSet rs;
   std::string message;
   client_.submit(
-      "select count(*) from LINEITEM,PART where PART.row_id=LINEITEM.row_id;",
+      "select count(*) from PART,LINEITEM where PART.row_id=LINEITEM.row_id;",
       message, rs);
   DynamicBlockBuffer::Iterator it = rs.createIterator();
   BlockStreamBase::BlockStreamTraverseIterator *b_it =

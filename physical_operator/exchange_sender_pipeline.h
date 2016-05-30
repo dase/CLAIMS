@@ -43,6 +43,8 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <stack>
+
 #include "../../common/Schema/Schema.h"
 #include "../../Executor/IteratorExecutorMaster.h"
 #include "../../common/Block/PartitionedBlockBuffer.h"
@@ -52,6 +54,7 @@
 #include "../../common/hash.h"
 #include "../../common/Logging.h"
 #include "../../common/partition_functions.h"
+#include "../common/error_define.h"
 #include "../physical_operator/exchange_sender.h"
 #include "../physical_operator/physical_operator_base.h"
 
@@ -100,13 +103,18 @@ class ExchangeSenderPipeline : public ExchangeSender {
    * 2.build socket connection with uppder mergers
    * 3.create sender thread that sends blocks to different upper mergers.
    */
-  bool Open(const PartitionOffset& partition_offset = 0);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partition_offset = 0);
   /**
    * divide block that come from child and insert them into corresponding
    * partition buffer
    */
-  bool Next(BlockStreamBase* no_block);
-  bool Close();
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* no_block);
+  bool Close(SegmentExecStatus* const exec_status);
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
+  void SetPartitionOffset(const int par_off) {
+    state_.partition_offset_ = par_off;
+  }
 
  private:
   /**

@@ -30,14 +30,18 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <stack>
+
 #include "../physical_operator/physical_operator_base.h"
 #include "../common/Schema/Schema.h"
 #include "../common/Block/BlockStreamBuffer.h"
+#include "../common/error_define.h"
 #include "../utility/ExpandabilityShrinkability.h"
 #include "../common/Logging.h"
 #include "../utility/lock.h"
 #include "../utility/thread_pool.h"
 #include "../Environment.h"
+
 namespace claims {
 namespace physical_operator {
 #define EXPANDER_BUFFER_SIZE 1000
@@ -79,13 +83,15 @@ class Expander : public PhysicalOperatorBase,
    * prepare block-buffer for collecting block from child and some thread list,
    * create one initial working thread.
    */
-  bool Open(const PartitionOffset& partitoin_offset = 0);
+  bool Open(SegmentExecStatus* const exec_status,
+            const PartitionOffset& partitoin_offset = 0);
   /**
    * fetch one block from buffer and return
    */
-  bool Next(BlockStreamBase* block);
-  bool Close();
+  bool Next(SegmentExecStatus* const exec_status, BlockStreamBase* block);
+  bool Close(SegmentExecStatus* const exec_status);
   void Print();
+  RetCode GetAllSegments(stack<Segment*>* all_segments);
 
  private:
   /**
@@ -104,13 +110,13 @@ class Expander : public PhysicalOperatorBase,
   unsigned GetDegreeOfParallelism();
 
  private:
+  bool is_registered_;
   State state_;
-
+  SegmentExecStatus* exec_status_;
   /*
    * The set of threads that are working normally.
    */
   std::set<pthread_t> in_work_expanded_thread_list_;
-  pthread_t coordinate_pid_;
   ExpanderID expander_id_;
   Lock exclusive_expanding_;
   /*

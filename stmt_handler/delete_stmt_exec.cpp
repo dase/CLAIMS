@@ -117,7 +117,8 @@ RetCode DeleteStmtExec::Execute(ExecutedResult* exec_result) {
     //  if (NULL != appended_query_exec) {
     //    delete appended_query_exec;
     //  }
-
+    delete exec_result->result_;
+    exec_result->result_ = NULL;
     return ret;
   } else if (rCreateProjectionOnDelTableFailed == ret) {
     WLOG(ret,

@@ -2,7 +2,6 @@ AM_CPPFLAGS= -fPIC -fpermissive \
 -I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux\
--I${THERON_HOME}/Include \
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization
 
@@ -41,7 +40,8 @@ liblogicalqueryplan_a_SOURCES = \
 	logical_cross_join.cpp				logical_cross_join.h \
 	logical_subquery.cpp				logical_subquery.h	\
 	logical_sort.cpp 					logical_sort.h \
-	logical_delete_filter.cpp           logical_delete_filter.h
+	logical_delete_filter.cpp           logical_delete_filter.h \
+	logical_outer_join.cpp              logical_outer_join.h
 
 
 SUBDIRS = 

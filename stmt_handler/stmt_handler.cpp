@@ -30,13 +30,19 @@
 #include <iostream>
 #include <string>
 #include "../stmt_handler/stmt_handler.h"
-
 #include "../common/memory_handle.h"
+#include <boost/algorithm/string.hpp>
 #include "../stmt_handler/create_projection_exec.h"
 #include "../stmt_handler/desc_exec.h"
 #include "../stmt_handler/drop_table_exec.h"
 #include "../stmt_handler/show_exec.h"
 #include "../utility/Timer.h"
+#include "../common/error_define.h"
+
+using boost::algorithm::to_lower;
+using boost::algorithm::trim;
+using claims::common::rUnknowStmtType;
+using claims::common::rSQLParserErr;
 namespace claims {
 namespace stmt_handler {
 
@@ -119,21 +125,58 @@ RetCode StmtHandler::Execute(ExecutedResult* exec_result) {
     exec_result->error_info_ = "Parser Error\n" + exec_result->info_;
     exec_result->status_ = false;
     exec_result->result_ = NULL;
-    return rParserError;
+    return rSQLParserErr;
   }
   raw_ast->Print();
   ret = GenerateStmtExec(raw_ast);
   if (rSuccess != ret) {
     return ret;
   }
-  ret = stmt_exec_->Execute(exec_result);
-  DELETE_PTR(sql_parser_);
-  if (rSuccess != ret) {
-    return ret;
+  trim(sql_stmt_);
+  to_lower(sql_stmt_);
+  // not select stmt
+  if (sql_stmt_.substr(0, 6) != string("select")) {
+    ret = stmt_exec_->Execute(exec_result);
+    if (rSuccess != ret) {
+      return ret;
+    }
+  } else {
+    // select stmt
+    StmtExecStatus* exec_status = new StmtExecStatus(sql_stmt_);
+    exec_status->RegisterToTracker();
+    stmt_exec_->set_stmt_exec_status(exec_status);
+    ret = stmt_exec_->Execute();
+    if (rSuccess != ret) {
+      exec_result->result_ = NULL;
+      exec_result->status_ = false;
+      exec_result->error_info_ = sql_stmt_ + string(" execution error!");
+      exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
+      return ret;
+    } else {
+      if (StmtExecStatus::ExecStatus::kCancelled ==
+          exec_status->get_exec_status()) {
+        exec_result->result_ = NULL;
+        exec_result->status_ = false;
+        exec_result->error_info_ = sql_stmt_ + string(" have been cancelled!");
+        exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
+
+      } else if (StmtExecStatus::ExecStatus::kOk ==
+                 exec_status->get_exec_status()) {
+        exec_result->result_ = exec_status->get_query_result();
+        exec_result->status_ = true;
+        exec_result->info_ = exec_status->get_exec_info();
+        exec_status->set_exec_status(StmtExecStatus::ExecStatus::kDone);
+
+      } else {
+        assert(false);
+        exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
+      }
+    }
   }
   double exec_time_ms = GetElapsedTime(start_time);
-  if (NULL != exec_result->result_)
+  if (NULL != exec_result->result_) {
     exec_result->result_->query_time_ = exec_time_ms / 1000.0;
+  }
   cout << "execute time: " << exec_time_ms / 1000.0 << " sec" << endl;
   return rSuccess;
 }

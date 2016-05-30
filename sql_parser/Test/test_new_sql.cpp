@@ -1,3 +1,5 @@
+#include "../../exec_tracker/segment_exec_status.h"
+
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -36,6 +38,7 @@
 #include "../../physical_operator/physical_operator_base.h"
 using claims::logical_operator::LogicalQueryPlanRoot;
 using claims::physical_operator::PhysicalOperatorBase;
+using claims::SegmentExecStatus;
 using std::endl;
 using std::cout;
 
@@ -84,12 +87,12 @@ int TestNewSql() {
       physical_plan->Print();
       cout << "--------------begin output result -------------------" << endl;
 #endif
-
-      physical_plan->Open();
-      while (physical_plan->Next(NULL)) {
+      SegmentExecStatus* exec_status = new SegmentExecStatus(make_pair(0, 0));
+      physical_plan->Open(exec_status);
+      while (physical_plan->Next(exec_status, NULL)) {
       }
       ResultSet* result_set = physical_plan->GetResultSet();
-      physical_plan->Close();
+      physical_plan->Close(exec_status);
 
       result_set->print();
 

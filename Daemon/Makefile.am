@@ -1,7 +1,6 @@
 AM_CPPFLAGS= -fPIC -fpermissive -DTHERON_XS\
 -I${BOOST_HOME} \
 -I${BOOST_HOME}/boost/serialization \
--I${THERON_HOME}/Include \
 -I${HADOOP_HOME}/include\
 -I${JAVA_HOME}/include\
 -I${JAVA_HOME}/include/linux
@@ -19,8 +18,7 @@ LDADD = 	../logical_operator/liblogicalqueryplan.a \
 		${HADOOP_HOME}/lib/native/libhdfs.a\
 		${JAVA_HOME}/jre/lib/amd64/server/libjvm.so\
 		${BOOST_HOME}/stage/lib/libboost_serialization.a \
-		${BOOST_HOME}/stage/lib/libboost_serialization.so \
-		${THERON_HOME}/Lib/libtherond.a
+		${BOOST_HOME}/stage/lib/libboost_serialization.so 
 
 noinst_LIBRARIES=libdaemon.a
 libdaemon_a_SOURCES =	Daemon.cpp	Daemon.h \

@@ -27,11 +27,10 @@
  */
 #ifndef PHYSICAL_OPERATOR_PHYSICAL_NEST_LOOP_JOIN_H_
 #define PHYSICAL_OPERATOR_PHYSICAL_NEST_LOOP_JOIN_H_
-#include "../physical_operator/physical_nest_loop_join.h"
-
-#include <boost/serialization/base_object.hpp>
 #include <vector>
-
+#include <stack>
+#include "../physical_operator/physical_nest_loop_join.h"
+#include <boost/serialization/base_object.hpp>
 #include "../common/expression/expr_node.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../physical_operator/physical_operator.h"
@@ -88,10 +87,14 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   PhysicalNestLoopJoin();
   virtual ~PhysicalNestLoopJoin();
   PhysicalNestLoopJoin(State state);
-  bool Open(const PartitionOffset &partition_offset = 0);
-  bool Next(BlockStreamBase *block);
-  bool Close();
+  bool Open(SegmentExecStatus *const exec_status,
+            const PartitionOffset &partition_offset = 0);
+  bool Next(SegmentExecStatus *const exec_status, BlockStreamBase *block);
+  bool Close(SegmentExecStatus *const exec_status);
   void Print();
+  RetCode GetAllSegments(stack<Segment *> *all_segments);
+
+  State state_;
 
  private:
   static bool WithJoinCondi(void *tuple_left, void *tuple_right,
@@ -102,7 +105,6 @@ class PhysicalNestLoopJoin : public PhysicalOperator {
   ThreadContext *CreateContext();
 
   DynamicBlockBuffer *block_buffer_;
-  State state_;
   JoinCondiProcess join_condi_process_;
 
   friend class boost::serialization::access;

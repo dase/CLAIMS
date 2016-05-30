@@ -4,9 +4,9 @@ SELECT
         O_ORDERDATE,
         O_SHIPPRIORITY
 FROM
-        CUSTOMER,
+        LINEITEM,
         ORDERS,
-        LINEITEM
+        CUSTOMER
 WHERE
         C_MKTSEGMENT = 'HOUSEHOLD'
         AND C_CUSTKEY = O_CUSTKEY

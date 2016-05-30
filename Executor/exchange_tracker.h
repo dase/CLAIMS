@@ -12,49 +12,36 @@
 
 #ifndef EXCHANGETRACKER_H_
 #define EXCHANGETRACKER_H_
-#include <map>
 #include <boost/unordered_map.hpp>
-#include <Theron/Theron.h>
-#ifdef DMALLOC
-#include "dmalloc.h"
-#endif
-
-#include "../common/Logging.h"
+#include <map>
 #include "../utility/lock.h"
 #include "../common/ids.h"
+#include "caf/all.hpp"
+
+using caf::actor;
+
+/*
+ * maintain pair<id,port> information of exchange, and provide interface for
+ * other exchange asking connection port
+ */
 class ExchangeTracker {
-public:
-	ExchangeTracker();
-	virtual ~ExchangeTracker();
-	bool RegisterExchange(ExchangeID exchange_id, std::string port);
-	void LogoutExchange(const ExchangeID &exchange_id);
-	bool AskForSocketConnectionInfo(ExchangeID exchange_id,NodeID target_id, NodeAddress & node_addr);
-	void printAllExchangeId()const;
-private:
-	Theron::EndPoint* endpoint;
-	Theron::Framework* framework;
-	Theron::Actor* actor;
-	boost::unordered_map<ExchangeID,std::string> id_to_port;
-	Logging* logging_;
-	Lock lock_;
+ public:
+  ExchangeTracker();
+  virtual ~ExchangeTracker();
+  bool RegisterExchange(ExchangeID exchange_id, std::string port);
+  void LogoutExchange(const ExchangeID& exchange_id);
+  bool AskForSocketConnectionInfo(const ExchangeID& exchange_id,
+                                  const NodeID& target_id,
+                                  NodeAddress& node_addr);
+  bool AskForSocketConnectionInfo(const ExchangeID& exchange_id,
+                                  const NodeID& target_id,
+                                  NodeAddress& node_addr, actor& target_actor);
+  void printAllExchangeId() const;
+  NodeAddress GetExchAddr(ExchangeID exch_id);
 
-
-	/////////////////////////////////////////////////////////////
-	/**
-	 * RegisterActor
-	 */
-	friend class RegisterActor;
-	class ExchangeTrackerActor:public Theron::Actor{
-	public:
-		ExchangeTrackerActor(ExchangeTracker* et,Theron::Framework* framework, const char* Name);
-	private:
-		void AskForConnectionInfo(const ExchangeID &exchange_id, const Theron::Address from);
-
-	private:
-		ExchangeTracker* et;
-
-
-	};
+ private:
+  boost::unordered_map<ExchangeID, std::string> id_to_port;
+  Lock lock_;
 };
 
 #endif /* EXCHANGETRACKER_H_ */

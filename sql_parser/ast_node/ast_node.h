@@ -49,7 +49,6 @@ using claims::common::rSuccess;
 // namespace claims {
 // namespace sql_parser {
 
-typedef int RetCode;
 enum AstNodeType {
   AST_NODE,
   AST_STMT_LIST,
@@ -218,6 +217,7 @@ class PushDownConditionContext {
                     vector<AstNode*>& normal_condi);
   std::vector<SubExprInfo*> sub_expr_info_;
   set<string> from_tables_;
+  bool is_outer_{false};
 };
 class SelectAliasSolver {
  public:

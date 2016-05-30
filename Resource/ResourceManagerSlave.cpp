@@ -6,46 +6,36 @@
  */
 
 #include "ResourceManagerSlave.h"
+
+#include <glog/logging.h>
+
 #include "../Environment.h"
-#include "../common/TimeOutReceiver.h"
-#define ResourceManagerMasterName "ResourceManagerMaster"
-InstanceResourceManager::InstanceResourceManager() {
-	framework_=new Theron::Framework(*Environment::getInstance()->getEndPoint());
-	logging_=new ResourceManagerMasterLogging();
-}
+#include "../node_manager/base_node.h"
+#include "caf/io/all.hpp"
+#include "caf/all.hpp"
+using caf::after;
+using caf::io::remote_actor;
+using claims::NodeAddr;
+using claims::OkAtom;
+using claims::StorageBudgetAtom;
+InstanceResourceManager::InstanceResourceManager() {}
 
-InstanceResourceManager::~InstanceResourceManager() {
-	delete framework_;
-	delete logging_;
-}
-NodeID InstanceResourceManager::Register(){
-	NodeID ret=10;
-	TimeOutReceiver receiver(Environment::getInstance()->getEndPoint());
-	Theron::Catcher<NodeID> resultCatcher;
-	receiver.RegisterHandler(&resultCatcher, &Theron::Catcher<NodeID>::Push);
+InstanceResourceManager::~InstanceResourceManager() {}
 
-	std::string ip=Environment::getInstance()->getIp();
-	unsigned port=Environment::getInstance()->getPort();
-	NodeRegisterMessage message(ip,port);
+void InstanceResourceManager::ReportStorageBudget(
+    StorageBudgetMessage& message) {
+  caf::scoped_actor self;
+  auto master_actor =
+      Environment::getInstance()->get_slave_node()->GetMasterActor();
+  self->sync_send(master_actor, StorageBudgetAtom::value, message).await(
 
-	framework_->Send(message,receiver.GetAddress(),Theron::Address("ResourceManagerMaster"));
-	Theron::Address from;
-	if(receiver.TimeOutWait(1,1000)==1){
-
-		resultCatcher.Pop(ret,from);
-		logging_->log("Successfully registered to the master, the allocated id =%d.",ret);
-		return ret;
-	}
-	else{
-		logging_->elog("Failed to get NodeId from the master.");
-		return -1;
-	}
-}
-void InstanceResourceManager::ReportStorageBudget(StorageBudgetMessage& message){
-	framework_->Send(message,Theron::Address(),Theron::Address(ResourceManagerMasterName));
+      [=](OkAtom) { LOG(INFO) << "reporting storage budget is ok!" << endl; },
+      after(std::chrono::seconds(30)) >>
+          [=]() {
+            LOG(WARNING) << "reporting storage budget, but timeout 30s !!"
+                         << endl;
+          });
 }
 
 void InstanceResourceManager::setStorageBudget(unsigned long memory,
-		unsigned long disk) {
-
-}
+                                               unsigned long disk) {}
