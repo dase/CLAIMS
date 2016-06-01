@@ -35,6 +35,7 @@ using claims::BaseNode;
 using claims::catalog::Catalog;
 using claims::common::InitAggAvgDivide;
 using claims::common::InitOperatorFunc;
+using claims::common::InitpartitionValue;
 using claims::common::InitTypeCastFunc;
 using claims::common::InitTypeConversionMatrix;
 //#define DEBUG_MODE
@@ -220,6 +221,7 @@ void Environment::initializeExpressionSystem() {
   InitOperatorFunc();
   InitAggAvgDivide();
   InitTypeCastFunc();
+  InitpartitionValue();
 }
 
 void Environment::destoryClientListener() {

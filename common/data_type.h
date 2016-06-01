@@ -785,6 +785,7 @@ class OperateDate : public Operate {
     return boost::hash_value((*(boost::gregorian::date*)(key)).julian_day()) %
            mod;
   }
+
   Operate* duplicateOperator() const { return new OperateDate(this->nullable); }
 
   inline bool setNull(void* value) {
@@ -1286,7 +1287,7 @@ class OperateDecimal : public Operate {
   void SetDefault(string& str) const { str = string("0"); }
   /*
 private:
-	//bool CheckStr(string str) const;
+        //bool CheckStr(string str) const;
 */
  private:
   int precision_;

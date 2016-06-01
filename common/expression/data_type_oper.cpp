@@ -16,6 +16,7 @@ namespace common {
 DataTypeOperFunc
     DataTypeOper::data_type_oper_func_[DATA_TYPE_NUM][OPER_TYPE_NUM];
 AvgDivide DataTypeOper::avg_divide_[DATA_TYPE_NUM];
+GetPartitionValue DataTypeOper::partition_value_[DATA_TYPE_NUM];
 // the avg_divide array store the AvgDivide function according to the datatype
 }  // namespace common
 }  // namespace claims

@@ -9,7 +9,7 @@ AM_CPPFLAGS=-fPIC  -DTHERON_XS\
 -I${CAF_HOME}/libcaf_core
 #-L/usr/local/lib \
 #-I/usr/local/include
-AM_LDFLAGS=  -lc -lm -lrt -lcaf_core -lcaf_io -lpthread -lboost_serialization -lboost_date_time -lboost_system  \
+AM_LDFLAGS=  -lc -lm -lrt -lcaf_core -lcaf_io -lpthread -lboost_serialization -lboost_date_time -lboost_system -lprofiler \
 	-lconfig++ -lxs -lnuma -lreadline -lhistory -lz -ltinfo -Wl,--no-as-needed -ldl -rdynamic -lglog 
 	
 

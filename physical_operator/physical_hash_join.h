@@ -51,6 +51,7 @@
 #include "../physical_operator/physical_operator.h"
 using claims::common::ExprNode;
 using claims::common::ExprEvalCnxt;
+using claims::common::GetPartitionValue;
 
 namespace claims {
 namespace physical_operator {
@@ -186,8 +187,10 @@ class PhysicalHashJoin : public PhysicalOperator {
   typedef void (*ConditionFilterFunc)(void*, void*, void*, vector<unsigned>&,
                                       vector<unsigned>&, Schema*, Schema*,
                                       ExprFuncTwoTuples);
+
   ConditionFilterFunc cff_;
   ExprFuncTwoTuples eftt_;
+  GetPartitionValue gpv_right_, gpv_left_;
   LLVMMemcpy memcpy_;
   LLVMMemcat memcat_;
 
