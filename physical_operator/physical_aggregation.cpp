@@ -227,11 +227,7 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
   // traverse every block from child
 
   RETURN_IF_CANCELLED(exec_status);
-  //  cout << "1.agg memory leak start" << block_for_asking->getBlock()
-  //       << "IS REFERENCE" << block_for_asking->isIsReference() << endl;
   while (state_.child_->Next(exec_status, block_for_asking)) {
-    //    cout << "2.agg memory leak start" << block_for_asking->getBlock()
-    //         << "IS REFERENCE" << block_for_asking->isIsReference() << endl;
     RETURN_IF_CANCELLED(exec_status);
     DELETE_PTR(bsti);
     bsti = block_for_asking->createIterator();
@@ -419,6 +415,10 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
     delete private_hashtable;
     private_hashtable = NULL;
   }
+  for (auto &i : agg_attrs) DELETE_PTR(i);
+  agg_attrs.clear();
+  for (auto &i : group_by_attrs) DELETE_PTR(i);
+  group_by_attrs.clear();
   return GetReturnStatus();
 }
 

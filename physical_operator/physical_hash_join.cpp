@@ -208,6 +208,7 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
     }
     jtc->l_block_for_asking_->setEmpty();
   }
+  DELETE_PTR(input_schema);
   DELETE_PTR(oper);
 #ifdef _DEBUG_
   tuples_in_hashtable = 0;
