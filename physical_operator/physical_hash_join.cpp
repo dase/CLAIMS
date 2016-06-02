@@ -137,6 +137,8 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
     consumed_tuples_from_left = 0;
 #endif
 
+    memcat_ = getMemcat(state_.hashtable_schema_->getTupleMaxSize(),
+                        state_.input_schema_right_->getTupleMaxSize());
 #ifdef CodeGen
     QNode* expr = createEqualJoinExpression(
         state_.hashtable_schema_, state_.input_schema_right_,
@@ -146,8 +148,6 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
       eftt_ = getExprFuncTwoTuples(expr, state_.hashtable_schema_,
                                    state_.input_schema_right_);
       memcpy_ = getMemcpy(state_.hashtable_schema_->getTupleMaxSize());
-      memcat_ = getMemcat(state_.hashtable_schema_->getTupleMaxSize(),
-                          state_.input_schema_right_->getTupleMaxSize());
     }
     if (eftt_) {
       cff_ = PhysicalHashJoin::IsMatchCodegen;

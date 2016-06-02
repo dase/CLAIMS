@@ -30,8 +30,10 @@ void BlockStreamFix::setEmpty() { free_ = start; }
 BlockStreamBase* BlockStreamBase::createBlock(const Schema* const& schema,
                                               unsigned block_size) {
   if (schema->getSchemaType() == Schema::fixed) {
-    return new BlockStreamFix(block_size - sizeof(BlockStreamFix::tail_info),
-                              schema->getTupleMaxSize());
+    return new BlockStreamFix(block_size, schema->getTupleMaxSize());
+    //    return new BlockStreamFix(block_size -
+    //    sizeof(BlockStreamFix::tail_info),
+    //                              schema->getTupleMaxSize());
   } else {
     return new BlockStreamVar(block_size, schema);
   }
@@ -88,7 +90,7 @@ void BlockStreamFix::deepCopy(const Block* block) {
 bool BlockStreamFix::Empty() const { return start == free_; }
 
 bool BlockStreamFix::serialize(Block& block) const {
-  assert(block.getsize() >= BlockSize + sizeof(tail_info));
+  assert(block.getsize() >= BlockSize);
 
   /*copy the content*/
   memcpy(block.getBlock(), start, BlockSize);
@@ -146,7 +148,7 @@ BlockStreamBase* BlockStreamFix::createBlockAndDeepCopy() {
   return ret;
 }
 bool BlockStreamFix::deserialize(Block* block) {
-  assert(block->getsize() >= BlockSize + sizeof(tail_info));
+  assert(block->getsize() >= BlockSize);
 
   /* copy the content*/
   memcpy(start, block->getBlock(), BlockSize);
@@ -173,15 +175,13 @@ bool BlockStreamFix::deserialize(Block* block) {
 
   return true;
 }
-unsigned BlockStreamFix::getSerializedBlockSize() const {
-  return BlockSize + sizeof(tail_info);
-}
+unsigned BlockStreamFix::getSerializedBlockSize() const { return BlockSize; }
 unsigned BlockStreamFix::getTuplesInBlock() const {
   return (free_ - start) / tuple_size_;
 }
 void BlockStreamFix::constructFromBlock(const Block& block) {
   /*set block size*/
-  assert(BlockSize == block.getsize() - sizeof(tail_info));
+  assert(BlockSize == block.getsize());
 
   /* copy the content*/
   memcpy(start, block.getBlock(), BlockSize);

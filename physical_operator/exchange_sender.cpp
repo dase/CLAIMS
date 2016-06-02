@@ -1,4 +1,7 @@
+#include "../common/expression/data_type_oper.h"
 #include "../common/Schema/Schema.h"
+
+using claims::common::DataTypeOper;
 
 /*
  * Copyright [2012-2015] DaSE@ECNU
@@ -106,8 +109,8 @@ unsigned ExchangeSender::GetHashPartitionId(void* input_tuple, Schema* schema,
                                             unsigned nuppers) {
   const void* hash_key_address =
       schema->getColumnAddess(partition_key_index, input_tuple);
-  return schema->getcolumn(partition_key_index)
-      .operate->getPartitionValue(hash_key_address, nuppers);
+  return DataTypeOper::partition_value_[schema->getcolumn(partition_key_index)
+                                            .type](hash_key_address, nuppers);
 }
 }  // namespace physical_operator
 }  // namespace claims
