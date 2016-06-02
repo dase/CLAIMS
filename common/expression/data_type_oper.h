@@ -265,6 +265,14 @@ inline void int_agg_max(OperFuncInfo fcinfo) {
 }
 inline void int_agg_sum(OperFuncInfo fcinfo) { int_add(fcinfo); }
 inline void int_agg_count(OperFuncInfo fcinfo) { int_add(fcinfo); }
+inline void int_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = (*(int *)fcinfo->args_[0] == NULL_INT);
+}
+inline void int_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = (*(int *)fcinfo->args_[0] != NULL_INT);
+}
 
 /*******************int*************************/
 
@@ -354,6 +362,16 @@ inline void u_long_agg_max(OperFuncInfo fcinfo) {
 }
 inline void u_long_agg_sum(OperFuncInfo fcinfo) { u_long_add(fcinfo); }
 inline void u_long_agg_count(OperFuncInfo fcinfo) { u_long_add(fcinfo); }
+inline void u_long_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ =
+      (*(unsigned long *)fcinfo->args_[0] == NULL_U_LONG);
+}
+inline void u_long_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ =
+      (*(unsigned long *)fcinfo->args_[0] != NULL_U_LONG);
+}
 /*******************u_long*************************/
 
 /*******************float*************************/
@@ -433,7 +451,14 @@ inline void float_agg_min(OperFuncInfo fcinfo) {
 }
 inline void float_agg_sum(OperFuncInfo fcinfo) { float_add(fcinfo); }
 inline void float_agg_count(OperFuncInfo fcinfo) { float_add(fcinfo); }
-
+inline void float_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((*(float *)fcinfo->args_[0]) == NULL_FLOAT);
+}
+inline void float_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((*(float *)fcinfo->args_[0]) != NULL_FLOAT);
+}
 /*******************float*************************/
 
 /*******************double*************************/
@@ -515,7 +540,14 @@ inline void double_agg_min(OperFuncInfo fcinfo) {
 }
 inline void double_agg_sum(OperFuncInfo fcinfo) { double_add(fcinfo); }
 inline void double_agg_count(OperFuncInfo fcinfo) { double_add(fcinfo); }
-
+inline void double_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((*(double *)fcinfo->args_[0]) == NULL_DOUBLE);
+}
+inline void double_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((*(double *)fcinfo->args_[0]) != NULL_DOUBLE);
+}
 /*******************double*************************/
 
 /*******************smallInt*************************/
@@ -606,7 +638,14 @@ inline void smallInt_agg_min(OperFuncInfo fcinfo) {
 }
 inline void smallInt_agg_sum(OperFuncInfo fcinfo) { smallInt_add(fcinfo); }
 inline void smallInt_agg_count(OperFuncInfo fcinfo) { smallInt_add(fcinfo); }
-
+inline void smallInt_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((*(short *)fcinfo->args_[0]) == NULL_SMALL_INT);
+}
+inline void smallInt_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((*(short *)fcinfo->args_[0]) != NULL_SMALL_INT);
+}
 /*******************smallInt*************************/
 
 /*****************boolean********************/
@@ -660,6 +699,15 @@ inline void boolean_less_equal(OperFuncInfo fcinfo) {
   *(bool *)fcinfo->result_ =
       (*(bool *)fcinfo->args_[0] <= *(bool *)fcinfo->args_[1]);
 }
+inline void boolean_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((*(short *)fcinfo->args_[0]) == NULL_BOOLEAN);
+}
+inline void boolean_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((*(short *)fcinfo->args_[0]) != NULL_BOOLEAN);
+}
+
 /*****************boolean********************/
 
 /*****************decimal********************/
@@ -736,6 +784,14 @@ inline void decimal_agg_min(OperFuncInfo fcinfo) {
 }
 inline void decimal_agg_sum(OperFuncInfo fcinfo) { decimal_add(fcinfo); }
 inline void decimal_agg_count(OperFuncInfo fcinfo) { decimal_add(fcinfo); }
+inline void decimal_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = (((Decimal *)fcinfo->args_[0])->isNull());
+}
+inline void decimal_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = !(((Decimal *)fcinfo->args_[0])->isNull());
+}
 /*****************decimal********************/
 
 /*****************string********************/
@@ -840,7 +896,14 @@ inline void string_substring(OperFuncInfo fcinfo) {
           (*(int *)fcinfo->args_[2]));
   *((char *)fcinfo->result_ + (*(int *)fcinfo->args_[2])) = '\0';
 }
-
+inline void string_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = (*(char *)fcinfo->args_[0]) == NULL_STRING;
+}
+inline void string_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = (*(char *)fcinfo->args_[0]) != NULL_STRING;
+}
 /*****************string********************/
 
 /*****************date********************/
@@ -932,7 +995,14 @@ inline void date_agg_min(OperFuncInfo fcinfo) {
           ? *(date *)fcinfo->args_[0]
           : *(date *)fcinfo->args_[1];
 }
-
+inline void date_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((date *)fcinfo->args_[0])->is_infinity();
+}
+inline void date_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = !(((date *)fcinfo->args_[0])->is_infinity());
+}
 /*****************date********************/
 
 /*****************time********************/
@@ -981,6 +1051,16 @@ inline void time_agg_min(OperFuncInfo fcinfo) {
           ? *(time_duration *)fcinfo->args_[0]
           : *(time_duration *)fcinfo->args_[1];
 }
+inline void time_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((time_duration *)fcinfo->args_[0])->is_negative();
+}
+inline void time_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ =
+      !(((time_duration *)fcinfo->args_[0])->is_negative());
+}
+
 /*****************time********************/
 
 /*****************datetime********************/
@@ -1028,6 +1108,14 @@ inline void datetime_agg_min(OperFuncInfo fcinfo) {
           ? *(ptime *)fcinfo->args_[0]
           : *(ptime *)fcinfo->args_[1];
 }
+inline void datetime_is_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = ((ptime *)fcinfo->args_[0])->is_infinity();
+}
+inline void datetime_is_not_null(OperFuncInfo fcinfo) {
+  assert(fcinfo->args_num_ == 1);
+  *(bool *)fcinfo->result_ = !(((ptime *)fcinfo->args_[0])->is_infinity());
+}
 /*****************datetime********************/
 inline void InitOperatorFunc() {
   for (int i = 0; i < DATA_TYPE_NUM; i++)
@@ -1054,6 +1142,9 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_int][oper_min] = int_agg_min;
   DataTypeOper::data_type_oper_func_[t_int][oper_agg_sum] = int_agg_sum;
   DataTypeOper::data_type_oper_func_[t_int][oper_agg_count] = int_agg_count;
+  DataTypeOper::data_type_oper_func_[t_int][oper_is_null] = int_is_null;
+  DataTypeOper::data_type_oper_func_[t_int][oper_is_not_null] = int_is_not_null;
+
   /*****************int********************/
 
   /*****************ulong********************/
@@ -1082,6 +1173,10 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_u_long][oper_agg_sum] = u_long_agg_sum;
   DataTypeOper::data_type_oper_func_[t_u_long][oper_agg_count] =
       u_long_agg_count;
+
+  DataTypeOper::data_type_oper_func_[t_u_long][oper_is_null] = u_long_is_null;
+  DataTypeOper::data_type_oper_func_[t_u_long][oper_is_not_null] =
+      u_long_is_not_null;
   /*****************ulong********************/
 
   /*****************float********************/
@@ -1107,6 +1202,10 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_float][oper_min] = float_agg_min;
   DataTypeOper::data_type_oper_func_[t_float][oper_agg_sum] = float_agg_sum;
   DataTypeOper::data_type_oper_func_[t_float][oper_agg_count] = float_agg_count;
+  DataTypeOper::data_type_oper_func_[t_float][oper_is_null] = float_is_null;
+  DataTypeOper::data_type_oper_func_[t_float][oper_is_not_null] =
+      float_is_not_null;
+
   /*****************float********************/
 
   /*****************double********************/
@@ -1135,6 +1234,9 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_double][oper_agg_sum] = double_agg_sum;
   DataTypeOper::data_type_oper_func_[t_double][oper_agg_count] =
       double_agg_count;
+  DataTypeOper::data_type_oper_func_[t_double][oper_is_null] = double_is_null;
+  DataTypeOper::data_type_oper_func_[t_double][oper_is_not_null] =
+      double_is_not_null;
   /*****************double********************/
 
   /*****************smallInt********************/
@@ -1165,6 +1267,10 @@ inline void InitOperatorFunc() {
       smallInt_agg_sum;
   DataTypeOper::data_type_oper_func_[t_smallInt][oper_agg_count] =
       smallInt_agg_count;
+  DataTypeOper::data_type_oper_func_[t_smallInt][oper_is_null] =
+      smallInt_is_null;
+  DataTypeOper::data_type_oper_func_[t_smallInt][oper_is_not_null] =
+      smallInt_is_not_null;
   /*****************smallInt********************/
 
   /*****************boolean********************/
@@ -1189,7 +1295,9 @@ inline void InitOperatorFunc() {
       boolean_less_equal;
   DataTypeOper::data_type_oper_func_[t_boolean][oper_negative] =
       oper_not_support;
-
+  DataTypeOper::data_type_oper_func_[t_boolean][oper_is_null] = boolean_is_null;
+  DataTypeOper::data_type_oper_func_[t_boolean][oper_is_not_null] =
+      boolean_is_not_null;
   /*****************boolean********************/
 
   /*****************decimal********************/
@@ -1220,6 +1328,9 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_decimal][oper_agg_sum] = decimal_agg_sum;
   DataTypeOper::data_type_oper_func_[t_decimal][oper_agg_count] =
       decimal_agg_count;
+  DataTypeOper::data_type_oper_func_[t_decimal][oper_is_null] = decimal_is_null;
+  DataTypeOper::data_type_oper_func_[t_decimal][oper_is_not_null] =
+      decimal_is_not_null;
   /*****************decimal********************/
 
   /*****************string********************/
@@ -1254,7 +1365,9 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_string][oper_upper] = string_upper;
   DataTypeOper::data_type_oper_func_[t_string][oper_substring] =
       string_substring;
-
+  DataTypeOper::data_type_oper_func_[t_string][oper_is_null] = string_is_null;
+  DataTypeOper::data_type_oper_func_[t_string][oper_is_not_null] =
+      string_is_not_null;
   /*****************string********************/
 
   /*****************date********************/
@@ -1292,6 +1405,9 @@ inline void InitOperatorFunc() {
       date_sub_year;
   DataTypeOper::data_type_oper_func_[t_date][oper_max] = date_agg_max;
   DataTypeOper::data_type_oper_func_[t_date][oper_min] = date_agg_min;
+  DataTypeOper::data_type_oper_func_[t_date][oper_is_null] = date_is_null;
+  DataTypeOper::data_type_oper_func_[t_date][oper_is_not_null] =
+      date_is_not_null;
   /*****************date********************/
 
   /*****************time********************/
@@ -1304,6 +1420,9 @@ inline void InitOperatorFunc() {
   DataTypeOper::data_type_oper_func_[t_time][oper_less_equal] = time_less_equal;
   DataTypeOper::data_type_oper_func_[t_time][oper_max] = time_agg_max;
   DataTypeOper::data_type_oper_func_[t_time][oper_min] = time_agg_min;
+  DataTypeOper::data_type_oper_func_[t_time][oper_is_null] = time_is_null;
+  DataTypeOper::data_type_oper_func_[t_time][oper_is_not_null] =
+      time_is_not_null;
   /*****************time********************/
 
   /*****************datetime********************/
@@ -1318,6 +1437,10 @@ inline void InitOperatorFunc() {
       datetime_less_equal;
   DataTypeOper::data_type_oper_func_[t_datetime][oper_max] = datetime_agg_max;
   DataTypeOper::data_type_oper_func_[t_datetime][oper_min] = datetime_agg_min;
+  DataTypeOper::data_type_oper_func_[t_datetime][oper_is_null] =
+      datetime_is_null;
+  DataTypeOper::data_type_oper_func_[t_datetime][oper_is_not_null] =
+      datetime_is_not_null;
   /*****************datetime********************/
 }
 inline void avg_error_divide(void *sum_value, int64_t tuple_number,

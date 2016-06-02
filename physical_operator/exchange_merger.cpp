@@ -539,12 +539,10 @@ void* ExchangeMerger::Receiver(void* arg) {
         if (errno == EINTR) {
           continue;
         }
-#ifdef GLOG_STATUS
         LOG(WARNING) << " exchange_id = " << Pthis->state_.exchange_id_
                      << " partition_offset = " << Pthis->partition_offset_
                      << " epoll error,reason: " << strerror(errno)
                      << " close fd = " << events[i].data.fd << endl;
-#endif
         FileClose(events[i].data.fd);
         continue;
       } else if (Pthis->sock_fd_ == events[i].data.fd) {
@@ -566,25 +564,19 @@ void* ExchangeMerger::Receiver(void* arg) {
               /* all the incoming connections are processed.*/
               break;
             } else {
-#ifdef GLOG_STATUS
-
               LOG(WARNING) << " exchange_id = " << Pthis->state_.exchange_id_
                            << " partition_offset = " << Pthis->partition_offset_
                            << " epoll accept error, try again!" << endl;
-#endif
               break;
             }
           }
           status = getnameinfo(&in_addr, in_len, hbuf, sizeof(hbuf), sbuf,
                                sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
           if (0 == status) {
-#ifdef GLOG_STATUS
-
             LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
                       << " partition_offset = " << Pthis->partition_offset_
                       << " Accepted connection on descriptor " << infd
                       << " host= " << hbuf << " port= " << sbuf << endl;
-#endif
             Pthis->lower_ip_list_.push_back(hbuf);
             Pthis->lower_sock_fd_to_id_[infd] =
                 Pthis->lower_ip_list_.size() - 1;
@@ -626,12 +618,10 @@ void* ExchangeMerger::Receiver(void* arg) {
               /*We have read all the data,so go back to the loop.*/
               break;
             }
-#ifdef GLOG_STATUS
 
             LOG(WARNING) << " exchange_id = " << Pthis->state_.exchange_id_
                          << " partition_offset = " << Pthis->partition_offset_
                          << " merger read error!" << endl;
-#endif
             done = 1;
           } else if (byte_received == 0) {
             /* End of file. The remote has closed the connection.*/

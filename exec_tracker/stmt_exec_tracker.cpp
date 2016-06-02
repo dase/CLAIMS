@@ -52,8 +52,8 @@ StmtExecTracker::~StmtExecTracker() {
 }
 
 RetCode StmtExecTracker::RegisterStmtES(StmtExecStatus* stmtes) {
-  stmtes->set_query_id(GenQueryId());
   lock_.acquire();
+  stmtes->set_query_id(GenQueryId());
   query_id_to_stmtes_.insert(make_pair(stmtes->get_query_id(), stmtes));
   lock_.release();
   return rSuccess;
@@ -63,14 +63,15 @@ RetCode StmtExecTracker::UnRegisterStmtES(u_int64_t query_id) {
   lock_.acquire();
   auto it = query_id_to_stmtes_.find(query_id);
   if (it == query_id_to_stmtes_.end()) {
-    LOG(WARNING) << "invalide query id at UnRegisterStmtES" << endl;
+    LOG(WARNING) << "invalide query id = " << it->first
+                 << " at UnRegisterStmtES" << endl;
   }
   query_id_to_stmtes_.erase(it);
-  lock_.release();
 
   LOG(INFO) << "query id= " << query_id
             << " has erased from StmtEs! then left stmt = "
             << query_id_to_stmtes_.size() << endl;
+  lock_.release();
   return rSuccess;
 }
 // for invoking from outside, so should add lock
@@ -98,12 +99,15 @@ void StmtExecTracker::CheckStmtExecStatus(caf::event_based_actor* self,
         for (auto it = stmtes->query_id_to_stmtes_.begin();
              it != stmtes->query_id_to_stmtes_.end();) {
           if (it->second->CouldBeDeleted()) {
+            LOG(INFO) << "query id = " << it->first << " will be deleted!";
             delete it->second;
             it->second = NULL;
             // pay attention to erase()
             it = stmtes->query_id_to_stmtes_.erase(it);
           } else {
             if (it->second->HaveErrorCase(stmtes->logic_time_)) {
+              LOG(WARNING) << "query id = " << it->first
+                           << " occur error and will be cancelled!";
               assert(false);
               it->second->CancelStmtExec();
             }
@@ -129,16 +133,23 @@ bool StmtExecTracker::UpdateSegExecStatus(
     string exec_info) {
   lock_.acquire();
   auto it = query_id_to_stmtes_.find(node_segment_id.first);
-  assert(it != query_id_to_stmtes_.end());
-  StmtExecStatus::ExecStatus stmt_exec_status = it->second->get_exec_status();
-  bool ret = it->second->UpdateSegExecStatus(node_segment_id, exec_status,
-                                             exec_info, logic_time_);
-  lock_.release();
-  LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
-            << " receive : " << exec_status << " , " << exec_info
-            << " stmt status before: " << stmt_exec_status
-            << " ,after: " << it->second->get_exec_status();
-  return ret;
+  if (it != query_id_to_stmtes_.end()) {
+    StmtExecStatus::ExecStatus stmt_exec_status = it->second->get_exec_status();
+    bool ret = it->second->UpdateSegExecStatus(node_segment_id, exec_status,
+                                               exec_info, logic_time_);
+    LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
+              << " receive : " << exec_status << " , " << exec_info
+              << " stmt status before: " << stmt_exec_status
+              << " ,after: " << it->second->get_exec_status();
+    lock_.release();
+    return ret;
+  } else {
+    LOG(ERROR) << "query id = " << it->first
+               << " couldn't be found in tracker!";
+    lock_.release();
+    assert(false);
+  }
+  return false;
 }
 
 }  // namespace claims

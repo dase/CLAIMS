@@ -116,6 +116,7 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
   return node_addr.ip != "0";
 }
 NodeAddress ExchangeTracker::GetExchAddr(ExchangeID exch_id) {
+  lock_.acquire();
   NodeAddress ret;
   if (id_to_port.find(exch_id) != id_to_port.cend()) {
     ret.ip = Environment::getInstance()->getIp();
@@ -124,6 +125,7 @@ NodeAddress ExchangeTracker::GetExchAddr(ExchangeID exch_id) {
     ret.ip = "0";
     ret.port = "0";
   }
+  lock_.release();
   return ret;
 }
 void ExchangeTracker::printAllExchangeId() const {
