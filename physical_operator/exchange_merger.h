@@ -156,12 +156,17 @@ class ExchangeMerger : public PhysicalOperator {
   unsigned lower_num_;
   int epoll_fd_;
   int* socket_fd_lower_list_;
+//  string lower_passwd;
+//  int lower_passwd_size;
   std::vector<std::string> lower_ip_list_;
+  std::map<int ,std::string> lower_fd_to_ip_;
+  std::map<int ,std::string> lower_fd_to_passwd_;
   pthread_t receiver_thread_id_;
   pthread_t debug_thread_id_;
   unsigned exhausted_lowers;
   unsigned partition_offset_;
   semaphore sem_new_block_or_eof_;
+  set<int> lower_sock_fd_list_;
   std::map<int, int> lower_sock_fd_to_id_;
   PerformanceInfo* perf_info_;
   bool is_registered_to_tracker_;

@@ -57,6 +57,10 @@ bool ExchangeSender::ConnectToUpper(const ExchangeID& exchange_id,
         << exchange_id.exchange_id << std::endl;
     return false;
   }
+  stringstream ss;
+  ss << "EXCHID" << exchange_id.exchange_id;
+  string upper_passwd = ss.str();
+  int upper_passwd_len = upper_passwd.length();
   if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     perror("socket creation errors!\n");
     return false;
@@ -72,12 +76,19 @@ bool ExchangeSender::ConnectToUpper(const ExchangeID& exchange_id,
   if ((returnvalue = connect(sock_fd, (struct sockaddr*)&serv_add,
                              sizeof(struct sockaddr))) == -1) {
     LOG(ERROR) << "Fails to connect remote socket: "
-               << inet_ntoa(serv_add.sin_addr) << " , port= " << upper_port
+               << inet_ntoa(serv_add.sin_addr) << " , port= " << upper_addr.port
                << std::endl;
     return false;
   }
-  LOG(INFO) << "connected to the Master socket :" << returnvalue << std::endl;
-
+  LOG(INFO) << "connected to the upper socket.("<< upper_addr.ip.c_str() <<":"  << upper_addr.port.c_str() <<") return value:" << returnvalue << std::endl;
+  
+  if ((returnvalue = send(sock_fd, upper_passwd.c_str(), upper_passwd_len, 0))  == -1 ) {
+  	LOG(ERROR) << "Failed to send acknowledgement to the upper socket. returnvalue:[" << returnvalue 
+		<< "] errno:[" << errno << "]";
+	return false;
+  }
+  LOG(INFO) << "send acknowledgement to the upper socket: ("<< upper_passwd <<")" << std::endl;
+  
   return true;
 }
 
