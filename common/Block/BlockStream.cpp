@@ -147,6 +147,23 @@ BlockStreamBase* BlockStreamFix::createBlockAndDeepCopy() {
   }
   return ret;
 }
+// just add tail info to the block
+bool BlockStreamFix::Serialize() {
+  tail_info* tail = (tail_info*)((char*)start + BlockSize - sizeof(tail_info));
+  tail->tuple_count = (free_ - start) / tuple_size_;
+  return true;
+}
+bool BlockStreamFix::DeSerialize() {
+  const tail_info tail =
+      *(tail_info*)((char*)start + BlockSize - sizeof(tail_info));
+
+  if (tail.tuple_count * tuple_size_ > BlockSize) {
+    LOG(ERROR) << "tuple count:" << tail.tuple_count << " in deserialize()";
+    assert(false);
+  }
+  free_ = (char*)start + (tail.tuple_count) * tuple_size_;
+  return true;
+}
 bool BlockStreamFix::deserialize(Block* block) {
   assert(block->getsize() >= BlockSize);
 

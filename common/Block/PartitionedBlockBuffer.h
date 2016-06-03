@@ -15,45 +15,47 @@
 #include "Block.h"
 #include "../../utility/lock.h"
 class PartitionedBlockBuffer {
-public:
+ public:
+  PartitionedBlockBuffer(unsigned nPartitions, unsigned block_size,
+                         unsigned nBlocks);
+  PartitionedBlockBuffer(unsigned nPartitions, unsigned block_size);
 
-	PartitionedBlockBuffer(unsigned nPartitions,unsigned block_size,unsigned nBlocks);
-	PartitionedBlockBuffer(unsigned nPartitions,unsigned block_size);
+  virtual ~PartitionedBlockBuffer();
+  bool hasEmptyBlock() const;
+  bool isEmpty();
+  bool insertBlockToPartitionedList(Block* src, unsigned partition_id,
+                                    bool need_copy = false);
+  /* In current implementation, each non-empty partition list has the same
+   * probability to be consumed a block.
+   * TODO: a better solution is that the partiton lish containing more
+   * block should have bigger probability to be consumed a block*/
+  int getBlock(Block& desc);
 
-	virtual ~PartitionedBlockBuffer();
-	bool hasEmptyBlock()const ;
-	bool isEmpty();
-	bool insertBlockToPartitionedList(Block* src, unsigned partition_id);
+  bool getBlock(Block& desc, unsigned partition_id);
+  unsigned getBlockInBuffer();
 
-	/* In current implementation, each non-empty partition list has the same
-	 * probability to be consumed a block.
-	 * TODO: a better solution is that the partiton lish containing more
-	 * block should have bigger probability to be consumed a block*/
-	int getBlock(Block &desc);
+ private:
+  /* this is not thread-safe */
+  bool getBlockInPartitionedBlockList(Block& desc, unsigned partition_id);
+  unsigned getBlockNumberOfPartitionInBuffer(unsigned partition_id);
+  void destoryEmptyBlocks();
 
-	bool getBlock(Block &desc,unsigned partition_id);
-	unsigned getBlockInBuffer();
+ private:
+  unsigned nPartitions;
+  unsigned nBlocks;
+  std::list<Block*>* blocks_in_partition_list;
+  std::list<Block*> empty_block_list;
 
-private:
-	/* this is not thread-safe */
-	bool getBlockInPartitionedBlockList(Block &desc,unsigned partition_id);
-	unsigned getBlockNumberOfPartitionInBuffer(unsigned partition_id);
-	void destoryEmptyBlocks();
-private:
-	unsigned nPartitions;
-	unsigned nBlocks;
-	std::list<Block*>* blocks_in_partition_list;
-	std::list<Block*> empty_block_list;
+  /* keeping the consistency while multiple threads are accessing
+   * the same instance of this class*/
+  Lock lock;
+  semaphore empty_blocks;
+  semaphore used_blocks;
 
-	/* keeping the consistency while multiple threads are accessing
-	 * the same instance of this class*/
-	Lock lock;
-	semaphore empty_blocks;
-	semaphore used_blocks;
-public:
-	//debug
-	unsigned inserted;
-	unsigned removed;
+ public:
+  // debug
+  unsigned inserted;
+  unsigned removed;
 };
 
 #endif /* PARTITOINEDBLOCKBUFFER_H_ */
