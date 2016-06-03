@@ -52,6 +52,7 @@ namespace physical_operator {
 /**
  * write block come from child into disk file, and send thread fetch block from
  * the file. others are similar to ExchangeSenderPipeline.
+ * TODO(fzh) need reduce memecpy like ExchangeSenderPipeline
  */
 class ExchangeSenderMaterialized : public ExchangeSender {
   friend class ExchangeMerger;
