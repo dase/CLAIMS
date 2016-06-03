@@ -95,7 +95,7 @@ class BlockStreamBase : public Block {
    * network.*/
   virtual bool serialize(Block& block) const = 0;
   virtual bool Serialize() = 0;
-  virtual bool DeSerialize() = 0;
+  virtual bool DeSerialize(Block* block) = 0;
 
   /* convert the Block from the network into the content of current instance*/
   virtual bool deserialize(Block* block) = 0;
@@ -169,7 +169,7 @@ class BlockStreamFix : public BlockStreamBase {
   bool serialize(Block& block) const;
   bool deserialize(Block* block);
   bool Serialize();
-  bool DeSerialize();
+  bool DeSerialize(Block* block);
   unsigned getSerializedBlockSize() const;
   unsigned getBlockCapacityInTuples() const;
   unsigned getTuplesInBlock() const;
@@ -240,7 +240,7 @@ class BlockStreamVar : public BlockStreamBase {
     cout << "the tuple count is:" << *(schema_info + columns) << endl;
   }
   bool Serialize() {}
-  bool DeSerialize() {}
+  bool DeSerialize(Block* block) {}
   /* whether is empty, if empty, return true, not false */
   bool Empty() const { return free_front_ == start; };
   bool Full() const { assert(false); }

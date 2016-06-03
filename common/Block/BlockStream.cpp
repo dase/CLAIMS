@@ -153,7 +153,9 @@ bool BlockStreamFix::Serialize() {
   tail->tuple_count = (free_ - start) / tuple_size_;
   return true;
 }
-bool BlockStreamFix::DeSerialize() {
+bool BlockStreamFix::DeSerialize(Block* block) {
+  // switch content of block
+  SwitchBlock(block);
   const tail_info tail =
       *(tail_info*)((char*)start + BlockSize - sizeof(tail_info));
 

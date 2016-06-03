@@ -644,7 +644,7 @@ void* ExchangeMerger::Receiver(void* arg) {
 
           /** deserialize the data block from Sender to the blockstreambase
            * (block_for_deserialization) **/
-          Pthis->block_for_deserialization->deserialize(
+          Pthis->block_for_deserialization->DeSerialize(
               reinterpret_cast<Block*>(
                   Pthis->block_for_socket_[socket_fd_index]));
 
