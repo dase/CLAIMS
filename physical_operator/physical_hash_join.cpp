@@ -129,10 +129,18 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
         state_.hashtable_bucket_num_, state_.hashtable_bucket_size_,
         state_.input_schema_left_->getTupleMaxSize());
     gpv_left_ = DataTypeOper::partition_value_
-        [state_.input_schema_left_->getcolumn(state_.join_index_left_[0]).type];
+        [state_.input_schema_left_->getcolumn(state_.join_index_left_[0])
+             .type][((state_.hashtable_bucket_num_ &
+                      (state_.hashtable_bucket_num_ - 1)) == 0)];
     gpv_right_ = DataTypeOper::partition_value_
         [state_.input_schema_right_->getcolumn(state_.join_index_right_[0])
-             .type];
+             .type][((state_.hashtable_bucket_num_ &
+                      (state_.hashtable_bucket_num_ - 1)) == 0)];
+    bucket_num_mod_ = state_.hashtable_bucket_num_;
+    if (((state_.hashtable_bucket_num_ & (state_.hashtable_bucket_num_ - 1)) ==
+         0)) {
+      --bucket_num_mod_;
+    }
 #ifdef _DEBUG_
     consumed_tuples_from_left = 0;
 #endif
@@ -188,9 +196,6 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
   JoinThreadContext* jtc = CreateOrReuseContext(crm_numa_sensitive);
 
   const Schema* input_schema = state_.input_schema_left_->duplicateSchema();
-
-  const unsigned buckets = state_.hashtable_bucket_num_;
-
   unsigned long long int start = curtick();
   unsigned long long int processed_tuple_count = 0;
   RETURN_IF_CANCELLED(exec_status);
@@ -210,7 +215,7 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
 #endif
       const void* key_addr =
           input_schema->getColumnAddess(state_.join_index_left_[0], cur);
-      bn = gpv_left_(key_addr, buckets);
+      bn = gpv_left_(key_addr, bucket_num_mod_);
       tuple_in_hashtable = hashtable_->atomicAllocate(bn);
       /* copy join index columns*/
       input_schema->copyTuple(cur, tuple_in_hashtable);
@@ -308,7 +313,7 @@ bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
         unsigned bn =
             gpv_right_(state_.input_schema_right_->getColumnAddess(
                            state_.join_index_right_[0], tuple_from_right_child),
-                       state_.hashtable_bucket_num_);
+                       bucket_num_mod_);
         hashtable_->placeIterator(jtc->hashtable_iterator_, bn);
       }
     }
@@ -329,7 +334,7 @@ bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
       unsigned bn =
           gpv_right_(state_.input_schema_right_->getColumnAddess(
                          state_.join_index_right_[0], tuple_from_right_child),
-                     state_.hashtable_bucket_num_);
+                     bucket_num_mod_);
       hashtable_->placeIterator(jtc->hashtable_iterator_, bn);
     }
   }

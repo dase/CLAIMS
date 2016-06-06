@@ -23,7 +23,7 @@ BlockStreamFix::BlockStreamFix(unsigned block_size, unsigned tuple_size,
   assert(free_ - start <= BlockSize);
 }
 
-BlockStreamFix::~BlockStreamFix() {}
+BlockStreamFix::~BlockStreamFix() { free_ = NULL; }
 
 void BlockStreamFix::setEmpty() { free_ = start; }
 
@@ -63,6 +63,9 @@ bool BlockStreamFix::switchBlock(BlockStreamBase& block) {
   std::swap(blockfix->start, start);
   std::swap(blockfix->free_, free_);
   std::swap(blockfix->tuple_size_, tuple_size_);
+  bool ref = blockfix->isIsReference();
+  blockfix->ForceSetIsRef(isIsReference());
+  ForceSetIsRef(ref);
   return true;
 }
 

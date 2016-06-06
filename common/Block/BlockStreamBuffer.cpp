@@ -24,18 +24,15 @@ BlockStreamBuffer::BlockStreamBuffer(unsigned block_size, unsigned block_count,
 }
 // njcdhcjdhjhnjcdncjdncj
 BlockStreamBuffer::~BlockStreamBuffer() {
-  //	printf("BlockStreawmBuffer being deconstructed<><><><><><><><><>!\n");
   while (!block_stream_empty_list_.empty()) {
-    const BlockStreamBase* block = block_stream_empty_list_.front();
+    BlockStreamBase* block = block_stream_empty_list_.front();
     block_stream_empty_list_.pop_front();
-    //		block->~BlockStreamBase();
     delete block;
   }
 
   while (!block_stream_used_list_.empty()) {
-    const BlockStreamBase* block = block_stream_used_list_.front();
+    BlockStreamBase* block = block_stream_used_list_.front();
     block_stream_used_list_.pop_front();
-    //		block->~BlockStreamBase();
     delete block;
   }
   //	assert(block_stream_used_list_.empty());
@@ -52,13 +49,19 @@ void BlockStreamBuffer::insertBlock(BlockStreamBase* block) {
   empty_block->setEmpty();
   //	assert(block_stream_empty_list_.size()==sema_empty_block_.get_value());
 
-  if (block->isIsReference()) {
-    empty_block->deepCopy(block);
-  } else {
+  //  if (block->isIsReference()) {
+  //    empty_block->deepCopy(block);
+  //  } else
+  {
     /* swap the data address of empty block and the input block to avoid memory
      * copy.*/
+
     block->switchBlock(*empty_block);
   }
+  //  if (block->isIsReference()) {
+  //    empty_block->ForceSetIsRef(true);
+  //    block->ForceSetIsRef(false);
+  //  }
   //  LOG(INFO) << "block insert before has " << block->getTuplesInBlock()
   //            << " tuples and after " << empty_block->getTuplesInBlock()
   //            << " tuples " << endl;
@@ -78,13 +81,7 @@ bool BlockStreamBuffer::getBlock(BlockStreamBase& block) {
     BlockStreamBase* fetched_block = block_stream_used_list_.front();
     block_stream_used_list_.pop_front();
     lock_.release();
-    //    LOG(INFO) << "block fetch before has [ "
-    //              << fetched_block->getTuplesInBlock() << " ] tuples at "
-    //              << pthread_self();
     fetched_block->switchBlock(block);
-    //    LOG(INFO) << " and after [ " << block.getTuplesInBlock() << " ]tuples
-    //    "
-    //              << pthread_self();
     lock_.acquire();
     block_stream_empty_list_.push_back(fetched_block);
     sema_empty_block_.post();

@@ -29,6 +29,7 @@ class Block {
   bool isIsReference() const { return isReference_; }
 
   void setIsReference(bool isReference);
+  void ForceSetIsRef(bool isReference) { isReference_ = isReference; };
 
  protected:
   unsigned BlockSize;

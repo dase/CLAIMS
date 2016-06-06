@@ -2,6 +2,10 @@ AC_INIT([Claims], [0.3], [imdb@ecnu])
 AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AM_PROG_AR
 AC_PROG_LIBTOOL
+AC_ARG_ENABLE([debug],
+    [AS_HELP_STRING([--enable-debug],[debug program(default is no)])],
+    [CPPFLAGS="${CFLAGS} -DDEBUG -g"],
+    [CPPFLAGS="-O2"])
 CPPFLAGS="-w -O2 -DTHERON_XS -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS"
 AM_CONDITIONAL(OPT_TCMALLOC, true)
 CXXFLAGS=${CXXFLAGS="-g  -std=c++11"}

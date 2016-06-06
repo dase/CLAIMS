@@ -35,7 +35,6 @@
 #include "../../common/rename.h"
 #include "../../common/Logging.h"
 #include "../../common/ids.h"
-//#include "../../common/log/logging.h"
 #include "../../Environment.h"
 #include "../../utility/ThreadSafe.h"
 #include "../../utility/rdtsc.h"
@@ -220,7 +219,7 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
              */
             partitioned_block_stream_[partition_id]->Serialize();
             partitioned_data_buffer_->insertBlockToPartitionedList(
-                partitioned_block_stream_[partition_id], partition_id, true);
+                partitioned_block_stream_[partition_id], partition_id, false);
             partitioned_block_stream_[partition_id]->setEmpty();
           }
           /**
@@ -241,7 +240,6 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
           partitioned_data_buffer_->insertBlockToPartitionedList(
               block_for_asking_, i, true);
         }
-        block_for_asking_->setEmpty();
       }
     } else {
       RETURN_IF_CANCELLED(exec_status);
@@ -288,10 +286,10 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
          * all the data from current sent has been transmit to the uppers.
          */
         for (unsigned i = 0; i < upper_num_; ++i) {
-          block_for_asking_->setEmpty();
-          block_for_asking_->Serialize();
+          partitioned_block_stream_[i]->setEmpty();
+          partitioned_block_stream_[i]->Serialize();
           partitioned_data_buffer_->insertBlockToPartitionedList(
-              block_for_asking_, i, false);
+              partitioned_block_stream_[i], i, false);
         }
       }
 
