@@ -80,7 +80,11 @@ bool ExchangeSender::ConnectToUpper(const ExchangeID& exchange_id,
                << std::endl;
     return false;
   }
-  LOG(INFO) << "connected to the upper socket.("<< upper_addr.ip.c_str() <<":"  << upper_addr.port.c_str() <<") return value:" << returnvalue << std::endl;
+  LOG(INFO) << "exchid=" << exchange_id.exchange_id
+		  << "upper_offset=" << exchange_id.partition_offset
+		  << " connected to the upper socket.("<< upper_addr.ip.c_str() <<":"  << upper_addr.port.c_str()
+		  << " sock_fd=" << sock_fd
+		  <<") return value:" << returnvalue << std::endl;
   
   if ((returnvalue = send(sock_fd, upper_passwd.c_str(), upper_passwd_len, 0))  == -1 ) {
   	LOG(ERROR) << "Failed to send acknowledgement to the upper socket. returnvalue:[" << returnvalue 
@@ -88,7 +92,7 @@ bool ExchangeSender::ConnectToUpper(const ExchangeID& exchange_id,
 	return false;
   }
   LOG(INFO) << "send acknowledgement to the upper socket: ("<< upper_passwd <<")" << std::endl;
-  
+  WaitingForNotification(sock_fd);
   return true;
 }
 
@@ -98,6 +102,7 @@ void ExchangeSender::WaitingForNotification(const int& target_socket_fd) const {
   if ((recvbytes = recv(target_socket_fd, &byte, sizeof(char), 0)) == -1) {
     LOG(ERROR) << "recv error!" << std::endl;
   }
+  LOG(INFO) << "wait for connection acknowledge notification:" << byte;
 }
 
 void ExchangeSender::WaitingForCloseNotification(
@@ -105,9 +110,11 @@ void ExchangeSender::WaitingForCloseNotification(
   char byte;
   int recvbytes;
   if ((recvbytes = recv(target_socket_fd, &byte, sizeof(char), 0)) == -1) {
-    LOG(ERROR) << "recv error!" << std::endl;
+    LOG(ERROR) << "sock_fd:" <<  target_socket_fd
+    		<< " recv error!";
   } else {
-    LOG(INFO) << " received close message from one merger" << endl;
+    LOG(INFO) << "sock_fd:" <<  target_socket_fd
+    		<< " received close message from one merger" << endl;
   }
   FileClose(target_socket_fd);
 }

@@ -80,6 +80,7 @@ ExchangeMerger::ExchangeMerger(State state)
       epoll_fd_(-1) {
   set_phy_oper_type(kPhysicalExchangeMerger);
   InitExpandedStatus();
+
   assert(state.partition_schema_.partition_key_index < 100);
 }
 ExchangeMerger::ExchangeMerger()
@@ -162,6 +163,8 @@ bool ExchangeMerger::Open(SegmentExecStatus* const exec_status,
                  << " fails!" << endl;
     }
     is_registered_to_tracker_ = true;
+    confirm_sender_time = 0;
+    frequence = 0;
 #ifdef ExchangeSender
     if (IsMaster()) {
       /*  According to a bug reported by dsc, the master exchange upper should
@@ -274,7 +277,9 @@ bool ExchangeMerger::Close(SegmentExecStatus* const exec_status) {
         ExchangeID(state_.exchange_id_, partition_offset_));
   }
   LOG(INFO) << "exchange merger id = " << state_.exchange_id_ << " is closed!"
-            << endl;
+		    << " CONFIRM frequence:" << frequence
+		  	<< " CONFIRM TIME:" << confirm_sender_time;
+
   return true;
 }
 
@@ -371,6 +376,13 @@ void ExchangeMerger::CloseSocket() {
       }
     }
   }
+
+  for ( auto & fd : lower_sock_fd_list_ ) {
+		LOG(INFO) << " exchange_id = " << state_.exchange_id_
+					<< " partition_offset = " << partition_offset_
+					<< "CloseSocket:" << fd;
+		FileClose(fd);
+	}
   /* close the socket of this exchange*/
   if (sock_fd_ > 2) {
     FileClose(sock_fd_);
@@ -539,12 +551,13 @@ void* ExchangeMerger::Receiver(void* arg) {
     for (int i = 0; i < event_count; i++) {
       if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP) ||
           (!(events[i].events & EPOLLIN))) {
-        if (errno == EINTR) {
+        if ( errno == EINTR ) {
           continue;
         }
         LOG(WARNING) << " exchange_id = " << Pthis->state_.exchange_id_
                      << " partition_offset = " << Pthis->partition_offset_
-                     << " epoll error,reason: " << strerror(errno)
+                     << " epoll error=" << errno
+                     << " reason: " << strerror(errno)
                      << " close fd = " << events[i].data.fd << endl;
         FileClose(events[i].data.fd);
         continue;
@@ -562,6 +575,9 @@ void* ExchangeMerger::Receiver(void* arg) {
 
           in_len = sizeof in_addr;
           infd = accept(Pthis->sock_fd_, &in_addr, &in_len);
+          LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+                  << " partition_offset = " << Pthis->partition_offset_
+				  << "After accept fd:" << infd;
           if (infd == -1) {
             if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
               /* all the incoming connections are processed.*/
@@ -575,23 +591,26 @@ void* ExchangeMerger::Receiver(void* arg) {
           }
 
 // for debug useless now
-#if 1 
+#if 1
           status = getnameinfo(&in_addr, in_len, hbuf, sizeof(hbuf), sbuf,
                                sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
           if (0 == status) {
+
             LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
                       << " partition_offset = " << Pthis->partition_offset_
                       << " Accepted connection on descriptor " << infd
                       << " host= " << hbuf << " port= " << sbuf << endl;
+
             Pthis->lower_ip_list_.push_back(hbuf);
      	    Pthis->lower_fd_to_ip_[infd] = hbuf;
        //     Pthis->lower_sock_fd_to_id_[infd] =
        //        Pthis->lower_ip_list_.size() - 1;
+     	    /*
             for (auto &it : Pthis->lower_fd_to_ip_) {
 		  LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
             << " partition_offset = " << Pthis->partition_offset_
 		    << it.second << " fd=" << it.first;
-	       }    
+	       }
 	
             for_each(Pthis->state_.lower_id_list_.begin(),
                      Pthis->state_.lower_id_list_.end(),
@@ -600,6 +619,7 @@ void* ExchangeMerger::Receiver(void* arg) {
 					 LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
 							   << " partition_offset = " << Pthis->partition_offset_
 			                   << " lower_id:"  << s << " "; });
+     	     */
 
             assert(Pthis->lower_ip_list_.size() <=
                    Pthis->state_.lower_id_list_.size());
@@ -620,68 +640,107 @@ void* ExchangeMerger::Receiver(void* arg) {
             return NULL;
           }
           Pthis->lower_fd_to_passwd_[infd] = "";
+          LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+        		  << " partition_offset = " << Pthis->partition_offset_
+				  << " After epoll ctl a connect fd:" << infd;
+          /*
+          for (auto &it : Pthis->lower_fd_to_passwd_) {
+        	  LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+				  << " partition_offset = " << Pthis->partition_offset_
+				  << " fd = " << it.first;
+	       }*/
         }
         continue;
       } else {
         /* We have data on the fd waiting to be read.*/
         int done = 0;
         int byte_received = 0;
-        char lower_passwd_buf[64];
-        int lower_passwd_size = lower_passwd.length();
-        int rest_passwd_size = lower_passwd_size - Pthis->lower_fd_to_passwd_[events[i].data.fd].length();
-        LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
-            << " partition_offset = " << Pthis->partition_offset_
-			<< " events[i].data.fd:[" << events[i].data.fd 
-            << "] lower_passwd_size:["<< lower_passwd_size 
-            << "] passwd:[" << Pthis->lower_fd_to_passwd_[events[i].data.fd]
-            << "] passwd length:["<< Pthis->lower_fd_to_passwd_[events[i].data.fd].length() 
-            << "] rest_passwd_size:[" << rest_passwd_size << "]";
-		memset(lower_passwd_buf, 0, sizeof(lower_passwd_buf));
+        ticks startconfirm = curtick();
+  	  if ( Pthis->lower_sock_fd_list_.find(events[i].data.fd) ==  Pthis->lower_sock_fd_list_.end() ) {
+  		  char lower_passwd_buf[64];
+ReadPwd:
+  		  memset(lower_passwd_buf, 0, sizeof(lower_passwd_buf));
+
+  		  int lower_passwd_size = lower_passwd.length();
+  		  int rest_passwd_size = lower_passwd_size - Pthis->lower_fd_to_passwd_[events[i].data.fd].length();
+
+          LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+              << " partition_offset = " << Pthis->partition_offset_
+  			<< " DO CONFIRM THIS CONNECTION fd:[" << events[i].data.fd
+              << "] lower_passwd_size:["<< lower_passwd_size
+              << "] passwd:[" << Pthis->lower_fd_to_passwd_[events[i].data.fd]
+              << "] passwd length:["<< Pthis->lower_fd_to_passwd_[events[i].data.fd].length()
+              << "] rest_passwd_size:[" << rest_passwd_size << "]";
+
+  	  	byte_received = read(events[i].data.fd, lower_passwd_buf, rest_passwd_size);
+
+  		if (byte_received == -1 || byte_received == 0) {
+  			LOG(WARNING) << "byte_received:" << byte_received << " error.";
+  			break;
+  		}
+
+  		LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+              << " partition_offset = " << Pthis->partition_offset_
+  			<< " fd:" << events[i].data.fd
+  			<< " byte_received: [" << byte_received
+  			<< "] lower_passwd_buf:[" << lower_passwd_buf << "]";
+
+  		rest_passwd_size -= byte_received;
+  		Pthis->lower_fd_to_passwd_[events[i].data.fd] += lower_passwd_buf;
+  		if (rest_passwd_size > 0) {
+  		  //	continue;
+  			goto ReadPwd;
+  		}
+
+  		if( lower_passwd.compare(Pthis->lower_fd_to_passwd_[events[i].data.fd]) == 0 ) {
+              LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+              << " partition_offset = " << Pthis->partition_offset_
+  				<< "this exchange pwd:[" << lower_passwd << "] and fd:[" << events[i].data.fd << "]'s passwd:[" << Pthis->lower_fd_to_passwd_[events[i].data.fd] << "] add this fd into lower_sock_fd_list_";
+
+  			Pthis->lower_sock_fd_list_.insert(events[i].data.fd);
+  			Pthis->lower_sock_fd_to_id_[events[i].data.fd] = Pthis->lower_sock_fd_list_.size() - 1;
+  			Pthis->ReplyAllBlocksConsumed(events[i].data.fd);
+  			/*
+  			for ( auto & fd : Pthis->lower_sock_fd_list_ ) {
+  				LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+              << " partition_offset = " << Pthis->partition_offset_
+  					<< "Pthis->lower_sock_fd_list: " << fd;
+  			}*/
+  			assert(Pthis->lower_sock_fd_list_.size() <= Pthis->state_.lower_id_list_.size());
+
+  			int endconfirm = getMilliSecond(start);
+  			Pthis->confirm_sender_time += endconfirm;
+  			Pthis->frequence++;
+  			LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+  			              << " partition_offset = " << Pthis->partition_offset_
+  			  				<< " fd:[" << events[i].data.fd
+							<< " ack to sender time:" << endconfirm << "ms";
+
+  			goto ReadData;
+  	        } else {
+           	  	LOG(WARNING) << " exchange_id = " << Pthis->state_.exchange_id_
+           	  			<< " partition_offset = " << Pthis->partition_offset_
+  						<< "this exchange pwd:[" << lower_passwd
+  						<< "], Illegal connection passwd: [" << Pthis->lower_fd_to_passwd_[events[i].data.fd]
+  						<< "], epoll del and close this connection";
+           	  		epoll_ctl(Pthis->epoll_fd_, EPOLL_CTL_DEL, events[i].data.fd, &event);
+          	        FileClose(events[i].data.fd);
+  	               // break;
+            	}
+
+            }  else {
+      			int endconfirm = getMilliSecond(start);
+      			LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+      			              << " partition_offset = " << Pthis->partition_offset_
+      			  				<< " fd:[" << events[i].data.fd
+    							<< " find fd time:" << endconfirm << "ms";
+      			Pthis->confirm_sender_time += endconfirm;
+      			Pthis->frequence++;
+ReadData:
         while (true) {
           pthread_testcancel();
-#if 1
-	  if ( Pthis->lower_sock_fd_list_.find(events[i].data.fd) ==  Pthis->lower_sock_fd_list_.end() ) {
-	  	LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
-            << " partition_offset = " << Pthis->partition_offset_
-			<< " DO CONFIRM THIS CONNECTION fd:[" << events[i].data.fd << "]";
-	  	byte_received = read(events[i].data.fd, lower_passwd_buf + byte_received, rest_passwd_size);
-		if (byte_received == -1 || byte_received == 0) {
-			
-			break;
-		}
+#if 1 // verify connection passwd // old version code here
 
-		LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
-            << " partition_offset = " << Pthis->partition_offset_ << " byte_received: [" << byte_received << "] lower_passwd_buf:[" << lower_passwd_buf << "]";
-		
-		rest_passwd_size -= byte_received;
-		Pthis->lower_fd_to_passwd_[events[i].data.fd] += lower_passwd_buf;
-		if (rest_passwd_size > 0) {
-			continue;
-		} 
-			 
-		if( lower_passwd.compare(Pthis->lower_fd_to_passwd_[events[i].data.fd]) == 0 ) {
-            LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
-            << " partition_offset = " << Pthis->partition_offset_
-				<< "this exchange pwd:[" << lower_passwd << "] and fd:[" << events[i].data.fd << "]'s passwd:[" << Pthis->lower_fd_to_passwd_[events[i].data.fd] << "] add this fd into lower_sock_fd_list_";
-				
-			Pthis->lower_sock_fd_list_.insert(events[i].data.fd);
-			Pthis->lower_sock_fd_to_id_[events[i].data.fd] = Pthis->lower_sock_fd_list_.size() - 1;
-			for ( auto & fd : Pthis->lower_sock_fd_list_ ) {
-				LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
-            << " partition_offset = " << Pthis->partition_offset_
-					<< "Pthis->lower_sock_fd_list: " << fd;
-			}
-			assert(Pthis->lower_sock_fd_list_.size() <= Pthis->state_.lower_id_list_.size());
-	        } else {
-         	  	LOG(WARNING) << " exchange_id = " << Pthis->state_.exchange_id_
-            << " partition_offset = " << Pthis->partition_offset_
-					<< "this exchange pwd:[" << lower_passwd << "], Illegal connection passwd: [" << Pthis->lower_fd_to_passwd_[events[i].data.fd] << "], close this connection";
-			epoll_ctl(Pthis->epoll_fd_, EPOLL_CTL_ADD, events[i].data.fd, &event);
-        	        FileClose(events[i].data.fd);
-	                break;
-          	}
-
-          }
 #endif
           int socket_fd_index = Pthis->lower_sock_fd_to_id_[events[i].data.fd];
           byte_received = read(
@@ -707,8 +766,8 @@ void* ExchangeMerger::Receiver(void* arg) {
           }
 
           /* The data is successfully read.*/
-		  LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
-            << " partition_offset = " << Pthis->partition_offset_ << events[i].data.fd << " receive DATA byte_received: [" << byte_received << "]";
+		 // LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+         //   << " partition_offset = " << Pthis->partition_offset_ << events[i].data.fd << " receive DATA byte_received: [" << byte_received << "]";
 
           Pthis->block_for_socket_[socket_fd_index]->IncreaseActualSize(
               byte_received);
@@ -750,12 +809,9 @@ void* ExchangeMerger::Receiver(void* arg) {
                 Pthis->number_of_registered_expanded_threads_);
           } else {
 /** The newly obtained data block is the end-of-file.  **/
-#ifdef GLOG_STATUS
-
             LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
                       << " partition_offset = " << Pthis->partition_offset_
                       << " This block is the last one." << endl;
-#endif
             finish_times.push_back(static_cast<int>(getMilliSecond(start)));
 
             /** update the exhausted senders count and post
@@ -781,42 +837,50 @@ void* ExchangeMerger::Receiver(void* arg) {
               // }
               // printf("\t Var:%5.4f\n", get_stddev(finish_times));
             }
-#ifdef GLOG_STATUS
 
             LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
                       << " partition_offset = " << Pthis->partition_offset_
                       << " exhausted lowers = " << Pthis->exhausted_lowers
                       << " senders have exhausted" << endl;
-#endif
+
             /** tell the Sender that all the block are consumed so that the
              * Sender can close the socket**/
             pthread_testcancel();
 
             Pthis->ReplyAllBlocksConsumed(events[i].data.fd);
 #ifdef GLOG_STATUS
-
             LOG(INFO)
                 << " exchange_id = " << Pthis->state_.exchange_id_
                 << " partition_offset = " << Pthis->partition_offset_
+				<< " fd = " << events[i].data.fd
                 << " This notification (all the blocks in the socket buffer "
-                   "are consumed) is replied to the lower "
-                << Pthis->lower_ip_list_[socket_fd_index] << endl;
+                   "are consumed) is replied to the lower ";
+               // << Pthis->lower_ip_list_[socket_fd_index] << endl;
 #endif
           }
         }
+      }
         if (done) {
-#ifdef GLOG_STATUS
 
+#ifdef GLOG_STATUS
           LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
                     << " partition_offset = " << Pthis->partition_offset_
                     << " Closed connection on descriptor " << events[i].data.fd
                     << " "
                     << Pthis->lower_ip_list_
                            [Pthis->lower_sock_fd_to_id_[events[i].data.fd]];
-#endif
+
           /* Closing the descriptor will make epoll remove it
            from the set of descriptors which are monitored. */
-          FileClose(events[i].data.fd);
+          LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+                    << " partition_offset = " << Pthis->partition_offset_
+                    << " Closed connection on descriptor " << events[i].data.fd;
+#endif
+
+          //Pthis->lower_sock_fd_list_.erase(events[i].data.fd);
+          epoll_ctl(Pthis->epoll_fd_, EPOLL_CTL_DEL, events[i].data.fd, &event);
+          //FileClose(events[i].data.fd);
+
         }
       }
     }
@@ -835,9 +899,10 @@ void ExchangeMerger::SendBlockBufferedNotification(int target_socket_fd) {
 void ExchangeMerger::ReplyAllBlocksConsumed(int target_socket_fd) {
   char content = 'e';
   if (send(target_socket_fd, &content, sizeof(char), MSG_WAITALL) == -1) {
-    LOG(ERROR) << " exchange_id = " << state_.exchange_id_
+    PLOG(ERROR) << " exchange_id = " << state_.exchange_id_
                << " partition_offset = " << partition_offset_
-               << " merger reply all blocks consumed error!" << endl;
+               << " merger reply all blocks consumed error! fd:" << target_socket_fd
+			   << endl;
     return;
   }
 }

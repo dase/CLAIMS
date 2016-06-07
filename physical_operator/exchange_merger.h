@@ -171,6 +171,9 @@ class ExchangeMerger : public PhysicalOperator {
   PerformanceInfo* perf_info_;
   bool is_registered_to_tracker_;
 
+  int confirm_sender_time;
+  int frequence;
+
  private:
   friend class boost::serialization::access;
   template <class Archive>
