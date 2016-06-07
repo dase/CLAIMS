@@ -331,6 +331,7 @@ void* SelectExec::SendAllSegments(void* arg) {
       return &ret;
     }
     select_exec->all_segments_.pop();
+    DELETE_PTR(a_plan_segment);
   }
   return &ret;
 }

@@ -828,8 +828,9 @@ RetCode ExchangeMerger::GetAllSegments(stack<Segment*>* all_segments) {
           state_.partition_schema_);
       ret_plan = new ExchangeSenderMaterialized(EIELstate);
     }
-    all_segments->push(new Segment(ret_plan, state_.lower_id_list_,
-                                   state_.upper_id_list_, state_.exchange_id_));
+    all_segments->push(
+        std::move(new Segment(ret_plan, state_.lower_id_list_,
+                              state_.upper_id_list_, state_.exchange_id_)));
     state_.child_ = NULL;
   }
   return ret;

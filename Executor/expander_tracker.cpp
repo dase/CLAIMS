@@ -13,6 +13,7 @@
 #include "../common/ids.h"
 #include "expander_tracker.h"
 
+#include "../common/memory_handle.h"
 #define DECISION_SHRINK 0
 #define DECISION_EXPAND 1
 #define DECISION_KEEP 2
@@ -42,6 +43,7 @@ ExpanderTracker::~ExpanderTracker() {
   pthread_cancel(monitor_thread_id_);
   instance_ = 0;
   delete log_;
+  expander_id_to_status_.clear();
 }
 
 ExpanderTracker* ExpanderTracker::getInstance() {
@@ -179,8 +181,7 @@ ExpanderID ExpanderTracker::registerNewExpander(
   ExpanderID expander_id;
   lock_.acquire();
   expander_id = IDsGenerator::getInstance()->getUniqueExpanderID();
-  ExpanderStatus* es = new ExpanderStatus(expand_shrink);
-  expander_id_to_status_[expander_id] = es;
+  expander_id_to_status_[expander_id] = new ExpanderStatus(expand_shrink);
   expander_id_to_status_[expander_id]->addNewEndpoint(
       LocalStageEndPoint(stage_desc, "Expander", buffer));
   expander_id_to_expand_shrink_[expander_id] = expand_shrink;
@@ -197,11 +198,13 @@ void ExpanderTracker::unregisterExpander(ExpanderID expander_id) {
        it != thread_id_to_expander_id_.end(); it++) {
     //		assert(it->second!=expander_id);
   }
-  delete expander_id_to_status_[expander_id];
+  auto es = expander_id_to_status_.find(expander_id)->second;
   expander_id_to_status_.erase(expander_id);
+
   LOG(INFO) << "erased expander id:" << expander_id
             << " from expander_id_to_status_" << std::endl;
   expander_id_to_expand_shrink_.erase(expander_id);
+  DELETE_PTR(es);
   lock_.release();
 }
 
@@ -328,7 +331,7 @@ int ExpanderTracker::decideExpandingOrShrinking(
    */
   //	{
   //		int ret=rand()%2;// overwrite the decide with a random seed to
-  //test
+  // test
   // the correctness of shrinkage and expansion.
   //
   //		if(ret==DECISION_EXPAND){
@@ -501,7 +504,7 @@ void* ExpanderTracker::monitoringThread(void* arg) {
       continue;
     }
     //		Pthis->printStatus();
-    boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
+    std::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
         Pthis->expander_id_to_status_.begin();
     for (int tmp = 0; tmp < cur; tmp++) it++;
     ExpanderID id = it->first;
@@ -610,7 +613,7 @@ void ExpanderTracker::printStatus() {
   }
   printf("\n");
   printf("ExpanderID : ExpanderStatus*\n");
-  for (boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
+  for (std::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
            expander_id_to_status_.begin();
        it != expander_id_to_status_.end(); it++) {
     printf("(%ld,%llx) ", it->first, it->second);
