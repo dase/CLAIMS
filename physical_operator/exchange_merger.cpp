@@ -163,8 +163,10 @@ bool ExchangeMerger::Open(SegmentExecStatus* const exec_status,
                  << " fails!" << endl;
     }
     is_registered_to_tracker_ = true;
+#ifdef CONNECTION_VERIFY
     confirm_sender_time = 0;
     frequence = 0;
+#endif
 #ifdef ExchangeSender
     if (IsMaster()) {
       /*  According to a bug reported by dsc, the master exchange upper should
@@ -277,8 +279,11 @@ bool ExchangeMerger::Close(SegmentExecStatus* const exec_status) {
         ExchangeID(state_.exchange_id_, partition_offset_));
   }
   LOG(INFO) << "exchange merger id = " << state_.exchange_id_ << " is closed!"
+#ifdef CONNECTION_VERIFY
 		    << " CONFIRM frequence:" << frequence
-		  	<< " CONFIRM TIME:" << confirm_sender_time;
+		  	<< " CONFIRM TIME:" << confirm_sender_time
+#endif
+			;
 
   return true;
 }
@@ -376,13 +381,14 @@ void ExchangeMerger::CloseSocket() {
       }
     }
   }
-
+#ifdef CONNECTION_VERIFY
   for ( auto & fd : lower_sock_fd_list_ ) {
 		LOG(INFO) << " exchange_id = " << state_.exchange_id_
 					<< " partition_offset = " << partition_offset_
 					<< "CloseSocket:" << fd;
 		FileClose(fd);
 	}
+#endif
   /* close the socket of this exchange*/
   if (sock_fd_ > 2) {
     FileClose(sock_fd_);
@@ -516,9 +522,11 @@ void* ExchangeMerger::Receiver(void* arg) {
   struct epoll_event event;
   struct epoll_event* events;
   int status;
+#ifdef CONNECTION_VERIFY
   stringstream ss;
   ss << "EXCHID" << Pthis->state_.exchange_id_;
   string lower_passwd = ss.str();
+#endif
   // create epoll
   Pthis->epoll_fd_ = epoll_create1(0);
   if (Pthis->epoll_fd_ == -1) {
@@ -602,9 +610,12 @@ void* ExchangeMerger::Receiver(void* arg) {
                       << " host= " << hbuf << " port= " << sbuf << endl;
 
             Pthis->lower_ip_list_.push_back(hbuf);
+#ifdef CONNECTION_VERIFY
      	    Pthis->lower_fd_to_ip_[infd] = hbuf;
-       //     Pthis->lower_sock_fd_to_id_[infd] =
-       //        Pthis->lower_ip_list_.size() - 1;
+#else
+            Pthis->lower_sock_fd_to_id_[infd] =
+               Pthis->lower_ip_list_.size() - 1;
+#endif
      	    /*
             for (auto &it : Pthis->lower_fd_to_ip_) {
 		  LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
@@ -639,6 +650,7 @@ void* ExchangeMerger::Receiver(void* arg) {
                        << " epoll_ctl error2" << endl;
             return NULL;
           }
+#ifdef CONNECTION_VERIFY
           Pthis->lower_fd_to_passwd_[infd] = "";
           LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
         		  << " partition_offset = " << Pthis->partition_offset_
@@ -649,17 +661,20 @@ void* ExchangeMerger::Receiver(void* arg) {
 				  << " partition_offset = " << Pthis->partition_offset_
 				  << " fd = " << it.first;
 	       }*/
+#endif
         }
         continue;
       } else {
         /* We have data on the fd waiting to be read.*/
         int done = 0;
         int byte_received = 0;
+#ifdef CONNECTION_VERIFY
         char lower_passwd_buf[64];
+#endif
 
         while (true) {
           pthread_testcancel();
-#if 1 // verify connection passwd // old version code here
+#ifdef CONNECTION_VERIFY // verify connection passwd
         ticks startconfirm = curtick();
 
   	  if ( Pthis->lower_sock_fd_list_.find(events[i].data.fd) ==  Pthis->lower_sock_fd_list_.end() ) {
@@ -873,7 +888,9 @@ void* ExchangeMerger::Receiver(void* arg) {
 
           //Pthis->lower_sock_fd_list_.erase(events[i].data.fd);
           epoll_ctl(Pthis->epoll_fd_, EPOLL_CTL_DEL, events[i].data.fd, &event);
-          //FileClose(events[i].data.fd);
+#ifndef CONNECTION_VERIFY
+          FileClose(events[i].data.fd);
+#endif
 
         }
       }
@@ -937,7 +954,9 @@ void ExchangeMerger::ResetStatus() {
 
   lower_sock_fd_to_id_.clear();
   lower_ip_list_.clear();
+#ifdef CONNECTION_VERIFY
   lower_sock_fd_list_.clear();
+#endif
 }
 RetCode ExchangeMerger::GetAllSegments(stack<Segment*>* all_segments) {
   RetCode ret = rSuccess;

@@ -57,10 +57,12 @@ bool ExchangeSender::ConnectToUpper(const ExchangeID& exchange_id,
         << exchange_id.exchange_id << std::endl;
     return false;
   }
+#ifdef CONNECTION_VERIFY
   stringstream ss;
   ss << "EXCHID" << exchange_id.exchange_id;
   string upper_passwd = ss.str();
   int upper_passwd_len = upper_passwd.length();
+#endif
   if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     perror("socket creation errors!\n");
     return false;
@@ -85,7 +87,7 @@ bool ExchangeSender::ConnectToUpper(const ExchangeID& exchange_id,
 		  << " connected to the upper socket.("<< upper_addr.ip.c_str() <<":"  << upper_addr.port.c_str()
 		  << " sock_fd=" << sock_fd
 		  <<") return value:" << returnvalue << std::endl;
-  
+#ifdef CONNECTION_VERIFY
   if ((returnvalue = send(sock_fd, upper_passwd.c_str(), upper_passwd_len, 0))  == -1 ) {
   	LOG(ERROR) << "Failed to send acknowledgement to the upper socket. returnvalue:[" << returnvalue 
 		<< "] errno:[" << errno << "]";
@@ -93,6 +95,7 @@ bool ExchangeSender::ConnectToUpper(const ExchangeID& exchange_id,
   }
   LOG(INFO) << "send acknowledgement to the upper socket: ("<< upper_passwd <<")" << std::endl;
   WaitingForNotification(sock_fd);
+#endif
   return true;
 }
 
