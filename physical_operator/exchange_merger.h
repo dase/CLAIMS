@@ -51,6 +51,8 @@
 #include "../common/Block/BlockStreamBuffer.h"
 #include "../physical_operator/physical_operator.h"
 
+#define CONNECTION_VERIFY
+
 namespace claims {
 namespace physical_operator {
 /**

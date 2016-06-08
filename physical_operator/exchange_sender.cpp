@@ -35,6 +35,9 @@
 #include "../common/Logging.h"
 #include "../common/ids.h"
 #include "../physical_operator/exchange_sender.h"
+
+#define CONNECTION_VERIFY
+
 namespace claims {
 namespace physical_operator {
 ExchangeSender::ExchangeSender() {}
