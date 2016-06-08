@@ -655,10 +655,15 @@ void* ExchangeMerger::Receiver(void* arg) {
         /* We have data on the fd waiting to be read.*/
         int done = 0;
         int byte_received = 0;
+        char lower_passwd_buf[64];
+
+        while (true) {
+          pthread_testcancel();
+#if 1 // verify connection passwd // old version code here
         ticks startconfirm = curtick();
+
   	  if ( Pthis->lower_sock_fd_list_.find(events[i].data.fd) ==  Pthis->lower_sock_fd_list_.end() ) {
-  		  char lower_passwd_buf[64];
-ReadPwd:
+
   		  memset(lower_passwd_buf, 0, sizeof(lower_passwd_buf));
 
   		  int lower_passwd_size = lower_passwd.length();
@@ -688,8 +693,7 @@ ReadPwd:
   		rest_passwd_size -= byte_received;
   		Pthis->lower_fd_to_passwd_[events[i].data.fd] += lower_passwd_buf;
   		if (rest_passwd_size > 0) {
-  		  //	continue;
-  			goto ReadPwd;
+      		  	continue;
   		}
 
   		if( lower_passwd.compare(Pthis->lower_fd_to_passwd_[events[i].data.fd]) == 0 ) {
@@ -707,16 +711,6 @@ ReadPwd:
   					<< "Pthis->lower_sock_fd_list: " << fd;
   			}*/
   			assert(Pthis->lower_sock_fd_list_.size() <= Pthis->state_.lower_id_list_.size());
-
-  			int endconfirm = getMilliSecond(start);
-  			Pthis->confirm_sender_time += endconfirm;
-  			Pthis->frequence++;
-  			LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
-  			              << " partition_offset = " << Pthis->partition_offset_
-  			  				<< " fd:[" << events[i].data.fd
-							<< " ack to sender time:" << endconfirm << "ms";
-
-  			goto ReadData;
   	        } else {
            	  	LOG(WARNING) << " exchange_id = " << Pthis->state_.exchange_id_
            	  			<< " partition_offset = " << Pthis->partition_offset_
@@ -728,18 +722,17 @@ ReadPwd:
   	               // break;
             	}
 
-            }  else {
-      			int endconfirm = getMilliSecond(start);
-      			LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
-      			              << " partition_offset = " << Pthis->partition_offset_
-      			  				<< " fd:[" << events[i].data.fd
-    							<< " find fd time:" << endconfirm << "ms";
-      			Pthis->confirm_sender_time += endconfirm;
-      			Pthis->frequence++;
-ReadData:
-        while (true) {
-          pthread_testcancel();
-#if 1 // verify connection passwd // old version code here
+                }
+
+          double endconfirm = getMilliSecond(startconfirm);
+		  /*
+		  LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
+						  << " partition_offset = " << Pthis->partition_offset_
+							<< " fd:" << events[i].data.fd
+							<< " find fd time:" << endconfirm << "ms";
+		  */
+  		 Pthis->confirm_sender_time += endconfirm;
+  		 Pthis->frequence++;
 
 #endif
           int socket_fd_index = Pthis->lower_sock_fd_to_id_[events[i].data.fd];
@@ -831,11 +824,13 @@ ReadData:
               Pthis->all_merged_block_buffer_->setInputComplete();
 
               /* print the finish times */
-              // for (unsigned i = 0; i < finish_times.size(); i++)
-              // {
-              //    printf("%d\t", finish_times[i]);
-              // }
-              // printf("\t Var:%5.4f\n", get_stddev(finish_times));
+               for (unsigned i = 0; i < finish_times.size(); i++)
+               {
+                  //printf("%d\t", finish_times[i]);
+            	   LOG(INFO) << "FINISH TIMES:" << finish_times[i];
+               }
+               //printf("\t Var:%5.4f\n", get_stddev(finish_times));
+               LOG(INFO) << "Var:" << get_stddev(finish_times);
             }
 
             LOG(INFO) << " exchange_id = " << Pthis->state_.exchange_id_
@@ -857,7 +852,6 @@ ReadData:
                    "are consumed) is replied to the lower ";
                // << Pthis->lower_ip_list_[socket_fd_index] << endl;
 #endif
-          }
         }
       }
         if (done) {
