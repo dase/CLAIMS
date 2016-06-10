@@ -38,8 +38,8 @@
 #include <vector>
 #include "../common/Logging.h"
 
-// static bool g_thread_pool_used = true;
-static bool g_thread_pool_used = false;
+static bool g_thread_pool_used = true;
+// static bool g_thread_pool_used = false;
 
 class Task;
 class ThreadPool {
