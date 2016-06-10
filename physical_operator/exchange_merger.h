@@ -51,6 +51,8 @@
 #include "../common/Block/BlockStreamBuffer.h"
 #include "../physical_operator/physical_operator.h"
 
+#define CONNECTION_VERIFY
+
 namespace claims {
 namespace physical_operator {
 /**
@@ -157,14 +159,25 @@ class ExchangeMerger : public PhysicalOperator {
   int epoll_fd_;
   int* socket_fd_lower_list_;
   std::vector<std::string> lower_ip_list_;
+#ifdef CONNECTION_VERIFY
+  std::map<int ,std::string> lower_fd_to_ip_;
+  std::map<int ,std::string> lower_fd_to_passwd_;
+#endif
   pthread_t receiver_thread_id_;
   pthread_t debug_thread_id_;
   unsigned exhausted_lowers;
   unsigned partition_offset_;
   semaphore sem_new_block_or_eof_;
+#ifdef CONNECTION_VERIFY
+  set<int> lower_sock_fd_list_;
+#endif
   std::map<int, int> lower_sock_fd_to_id_;
   PerformanceInfo* perf_info_;
   bool is_registered_to_tracker_;
+#ifdef CONNECTION_VERIFY
+  double confirm_sender_time;
+  int frequence;
+#endif
 
  private:
   friend class boost::serialization::access;

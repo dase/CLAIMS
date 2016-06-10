@@ -43,3 +43,7 @@ echo "========run claimsserver on:[$thisip] time:[$(date '+%Y-%m-%d %H:%M:%S')]=
 claimsserverpid=$!
 echo "claimsserver=$claimsserverpid" > $runclaimsprocid
 echo -e "$thisip start claimsserver pid:[$claimsserverpid][\033[32mOK\033[0m]"
+
+echo "start tracker for debug..."
+./sbin/claims-test/statustracker.sh &
+
