@@ -14,7 +14,7 @@
 Schema::Schema(const std::vector<column_type>& columns) : columns(columns) {}
 Schema::Schema(const Schema& r) { this->columns = r.columns; }
 Schema::~Schema() {
-  for (auto i : columns) DELETE_PTR(i.operate);
+  for (auto& i : columns) DELETE_PTR(i.operate);
   columns.clear();
 }
 

@@ -327,13 +327,10 @@ PhysicalOperatorBase* LogicalAggregation::GetPhysicalPlan(
       expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
       expander_state.child_ = local_aggregation;
       expander_state.schema_ = local_agg_state.hash_schema_->duplicateSchema();
-      //      PhysicalOperatorBase* expander_lower = new
-      //      Expander(expander_state);:q
-
+      PhysicalOperatorBase* expander_lower = new Expander(expander_state);
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = block_size;
-      //      exchange_state.child_ = expander_lower;
-      exchange_state.child_ = new Expander(expander_state);
+      exchange_state.child_ = expander_lower;
       exchange_state.exchange_id_ =
           IDsGenerator::getInstance()->generateUniqueExchangeID();
       exchange_state.lower_id_list_ =
@@ -343,8 +340,7 @@ PhysicalOperatorBase* LogicalAggregation::GetPhysicalPlan(
       exchange_state.partition_schema_ =
           partition_schema::set_hash_partition(0);
       exchange_state.schema_ = local_agg_state.hash_schema_->duplicateSchema();
-      //      PhysicalOperatorBase* exchange = new
-      //      ExchangeMerger(exchange_state);
+      PhysicalOperatorBase* exchange = new ExchangeMerger(exchange_state);
       PhysicalAggregation::State global_agg_state;
       global_agg_state.agg_node_type_ =
           PhysicalAggregation::State::kHybridAggGlobal;
@@ -361,8 +357,7 @@ PhysicalOperatorBase* LogicalAggregation::GetPhysicalPlan(
                                         global_agg_state.input_schema_);
       global_agg_state.block_size_ = block_size;
       global_agg_state.bucket_size_ = 64;
-      //      global_agg_state.child_ = exchange;
-      global_agg_state.child_ = new ExchangeMerger(exchange_state);
+      global_agg_state.child_ = exchange;
       global_agg_state.num_of_buckets_ = local_agg_state.num_of_buckets_;
       global_agg_state.avg_index_ = avg_id_in_agg_;
       global_agg_state.count_column_id_ = count_column_id_;

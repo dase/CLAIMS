@@ -831,7 +831,7 @@ RetCode ExchangeMerger::GetAllSegments(stack<Segment*>* all_segments) {
     all_segments->push(
         std::move(new Segment(ret_plan, state_.lower_id_list_,
                               state_.upper_id_list_, state_.exchange_id_)));
-    state_.child_ = NULL;
+    //    state_.child_ = NULL;
   }
   return ret;
 }

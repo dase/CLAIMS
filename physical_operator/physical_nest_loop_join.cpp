@@ -48,8 +48,8 @@ PhysicalNestLoopJoin::PhysicalNestLoopJoin()
 }
 
 PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
-  //  DELETE_PTR(state_.child_left_);
-  //  DELETE_PTR(state_.child_right_);
+  DELETE_PTR(state_.child_left_);
+  DELETE_PTR(state_.child_right_);
   //  DELETE_PTR(state_.input_schema_left_);
   //  DELETE_PTR(state_.input_schema_right_);
   //  for (int i = 0; i < state_.join_condi_.size(); ++i) {
