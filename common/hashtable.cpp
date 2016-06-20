@@ -33,7 +33,8 @@ BasicHashTable::BasicHashTable(unsigned nbuckets, unsigned bucksize,
                                unsigned tuplesize,
                                unsigned expected_number_of_visiting_thread)
     : nbuckets_(nbuckets), tuplesize_(tuplesize) {
-  bucksize_ = (get_aligned_space(MAX(bucksize, tuplesize)));
+  //  bucksize_ = (get_aligned_space(MAX(bucksize, tuplesize)));
+  bucksize_ = get_aligned_space(bucksize);
 
 #ifdef CONTENTION_REDUCTION
   expected_number_of_visiting_thread_ = expected_number_of_visiting_thread;

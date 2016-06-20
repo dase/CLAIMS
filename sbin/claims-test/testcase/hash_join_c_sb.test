@@ -1,0 +1,1 @@
+select count(*) from ORDERS,LINEITEM where L_ORDERKEY=O_ORDERKEY;

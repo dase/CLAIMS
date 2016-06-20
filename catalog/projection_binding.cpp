@@ -54,7 +54,7 @@ bool ProjectionBinding::BindingEntireProjection(
         Environment::getInstance()->getResourceManagerMaster();
     std::vector<NodeID> node_id_list = rmm->getSlaveIDList();
     unsigned allocate_cur = 0;
-    allocate_cur = GetRandomInt(node_id_list.size());
+    //    allocate_cur = GetRandomInt(node_id_list.size());
     for (unsigned i = 0; i < part->getNumberOfPartitions(); i++) {
       NodeID target = node_id_list[allocate_cur];
 

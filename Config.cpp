@@ -91,6 +91,9 @@ int Config::thread_pool_init_thread_num;
 int Config::load_thread_num;
 int Config::memory_utilization;
 
+int Config::hash_join_bucket_num;
+int Config::hash_join_bucket_size;
+
 Config *Config::getInstance() {
   if (instance_ == 0) {
     instance_ = new Config();
@@ -154,6 +157,10 @@ void Config::initialize() {
 
   memory_utilization = getInt("memory_utilization", 100);
 
+  hash_join_bucket_num = getInt("hash_join_bucket_num", 1024 * 1024);
+
+  hash_join_bucket_size = getInt("hash_join_bucket_size", 1024);
+
 #ifdef DEBUG_Config
   print_configure();
 #endif
@@ -212,6 +219,8 @@ void Config::print_configure() const {
   std::cout << "catalog_file:" << catalog_file << std::endl;
   std::cout << "codegen:" << enable_codegen << std::endl;
   std::cout << "load_thread_num:" << load_thread_num << std::endl;
+  std::cout << "hash_join_bucket_num" << hash_join_bucket_num << std::endl;
+  std::cout << "hash_join_bucket_size" << hash_join_bucket_size << std::endl;
 }
 
 void Config::setConfigFile(std::string file_name) { config_file = file_name; }

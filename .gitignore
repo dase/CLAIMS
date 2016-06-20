@@ -60,7 +60,7 @@ sbin/2-claims-conf/test_for_DI_GetTuple
 sbin/claims-test/claims_log/
 sbin/claims-test/test_for_DI_GetTuple
 sbin/claims-test/testresult/
-sbin/claims-test/testresult/*.result
+sbin/claims-test/testresult/*
 sbin/claims_log/
 sbin/logs/
 stamp-h1

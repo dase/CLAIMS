@@ -76,7 +76,12 @@ LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
       right_child_(right_input),
       join_condi_(join_condi),
       join_policy_(kNull),
-      plan_context_(NULL) {}
+      plan_context_(NULL) {
+  for (unsigned i = 0; i < joinpair_list.size(); ++i) {
+    left_join_key_list_.push_back(joinpair_list[i].left_join_attr_);
+    right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
+  }
+}
 LogicalEqualJoin::~LogicalEqualJoin() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -346,7 +351,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
   PlanContext dataflow_right = right_child_->GetPlanContext();
   PhysicalHashJoin::State state;
   state.block_size_ = block_size;
-  state.hashtable_bucket_num_ = 1024 * 1024;
+  state.hashtable_bucket_num_ = Config::hash_join_bucket_num;
   // state.ht_nbuckets=1024;
   state.input_schema_left_ = GetSchema(dataflow_left.attribute_list_);
   state.input_schema_right_ = GetSchema(dataflow_right.attribute_list_);
@@ -362,7 +367,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
    * number of overflowing buckets and avoid the random memory access caused by
    * acceesing overflowing buckets.
    */
-  state.hashtable_bucket_size_ = 128;
+  state.hashtable_bucket_size_ = Config::hash_join_bucket_size;
   state.output_schema_ = GetSchema(plan_context_->attribute_list_);
 
   state.join_index_left_ = GetLeftJoinKeyIds();

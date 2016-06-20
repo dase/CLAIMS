@@ -32,11 +32,14 @@
 
 #include "../physical_operator/physical_hash_join.h"
 #include <glog/logging.h>
+#include <algorithm>
 #include <stack>
 
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/data_type.h"
 #include "../common/expression/data_type_oper.h"
 #include "../common/expression/expr_node.h"
+#include "../common/hashtable.h"
 #include "../Config.h"
 #include "../Executor/expander_tracker.h"
 #include "../utility/rdtsc.h"
@@ -125,9 +128,11 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
     hash_func_ = PartitionFunctionFactory::createBoostHashFunction(
         state_.hashtable_bucket_num_);
     unsigned long long hash_table_build = curtick();
+    // optimal bucket size could contain 2 tuples
     hashtable_ = new BasicHashTable(
         state_.hashtable_bucket_num_, state_.hashtable_bucket_size_,
         state_.input_schema_left_->getTupleMaxSize());
+
     gpv_left_ = DataTypeOper::partition_value_
         [state_.input_schema_left_->getcolumn(state_.join_index_left_[0])
              .type][((state_.hashtable_bucket_num_ &
@@ -360,8 +365,13 @@ bool PhysicalHashJoin::Close(SegmentExecStatus* const exec_status) {
 }
 
 void PhysicalHashJoin::Print() {
-  LOG(INFO) << "Join: buckets:" << state_.hashtable_bucket_num_ << endl;
-  cout << "Join: buckets:" << state_.hashtable_bucket_num_ << endl;
+  LOG(INFO) << "Join: buckets: (num= " << state_.hashtable_bucket_num_
+            << " , size= "
+            << get_aligned_space(state_.input_schema_left_->getTupleMaxSize())
+            << ")" << endl;
+  cout << "Join: buckets: (num= " << state_.hashtable_bucket_num_ << " , size= "
+       << get_aligned_space(state_.input_schema_left_->getTupleMaxSize()) << ")"
+       << endl;
 
   LOG(INFO) << "------Join Left-------" << endl;
   cout << "------Join Left-------" << endl;
