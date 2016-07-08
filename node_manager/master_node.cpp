@@ -74,7 +74,7 @@ class MasterNodeActor : public event_based_actor {
         },
         [=](Updatelist){
           LOG(INFO) <<"master scan list"<<endl;
-          if(master_node_->node_id_to_heartbeat.size() > 0){
+          if(master_node_->node_id_to_heartbeat_.size() > 0){
             for (auto it = master_node_->node_id_to_heartbeat_.begin();
                 it != master_node_->node_id_to_heartbeat_.end(); ++it){
                   it->second++;
@@ -167,7 +167,7 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
   BroastNodeInfo((unsigned int)node_id_gen_, node_ip, node_port);
   node_id_to_addr_.insert(
       make_pair((unsigned int)node_id_gen_, make_pair(node_ip, node_port)));
-  node_id_to_heartbeat.insert(make_pair((unsigned int)node_id_gen_, 0));
+  node_id_to_heartbeat_.insert(make_pair((unsigned int)node_id_gen_, 0));
   try {
     auto actor = remote_actor(node_ip, node_port);
     node_id_to_actor_.insert(make_pair((unsigned int)node_id_gen_, actor));
