@@ -64,6 +64,29 @@ class MasterNodeActor : public event_based_actor {
               ->RegisterNewSlave(id);
           return make_message(OkAtom::value, id, *((BaseNode*)master_node_));
         },
+        [=](HeartBeatAtom, unsigned int node_id_) -> caf::message {
+          auto it = master_node_->node_id_to_heartbeat_.find(node_id_);
+          if (it != master_node_->node_id_to_heartbeat_.end()){
+              it->second = 0;
+              cout<<"master get heartbeat from node :"<<node_id_<<endl;
+            }
+          return make_message(OkAtom::value);
+        },
+        [=](Updatelist){
+          LOG(INFO) <<"master scan list"<<endl;
+          if(master_node_->node_id_to_heartbeat.size() > 0){
+            for (auto it = master_node_->node_id_to_heartbeat_.begin();
+                it != master_node_->node_id_to_heartbeat_.end(); ++it){
+                  it->second++;
+                  if (it->second >= kMaxTryTimes){
+                    LOG(INFO) <<"master : lost hearbeat from ( node "
+                        <<it->first<<")"<<endl;
+                    //TODO add remove dealing and broadcasting it
+                  }
+            }
+          }
+          delayed_send(this, std::chrono::seconds(kTimeout/5), Updatelist::value);
+        },
         [&](StorageBudgetAtom, const StorageBudgetMessage& message) {
           Environment::getInstance()
               ->getResourceManagerMaster()
@@ -82,10 +105,9 @@ class MasterNodeActor : public event_based_actor {
           quit();
         },
         caf::others >> [=]() {
-                         LOG(WARNING) << "master node receives unkown message"
-                                      << endl;
-                       }
-
+          LOG(WARNING) << "master node receives unkown message"
+          << endl;
+        }
     };
   }
   MasterNode* master_node_;
@@ -145,6 +167,7 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
   BroastNodeInfo((unsigned int)node_id_gen_, node_ip, node_port);
   node_id_to_addr_.insert(
       make_pair((unsigned int)node_id_gen_, make_pair(node_ip, node_port)));
+  node_id_to_heartbeat.insert(make_pair((unsigned int)node_id_gen_, 0));
   try {
     auto actor = remote_actor(node_ip, node_port);
     node_id_to_actor_.insert(make_pair((unsigned int)node_id_gen_, actor));

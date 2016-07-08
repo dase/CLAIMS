@@ -70,8 +70,10 @@ class MasterNode : public BaseNode {
  private:
   static MasterNode* instance_;
   atomic_uint node_id_gen_;
+  std::unordered_map<unsigned int, int> node_id_to_heartbeat_;
 };
 
 }  // namespace claims
+
 
 #endif  //  NODE_MANAGER_MASTER_NODE_H_

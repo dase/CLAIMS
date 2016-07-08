@@ -114,6 +114,17 @@ class SlaveNodeActor : public event_based_actor {
           }
           return make_message(OkAtom::value);
         },
+        [=](HeartBeatAtom){
+          try{
+            sync_send(slave_node_->GetMasterActor(), HeartBeatAtom::value, slave_node_->get_node_id()).then(
+                [=](OkAtom){
+              LOG(INFO) <<"node"<<slave_node_->get_node_id()<<"receive heartbeat from master ok"<<endl;
+            });
+          }catch(caf::network_error& e){
+            LOG(WARNING) << "node"<<slave_node_->get_node_id()<<"can't send heartbeart to master"<<endl;
+          }
+          delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
+        },
         caf::others >>
             [=]() { LOG(WARNING) << "unkown message at slave node!!!" << endl; }
 
@@ -217,8 +228,11 @@ RetCode SlaveNode::RegisterToMaster() {
                        remote_actor(it->second.first, it->second.second);
                    node_id_to_actor_.insert(make_pair(it->first, actor));
                  }
-                 LOG(INFO) << "register node succeed! intsert "
+                 LOG(INFO) << "register node succeed! insert "
                            << node.node_id_to_addr_.size() << " nodes";
+                 auto slave_self = remote_actor(get_node_ip(), get_node_port());
+                 self->send(slave_self, HeartBeatAtom::value);
+                 LOG(INFO) << "node "<<id<<"start send heartbeat";
                },
                [&](const caf::sync_exited_msg& msg) {
                  LOG(WARNING) << "register link fail";

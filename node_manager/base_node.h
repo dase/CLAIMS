@@ -59,8 +59,12 @@ using BroadcastNodeAtom = caf::atom_constant<caf::atom("brdst_node")>;
 using ReportSegESAtom = caf::atom_constant<caf::atom("rept_sts")>;
 using CheckStmtESAtom = caf::atom_constant<caf::atom("ck_stmtes")>;
 using CancelPlanAtom = caf::atom_constant<caf::atom("cancel")>;
+using HeartBeatAtom = caf::atom_constant<caf::atom("heartbeat")>;
+using Updatelist = caf::atom_constant<caf::atom("Updatelist")>;
+
 
 const int kTimeout = 10;
+const int kMaxTryTimes = 5;
 class MemoryInfo {};
 class DiskInfo {};
 typedef pair<string, uint16_t> NodeAddr;
