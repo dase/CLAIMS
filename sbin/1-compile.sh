@@ -12,4 +12,4 @@ cd install
 ../configure 
 
 gcc --version
-make -j 3
+make -j 20

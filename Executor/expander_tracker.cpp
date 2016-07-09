@@ -638,10 +638,16 @@ void ExpanderTracker::printStatus() {
 }
 
 bool ExpanderTracker::trackExpander(ExpanderID id) const {
+  lock_.acquire(); 
   if (expander_id_to_expand_shrink_.find(id) !=
-      expander_id_to_expand_shrink_.end())
+      expander_id_to_expand_shrink_.end()) {
+    lock_.release();
     return true;
-  if (expander_id_to_status_.find(id) != expander_id_to_status_.end())
+  }
+  if (expander_id_to_status_.find(id) != expander_id_to_status_.end()) {
+    lock_.release();
     return true;
+  }
+  lock_.release();
   return false;
 }

@@ -4,7 +4,7 @@ CURRDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $CURRDIR
 cd 2-claims-conf
 source ./load-config.sh
-source ./generate-config.sh
+#source ./generate-config.sh
 cd ../../
 # now in CLAIMS_HOME
 
@@ -45,5 +45,5 @@ echo "claimsserver=$claimsserverpid" > $runclaimsprocid
 echo -e "$thisip start claimsserver pid:[$claimsserverpid][\033[32mOK\033[0m]"
 
 echo "start tracker for debug..."
-./sbin/claims-test/statustracker.sh &
+#./sbin/claims-test/statustracker.sh &
 
