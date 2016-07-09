@@ -342,6 +342,8 @@ const int rRegisterToMasterTimeOut = -14301;
 const int rRegisterToMasterError = -14302;
 // for exec_tracker
 const int rCouldnotFindCancelQueryId = -14400;
+const int rNetworkError = -14401;
+const int rSendingTimeout = -14402;
 }  // end namespace common
 }  // end namespace claims
 

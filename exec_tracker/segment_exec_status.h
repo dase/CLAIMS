@@ -38,7 +38,7 @@
 #include <atomic>
 using std::string;
 namespace claims {
-
+const int TryReportTimes = 3;
 // due to the conflict between deleting SegmentExecStatus and reporting the
 // last message (deleting is faster than reporting, so the last message doesn't
 // been sent successfully), so all instance of SegmentExecStatus should be
@@ -55,6 +55,8 @@ class SegmentExecStatus {
   RetCode CancelSegExec();
   RetCode ReportStatus();
   RetCode ReportStatus(ExecStatus exec_status, string exec_info);
+  RetCode DoReportStatus(ExecStatus exec_status, string exec_info);
+
   bool UpdateStatus(ExecStatus exec_status, string exec_info,
                     u_int64_t logic_time = 0, bool need_report = false);
   RetCode RegisterToTracker();
@@ -76,6 +78,7 @@ class SegmentExecStatus {
   unsigned int coor_node_id_;
   NodeSegmentID node_segment_id_;
   Lock lock_;
+  int ReportErrorTimes;
   std::atomic_bool stop_report_;
 };
 #define UNLIKELY(expr) __builtin_expect(!!(expr), 0)
