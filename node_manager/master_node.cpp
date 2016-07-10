@@ -79,9 +79,10 @@ class MasterNodeActor : public event_based_actor {
                 it != master_node_->node_id_to_heartbeat_.end(); ++it){
                   it->second++;
                   if (it->second >= kMaxTryTimes){
-                    LOG(INFO) <<"master : lost hearbeat from ( node "
+                    LOG(WARNING) <<"master : lost hearbeat from ( node "
                         <<it->first<<")"<<endl;
                     //TODO add remove dealing and broadcasting it
+                    master_node_->RemoveOneNode(it->first, master_node_);
                   }
             }
           }
@@ -181,7 +182,16 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
   lock_.release();
   return node_id_gen_;
 }
-
+void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
+  node_id_to_heartbeat_.erase(node_id);
+  node_id_to_addr_.erase(node_id);
+  node_id_to_actor_.erase(node_id);
+  caf::scoped_actor self;
+  for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
+      self->send(node_id_to_actor_.at(it->first), SyncNodeInfo::value,
+                 *((BaseNode*)master_node));
+    }
+}
 void MasterNode::FinishAllNode() {
   caf::scoped_actor self;
   for (auto it = node_id_to_actor_.begin(); it != node_id_to_actor_.end();

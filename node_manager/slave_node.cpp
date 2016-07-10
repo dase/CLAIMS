@@ -118,13 +118,29 @@ class SlaveNodeActor : public event_based_actor {
           try{
             sync_send(slave_node_->GetMasterActor(), HeartBeatAtom::value, slave_node_->get_node_id()).then(
                 [=](OkAtom){
-              LOG(INFO) <<"node"<<slave_node_->get_node_id()<<"receive heartbeat from master ok"<<endl;
+              LOG(INFO) <<"node"<<slave_node_->get_node_id()
+                  <<"receive heartbeat from master ok"<<endl;
             });
           }catch(caf::network_error& e){
-            LOG(WARNING) << "node"<<slave_node_->get_node_id()<<"can't send heartbeart to master"<<endl;
+            LOG(WARNING) << "node"<<slave_node_->get_node_id()
+                <<"can't send heartbeart to master"<<endl;
           }
           delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
           return make_message(OkAtom::value);
+        },
+        [=](SyncNodeInfo, const BaseNode& node){
+          slave_node_->node_id_to_addr_.clear();
+          slave_node_->node_id_to_actor_.clear();
+          slave_node_->node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
+                                                   node.node_id_to_addr_.end());
+          for (auto it = slave_node_->node_id_to_addr_.begin();
+              it != slave_node_->node_id_to_addr_.end(); ++it) {
+            auto actor =
+                remote_actor(it->second.first, it->second.second);
+            slave_node_->node_id_to_actor_.insert(make_pair(it->first, actor));
+          }
+          LOG(INFO) <<"node"<<slave_node_->get_node_id()
+              <<"update nodelist info successfully"<<endl;
         },
         caf::others >>
             [=]() { LOG(WARNING) << "unkown message at slave node!!!" << endl; }
@@ -234,7 +250,7 @@ RetCode SlaveNode::RegisterToMaster() {
                  caf::scoped_actor self1;
                  auto slave_self = caf::io::remote_actor(get_node_ip(), get_node_port());
                  self1->sync_send(slave_self, HeartBeatAtom::value).await([=](OkAtom){
-                       LOG(INFO) << "slave node <<id<<send heartbeat signal"<<endl;
+                       LOG(INFO) << "slave node "<<id<<"send heartbeat signal"<<endl;
                  });
                },
                [&](const caf::sync_exited_msg& msg) {

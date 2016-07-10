@@ -60,7 +60,8 @@ using ReportSegESAtom = caf::atom_constant<caf::atom("rept_sts")>;
 using CheckStmtESAtom = caf::atom_constant<caf::atom("ck_stmtes")>;
 using CancelPlanAtom = caf::atom_constant<caf::atom("cancel")>;
 using HeartBeatAtom = caf::atom_constant<caf::atom("heartbeat")>;
-using Updatelist = caf::atom_constant<caf::atom("Updatelist")>;
+using Updatelist = caf::atom_constant<caf::atom("updatelist")>;
+using SyncNodeInfo = caf::atom_constant<caf::atom("syncinfo")>;
 
 
 const int kTimeout = 10;

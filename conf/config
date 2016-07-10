@@ -1,5 +1,5 @@
 #本机IP地址
-ip = "127.0.0.1";
+ip = "219.228.147.12";
 
 #端口范围（调试用）
 PortManager:
@@ -11,8 +11,8 @@ PortManager:
 #master的IP地址和端口
 coordinator:
 {
-    ip="127.0.0.1"
-    port="11001"
+    ip="219.228.147.12"
+    port="12000"
 }
 
 #是否为master. 若为master，则master=1，否则master=0
@@ -27,20 +27,20 @@ client_listener_port = 10000
 #data="/home/imdb/data/wangli/"
 #data="/home/imdb/data/POC/sample/"
 #data="/home/minqi/git/Data/data/tpc-h/1-partition/sf-1/"
-data="/home/minqi/git/Data/data/tpc-h/18-partition/sf-1/"
+#data="/home/minqi/git/Data/data/tpc-h/18-partition/sf-1/"
 #data="/home/imdb/data/SF-1/"
 #data="/home/imdb/data/SF-1/"
 #data="/home/imdb/data/stock/"
 #data="/home/imdb/data/stock/"
- 
- 
+#data="/home/zzh/data/1partition/"
+data="/claimsdata/"
 #data="/home/fish/data/test/"
 #data="/home/imdb/data/POC/"
 #data="/home/imdb/data/POC/"
 #hdfs主节点
 
 
-hdfs_master_ip="127.0.0.1"
+hdfs_master_ip="219.228.147.162"
 
 #hdfs主节点端口
 hdfs_master_port=9000
@@ -57,7 +57,7 @@ enable_expander_adaptivity=0
 
 pipelined_exchange=1
 
-local_disk_mode=1
+local_disk_mode=0
 
 scan_batch=100
 
