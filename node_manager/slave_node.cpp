@@ -30,6 +30,10 @@
 #include <utility>
 #include <iostream>
 #include "./slave_node.h"
+
+#include <stdlib.h>
+#include <unistd.h>
+
 #include "../common/Message.h"
 #include "caf/io/all.hpp"
 
@@ -157,12 +161,34 @@ SlaveNode::SlaveNode(string node_ip, uint16_t node_port)
 SlaveNode::~SlaveNode() { instance_ = NULL; }
 void SlaveNode::CreateActor() {
   auto slave_actor = caf::spawn<SlaveNodeActor>(this);
-  try {
-    master_actor_ =
-        caf::io::remote_actor(master_addr_.first, master_addr_.second);
-  } catch (caf::network_error& e) {
-    LOG(ERROR) << "slave node create remote_actor error due to network error!";
-    assert(false);
+  bool is_done = false;
+
+  for (int try_time = 0; try_time < 20 && !is_done; ++try_time) {
+    try {
+      master_actor_ =
+          caf::io::remote_actor(master_addr_.first, master_addr_.second);
+      is_done = true;
+    } catch (caf::network_error& e) {
+      cout << "slave node connect remote_actor error due to network "
+              "error! will try " << 19 - try_time << " times" << endl;
+    }
+    sleep(1);
+  }
+  if (!is_done) {
+    cout << "Node(" << get_node_ip() << " , " << get_node_port()
+         << ") register to master(" << master_addr_.first << " , "
+         << master_addr_.second
+         << ") failed after have tried 20 times! please check ip and "
+            "port, then try again!!!" << endl;
+    LOG(ERROR) << "Node(" << get_node_ip() << " , " << get_node_port()
+               << ") register to master(" << master_addr_.first << " , "
+               << master_addr_.second
+               << ") failed after have tried 20 times! please check ip and "
+                  "port, then try again!!!" << endl;
+    exit(0);
+  } else {
+    LOG(INFO) << "the node connect to master succeed!!!";
+    cout << "the node connect to master succeed!!!" << endl;
   }
   try {
     caf::io::publish(slave_actor, get_node_port(), nullptr, 1);
@@ -176,7 +202,7 @@ void SlaveNode::CreateActor() {
 }
 
 RetCode SlaveNode::RegisterToMaster() {
-  RetCode ret = 0;
+  RetCode ret = rSuccess;
   caf::scoped_actor self;
   try {
     self->sync_send(master_actor_, RegisterAtom::value, get_node_ip(),
@@ -207,6 +233,7 @@ RetCode SlaveNode::RegisterToMaster() {
     LOG(WARNING) << "cann't connect to " << master_addr_.first << " , "
                  << master_addr_.second << " in register";
   }
+
   return ret;
 }
 

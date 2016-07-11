@@ -60,7 +60,7 @@ using ReportSegESAtom = caf::atom_constant<caf::atom("rept_sts")>;
 using CheckStmtESAtom = caf::atom_constant<caf::atom("ck_stmtes")>;
 using CancelPlanAtom = caf::atom_constant<caf::atom("cancel")>;
 
-const int kTimeout = 10;
+const int kTimeout = 8;
 class MemoryInfo {};
 class DiskInfo {};
 typedef pair<string, uint16_t> NodeAddr;

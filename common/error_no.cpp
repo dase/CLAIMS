@@ -326,6 +326,10 @@ ErrorInit::ErrorInit() {
 
   DefineErrorAndMessage(rCouldnotFindCancelQueryId,
                         "couldn't the query id to be cancelled");
+
+  DefineErrorAndMessage(rNetworkError, "Network error when sending message!");
+
+  DefineErrorAndMessage(rSendingTimeout, "sending info timeout!");
   //  std::cout<<ERROR_MESSEGE[1]<<" , "<<ERROR_MESSEGE[2]<<std::endl;
 }
 }  // namespace common
