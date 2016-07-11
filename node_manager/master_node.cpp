@@ -139,6 +139,8 @@ void MasterNode::CreateActor() {
   try {
     caf::io::publish(master_actor_, get_node_port(), nullptr, 1);
     LOG(INFO) << "master ip port" << get_node_port() << " publish succeed!";
+    caf::scoped_actor self;
+    self->send(master_actor_,Updatelist::value);
   } catch (caf::bind_failure& e) {
     LOG(ERROR) << "the specified port " << get_node_port() << " is used!";
   } catch (caf::network_error& e) {
