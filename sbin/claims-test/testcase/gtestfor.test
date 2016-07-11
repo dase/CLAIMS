@@ -1,0 +1,16 @@
+select count(*) from LINEITEM;
+select count(*) from LINEITEM where row_id < 6000000;
+select count(*) from LINEITEM where row_id < 3000000;
+select count(*) from LINEITEM where row_id < 300;
+select count(*),sum(L_QUANTITY) from LINEITEM;
+select row_id from LINEITEM group by row_id;
+select L_PARTKEY,count(*) from LINEITEM group by L_PARTKEY;
+select L_RETURNFLAG from LINEITEM group by L_RETURNFLAG;
+select count(*) from PART,LINEITEM where PART.row_id=LINEITEM.row_id;
+select count(*) from PART,REGION;
+select count(*) from (select row_id from NATION where row_id<3) as a,(select row_id from REGION where row_id=2) as b;
+select count(*) from (select row_id from PART) as a, (select row_id from REGION where row_id=222) as b;
+select count(*) from (select row_id from REGION where row_id>33) as a,(select row_id from PART) as b;
+select count(*) from (select row_id from REGION where row_id>33) as a,(select row_id from NATION where row_id>40) as b;
+select count(*) from PART,LINEITEM where PART.row_id%10=1 and LINEITEM.row_id % 10 =1 and PART.row_id = LINEITEM.row_id;
+exit;
