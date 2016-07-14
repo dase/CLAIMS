@@ -59,6 +59,7 @@ class MasterNode : public BaseNode {
   void PrintNodeList();
   void FinishAllNode();
   unsigned int AddOneNode(string node_ip, uint16_t node_port);
+  void SyncNodeList(MasterNode* master_node);
   void RemoveOneNode(unsigned int node_id, MasterNode* master_node);
   RetCode BroastNodeInfo(const unsigned int& node_id, const string& node_ip,
                          const uint16_t& node_port);

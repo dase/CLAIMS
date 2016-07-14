@@ -58,33 +58,98 @@ class MasterNodeActor : public event_based_actor {
     return {
 
         [=](RegisterAtom, string ip, uint16_t port) -> caf::message {
+          //for reregister check
+          unsigned int tmp_node_id = -1;
+          bool is_reregister = false;
+          for(auto it = master_node_->node_id_to_addr_.begin();
+              it != master_node_->node_id_to_addr_.end();++it)
+          {
+            if(it->second.first == ip)
+            {
+              is_reregister = true;
+              tmp_node_id = it->first;
+            }
+          }
+          if(is_reregister)
+          {
+            master_node_->RemoveOneNode(tmp_node_id,master_node_);
+            std::cerr<<"master remove old node :"<<tmp_node_id<<"info"<<endl;
+            LOG(INFO)<<"master remove old node :"<<tmp_node_id<<"info"<<endl;
+          }
+          LOG(INFO)<<"get register from "<<ip<<",  "<<port<<std::endl;
           unsigned id = master_node_->AddOneNode(ip, port);
           Environment::getInstance()
               ->getResourceManagerMaster()
               ->RegisterNewSlave(id);
           return make_message(OkAtom::value, id, *((BaseNode*)master_node_));
         },
-        [=](HeartBeatAtom, unsigned int node_id_) -> caf::message {
+        [=](HeartBeatAtom, unsigned int node_id_, string address_, uint16_t port_) -> caf::message {
           auto it = master_node_->node_id_to_heartbeat_.find(node_id_);
           if (it != master_node_->node_id_to_heartbeat_.end()){
               it->second = 0;
-              cout<<"master get heartbeat from node :"<<node_id_<<endl;
-            }
+          }else{
+//            bool has_old = false;
+//            unsigned int old_node_id = 0;
+//            // clear old node info
+//            for(auto & node_info : master_node_->node_id_to_addr_){
+//              if(node_info.second.first == address_)
+//              {
+//                old_node_id = node_info.first;
+//                has_old = true;
+//              }
+//            }
+//            if(has_old)
+//            {
+//              master_node_->node_id_to_heartbeat_.erase(old_node_id);
+//              master_node_->node_id_to_addr_.erase(old_node_id);
+//              master_node_->node_id_to_actor_.erase(old_node_id);
+//            }
+            // need add lost slave info
+            master_node_->node_id_to_heartbeat_.insert(make_pair(node_id_,0));
+            master_node_->node_id_to_addr_.insert(
+                make_pair(node_id_, make_pair(address_, port_)));
+            try {
+                auto actor = remote_actor(address_, port_);
+                master_node_->node_id_to_actor_.insert(
+                    make_pair((unsigned int)node_id_, actor));
+              } catch (caf::network_error& e) {
+                LOG(WARNING) << "cann't connect to node ( " << address_ << " , " << port_
+                             << " ) and create remote actor failed in heartbeat stage!!";
+                assert(false);
+              }
+              master_node_->SyncNodeList(master_node_);
+          }
           return make_message(OkAtom::value);
         },
         [=](Updatelist){
-          LOG(INFO) <<"master scan list"<<endl;
+          bool is_losted = false;
           if(master_node_->node_id_to_heartbeat_.size() > 0){
             for (auto it = master_node_->node_id_to_heartbeat_.begin();
-                it != master_node_->node_id_to_heartbeat_.end(); ++it){
+                it != master_node_->node_id_to_heartbeat_.end();++it){
                   it->second++;
                   if (it->second >= kMaxTryTimes){
+                    is_losted = true;
                     LOG(WARNING) <<"master : lost hearbeat from ( node "
                         <<it->first<<")"<<endl;
-                    //TODO add remove dealing and broadcasting it
-                    master_node_->RemoveOneNode(it->first, master_node_);
+                    auto node_id = it->first;
+                    it = master_node_->node_id_to_heartbeat_.erase(it);
+                    master_node_->RemoveOneNode(node_id, master_node_);
                   }
             }
+          }
+          if(is_losted){
+            master_node_->SyncNodeList(master_node_);
+//            try{
+//               caf::scoped_actor self;
+//               for (auto it = master_node_->node_id_to_addr_.begin(); it != master_node_->node_id_to_addr_.end(); ++it)
+//               {
+//                 self->send(master_node_->node_id_to_actor_.at(it->first), SyncNodeInfo::value,*((BaseNode*)master_node_));
+//                 LOG(INFO)<<" node lost ,start sync to node: "<<it->first<<endl;
+//               }
+//             }catch(caf::network_error& e){
+//               LOG(INFO) <<"sync failure"<<endl;
+//             }
+             is_losted=false;
           }
           delayed_send(this, std::chrono::seconds(kTimeout/5), Updatelist::value);
         },
@@ -106,7 +171,7 @@ class MasterNodeActor : public event_based_actor {
           quit();
         },
         caf::others >> [=]() {
-          LOG(WARNING) << "master node receives unkown message"
+          LOG(WARNING) << "master node receives unknown message"
           << endl;
         }
     };
@@ -185,14 +250,25 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
   return node_id_gen_;
 }
 void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
-  node_id_to_heartbeat_.erase(node_id);
-  node_id_to_addr_.erase(node_id);
-  node_id_to_actor_.erase(node_id);
-  caf::scoped_actor self;
-  for (auto it = node_id_to_addr_.begin(); it != node_id_to_addr_.end(); ++it) {
-      self->send(node_id_to_actor_.at(it->first), SyncNodeInfo::value,
-                 *((BaseNode*)master_node));
-    }
+  master_node->lock_.acquire();
+  master_node->node_id_to_heartbeat_.erase(node_id);
+  master_node->node_id_to_addr_.erase(node_id);
+  master_node->node_id_to_actor_.erase(node_id);
+  master_node->lock_.release();
+  LOG(INFO) <<"finish remove node :"<<node_id<<endl;
+}
+void MasterNode::SyncNodeList(MasterNode* master_node)
+{
+  try{
+      caf::scoped_actor self;
+      for (auto it = master_node->node_id_to_addr_.begin(); it != master_node->node_id_to_addr_.end(); ++it)
+      {
+        self->send(master_node->node_id_to_actor_.at(it->first), SyncNodeInfo::value,*((BaseNode*)master_node));
+        LOG(INFO)<<" node lost ,start sync to node: "<<it->first<<endl;
+      }
+  }catch(caf::network_error& e){
+    LOG(INFO) <<"sync failure"<<endl;
+  }
 }
 void MasterNode::FinishAllNode() {
   caf::scoped_actor self;

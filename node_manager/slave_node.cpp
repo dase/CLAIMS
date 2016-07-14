@@ -61,7 +61,6 @@ class SlaveNodeActor : public event_based_actor {
   behavior make_behavior() override {
     LOG(INFO) << "slave node actor is OK!" << std::endl;
     return {
-
         [=](ExitAtom) {
           LOG(INFO) << "slave " << slave_node_->get_node_id() << " finish!"
                     << endl;
@@ -99,6 +98,22 @@ class SlaveNodeActor : public event_based_actor {
         },
         [&](BroadcastNodeAtom, const unsigned int& node_id,
             const string& node_ip, const uint16_t& node_port) {
+          //check if this node is reregister node
+          unsigned int tmp_node_id = -1;
+          bool is_reregister = false;
+          for(auto it = slave_node_->node_id_to_addr_.begin();
+              it != slave_node_->node_id_to_addr_.end(); ++it){
+            if(it->second.first == node_ip){
+              is_reregister = true;
+              tmp_node_id = it->first;
+            }
+          }
+          if(is_reregister){
+            slave_node_->node_id_to_addr_.erase(tmp_node_id);
+            slave_node_->node_id_to_actor_.erase(tmp_node_id);
+            std::cerr<<"slave "<<slave_node_->get_node_id()<<"remove old node :"<<tmp_node_id<<"info"<<endl;
+            LOG(INFO)<<"slave "<<slave_node_->get_node_id()<<"remove old node :"<<tmp_node_id<<"info"<<endl;
+          }
           slave_node_->AddOneNode(node_id, node_ip, node_port);
         },
         [=](ReportSegESAtom, NodeSegmentID node_segment_id, int exec_status,
@@ -116,17 +131,55 @@ class SlaveNodeActor : public event_based_actor {
         },
         [=](HeartBeatAtom){
           try{
-            sync_send(slave_node_->GetMasterActor(), HeartBeatAtom::value, slave_node_->get_node_id()).then(
+            slave_node_->master_actor_= caf::io::remote_actor(slave_node_->master_addr_.first,slave_node_->master_addr_.second);
+            sync_send(slave_node_->master_actor_, HeartBeatAtom::value, slave_node_->get_node_id(),
+                      slave_node_->node_addr_.first,slave_node_->node_addr_.second).then(
                 [=](OkAtom){
-              LOG(INFO) <<"node"<<slave_node_->get_node_id()
-                  <<"receive heartbeat from master ok"<<endl;
-            });
+                  slave_node_->heartbeat_count_ = 0;
+                }
+            );
           }catch(caf::network_error& e){
             LOG(WARNING) << "node"<<slave_node_->get_node_id()
                 <<"can't send heartbeart to master"<<endl;
+          }catch(caf::bind_failure& e){
+            LOG(WARNING) << "node"<<slave_node_->get_node_id()
+                <<"occur bind failure"<<endl;
           }
+
+          slave_node_->heartbeat_count_++;
+          std::cerr<<"node_list:";
+          for (auto it = slave_node_->node_id_to_addr_.begin(); it != slave_node_->node_id_to_addr_.end();++it)
+          {
+            std::cerr<<"node id:"<<it->first<<"ip:"<<it->second.first<<"port:"<<it->second.second<<endl;
+          }
+          std::cerr<<"actor size"<<slave_node_->node_id_to_actor_.size()<<endl;
           delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
-          return make_message(OkAtom::value);
+          if(slave_node_->heartbeat_count_ > 5){
+            LOG(INFO)<<"slave lost heartbeat from master, start register again"<<endl;
+            bool is_success = false;
+            become(
+                caf::keep_behavior,
+                [=, &is_success](RegisterAtom){
+                  std::cerr<<"slave reregister"<<endl;
+                  auto ret = slave_node_->reRegisterToMaster();
+                  if (ret == rSuccess){
+                    LOG(INFO)<<"reregister successfully unbecome  !!"<<endl;
+                    std::cerr<<"reregister successfully unbecome  !!"<<endl;
+                    slave_node_->heartbeat_count_= 0;
+                    is_success = true;
+                    unbecome();
+                  }else{
+                    caf::scoped_actor self;
+                    delayed_send(this,std::chrono::seconds(kTimeout/2),RegisterAtom::value);
+                    LOG(WARNING)<<"register fail, slave will register in 2 seconds"<<endl;
+                  }
+                });
+            if(!is_success)
+            {
+              caf::scoped_actor self;
+              self->send(this,RegisterAtom::value);
+            }
+          }
         },
         [=](SyncNodeInfo, const BaseNode& node){
           slave_node_->node_id_to_addr_.clear();
@@ -135,15 +188,22 @@ class SlaveNodeActor : public event_based_actor {
                                                    node.node_id_to_addr_.end());
           for (auto it = slave_node_->node_id_to_addr_.begin();
               it != slave_node_->node_id_to_addr_.end(); ++it) {
-            auto actor =
+            try {
+              auto actor =
                 remote_actor(it->second.first, it->second.second);
-            slave_node_->node_id_to_actor_.insert(make_pair(it->first, actor));
+              slave_node_->node_id_to_actor_.insert(make_pair(it->first, actor));
+            }catch (caf::network_error& e) {
+              LOG(WARNING) << "cann't connect to node ( " <<it->first<< " , "<<it->second.first <<
+                            it->second.second<< " ) and create remote actor failed!!";
+            }
           }
           LOG(INFO) <<"node"<<slave_node_->get_node_id()
               <<"update nodelist info successfully"<<endl;
         },
+        [=](OkAtom){
+        },
         caf::others >>
-            [=]() { LOG(WARNING) << "unkown message at slave node!!!" << endl; }
+            [=]() { LOG(WARNING) << "unknown message at slave node!!!" << endl; }
 
     };
   }
@@ -233,10 +293,12 @@ RetCode SlaveNode::RegisterToMaster() {
   RetCode ret = rSuccess;
   caf::scoped_actor self;
   try {
+    LOG(INFO)<<"slave just RegisterToMaster!!"<<endl;
     self->sync_send(master_actor_, RegisterAtom::value, get_node_ip(),
                     get_node_port())
         .await([=](OkAtom, const unsigned int& id, const BaseNode& node) {
                  set_node_id(id);
+
                  node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
                                          node.node_id_to_addr_.end());
                  for (auto it = node_id_to_addr_.begin();
@@ -249,9 +311,49 @@ RetCode SlaveNode::RegisterToMaster() {
                            << node.node_id_to_addr_.size() << " nodes";
                  caf::scoped_actor self1;
                  auto slave_self = caf::io::remote_actor(get_node_ip(), get_node_port());
-                 self1->sync_send(slave_self, HeartBeatAtom::value).await([=](OkAtom){
-                       LOG(INFO) << "slave node "<<id<<"send heartbeat signal"<<endl;
-                 });
+                 self1->send(slave_self,HeartBeatAtom::value);
+    },
+               [&](const caf::sync_exited_msg& msg) {
+                 LOG(WARNING) << "register link fail";
+               },
+               caf::after(std::chrono::seconds(kTimeout)) >>
+                   [&]() {
+                     ret = rRegisterToMasterTimeOut;
+                     LOG(WARNING) << "slave register timeout!";
+                   });
+  } catch (caf::network_error& e) {
+    ret = rRegisterToMasterError;
+    LOG(WARNING) << "cann't connect to " << master_addr_.first << " , "
+                 << master_addr_.second << " in register";
+  }
+  return ret;
+}
+
+RetCode SlaveNode::reRegisterToMaster() {
+  RetCode ret = rSuccess;
+  caf::scoped_actor self;
+  try {
+    LOG(INFO)<<"slave reRegisterToMaster!!"<<endl;
+    master_actor_= caf::io::remote_actor(master_addr_.first,master_addr_.second);
+    self->sync_send(master_actor_, RegisterAtom::value, get_node_ip(),
+                    get_node_port())
+        .await([=](OkAtom, const unsigned int& id, const BaseNode& node) {
+                 set_node_id(id);
+                 node_id_to_addr_.clear();
+                 node_id_to_actor_.clear();
+                 node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
+                                         node.node_id_to_addr_.end());
+                 for (auto it = node_id_to_addr_.begin();
+                      it != node_id_to_addr_.end(); ++it) {
+                   auto actor =
+                       remote_actor(it->second.first, it->second.second);
+                   node_id_to_actor_.insert(make_pair(it->first, actor));
+                 }
+                 LOG(INFO) << "register node succeed! insert "
+                           << node.node_id_to_addr_.size() << " nodes";
+                 caf::scoped_actor self1;
+                 auto slave_self = caf::io::remote_actor(get_node_ip(), get_node_port());
+                 self1->send(slave_self,HeartBeatAtom::value);
                },
                [&](const caf::sync_exited_msg& msg) {
                  LOG(WARNING) << "register link fail";
@@ -266,8 +368,6 @@ RetCode SlaveNode::RegisterToMaster() {
     LOG(WARNING) << "cann't connect to " << master_addr_.first << " , "
                  << master_addr_.second << " in register";
   }
-
   return ret;
 }
-
 } /* namespace claims */
