@@ -255,6 +255,7 @@ RetCode SelectExec::Execute() {
   }
   seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
                                 "physical plan next() succeed", 0, true);
+  // the difference from the execution of normal segment due to getting result
   stmt_exec_status_->set_query_result(physical_plan->GetResultSet());
   stmt_exec_status_->set_exec_info(string("execute a query successfully"));
   physical_plan->Close(seg_exec_status);
@@ -267,10 +268,10 @@ RetCode SelectExec::Execute() {
     //    }
     pthread_join(tid, NULL);
   }
-  seg_exec_status->UnRegisterFromTracker();
+  //  seg_exec_status->UnRegisterFromTracker();
 
   ret = rSuccess;
-  delete seg_exec_status;
+  //  delete seg_exec_status;
   delete logic_plan;
   delete physical_plan;
   return ret;

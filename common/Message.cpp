@@ -34,6 +34,6 @@ void PhysicalQueryPlan::run() {
   block_stream_iterator_root_->Close(segment_exec_status);
   segment_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kDone,
                                     "physical plan close() succeed", 0, true);
-  segment_exec_status->UnRegisterFromTracker();
-  delete segment_exec_status;
+  //  segment_exec_status->UnRegisterFromTracker();
+  //  delete segment_exec_status;
 }
