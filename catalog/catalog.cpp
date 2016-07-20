@@ -40,6 +40,7 @@
 #include "../common/file_handle/file_handle_imp.h"
 #include "../common/file_handle/file_handle_imp_factory.h"
 #include "../common/file_handle/hdfs_connector.h"
+#include "../common/memory_handle.h"
 #include "../common/rename.h"
 #include "../Config.h"
 #include "../loader/single_file_connector.h"
@@ -219,10 +220,12 @@ bool Catalog::IsDataFileExist() {
       if ('T' == file_ptr->d_name[0]) {
         LOG(INFO) << "The data disk file started with 'T': "
                   << file_ptr->d_name[0] << " is existed" << endl;
+        closedir(dir);
         return true;
       }
     }
     LOG(INFO) << "There are no data file in disk" << endl;
+    closedir(dir);
     return false;
   } else {
     int file_num;
@@ -270,7 +273,7 @@ RetCode Catalog::restoreCatalog() {
                                 << Config::catalog_file << " with Read mode");
     assert(ret == rSuccess && "failed to open catalog ");
     uint64_t file_length = 0;
-    void* buffer;
+    void* buffer = NULL;
     EXEC_AND_RETURN_ERROR(ret,
                           read_connector_->LoadTotalFile(buffer, &file_length),
                           "catalog file name: " << catalog_file);
@@ -278,6 +281,7 @@ RetCode Catalog::restoreCatalog() {
     assert(0 != file_length && "catalog'length must not be 0 !");
     LOG(INFO) << "Start to deserialize catalog ..." << endl;
     string temp(static_cast<char*>(buffer), file_length);
+    DELETE_PTR(buffer);  // TEST
     std::istringstream iss(temp);
     boost::archive::text_iarchive ia(iss);
     ia >> *this;

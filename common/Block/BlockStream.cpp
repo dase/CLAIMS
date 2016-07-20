@@ -36,6 +36,17 @@ BlockStreamBase* BlockStreamBase::createBlock(const Schema* const& schema,
     return new BlockStreamVar(block_size, schema);
   }
 }
+
+BlockStreamBase* BlockStreamBase::createBlock2(const Schema* const& schema,
+                                               unsigned block_size) {
+  if (schema->getSchemaType() == Schema::fixed) {
+    return new BlockStreamFix(block_size - sizeof(BlockStreamFix::tail_info),
+                              schema->getTupleMaxSize(), 0, 0);
+  } else {
+    return new BlockStreamVar(block_size, schema);
+  }
+}
+
 BlockStreamBase* BlockStreamBase::createBlockWithDesirableSerilaizedSize(
     Schema* schema, unsigned block_size) {
   if (schema->getSchemaType() == Schema::fixed) {

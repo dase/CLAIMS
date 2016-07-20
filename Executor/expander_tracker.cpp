@@ -13,6 +13,7 @@
 #include "../common/ids.h"
 #include "expander_tracker.h"
 
+#include "../common/memory_handle.h"
 #define DECISION_SHRINK 0
 #define DECISION_EXPAND 1
 #define DECISION_KEEP 2
@@ -42,6 +43,7 @@ ExpanderTracker::~ExpanderTracker() {
   pthread_cancel(monitor_thread_id_);
   instance_ = 0;
   delete log_;
+  expander_id_to_status_.clear();
 }
 
 ExpanderTracker* ExpanderTracker::getInstance() {
@@ -179,8 +181,7 @@ ExpanderID ExpanderTracker::registerNewExpander(
   ExpanderID expander_id;
   lock_.acquire();
   expander_id = IDsGenerator::getInstance()->getUniqueExpanderID();
-  ExpanderStatus* es = new ExpanderStatus(expand_shrink);
-  expander_id_to_status_[expander_id] = es;
+  expander_id_to_status_[expander_id] = new ExpanderStatus(expand_shrink);
   expander_id_to_status_[expander_id]->addNewEndpoint(
       LocalStageEndPoint(stage_desc, "Expander", buffer));
   expander_id_to_expand_shrink_[expander_id] = expand_shrink;
@@ -197,11 +198,13 @@ void ExpanderTracker::unregisterExpander(ExpanderID expander_id) {
        it != thread_id_to_expander_id_.end(); it++) {
     //		assert(it->second!=expander_id);
   }
-  //	delete expander_id_to_status_[expander_id];
+  auto es = expander_id_to_status_.find(expander_id)->second;
   expander_id_to_status_.erase(expander_id);
+
   LOG(INFO) << "erased expander id:" << expander_id
             << " from expander_id_to_status_" << std::endl;
   expander_id_to_expand_shrink_.erase(expander_id);
+  DELETE_PTR(es);
   lock_.release();
 }
 
@@ -216,7 +219,7 @@ void ExpanderTracker::ExpanderStatus::addNewEndpoint(
   //		return;
   //	}
   //	//if the endpoint is exchange or state_stage_start, then the segment
-  //might step into a new local stage.
+  // might step into a new local stage.
   //	switch(new_end_point.type){
   //	case endpoint_state_stage_start:{
   //		assert(!pending_endpoints.empty());
@@ -245,7 +248,7 @@ void ExpanderTracker::ExpanderStatus::addNewEndpoint(
   if (new_end_point.type == stage_desc) {
     pending_endpoints.push(new_end_point);
     //		printf("=======stage
-    //desc:%s\n",new_end_point.end_point_name.c_str());
+    // desc:%s\n",new_end_point.end_point_name.c_str());
   } else {
     /*new_end_point.type==stage_end*/
     LocalStageEndPoint top = pending_endpoints.top();
@@ -327,16 +330,17 @@ int ExpanderTracker::decideExpandingOrShrinking(
    * correctness of the elastic iterator model.
    */
   //	{
-  //		int ret=rand()%2;// overwrite the decide with a random seed to test
-  //the correctness of shrinkage and expansion.
+  //		int ret=rand()%2;// overwrite the decide with a random seed to
+  // test
+  // the correctness of shrinkage and expansion.
   //
   //		if(ret==DECISION_EXPAND){
   //			return
-  //expandeIfNotExceedTheMaxDegreeOfParallelism(current_degree_of_parallelism);
+  // expandeIfNotExceedTheMaxDegreeOfParallelism(current_degree_of_parallelism);
   //		}
   //		if(ret==DECISION_SHRINK){
   //			return
-  //shrinkIfNotExceedTheMinDegreeOfParallelims(current_degree_of_parallelism);
+  // shrinkIfNotExceedTheMinDegreeOfParallelims(current_degree_of_parallelism);
   //		}
   //		return ret;
   //	}
@@ -500,7 +504,7 @@ void* ExpanderTracker::monitoringThread(void* arg) {
       continue;
     }
     //		Pthis->printStatus();
-    boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
+    std::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
         Pthis->expander_id_to_status_.begin();
     for (int tmp = 0; tmp < cur; tmp++) it++;
     ExpanderID id = it->first;
@@ -508,16 +512,16 @@ void* ExpanderTracker::monitoringThread(void* arg) {
     assert(!Pthis->expander_id_to_expand_shrink_.empty());
     bool print = true;
     //		bool
-    //print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
+    // print=it->second.current_stage.dataflow_src_.end_point_name==std::string("Exchange");
     //		print=print&(it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation")!=-1);//
     //----> Agg
     //		bool
-    //print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);
+    // print=(it->second.current_stage.dataflow_desc_.end_point_name.find("join")!=-1);
     ////       ---> Join
     //		print=print&(it->second.current_stage.dataflow_src_.end_point_name.find("Scan")!=-1);
     ////  Scan --->
     //		printf("return=%d %d
-    //print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
+    // print=%d--------------\n",it->second.current_stage.dataflow_src_.end_point_name.find("Aggregation"),it->second.current_stage.dataflow_desc_.end_point_name.find("Aggregation"),print);
     //		bool print=true;
     //		printf("\n");
     SWITCHER(print, Pthis->log_->log("--------%d---------", id))
@@ -609,7 +613,7 @@ void ExpanderTracker::printStatus() {
   }
   printf("\n");
   printf("ExpanderID : ExpanderStatus*\n");
-  for (boost::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
+  for (std::unordered_map<ExpanderID, ExpanderStatus*>::iterator it =
            expander_id_to_status_.begin();
        it != expander_id_to_status_.end(); it++) {
     printf("(%ld,%llx) ", it->first, it->second);
@@ -634,10 +638,16 @@ void ExpanderTracker::printStatus() {
 }
 
 bool ExpanderTracker::trackExpander(ExpanderID id) const {
+  lock_.acquire(); 
   if (expander_id_to_expand_shrink_.find(id) !=
-      expander_id_to_expand_shrink_.end())
+      expander_id_to_expand_shrink_.end()) {
+    lock_.release();
     return true;
-  if (expander_id_to_status_.find(id) != expander_id_to_status_.end())
+  }
+  if (expander_id_to_status_.find(id) != expander_id_to_status_.end()) {
+    lock_.release();
     return true;
+  }
+  lock_.release();
   return false;
 }
