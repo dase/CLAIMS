@@ -44,6 +44,7 @@ using caf::io::remote_actor;
 using caf::make_message;
 using std::make_pair;
 using claims::common::rConRemoteActorError;
+using namespace claims::catalog;
 namespace claims {
 MasterNode* MasterNode::instance_ = 0;
 class MasterNodeActor : public event_based_actor {
@@ -73,8 +74,11 @@ class MasterNodeActor : public event_based_actor {
           if(is_reregister)
           {
             master_node_->RemoveOneNode(tmp_node_id,master_node_);
-            std::cerr<<"master remove old node :"<<tmp_node_id<<"info"<<endl;
             LOG(INFO)<<"master remove old node :"<<tmp_node_id<<"info"<<endl;
+            Environment::getInstance()
+                          ->getResourceManagerMaster()
+                          ->UnRegisterSlave(tmp_node_id);
+            LOG(INFO)<<"master unRegister old node :"<<tmp_node_id<<"info"<<endl;
           }
           LOG(INFO)<<"get register from "<<ip<<",  "<<port<<std::endl;
           unsigned id = master_node_->AddOneNode(ip, port);
@@ -88,22 +92,6 @@ class MasterNodeActor : public event_based_actor {
           if (it != master_node_->node_id_to_heartbeat_.end()){
               it->second = 0;
           }else{
-//            bool has_old = false;
-//            unsigned int old_node_id = 0;
-//            // clear old node info
-//            for(auto & node_info : master_node_->node_id_to_addr_){
-//              if(node_info.second.first == address_)
-//              {
-//                old_node_id = node_info.first;
-//                has_old = true;
-//              }
-//            }
-//            if(has_old)
-//            {
-//              master_node_->node_id_to_heartbeat_.erase(old_node_id);
-//              master_node_->node_id_to_addr_.erase(old_node_id);
-//              master_node_->node_id_to_actor_.erase(old_node_id);
-//            }
             // need add lost slave info
             master_node_->node_id_to_heartbeat_.insert(make_pair(node_id_,0));
             master_node_->node_id_to_addr_.insert(
@@ -139,16 +127,6 @@ class MasterNodeActor : public event_based_actor {
           }
           if(is_losted){
             master_node_->SyncNodeList(master_node_);
-//            try{
-//               caf::scoped_actor self;
-//               for (auto it = master_node_->node_id_to_addr_.begin(); it != master_node_->node_id_to_addr_.end(); ++it)
-//               {
-//                 self->send(master_node_->node_id_to_actor_.at(it->first), SyncNodeInfo::value,*((BaseNode*)master_node_));
-//                 LOG(INFO)<<" node lost ,start sync to node: "<<it->first<<endl;
-//               }
-//             }catch(caf::network_error& e){
-//               LOG(INFO) <<"sync failure"<<endl;
-//             }
              is_losted=false;
           }
           delayed_send(this, std::chrono::seconds(kTimeout/5), Updatelist::value);
@@ -256,6 +234,35 @@ void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
   master_node->node_id_to_actor_.erase(node_id);
   master_node->lock_.release();
   LOG(INFO) <<"finish remove node :"<<node_id<<endl;
+  Catalog* catalog = Catalog::getInstance();
+  ostringstream ostr;
+  catalog->GetAllTables(ostr);
+  string tables = ostr.str();
+  vector<string> table_list;
+  for(int i = 0,j= 0 ; j < tables.size(); j++)
+  {
+    if(tables[j] == '\t')
+    {
+      table_list.push_back(tables.substr(i,j-i));
+      i = j;
+    }
+  }
+  LOG(INFO) <<"get all tables :"<<std::endl;
+  for (auto table_name : table_list){
+    LOG(INFO) <<"(~~~~~~~~~~~~~~~~~~~~~~ "<< table_name<<" ~~~~~~~~~~~~~~~~~~~~~~~)";
+    vector<ProjectionDescriptor*>* projection_list = catalog->getTable(table_name)->GetProjectionList();
+    for( auto projecton : *projection_list )
+    {
+      vector<PartitionInfo *> partition_info_list = projecton->getPartitioner()->getPartitionList();
+      for(auto partition_info : partition_info_list){
+        if(partition_info->get_location() == node_id){
+          LOG(INFO)<<node_id<<"'s partition is unbinding"<<endl;
+          partition_info->unbind_all_blocks();
+        }
+      }
+    }
+  }
+  LOG(INFO)<<std::endl;
 }
 void MasterNode::SyncNodeList(MasterNode* master_node)
 {

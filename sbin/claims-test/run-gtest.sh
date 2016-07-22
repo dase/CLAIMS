@@ -11,4 +11,8 @@ while [ 1 ]
 do
   echo "claimsserver is running..."
   ./install/test --ip $master --port $client_listener_port
+  if [ $? -ne 0 ]; then
+      echo "test error."
+      exit 0
+  fi
 done

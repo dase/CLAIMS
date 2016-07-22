@@ -147,12 +147,12 @@ class SlaveNodeActor : public event_based_actor {
           }
 
           slave_node_->heartbeat_count_++;
-          std::cerr<<"node_list:";
-          for (auto it = slave_node_->node_id_to_addr_.begin(); it != slave_node_->node_id_to_addr_.end();++it)
-          {
-            std::cerr<<"node id:"<<it->first<<"ip:"<<it->second.first<<"port:"<<it->second.second<<endl;
-          }
-          std::cerr<<"actor size"<<slave_node_->node_id_to_actor_.size()<<endl;
+//          std::cerr<<"node_list:";
+//          for (auto it = slave_node_->node_id_to_addr_.begin(); it != slave_node_->node_id_to_addr_.end();++it)
+//          {
+//            std::cerr<<"node id:"<<it->first<<"ip:"<<it->second.first<<"port:"<<it->second.second<<endl;
+//          }
+//          std::cerr<<"actor size"<<slave_node_->node_id_to_actor_.size()<<endl;
           delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
           if(slave_node_->heartbeat_count_ > 5){
             LOG(INFO)<<"slave lost heartbeat from master, start register again"<<endl;
@@ -163,8 +163,7 @@ class SlaveNodeActor : public event_based_actor {
                   std::cerr<<"slave reregister"<<endl;
                   auto ret = slave_node_->reRegisterToMaster();
                   if (ret == rSuccess){
-                    LOG(INFO)<<"reregister successfully unbecome  !!"<<endl;
-                    std::cerr<<"reregister successfully unbecome  !!"<<endl;
+                    LOG(INFO)<<"reregister successfully turn to healthy!!"<<endl;
                     slave_node_->heartbeat_count_= 0;
                     is_success = true;
                     unbecome();

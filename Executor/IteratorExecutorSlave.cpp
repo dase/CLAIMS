@@ -33,9 +33,9 @@ void* IteratorExecutorSlave::run_iterator(void* arg) {
   it->destory();
   delete it;
   LOG(INFO) << "A iterator tree is successfully executed!\n";
+  Pthis->lock_.acquire();
   assert(Pthis->busy_thread_list_.find(pthread_self()) !=
          Pthis->busy_thread_list_.end());
-  Pthis->lock_.acquire();
   Pthis->busy_thread_list_.erase(pthread_self());
   Pthis->lock_.release();
   delete[]((void**)arg);

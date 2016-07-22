@@ -279,7 +279,7 @@ class Partitioner {
   bool allPartitionBound() const;
 
   vector<PartitionID> getPartitionIDList();
-
+  vector<PartitionInfo *> getPartitionList(){ return partition_info_list; }
  private:
   Attribute *partition_key_;
   PartitionFunction *partition_function_;
