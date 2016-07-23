@@ -106,7 +106,8 @@ bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
     lock_.release();
     LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
               << " update logic_time= " << logic_time
-              << " exec_status_= " << exec_status;
+              << " exec_status_= " << exec_status
+              << " exec_info_= " << exec_info;
     if (need_report) {
       ++logic_time_;
       caf::scoped_actor self;
