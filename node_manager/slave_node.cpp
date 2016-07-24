@@ -148,8 +148,8 @@ class SlaveNodeActor : public event_based_actor {
 
           slave_node_->heartbeat_count_++;
           delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
-          if(slave_node_->heartbeat_count_ > 5){
-            LOG(INFO)<<"slave lost heartbeat from master, start register again"<<endl;
+          if(slave_node_->heartbeat_count_ > 10){
+            LOG(INFO)<<"slave"<<slave_node_->node_id_<<"lost heartbeat from master, start register again"<<endl;
             bool is_success = false;
             become(
                 caf::keep_behavior,
