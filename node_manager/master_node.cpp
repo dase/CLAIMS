@@ -65,7 +65,7 @@ class MasterNodeActor : public event_based_actor {
           for(auto it = master_node_->node_id_to_addr_.begin();
               it != master_node_->node_id_to_addr_.end();++it)
           {
-            if(it->second.first == ip)
+            if(it->second.first == ip & master_node_->master_addr_.first != ip)
             {
               is_reregister = true;
               tmp_node_id = it->first;
