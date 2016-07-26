@@ -350,6 +350,24 @@ void Catalog::GetAllTables(ostringstream& ostr) const {
     }
   }
 }
-
+vector<TableID> Catalog::GetAllTablesID()const
+{
+  vector<TableID> table_id_list;
+  for (int id = 0; id < getTableCount(); ++id){
+    auto it_tableid_to_table = tableid_to_table.find(id);
+    if (tableid_to_table.end() != it_tableid_to_table) {
+      string tbname = it_tableid_to_table->second->getTableName();
+      int len = tbname.length();
+      if (len >= 4 && tbname.substr(len - 4, len) == "_DEL" &&
+               name_to_table.find(tbname.substr(0, len - 4)) !=
+                   name_to_table.cend()) {
+             // hide the deleted data table created by claims
+      }else{
+        table_id_list.push_back(it_tableid_to_table->first);
+      }
+    }
+  }
+  return table_id_list;
+}
 } /* namespace catalog */
 } /* namespace claims */

@@ -291,7 +291,7 @@ RetCode SlaveNode::RegisterToMaster() {
                     get_node_port())
         .await([=](OkAtom, const unsigned int& id, const BaseNode& node) {
                  set_node_id(id);
-
+                 heartbeat_count_ = 0;
                  node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
                                          node.node_id_to_addr_.end());
                  for (auto it = node_id_to_addr_.begin();

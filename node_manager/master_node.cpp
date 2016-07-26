@@ -236,34 +236,34 @@ void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
   master_node->lock_.release();
   LOG(INFO) <<"finish remove node :"<<node_id<<endl;
   Catalog* catalog = Catalog::getInstance();
-  ostringstream ostr;
-  catalog->GetAllTables(ostr);
-  string tables = ostr.str();
-  vector<string> table_list;
-  for(int i = 0,j= 0 ; j < tables.size(); j++)
-  {
-    if(tables[j] == '\t')
+  vector<TableID> table_id_list = catalog->GetAllTablesID();
+  for (auto table_id : table_id_list){
+    TableDescriptor* table = catalog->getTable(table_id);
+    if(table != NULL){
+    LOG(INFO) <<"(~~~~~~~~~~~~~~~~~~~~~~ "<< table->getTableName()<<" ~~~~~~~~~~~~~~~~~~~~~~~)";
+    vector<ProjectionDescriptor*>* projection_list =  table ->GetProjectionList();
+    if(projection_list != NULL)
     {
-      table_list.push_back(tables.substr(i,j-i));
-      i = j;
-    }
-  }
-  LOG(INFO) <<"get all tables :"<<std::endl;
-  for (auto table_name : table_list){
-    LOG(INFO) <<"(~~~~~~~~~~~~~~~~~~~~~~ "<< table_name<<" ~~~~~~~~~~~~~~~~~~~~~~~)";
-    vector<ProjectionDescriptor*>* projection_list = catalog->getTable(table_name)->GetProjectionList();
-    for( auto projecton : *projection_list )
-    {
-      vector<PartitionInfo *> partition_info_list = projecton->getPartitioner()->getPartitionList();
-      for(auto partition_info : partition_info_list){
-        if(partition_info->get_location() == node_id){
-          LOG(INFO)<<node_id<<"'s partition is unbinding"<<endl;
-          partition_info->unbind_all_blocks();
+      for(auto projection : *projection_list)
+      {
+        Partitioner* partitioner = projection->getPartitioner();
+        if(partitioner != NULL)
+        {
+          vector<PartitionInfo *> partition_info_list = partitioner->getPartitionList();
+          if(partition_info_list.size() != 0){
+            for(auto partition_info : partition_info_list){
+              if(partition_info->get_location() == node_id){
+                LOG(INFO)<<node_id<<"'s partition is unbinding"<<endl;
+                partition_info->unbind_all_blocks();
+              }
+            }
+          }
         }
       }
     }
   }
-  LOG(INFO)<<std::endl;
+ }
+ LOG(INFO)<<std::endl;
 }
 void MasterNode::SyncNodeList(MasterNode* master_node)
 {

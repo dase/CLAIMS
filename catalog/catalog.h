@@ -84,6 +84,7 @@ class Catalog {
   TableDescriptor* getTable(const TableID&) const;
   TableDescriptor* getTable(const std::string& table_name) const;
   void GetAllTables(ostringstream& ostr) const;
+  vector<TableID> GetAllTablesID()const;
   ProjectionDescriptor* getProjection(const ProjectionID&) const;
   ProjectionBinding* getBindingModele() const;
 
