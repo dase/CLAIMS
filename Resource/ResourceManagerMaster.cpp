@@ -21,6 +21,7 @@ void ResourceManagerMaster::RegisterNewSlave(const NodeID new_node_id) {
 }
 void ResourceManagerMaster::UnRegisterSlave(const NodeID old_node_id){
   delete node_to_resourceinfo_[old_node_id];
+  node_to_resourceinfo_.erase(old_node_id);
 }
 
 std::vector<NodeID> ResourceManagerMaster::getSlaveIDList() {

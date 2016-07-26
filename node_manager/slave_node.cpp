@@ -111,7 +111,6 @@ class SlaveNodeActor : public event_based_actor {
           if(is_reregister){
             slave_node_->node_id_to_addr_.erase(tmp_node_id);
             slave_node_->node_id_to_actor_.erase(tmp_node_id);
-            std::cerr<<"slave "<<slave_node_->get_node_id()<<"remove old node :"<<tmp_node_id<<"info"<<endl;
             LOG(INFO)<<"slave "<<slave_node_->get_node_id()<<"remove old node :"<<tmp_node_id<<"info"<<endl;
           }
           slave_node_->AddOneNode(node_id, node_ip, node_port);
@@ -136,6 +135,12 @@ class SlaveNodeActor : public event_based_actor {
                       slave_node_->node_addr_.first,slave_node_->node_addr_.second).then(
                 [=](OkAtom){
                   slave_node_->heartbeat_count_ = 0;
+                },
+                [=](OkAtom ,unsigned int node_id){
+                  slave_node_->heartbeat_count_ = 0;
+                  auto old_id = slave_node_->get_node_id();
+                  slave_node_->set_node_id(node_id);
+                  LOG(INFO)<<"slave node change id from"<<old_id<<"to "<<node_id<<endl;
                 }
             );
           }catch(caf::network_error& e){
@@ -148,7 +153,7 @@ class SlaveNodeActor : public event_based_actor {
 
           slave_node_->heartbeat_count_++;
           delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
-          if(slave_node_->heartbeat_count_ > 10){
+          if(slave_node_->heartbeat_count_ > kTimeout){
             LOG(INFO)<<"slave"<<slave_node_->node_id_<<"lost heartbeat from master, start register again"<<endl;
             bool is_success = false;
             become(

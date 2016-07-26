@@ -86,29 +86,40 @@ class MasterNodeActor : public event_based_actor {
           Environment::getInstance()
               ->getResourceManagerMaster()
               ->RegisterNewSlave(id);
+          LOG(INFO)<<"master Register slave node :"<<id<<endl;
           return make_message(OkAtom::value, id, *((BaseNode*)master_node_));
         },
         [=](HeartBeatAtom, unsigned int node_id_, string address_, uint16_t port_) -> caf::message {
           auto it = master_node_->node_id_to_heartbeat_.find(node_id_);
           if (it != master_node_->node_id_to_heartbeat_.end()){
               it->second = 0;
+              return make_message(OkAtom::value);
           }else{
-            // need add lost slave info
-            master_node_->node_id_to_heartbeat_.insert(make_pair(node_id_,0));
+            // need add lost slave info,give lost slave a new ID
+            master_node_->lock_.acquire();
+            master_node_->node_id_gen_++;
+            auto node_id = master_node_->node_id_gen_.load();
+            master_node_->node_id_to_heartbeat_.insert(
+                make_pair((unsigned int)master_node_->node_id_gen_,0));
             master_node_->node_id_to_addr_.insert(
-                make_pair(node_id_, make_pair(address_, port_)));
+                make_pair((int)master_node_->node_id_gen_, make_pair(address_, port_)));
             try {
                 auto actor = remote_actor(address_, port_);
                 master_node_->node_id_to_actor_.insert(
-                    make_pair((unsigned int)node_id_, actor));
+                    make_pair((int)master_node_->node_id_gen_, actor));
               } catch (caf::network_error& e) {
                 LOG(WARNING) << "cann't connect to node ( " << address_ << " , " << port_
                              << " ) and create remote actor failed in heartbeat stage!!";
                 assert(false);
               }
+              Environment::getInstance()
+                            ->getResourceManagerMaster()
+                            ->RegisterNewSlave((int)master_node_->node_id_gen_);
+              LOG(INFO)<<"master Register slave node :"<<master_node_->node_id_gen_<<endl;
+              master_node_->lock_.release();
               master_node_->SyncNodeList(master_node_);
+              return make_message(OkAtom::value, (unsigned int)node_id);
           }
-          return make_message(OkAtom::value);
         },
         [=](Updatelist){
           bool is_losted = false;
@@ -123,6 +134,10 @@ class MasterNodeActor : public event_based_actor {
                     auto node_id = it->first;
                     it = master_node_->node_id_to_heartbeat_.erase(it);
                     master_node_->RemoveOneNode(node_id, master_node_);
+                    Environment::getInstance()
+                        ->getResourceManagerMaster()
+                        ->UnRegisterSlave(node_id);
+                    LOG(INFO)<<"master unRegister old node :"<<node_id<<"info"<<endl;
                   }
             }
           }
