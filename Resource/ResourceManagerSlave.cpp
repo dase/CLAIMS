@@ -35,6 +35,7 @@ void InstanceResourceManager::ReportStorageBudget(
             LOG(WARNING) << "reporting storage budget, but timeout 30s !!"
                          << endl;
           });
+     LOG(INFO)<<"node :"<<message.nodeid<<"report storage finish"<<endl;
 }
 
 void InstanceResourceManager::setStorageBudget(unsigned long memory,

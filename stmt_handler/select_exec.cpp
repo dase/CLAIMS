@@ -352,7 +352,7 @@ RetCode SelectExec::IsUpperExchangeRegistered(
       if (stmt_exec_status_->IsCancelled()) {
         return -1;
       }
-      LOG(WARNING) << "busy asking socke connection info!! times= " << ++times
+      LOG(WARNING) << "busy asking socket connection info!! times= " << ++times
                    << endl;
       usleep(200);
     }

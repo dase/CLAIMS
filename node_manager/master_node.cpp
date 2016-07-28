@@ -66,7 +66,7 @@ class MasterNodeActor : public event_based_actor {
               it != master_node_->node_id_to_addr_.end();++it)
           {
             //port
-            if(it->second.first == ip & master_node_->master_addr_.first != ip)
+            if((it->second.first == ip) & (master_node_->master_addr_.first != ip))
             {
               is_reregister = true;
               tmp_node_id = it->first;
@@ -95,30 +95,18 @@ class MasterNodeActor : public event_based_actor {
               it->second = 0;
               return make_message(OkAtom::value);
           }else{
-            // need add lost slave info,give lost slave a new ID
-            master_node_->lock_.acquire();
-            master_node_->node_id_gen_++;
-            auto node_id = master_node_->node_id_gen_.load();
-            master_node_->node_id_to_heartbeat_.insert(
-                make_pair((unsigned int)master_node_->node_id_gen_,0));
-            master_node_->node_id_to_addr_.insert(
-                make_pair((int)master_node_->node_id_gen_, make_pair(address_, port_)));
-            try {
-                auto actor = remote_actor(address_, port_);
-                master_node_->node_id_to_actor_.insert(
-                    make_pair((int)master_node_->node_id_gen_, actor));
-              } catch (caf::network_error& e) {
-                LOG(WARNING) << "cann't connect to node ( " << address_ << " , " << port_
-                             << " ) and create remote actor failed in heartbeat stage!!";
-                assert(false);
-              }
-              Environment::getInstance()
-                            ->getResourceManagerMaster()
-                            ->RegisterNewSlave((int)master_node_->node_id_gen_);
-              LOG(INFO)<<"master Register slave node :"<<master_node_->node_id_gen_<<endl;
-              master_node_->lock_.release();
-              master_node_->SyncNodeList(master_node_);
-              return make_message(OkAtom::value, (unsigned int)node_id);
+//            master_node_->RemoveOneNode(node_id_,master_node_);
+//            LOG(INFO)<<"master remove old node :"<<node_id_<<"info"<<endl;
+//            Environment::getInstance()->getResourceManagerMaster()
+//                                      ->UnRegisterSlave(node_id_);
+//            LOG(INFO)<<"master unRegister old node :"<<node_id_<<"info"<<endl;
+            LOG(INFO)<<"get heartbeat and register from "<<address_<<",  "<<port_<<std::endl;
+            unsigned id = master_node_->AddOneNode(address_, port_);
+            Environment::getInstance()
+                          ->getResourceManagerMaster()
+                          ->RegisterNewSlave(id);
+            LOG(INFO)<<"master Register slave node :"<<id<<endl;
+            return make_message(OkAtom::value, id, *((BaseNode*)master_node_));
           }
         },
         [=](Updatelist){
@@ -233,12 +221,13 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
   try {
     auto actor = remote_actor(node_ip, node_port);
     node_id_to_actor_.insert(make_pair((unsigned int)node_id_gen_, actor));
+    LOG(INFO)<<"actor"<<node_id_gen_<<"address"<<node_ip<<"`````"<<node_port<<endl;
   } catch (caf::network_error& e) {
     LOG(WARNING) << "cann't connect to node ( " << node_ip << " , " << node_port
                  << " ) and create remote actor failed!!";
     assert(false);
   }
-  LOG(INFO) << "slave : register one node( " << node_id_gen_ << " < " << node_ip
+  LOG(INFO) << "register one node( " << node_id_gen_ << " < " << node_ip
             << " " << node_port << " > )" << std::endl;
   lock_.release();
   return node_id_gen_;

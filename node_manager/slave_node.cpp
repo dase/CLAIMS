@@ -69,6 +69,7 @@ class SlaveNodeActor : public event_based_actor {
         [=](SendPlanAtom, string str) {
           PhysicalQueryPlan* new_plan = new PhysicalQueryPlan(
               PhysicalQueryPlan::TextDeserializePlan(str));
+          LOG(INFO)<<"enter SendPlanAtom ~ !"<<endl;
           Environment::getInstance()
               ->getIteratorExecutorSlave()
               ->createNewThreadAndRun(new_plan);
@@ -85,7 +86,7 @@ class SlaveNodeActor : public event_based_actor {
         [=](BindingAtom, const PartitionID partition_id,
             const unsigned number_of_chunks,
             const StorageLevel desirable_storage_level) {
-          LOG(INFO) << "receive binding message!" << endl;
+          LOG(INFO) << "slave "<<slave_node_->get_node_id()<<" receive binding message!" << endl;
           Environment::getInstance()->get_block_manager()->AddPartition(
               partition_id, number_of_chunks, desirable_storage_level);
           return make_message(OkAtom::value);
@@ -136,11 +137,23 @@ class SlaveNodeActor : public event_based_actor {
                 [=](OkAtom){
                   slave_node_->heartbeat_count_ = 0;
                 },
-                [=](OkAtom ,unsigned int node_id){
-                  slave_node_->heartbeat_count_ = 0;
-                  auto old_id = slave_node_->get_node_id();
+                [=](OkAtom ,unsigned int node_id,const BaseNode& node){
                   slave_node_->set_node_id(node_id);
-                  LOG(INFO)<<"slave node change id from"<<old_id<<"to "<<node_id<<endl;
+                  Environment::getInstance()->setNodeID(node_id);
+                  slave_node_->node_id_to_addr_.clear();
+                  slave_node_->node_id_to_actor_.clear();
+                  slave_node_->node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
+                                          node.node_id_to_addr_.end());
+                  for (auto it = slave_node_->node_id_to_addr_.begin();
+                      it != slave_node_->node_id_to_addr_.end(); ++it) {
+                    auto actor =
+                        remote_actor(it->second.first, it->second.second);
+                    slave_node_->node_id_to_actor_.insert(make_pair(it->first, actor));
+                  }
+                  LOG(INFO) << "register node succeed in heartbeart stage! insert "
+                      << node.node_id_to_addr_.size() << " nodes";
+                  slave_node_->heartbeat_count_ = 0;
+                  BlockManager::getInstance()->initialize();
                 }
             );
           }catch(caf::network_error& e){
@@ -152,24 +165,26 @@ class SlaveNodeActor : public event_based_actor {
           }
 
           slave_node_->heartbeat_count_++;
-          delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
           if(slave_node_->heartbeat_count_ > kTimeout){
             LOG(INFO)<<"slave"<<slave_node_->node_id_<<"lost heartbeat from master, start register again"<<endl;
             bool is_success = false;
             become(
                 caf::keep_behavior,
                 [=, &is_success](RegisterAtom){
-                  std::cerr<<"slave reregister"<<endl;
                   auto ret = slave_node_->reRegisterToMaster();
                   if (ret == rSuccess){
-                    LOG(INFO)<<"reregister successfully turn to healthy!!"<<endl;
+                    LOG(INFO)<<"reregister successfully turn to healthy!!the node id is "<<slave_node_->get_node_id()<<endl;
+                    std::cout<<"reregister successfully turn to healthy!! the node id is "<<slave_node_->get_node_id()<<endl;
                     slave_node_->heartbeat_count_= 0;
+                    //report storage message to new master
+                    BlockManager::getInstance()->initialize();
                     is_success = true;
                     unbecome();
                   }else{
                     caf::scoped_actor self;
                     delayed_send(this,std::chrono::seconds(kTimeout/2),RegisterAtom::value);
-                    LOG(WARNING)<<"register fail, slave will register in 2 seconds"<<endl;
+                    LOG(WARNING)<<"register fail, slave will register in 5 seconds"<<endl;
+                    std::cerr<<"register fail, slave will register in 5 seconds"<<endl;
                   }
                 });
             if(!is_success)
@@ -178,6 +193,7 @@ class SlaveNodeActor : public event_based_actor {
               self->send(this,RegisterAtom::value);
             }
           }
+          delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
         },
         [=](SyncNodeInfo, const BaseNode& node){
           slave_node_->node_id_to_addr_.clear();
@@ -196,7 +212,7 @@ class SlaveNodeActor : public event_based_actor {
             }
           }
           LOG(INFO) <<"node"<<slave_node_->get_node_id()
-              <<"update nodelist info successfully"<<endl;
+              <<"update nodelist info successfully, now size is"<<slave_node_->node_id_to_addr_.size()<<endl;
         },
         [=](OkAtom){
         },
@@ -337,6 +353,7 @@ RetCode SlaveNode::reRegisterToMaster() {
                     get_node_port())
         .await([=](OkAtom, const unsigned int& id, const BaseNode& node) {
                  set_node_id(id);
+                 Environment::getInstance()->setNodeID(id);
                  node_id_to_addr_.clear();
                  node_id_to_actor_.clear();
                  node_id_to_addr_.insert(node.node_id_to_addr_.begin(),
@@ -349,9 +366,6 @@ RetCode SlaveNode::reRegisterToMaster() {
                  }
                  LOG(INFO) << "register node succeed! insert "
                            << node.node_id_to_addr_.size() << " nodes";
-                 caf::scoped_actor self1;
-                 auto slave_self = caf::io::remote_actor(get_node_ip(), get_node_port());
-                 self1->send(slave_self,HeartBeatAtom::value);
                },
                [&](const caf::sync_exited_msg& msg) {
                  LOG(WARNING) << "register link fail";

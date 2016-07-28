@@ -20,8 +20,12 @@ void ResourceManagerMaster::RegisterNewSlave(const NodeID new_node_id) {
   node_to_resourceinfo_[new_node_id] = new InstanceResourceInfo();
 }
 void ResourceManagerMaster::UnRegisterSlave(const NodeID old_node_id){
+  auto it = node_to_resourceinfo_.find(old_node_id);
+  if (it != node_to_resourceinfo_.end())
+  {
   delete node_to_resourceinfo_[old_node_id];
   node_to_resourceinfo_.erase(old_node_id);
+  }
 }
 
 std::vector<NodeID> ResourceManagerMaster::getSlaveIDList() {
@@ -58,7 +62,7 @@ bool ResourceManagerMaster::ApplyMemoryBuget(NodeID target,
     return false;
   }
   if (node_to_resourceinfo_[target]->memory.take(size_in_mb)) return true;
-  LOG(ERROR) << "no memory!!" << endl;
+  LOG(ERROR) << "node :"<<target<<"no memory!!" << endl;
   return false;
 }
 
