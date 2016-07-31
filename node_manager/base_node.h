@@ -36,7 +36,7 @@
 #include <unordered_map>
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
-
+#include <glog/logging.h>
 #include "../common/ids.h"
 #include "../utility/lock.h"
 using std::pair;
@@ -64,8 +64,10 @@ using Updatelist = caf::atom_constant<caf::atom("updatelist")>;
 using SyncNodeInfo = caf::atom_constant<caf::atom("syncinfo")>;
 
 
-const int kTimeout = 10;
+
 const int kMaxTryTimes = 5;
+using ReportSAtom = caf::atom_constant<caf::atom("report")>;
+const int kTimeout = 5;
 class MemoryInfo {};
 class DiskInfo {};
 typedef pair<string, uint16_t> NodeAddr;

@@ -66,7 +66,7 @@ class MasterNodeActor : public event_based_actor {
               it != master_node_->node_id_to_addr_.end();++it)
           {
             //port
-            if((it->second.first == ip) & (master_node_->master_addr_.first != ip))
+            if((it->second.first == ip))
             {
               is_reregister = true;
               tmp_node_id = it->first;
@@ -75,6 +75,7 @@ class MasterNodeActor : public event_based_actor {
           if(is_reregister)
           {
             master_node_->RemoveOneNode(tmp_node_id,master_node_);
+            master_node_->node_id_to_heartbeat_.erase(tmp_node_id);
             LOG(INFO)<<"master remove old node :"<<tmp_node_id<<"info"<<endl;
             Environment::getInstance()
                           ->getResourceManagerMaster()
@@ -95,11 +96,6 @@ class MasterNodeActor : public event_based_actor {
               it->second = 0;
               return make_message(OkAtom::value);
           }else{
-//            master_node_->RemoveOneNode(node_id_,master_node_);
-//            LOG(INFO)<<"master remove old node :"<<node_id_<<"info"<<endl;
-//            Environment::getInstance()->getResourceManagerMaster()
-//                                      ->UnRegisterSlave(node_id_);
-//            LOG(INFO)<<"master unRegister old node :"<<node_id_<<"info"<<endl;
             LOG(INFO)<<"get heartbeat and register from "<<address_<<",  "<<port_<<std::endl;
             unsigned id = master_node_->AddOneNode(address_, port_);
             Environment::getInstance()
@@ -112,20 +108,23 @@ class MasterNodeActor : public event_based_actor {
         [=](Updatelist){
           bool is_losted = false;
           if(master_node_->node_id_to_heartbeat_.size() > 0){
-            for (auto it = master_node_->node_id_to_heartbeat_.begin();
-                it != master_node_->node_id_to_heartbeat_.end();++it){
+            for (auto it = master_node_->node_id_to_heartbeat_.begin();it != master_node_->node_id_to_heartbeat_.end();)
+            {
                   it->second++;
-                  if (it->second >= kMaxTryTimes){
-                    is_losted = true;
-                    LOG(WARNING) <<"master : lost hearbeat from ( node "
-                        <<it->first<<")"<<endl;
+                  {
+                    if (it->second >= kMaxTryTimes){
+                      is_losted = true;
+                      LOG(WARNING) <<"master : lost hearbeat from ( node "<<it->first<<")"<<endl;
                     auto node_id = it->first;
-                    it = master_node_->node_id_to_heartbeat_.erase(it);
+                    auto tmp_it = it;
+                    it++;
+                    master_node_->node_id_to_heartbeat_.erase(tmp_it);
                     master_node_->RemoveOneNode(node_id, master_node_);
                     Environment::getInstance()
                         ->getResourceManagerMaster()
                         ->UnRegisterSlave(node_id);
                     LOG(INFO)<<"master unRegister old node :"<<node_id<<"info"<<endl;
+                    }else{ it++;}
                   }
             }
           }
@@ -147,6 +146,19 @@ class MasterNodeActor : public event_based_actor {
                     << " , mem = " << message.memory_budget << endl;
           return make_message(OkAtom::value);
         },
+        [&](StorageBudgetAtom, const StorageBudgetMessage& message)
+            -> caf::message {
+              Environment::getInstance()
+                  ->getResourceManagerMaster()
+                  ->RegisterDiskBuget(message.nodeid, message.disk_budget);
+              Environment::getInstance()
+                  ->getResourceManagerMaster()
+                  ->RegisterMemoryBuget(message.nodeid, message.memory_budget);
+              LOG(INFO) << "receive storage budget message!! node: "
+                        << message.nodeid << " : disk = " << message.disk_budget
+                        << " , mem = " << message.memory_budget << endl;
+              return make_message(OkAtom::value);
+            },
         [=](ExitAtom) {
           LOG(INFO) << "master " << master_node_->get_node_id() << " finish!"
                     << endl;
@@ -234,7 +246,6 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
 }
 void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
   master_node->lock_.acquire();
-  master_node->node_id_to_heartbeat_.erase(node_id);
   master_node->node_id_to_addr_.erase(node_id);
   master_node->node_id_to_actor_.erase(node_id);
   master_node->lock_.release();
@@ -267,7 +278,6 @@ void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
     }
   }
  }
- LOG(INFO)<<std::endl;
 }
 void MasterNode::SyncNodeList(MasterNode* master_node)
 {

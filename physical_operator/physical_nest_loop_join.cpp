@@ -33,6 +33,7 @@
 #include "../common/Block/BlockStream.h"
 #include "../physical_operator/physical_operator_base.h"
 #include "../common/expression/expr_node.h"
+#include "../common/memory_handle.h"
 using claims::common::ExprNode;
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "../common/log/logging.h"
@@ -47,8 +48,8 @@ PhysicalNestLoopJoin::PhysicalNestLoopJoin()
 }
 
 PhysicalNestLoopJoin::~PhysicalNestLoopJoin() {
-  //  DELETE_PTR(state_.child_left_);
-  //  DELETE_PTR(state_.child_right_);
+  DELETE_PTR(state_.child_left_);
+  DELETE_PTR(state_.child_right_);
   //  DELETE_PTR(state_.input_schema_left_);
   //  DELETE_PTR(state_.input_schema_right_);
   //  for (int i = 0; i < state_.join_condi_.size(); ++i) {
@@ -115,8 +116,16 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
   NestLoopJoinContext *jtc = CreateOrReuseContext(crm_numa_sensitive);
   // create a new block to hold the results from the left child
   // and add results to the dynamic buffer
+  //  jtc->block_for_asking_ == BlockStreamBase::createBlock(
+  //                                state_.input_schema_left_,
+  //                                state_.block_size_);
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
-
+  //  auto temp = jtc->block_for_asking_->getBlock();
+  //  cout << "temp start" << temp << endl;
+  //
+  //  cout << "init block_for_asking_ : " << jtc->block_for_asking_->getBlock()
+  //       << " is reference : " << jtc->block_for_asking_->isIsReference() <<
+  //       endl;
   while (state_.child_left_->Next(exec_status, jtc->block_for_asking_)) {
     if (exec_status->is_cancelled()) {
       if (NULL != jtc->block_for_asking_) {
@@ -125,10 +134,24 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
       }
       return false;
     }
-
+    //    cout << "after assgin start :" << jtc->block_for_asking_->getBlock()
+    //         << " is reference : " << jtc->block_for_asking_->isIsReference()
+    //         << endl;
     block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
+    //    if (!jtc->block_for_asking_->isIsReference()) {
     CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
+    //    } else {
+    //      //      cout << "temp after" << temp << endl;
+    //      //      delete temp;
+    //      CreateBlockStream(jtc->block_for_asking_,
+    //      state_.input_schema_left_);
+    //      jtc->block_for_asking_->setIsReference(false);
+    //    }
+    //    cout << "new start :" << jtc->block_for_asking_->getBlock()
+    //         << " is reference : " << jtc->block_for_asking_->isIsReference()
+    //         << endl;
   }
+  //  cout << "buffer_size_ : " << block_buffer_->GetBufferSize() << endl;
   //  the last block is created without storing the results from the left
   // child
 
@@ -147,7 +170,10 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
     return true;  // the
   }
   BarrierArrive(1);  // ??ERROR
-  //	join_thread_context* jtc=new join_thread_context();
+                     //	join_thread_context* jtc=new join_thread_context();
+                     //  jtc->block_for_asking_ == BlockStreamBase::createBlock(
+  //                                state_.input_schema_right_,
+  //                                state_.block_size_);
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_right_);
   jtc->block_for_asking_->setEmpty();
   jtc->block_stream_iterator_ = jtc->block_for_asking_->createIterator();
@@ -280,7 +306,6 @@ bool PhysicalNestLoopJoin::Next(SegmentExecStatus *const exec_status,
         return true;
       }
     }
-    //    jtc->block_stream_iterator_->~BlockStreamTraverseIterator();
     if (jtc->block_stream_iterator_ != NULL) {
       delete jtc->block_stream_iterator_;
       jtc->block_stream_iterator_ = NULL;
@@ -323,7 +348,11 @@ bool PhysicalNestLoopJoin::WithoutJoinCondi(
   */
 bool PhysicalNestLoopJoin::CreateBlockStream(BlockStreamBase *&target,
                                              Schema *&schema) const {
+  //  if (target->isIsReference()) {
+  //    target = BlockStreamBase::createBlock2(schema, state_.block_size_);
+  //  } else {
   target = BlockStreamBase::createBlock(schema, state_.block_size_);
+  //  }
   if (NULL == target) {
     assert(false);
     return false;

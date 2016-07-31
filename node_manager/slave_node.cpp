@@ -47,6 +47,7 @@
 #include "../common/error_define.h"
 using caf::io::remote_actor;
 using caf::make_message;
+using caf::message;
 using std::make_pair;
 using std::unordered_map;
 using claims::common::rConRemoteActorError;
@@ -66,18 +67,25 @@ class SlaveNodeActor : public event_based_actor {
                     << endl;
           quit();
         },
-        [=](SendPlanAtom, string str) {
+        [=](SendPlanAtom, string str, u_int64_t query_id,
+            u_int32_t segment_id) {
+          LOG(INFO) << "coor node receive one plan " << query_id << " , "
+                    << segment_id << " plan string size= " << str.length();
           PhysicalQueryPlan* new_plan = new PhysicalQueryPlan(
               PhysicalQueryPlan::TextDeserializePlan(str));
-          LOG(INFO)<<"enter SendPlanAtom ~ !"<<endl;
+          LOG(INFO) << "coor node deserialized plan " << query_id << " , "
+                    << segment_id;
+          ticks start = curtick();
           Environment::getInstance()
               ->getIteratorExecutorSlave()
               ->createNewThreadAndRun(new_plan);
+
           string log_message =
-              "Slave: received plan segment and create new thread and run it!";
-          LOG(INFO) << log_message;
+              "Slave: received plan segment and create new thread and run it! ";
+          LOG(INFO) << log_message << query_id << " , " << segment_id
+                    << " , createNewThreadAndRun:" << getMilliSecond(start);
         },
-        [=](AskExchAtom, ExchangeID exch_id) {
+        [=](AskExchAtom, ExchangeID exch_id) -> message {
           auto addr =
               Environment::getInstance()->getExchangeTracker()->GetExchAddr(
                   exch_id);
@@ -85,13 +93,13 @@ class SlaveNodeActor : public event_based_actor {
         },
         [=](BindingAtom, const PartitionID partition_id,
             const unsigned number_of_chunks,
-            const StorageLevel desirable_storage_level) {
-          LOG(INFO) << "slave "<<slave_node_->get_node_id()<<" receive binding message!" << endl;
+            const StorageLevel desirable_storage_level) -> message {
+          LOG(INFO) << "receive binding message!" << endl;
           Environment::getInstance()->get_block_manager()->AddPartition(
               partition_id, number_of_chunks, desirable_storage_level);
           return make_message(OkAtom::value);
         },
-        [=](UnBindingAtom, const PartitionID partition_id) {
+        [=](UnBindingAtom, const PartitionID partition_id) -> message {
           LOG(INFO) << "receive unbinding message~!" << endl;
           Environment::getInstance()->get_block_manager()->RemovePartition(
               partition_id);
@@ -117,13 +125,17 @@ class SlaveNodeActor : public event_based_actor {
           slave_node_->AddOneNode(node_id, node_ip, node_port);
         },
         [=](ReportSegESAtom, NodeSegmentID node_segment_id, int exec_status,
-            string exec_info) {
+            string exec_info) -> message {
+          LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
+                    << " just receive: " << exec_status << " , " << exec_info;
           bool ret =
               Environment::getInstance()
                   ->get_stmt_exec_tracker()
                   ->UpdateSegExecStatus(
                       node_segment_id,
                       (SegmentExecStatus::ExecStatus)exec_status, exec_info);
+          LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
+                    << " after receive: " << exec_status << " , " << exec_info;
           if (false == ret) {
             return make_message(CancelPlanAtom::value);
           }
@@ -163,8 +175,8 @@ class SlaveNodeActor : public event_based_actor {
             LOG(WARNING) << "node"<<slave_node_->get_node_id()
                 <<"occur bind failure"<<endl;
           }
-
           slave_node_->heartbeat_count_++;
+          cout<<"slave_node "<<slave_node_->get_node_id()<<"::"<<slave_node_->heartbeat_count_<<endl;
           if(slave_node_->heartbeat_count_ > kTimeout){
             LOG(INFO)<<"slave"<<slave_node_->node_id_<<"lost heartbeat from master, start register again"<<endl;
             bool is_success = false;

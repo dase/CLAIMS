@@ -43,6 +43,7 @@
 #include "../codegen/ExpressionGenerator.h"
 #include "../common/error_no.h"
 #include "../common/expression/expr_node.h"
+#include "../common/memory_handle.h"
 
 using claims::common::rSuccess;
 using claims::common::rCodegenFailed;
@@ -67,7 +68,10 @@ PhysicalFilter::PhysicalFilter()
   InitExpandedStatus();
 }
 
-PhysicalFilter::~PhysicalFilter() {}
+PhysicalFilter::~PhysicalFilter() {
+  DELETE_PTR(state_.child_);
+  DELETE_PTR(state_.schema_);
+}
 PhysicalFilter::State::State(Schema* schema, PhysicalOperatorBase* child,
                              vector<QNode*> qual, unsigned block_size)
     : schema_(schema), child_(child), qual_(qual), block_size_(block_size) {}

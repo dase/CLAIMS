@@ -76,7 +76,12 @@ LogicalEqualJoin::LogicalEqualJoin(std::vector<JoinPair> joinpair_list,
       right_child_(right_input),
       join_condi_(join_condi),
       join_policy_(kNull),
-      plan_context_(NULL) {}
+      plan_context_(NULL) {
+  for (unsigned i = 0; i < joinpair_list.size(); ++i) {
+    left_join_key_list_.push_back(joinpair_list[i].left_join_attr_);
+    right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
+  }
+}
 LogicalEqualJoin::~LogicalEqualJoin() {
   if (NULL != plan_context_) {
     delete plan_context_;

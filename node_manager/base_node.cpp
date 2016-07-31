@@ -86,8 +86,10 @@ actor &BaseNode::GetNodeActorFromId(const unsigned int id) {
   lock_.release();
   if (it != node_id_to_actor_.end()) {
     return it->second;
+    std::cerr<<"RETURN actor!!"<<id<<endl;
   } else {
     actor null_actor;
+    std::cerr<<"RETURN NULL_actor!!"<<endl;
     return null_actor;
   }
 }
