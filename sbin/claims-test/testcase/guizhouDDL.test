@@ -1,0 +1,1053 @@
+﻿
+DROP TABLE IF EXISTS `family`;
+CREATE TABLE `family` (
+`FamilyID`  int(10),
+`GroupID`  int(10),
+`IsPoorFamily`  int(10),
+`MasterName`  varchar(255),
+`RID`  varchar(255),
+`HeadCount`  int(10),
+`Age`  int(10),
+`Phone`  varchar(255) ,
+`Property`  varchar(255) ,
+`IdentificationStandard`  varchar(255),
+`PovertyCauses`  varchar(255),
+`OtherPovertyCauses`  varchar(255),
+`Income_RMB`  decimal(10,2),
+`Bank`  varchar(255),
+`BankAccount`  varchar(255),
+`PovertyScore`  int(10),
+`PlanGetRidOfPovertyTime`  datetime,
+`ActualGetRidOfPovertyTime`  datetime ,
+`FourLineStatus`  varchar(255),
+`HelpCategory`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `family` (
+`FamilyID`,
+`GroupID`,
+`IsPoorFamily`,
+`MasterName`,
+`RID`,
+`HeadCount`,
+`Age`,
+`Phone`,
+`Property`,
+`IdentificationStandard`,
+`PovertyCauses`,
+`OtherPovertyCauses`,
+`Income_RMB`,
+`Bank`,
+`BankAccount`,
+`PovertyScore`,
+`PlanGetRidOfPovertyTime`,
+`ActualGetRidOfPovertyTime`,
+`FourLineStatus`,
+`HelpCategory`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `family_project`;
+CREATE TABLE `family_project` (
+`FamilyProjectID`  int(10),
+`FamilyID`  int(10),
+`VillageProjectID`  int(10),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `family_project` (
+`FamilyProjectID`,
+`FamilyID`,
+`VillageProjectID`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `familygroup`;
+CREATE TABLE `familygroup` (
+`GroupID`  int(10),
+`Name`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime,
+`VillageID`  int(10)
+);
+CREATE PROJECTION ON `familygroup` (
+`GroupID`,
+`Name`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`,
+`VillageID`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `familyimmigration`;
+CREATE TABLE `familyimmigration` (
+`FamilyImmigrationID`  int(10),
+`FamilyID`  int(10),
+`MoveType`  varchar(255),
+`IsInPlan`  varchar(255),
+`WillToMove`  varchar(255),
+`MoveMode`  varchar(255),
+`SettlementPlace`  varchar(255),
+`MoveProblem`  varchar(255),
+`SettlementMode`  varchar(255),
+`SettlementArea`  decimal(10,2),
+`HousingFund`  decimal(10,2),
+`HousingSubsidy`  decimal(10,2),
+`DismantleBonus`  decimal(10,2),
+`SelfFinancing`  decimal(10,2),
+`PlanMoveTime`  datetime,
+`ActualMoveTime`  datetime,
+`PlanDismantleTime`  datetime,
+`ActualDismantleTime`  datetime,
+`PostSupportPlan`  varchar(255),
+`GetRidOfPovertyTime`  datetime,
+`OriginalHousingArea`  decimal(10,2),
+`OriginalHousingStructure`  varchar(255),
+`OriginalHouseBaseArea`  decimal(10,2),
+`SigningTime`  datetime,
+`ApplicationTime`  datetime,
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `familyimmigration` (
+`FamilyImmigrationID`,
+`FamilyID`,
+`MoveType`,
+`IsInPlan`,
+`WillToMove`,
+`MoveMode`,
+`SettlementPlace`,
+`MoveProblem`,
+`SettlementMode`,
+`SettlementArea`,
+`HousingFund`,
+`HousingSubsidy`,
+`DismantleBonus`,
+`SelfFinancing`,
+`PlanMoveTime`,
+`ActualMoveTime`,
+`PlanDismantleTime`,
+`ActualDismantleTime`,
+`PostSupportPlan`,
+`GetRidOfPovertyTime`,
+`OriginalHousingArea`,
+`OriginalHousingStructure`,
+`OriginalHouseBaseArea`,
+`SigningTime`,
+`ApplicationTime`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `familyincome`;
+CREATE TABLE `familyincome` (
+`FamilyIncomeID`  int(10),
+`FamilyID`  int(10),
+`A17CultivatedArea`  decimal(10,2),
+`A17aEffectiveIrrigationArea`  decimal(10,2),
+`A17bField`  decimal(10,2),
+`A17cField`  decimal(10,2),
+`A18ForestArea`  decimal(10,2),
+`A18aReforestationCultivatedArea`  decimal(10,2),
+`A18bFruitTreeArea`  decimal(10,2),
+`A19PastureArea`  decimal(10,2),
+`A20WaterArea`  decimal(10,2),
+`A32OutstandingLoan`  decimal(10,2),
+`N02Annualncome`  decimal(10,2),
+`A34WageIncome`  decimal(10,2),
+`N03PropertyIncome`  decimal(10,2),
+`A35ProductiveIncome`  decimal(10,2),
+`N01AnnualNetIncome`  decimal(10,2),
+`A36Subsidy`  decimal(10,2),
+`N04ProductiveCost`  decimal(10,2),
+`A36aFamilyPlanningAwards`  decimal(10,2),
+`A36bMinGovSubsidy`  decimal(10,2),
+`A36cPensionInsurance`  decimal(10,2),
+`A36dNCMSMedicalFee`  decimal(10,2),
+`A36eMedicalAssistanceFund`  decimal(10,2),
+`A36fEcoCompensation`  decimal(10,2),
+`EducationalDebt`  decimal(10,2),
+`IncomeOfEconomicCrop`  decimal(10,2),
+`OwnedFoodstuff`  decimal(10,2),
+`FamilyFarmingIncome`  decimal(10,2),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `familyincome` (
+`FamilyIncomeID`,
+`FamilyID`,
+`A17CultivatedArea`,
+`A17aEffectiveIrrigationArea`,
+`A17bField`,
+`A17cField`,
+`A18ForestArea`,
+`A18aReforestationCultivatedArea`,
+`A18bFruitTreeArea`,
+`A19PastureArea`,
+`A20WaterArea`,
+`A32OutstandingLoan`,
+`N02Annualncome`,
+`A34WageIncome`,
+`N03PropertyIncome`,
+`A35ProductiveIncome`,
+`N01AnnualNetIncome`,
+`A36Subsidy`,
+`N04ProductiveCost`,
+`A36aFamilyPlanningAwards`,
+`A36bMinGovSubsidy`,
+`A36cPensionInsurance`,
+`A36dNCMSMedicalFee`,
+`A36eMedicalAssistanceFund`,
+`A36fEcoCompensation`,
+`EducationalDebt`,
+`IncomeOfEconomicCrop`,
+`OwnedFoodstuff`,
+`FamilyFarmingIncome`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `familyliving`;
+CREATE TABLE `familyliving` (
+`FamilyLivingID`  int(10),
+`FamilyID`  int(10),
+`A21HasWater`  varchar(255),
+`A22IsSafeWater`  varchar(255),
+`WaterSituation`  varchar(255),
+`A23HasElectric`  varchar(255),
+`A24HasRadioAndTV`  varchar(255),
+`A25DistanceToMainRoad`  varchar(255),
+`A26RoadType`  varchar(255),
+`DurableConsumerGood`  varchar(255),
+`A27HousingArea`  decimal(10,2),
+`A28IsDangerousBuilding`  varchar(255),
+`A29HasToilet`  varchar(255),
+`A30MainFuelType`  varchar(255),
+`A31HasJoinedFC`  varchar(255),
+`BulidingTime`  int(11),
+`BulidingStructure`  varchar(255),
+`RelocationStatus`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `familyliving` (
+`FamilyLivingID`,
+`FamilyID`,
+`A21HasWater`,
+`A22IsSafeWater`,
+`WaterSituation`,
+`A23HasElectric`,
+`A24HasRadioAndTV`,
+`A25DistanceToMainRoad`,
+`A26RoadType`,
+`DurableConsumerGood`,
+`A27HousingArea`,
+`A28IsDangerousBuilding`,
+`A29HasToilet`,
+`A30MainFuelType`,
+`A31HasJoinedFC`,
+`BulidingTime`,
+`BulidingStructure`,
+`RelocationStatus`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `familyperson`;
+CREATE TABLE `familyperson` (
+`FamilyPersonID`  int(10),
+`FamilyID`  int(10),
+`Name`  varchar(255),
+`Sex`  varchar(255),
+`RID`  varchar(255),
+`Relationship`  varchar(255),
+`EthnicGroup`  varchar(255),
+`Education`  varchar(255),
+`StudentStatus`  varchar(255),
+`Health`  varchar(255),
+`WorkCapacity`  varchar(255),
+`StateOfWork`  varchar(255),
+`TimeOfWork`  varchar(255),
+`NCMS`  varchar(255),
+`ResidentPension`  varchar(255),
+`AddReason`  varchar(255),
+`MilitaryService`  varchar(255),
+`EndownmentInsurance`  varchar(255),
+`SkillNumber`  int(11),
+`IsTrained`  varchar(255),
+`IncomeOfWork`  decimal(10,2),
+`TransferJob`  varchar(255),
+`PreviousSchool`  varchar(255),
+`NewSchool`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `familyperson` (
+`FamilyPersonID`,
+`FamilyID`,
+`Name`,
+`Sex`,
+`RID`,
+`Relationship`,
+`EthnicGroup`,
+`Education`,
+`StudentStatus`,
+`Health`,
+`WorkCapacity`,
+`StateOfWork`,
+`TimeOfWork`,
+`NCMS`,
+`ResidentPension`,
+`AddReason`,
+`MilitaryService`,
+`EndownmentInsurance`,
+`SkillNumber`,
+`IsTrained`,
+`IncomeOfWork`,
+`TransferJob`,
+`PreviousSchool`,
+`NewSchool`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `familypicture`;
+CREATE TABLE `familypicture` (
+`PictureID`  int(10),
+`FamilyID`  int(10),
+`Name`  varchar(255),
+`Path`  varchar(255),
+`Type`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `familypicture` (
+`PictureID`,
+`FamilyID`,
+`Name`,
+`Path`,
+`Type`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `helper`;
+CREATE TABLE `helper` (
+`HelperID`  int(10),
+`HelpOrgID`  int(10),
+`HelperName`  varchar(255),
+`HelperPhone`  varchar(255),
+`HelperTitle`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `helper` (
+`HelperID`,
+`HelpOrgID`,
+`HelperName`,
+`HelperPhone`,
+`HelperTitle`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `helper_family`;
+CREATE TABLE `helper_family` (
+`HelperFamilyID`  int(10),
+`FamilyID`  int(10),
+`HelperID`  int(10),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `helper_family` (
+`HelperFamilyID`,
+`FamilyID`,
+`HelperID`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `helperorg_village`;
+CREATE TABLE `helperorg_village` (
+`HelperOrgVilliageID`  int(10),
+`VillageID`  int(10),
+`HelpOrgID`  int(10),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `helperorg_village` (
+`HelperOrgVilliageID`,
+`VillageID`,
+`HelpOrgID`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `helporg`;
+CREATE TABLE `helporg` (
+`HelpOrgID`  int(10),
+`HelpOrgName`  varchar(255),
+`OrgBelongto`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `helporg` (
+`HelpOrgID`,
+`HelpOrgName`,
+`OrgBelongto`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `povertystatus`;
+CREATE TABLE `povertystatus` (
+`PovertyStatusID`  int(10),
+`HelperFamilyID`  int(10),
+`PovertyStatusNote`  varchar(255)
+);
+CREATE PROJECTION ON `povertystatus` (
+`PovertyStatusID`,
+`HelperFamilyID`,
+`PovertyStatusNote`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `projectstatus`;
+CREATE TABLE `projectstatus` (
+`ProjectStatusID`  int(10),
+`FamilyProjectID`  int(10),
+`ProjectStatusNote`  varchar(255),
+`PicturePath`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `projectstatus` (
+`ProjectStatusID`,
+`FamilyProjectID`,
+`ProjectStatusNote`,
+`PicturePath`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `projectstatuspicture`;
+CREATE TABLE `projectstatuspicture` (
+`ProjectStatusPictureID`  int(10),
+`VillageProjectID`  int(10),
+`Path`  varchar(255)
+);
+CREATE PROJECTION ON `projectstatuspicture` (
+`ProjectStatusPictureID`,
+`VillageProjectID`,
+`Path`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `town`;
+CREATE TABLE `town` (
+`TownID`  int(10),
+`Name`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `town` (
+`TownID`,
+`Name`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `village`;
+CREATE TABLE `village` (
+`VillageID`  int(10),
+`Name`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime,
+`TownID`  int(10)
+);
+CREATE PROJECTION ON `village` (
+`VillageID`,
+`Name`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`,
+`TownID`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `villageplan`;
+CREATE TABLE `villageplan` (
+`VililagePlanID`  int(10),
+`VillageID`  int(10),
+`ProjectCategory`  varchar(255),
+`Year`  int(10),
+`ProjectName`  varchar(255),
+`ProjectContent`  varchar(255),
+`Unit`  varchar(255),
+`ProjectVolume`  decimal(10,2),
+`TotalAmount`  decimal(10,2),
+`FinanceAmount`  decimal(10,2),
+`DepartmentAmount`  decimal(10,2),
+`SocietyAmount`  decimal(10,2),
+`CreditAmount`  decimal(10,2),
+`HelpOrgAmount`  decimal(10,2),
+`SelfCollectedAmount`  decimal(10,2),
+`OtherAmount`  decimal(10,2),
+`CoveredFamily`  int(10),
+`CoveredPerson`  int(10) ,
+`ProjectStatus`  varchar(255) ,
+`ProjectSituation`  varchar(255) ,
+`Creater`  varchar(255) ,
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime 
+);
+CREATE PROJECTION ON `villageplan` (
+`VililagePlanID`,
+`VillageID`,
+`ProjectCategory`,
+`Year`,
+`ProjectName`,
+`ProjectContent`,
+`Unit`,
+`ProjectVolume`,
+`TotalAmount`,
+`FinanceAmount`,
+`DepartmentAmount`,
+`SocietyAmount`,
+`CreditAmount`,
+`HelpOrgAmount`,
+`SelfCollectedAmount`,
+`OtherAmount`,
+`CoveredFamily`,
+`CoveredPerson`,
+`ProjectStatus`,
+`ProjectSituation`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `villageproject`;
+CREATE TABLE `villageproject` (
+`VillageProjectID`  int(10),
+`VillageID`  int(10),
+`ProjectCategory`  varchar(255),
+`Year`  int(10),
+`ProjectName`  varchar(255) ,
+`ProjectContent`  varchar(255),
+`Unit`  varchar(255),
+`ProjectVolume`  decimal(10,2),
+`TotalAmount`  decimal(10,2),
+`FinanceAmount`  decimal(10,2),
+`DepartmentAmount`  decimal(10,2),
+`SocietyAmount`  decimal(10,2),
+`CreditAmount`  decimal(10,2),
+`HelpOrgAmount`  decimal(10,2),
+`SelfCollectedAmount`  decimal(10,2),
+`OtherAmount`  decimal(10,2),
+`CoveredFamily`  int(10),
+`CoveredPerson`  int(10),
+`ProjectStatus`  varchar(255),
+`ProjectSituation`  varchar(255) ,
+`ProjectOwner`  varchar(255),
+`Creater`  varchar(255),
+`CreateTime`  datetime,
+`Reviser`  varchar(255),
+`UpdateTime`  datetime
+);
+CREATE PROJECTION ON `villageproject` (
+`VillageProjectID`,
+`VillageID`,
+`ProjectCategory`,
+`Year`,
+`ProjectName`,
+`ProjectContent`,
+`Unit`,
+`ProjectVolume`,
+`TotalAmount`,
+`FinanceAmount`,
+`DepartmentAmount`,
+`SocietyAmount`,
+`CreditAmount`,
+`HelpOrgAmount`,
+`SelfCollectedAmount`,
+`OtherAmount`,
+`CoveredFamily`,
+`CoveredPerson`,
+`ProjectStatus`,
+`ProjectSituation`,
+`ProjectOwner`,
+`Creater`,
+`CreateTime`,
+`Reviser`,
+`UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `家庭成员信息`;
+CREATE TABLE `家庭成员信息` (
+`市`  varchar(255),
+`县`  varchar(255),
+`乡`  varchar(255),
+`村`  varchar(255),
+`姓名`  varchar(255),
+`性别`  varchar(255),
+`证件号码`  varchar(255),
+`关系`  varchar(255),
+`民族`  varchar(255),
+`文化程度`  varchar(255),
+`在校生状况`  varchar(255),
+`健康状况`  varchar(255),
+`劳动能力`  varchar(255),
+`务工状况`  varchar(255),
+`务工时间`  varchar(255),
+`新农合`  varchar(255),
+`居民养老`  varchar(255),
+`添加原因`  varchar(255),
+`是否现役军人`  varchar(255),
+`是否参加城镇职工基本养老保险`  varchar(255),
+`在读学校名称`  varchar(255) 
+);
+CREATE PROJECTION ON `家庭成员信息` (
+`市`,
+`县`,
+`乡`,
+`村`,
+`姓名`,
+`性别`,
+`证件号码`,
+`关系`,
+`民族`,
+`文化程度`,
+`在校生状况`,
+`健康状况`,
+`劳动能力`,
+`务工状况`,
+`务工时间`,
+`新农合`,
+`居民养老`,
+`添加原因`,
+`是否现役军人`,
+`是否参加城镇职工基本养老保险`,
+`在读学校名称`
+) number = 1 partitioned on row_id;
+load table `家庭成员信息` from "/home/imdb/rawData/guizhou/家庭成员信息.tbl" with "|","\n";
+
+DROP TABLE IF EXISTS `帮扶人信息`;
+CREATE TABLE `帮扶人信息` (
+`市`  varchar(255),
+`县`  varchar(255),
+`乡`  varchar(255),
+`村`  varchar(255),
+`组`  varchar(255),
+`户主姓名`  varchar(255),
+`户主身份证`  varchar(255),
+`识别标准`  varchar(255),
+`贫困户属性`  varchar(255),
+`帮扶人姓名`  varchar(255),
+`帮扶单位名称`  varchar(255),
+`单位隶属关系`  varchar(255),
+`联系电话`  varchar(255) ,
+`职务`  varchar(255) 
+);
+CREATE PROJECTION ON `帮扶人信息` (
+`市`,
+`县`,
+`乡`,
+`村`,
+`组`,
+`户主姓名`,
+`户主身份证`,
+`识别标准`,
+`贫困户属性`,
+`帮扶人姓名`,
+`帮扶单位名称`,
+`单位隶属关系`,
+`联系电话`,
+`职务`
+) number = 1 partitioned on row_id;
+load table `帮扶人信息` from "/home/imdb/rawData/guizhou/贫困户帮扶信息.tbl" with "|","\n";
+
+DROP TABLE IF EXISTS `移民搬迁信息采集`;
+CREATE TABLE `移民搬迁信息采集` (
+`市`  varchar(255),
+`县`  varchar(255),
+`乡镇`  varchar(255),
+`村`  varchar(255),
+`组`  varchar(255),
+`识别标准`  varchar(255),
+`户主姓名`  varchar(255),
+`户主身份证号码`  varchar(255),
+`家庭人口数`  varchar(255),
+`搬迁类型`  varchar(255),
+`是否列入规划`  varchar(255),
+`搬迁意愿`  varchar(255),
+`搬迁方式`  varchar(255),
+`安置方式`  varchar(255),
+`安置地点`  varchar(255),
+`搬迁可能存在的困难`  varchar(255)
+);
+CREATE PROJECTION ON `移民搬迁信息采集` (
+`市`,
+`县`,
+`乡镇`,
+`村`,
+`组`,
+`识别标准`,
+`户主姓名`,
+`户主身份证号码`,
+`家庭人口数`,
+`搬迁类型`,
+`是否列入规划`,
+`搬迁意愿`,
+`搬迁方式`,
+`安置方式`,
+`安置地点`,
+`搬迁可能存在的困难`
+) number = 1 partitioned on row_id;
+load table `移民搬迁信息采集` from "/home/imdb/rawData/guizhou/移民搬迁信息采集.tbl" with "|","\n";
+
+DROP TABLE IF EXISTS `贫困户信息`;
+CREATE TABLE `贫困户信息` (
+`户主姓名`  varchar(255),
+`身份证`  varchar(255),
+`人数`  varchar(255),
+`年龄`  varchar(255),
+`联系方式`  varchar(255),
+`农户属性`  varchar(255),
+`识别标准`  varchar(255),
+`致贫原因`  varchar(255),
+`市`  varchar(255),
+`县`  varchar(255),
+`乡`  varchar(255),
+`村`  varchar(255),
+`组`  varchar(255),
+`人均收入(RMB)`  varchar(255),
+`开户银行`  varchar(255),
+`银行帐号`  varchar(255),
+`A17耕地面积（亩）`  varchar(255),
+`A17a有效灌溉面积（亩）`  varchar(255),
+`A17b田（亩）`  varchar(255),
+`A17c土（亩）`  varchar(255),
+`A18林地面积（亩）`  varchar(255),
+`A18a退耕还林面积（亩）`  varchar(255),
+`A18b林果面积（亩）`  varchar(255),
+`A19牧草地面积（亩）`  varchar(255),
+`A20水面面积（亩）`  varchar(255),
+`A21饮水是否困难`  varchar(255),
+`A22饮水是否安全`  varchar(255),
+`饮水情况`  varchar(255),
+`A23是否通生活用电`  varchar(255),
+`A24是否通广播电视`  varchar(255),
+`A25距离村主干路（公里）`  varchar(255),
+`A26入户路类型`  varchar(255),
+`拥有耐用消费品情况`  varchar(255),
+`A27住房面积（平方米）`  varchar(255),
+`A28主要住房是否危房`  varchar(255),
+`A29有无卫生厕所`  varchar(255),
+`A30主要燃料类型`  varchar(255),
+`建房时间(年份)`  varchar(255),
+`房屋主要结构`  varchar(255),
+`易地扶贫搬迁情况`  varchar(255),
+`A31是否加入农民合作社`  varchar(255),
+`A32未偿还借（贷）款（元）`  varchar(255),
+`A33家庭年人均纯收入（元）`  varchar(255),
+`N02家庭年收入（元）`  varchar(255),
+`A34全家工资性收入(元)`  varchar(255),
+`N03财产性收入（元）`  varchar(255),
+`A35全家生产经营性收入（元）`  varchar(255),
+`N01家庭年纯收入（元）`  varchar(255),
+`A36各类补贴（元）`  varchar(255),
+`N04家庭生产性支出（元）`  varchar(255),
+`A36a领取计划生育金（含"少生快富"和"奖励扶助"）（元）`  varchar(255),
+`A36b领取低保金（元）`  varchar(255),
+`A36c领取养老保险金（元）`  varchar(255),
+`A36d新农合报销医疗费（元）`  varchar(255),
+`A36e医疗救助金（元）`  varchar(255),
+`A36f生态补偿金（含退耕还林，草原生态奖补等）（元）`  varchar(255),
+`审核状态`  varchar(255),
+`录入人`  varchar(255),
+`录入时间`  varchar(255),
+`修改人`  varchar(255),
+`修改时间`  varchar(255),
+`商品用经济作物面积（亩）`  varchar(255),
+`生产用房面积（平方米）`  varchar(255),
+`帮扶分类`  varchar(255),
+`是否有家庭贫困辍学学生`  varchar(255),
+`经度`  varchar(255),
+`纬度`  varchar(255),
+`高度`  varchar(255),
+`离最近的乡镇集市距离（公里）`  varchar(255),
+`是否军烈属`  varchar(255)
+);
+CREATE PROJECTION ON `贫困户信息` (
+`户主姓名`,
+`身份证`,
+`人数`,
+`年龄`,
+`联系方式`,
+`农户属性`,
+`识别标准`,
+`致贫原因`,
+`市`,
+`县`,
+`乡`,
+`村`,
+`组`,
+`人均收入(RMB)`,
+`开户银行`,
+`银行帐号`,
+`A17耕地面积（亩）`,
+`A17a有效灌溉面积（亩）`,
+`A17b田（亩）`,
+`A17c土（亩）`,
+`A18林地面积（亩）`,
+`A18a退耕还林面积（亩）`,
+`A18b林果面积（亩）`,
+`A19牧草地面积（亩）`,
+`A20水面面积（亩）`,
+`A21饮水是否困难`,
+`A22饮水是否安全`,
+`饮水情况`,
+`A23是否通生活用电`,
+`A24是否通广播电视`,
+`A25距离村主干路（公里）`,
+`A26入户路类型`,
+`拥有耐用消费品情况`,
+`A27住房面积（平方米）`,
+`A28主要住房是否危房`,
+`A29有无卫生厕所`,
+`A30主要燃料类型`,
+`建房时间(年份)`,
+`房屋主要结构`,
+`易地扶贫搬迁情况`,
+`A31是否加入农民合作社`,
+`A32未偿还借（贷）款（元）`,
+`A33家庭年人均纯收入（元）`,
+`N02家庭年收入（元）`,
+`A34全家工资性收入(元)`,
+`N03财产性收入（元）`,
+`A35全家生产经营性收入（元）`,
+`N01家庭年纯收入（元）`,
+`A36各类补贴（元）`,
+`N04家庭生产性支出（元）`,
+`A36a领取计划生育金（含"少生快富"和"奖励扶助"）（元）`,
+`A36b领取低保金（元）`,
+`A36c领取养老保险金（元）`,
+`A36d新农合报销医疗费（元）`,
+`A36e医疗救助金（元）`,
+`A36f生态补偿金（含退耕还林，草原生态奖补等）（元）`,
+`审核状态`,
+`录入人`,
+`录入时间`,
+`修改人`,
+`修改时间`,
+`商品用经济作物面积（亩）`,
+`生产用房面积（平方米）`,
+`帮扶分类`,
+`是否有家庭贫困辍学学生`,
+`经度`,
+`纬度`,
+`高度`,
+`离最近的乡镇集市距离（公里）`,
+`是否军烈属`
+) number = 1 partitioned on row_id;
+load table `贫困户信息` from "/home/imdb/rawData/guizhou/贫困户信息.tbl" with "|","\n";
+
+DROP TABLE IF EXISTS `贫困户帮扶计划信息`;
+CREATE TABLE `贫困户帮扶计划信息` (
+`市`  varchar(255),
+`县`  varchar(255),
+`乡镇`  varchar(255),
+`村`  varchar(255),
+`项目类别`  varchar(255),
+`年度`  varchar(255),
+`项目名称`  varchar(255),
+`项目内容`  varchar(255),
+`计量单位`  varchar(255),
+`数量`  varchar(255),
+`计划资金总额（万元）`  varchar(255),
+`财政资金（万元）`  varchar(255),
+`行业部门资金（万元）`  varchar(255),
+`社会帮扶资金（万元）`  varchar(255),
+`信贷资金（万元）`  varchar(255),
+`帮扶单位资金（万元）`  varchar(255),
+`群众自筹资金（万元）`  varchar(255),
+`其他资金（万元）`  varchar(255),
+`覆盖户数`  varchar(255),
+`覆盖人数`  varchar(255),
+`创建人`  varchar(255),
+`操作时间`  varchar(255)
+);
+CREATE PROJECTION ON `贫困户帮扶计划信息` (
+`市`,
+`县`,
+`乡镇`,
+`村`,
+`项目类别`,
+`年度`,
+`项目名称`,
+`项目内容`,
+`计量单位`,
+`数量`,
+`计划资金总额（万元）`,
+`财政资金（万元）`,
+`行业部门资金（万元）`,
+`社会帮扶资金（万元）`,
+`信贷资金（万元）`,
+`帮扶单位资金（万元）`,
+`群众自筹资金（万元）`,
+`其他资金（万元）`,
+`覆盖户数`,
+`覆盖人数`,
+`创建人`,
+`操作时间`
+) number = 1 partitioned on row_id;
+load table `贫困户帮扶计划信息` from "/home/imdb/rawData/guizhou/贫困户帮扶计划信息.tbl" with "|","\n";
+
+DROP TABLE IF EXISTS `贫困户项目实施信息`;
+CREATE TABLE `贫困户项目实施信息` (
+`市`  varchar(255),
+`县`  varchar(255),
+`乡镇`  varchar(255),
+`村`  varchar(255),
+`项目类别`  varchar(255),
+`年度`  varchar(255),
+`项目名称`  varchar(255),
+`项目内容`  varchar(255),
+`计量单位`  varchar(255),
+`数量`  varchar(255),
+`资金总额（万元）`  varchar(255),
+`财政资金（万元）`  varchar(255),
+`行业部门资金（万元）`  varchar(255),
+`社会帮扶资金（万元）`  varchar(255),
+`信贷资金（万元）`  varchar(255),
+`帮扶单位资金（万元）`  varchar(255),
+`群众自筹资金（万元）`  varchar(255),
+`其他资金（万元）`  varchar(255),
+`覆盖户数`  varchar(255),
+`覆盖人数`  varchar(255),
+`创建人`  varchar(255),
+`操作时间`  varchar(255)
+);
+CREATE PROJECTION ON `贫困户项目实施信息` (
+`市`,
+`县`,
+`乡镇`,
+`村`,
+`项目类别`,
+`年度`,
+`项目名称`,
+`项目内容`,
+`计量单位`,
+`数量`,
+`资金总额（万元）`,
+`财政资金（万元）`,
+`行业部门资金（万元）`,
+`社会帮扶资金（万元）`,
+`信贷资金（万元）`,
+`帮扶单位资金（万元）`,
+`群众自筹资金（万元）`,
+`其他资金（万元）`,
+`覆盖户数`,
+`覆盖人数`,
+`创建人`,
+`操作时间`
+) number = 1 partitioned on row_id;
+load table `贫困户项目实施信息` from "/home/imdb/rawData/guizhou/贫困户项目实施信息.tbl" with "|","\n";
+
+DROP TABLE IF EXISTS `贫困户项目实施详细信息`;
+CREATE TABLE `贫困户项目实施详细信息` (
+`市`  varchar(255),
+`县`  varchar(255),
+`乡镇`  varchar(255),
+`村`  varchar(255),
+`项目类别`  varchar(255),
+`年度`  varchar(255),
+`项目名称`  varchar(255),
+`项目内容`  varchar(255),
+`计量单位`  varchar(255),
+`数量`  varchar(255),
+`姓名`  varchar(255),
+`身份证`  varchar(255),
+`组`  varchar(255),
+`农户属性`  varchar(255) 
+);
+CREATE PROJECTION ON `贫困户项目实施详细信息` (
+`市`,
+`县`,
+`乡镇`,
+`村`,
+`项目类别`,
+`年度`,
+`项目名称`,
+`项目内容`,
+`计量单位`,
+`数量`,
+`姓名`,
+`身份证`,
+`组`,
+`农户属性`
+) number = 1 partitioned on row_id;
+load table `贫困户项目实施详细信息` from "/home/imdb/rawData/guizhou/贫困户项目实施详细信息.tbl" with "|","\n";
+
+exit;
