@@ -177,7 +177,7 @@ class SlaveNodeActor : public event_based_actor {
           }
           slave_node_->heartbeat_count_++;
           cout<<"slave_node "<<slave_node_->get_node_id()<<"::"<<slave_node_->heartbeat_count_<<endl;
-          if(slave_node_->heartbeat_count_ > kTimeout){
+          if(slave_node_->heartbeat_count_ > kTimeout*2){
             LOG(INFO)<<"slave"<<slave_node_->node_id_<<"lost heartbeat from master, start register again"<<endl;
             bool is_success = false;
             become(
@@ -205,7 +205,7 @@ class SlaveNodeActor : public event_based_actor {
               self->send(this,RegisterAtom::value);
             }
           }
-          delayed_send(this, std::chrono::seconds(kTimeout/10), HeartBeatAtom::value);
+          delayed_send(this, std::chrono::seconds(kTimeout/5), HeartBeatAtom::value);
         },
         [=](SyncNodeInfo, const BaseNode& node){
           slave_node_->node_id_to_addr_.clear();

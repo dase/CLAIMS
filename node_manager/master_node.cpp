@@ -179,7 +179,7 @@ MasterNode* MasterNode::GetInstance() {
   return instance_;
 }
 
-MasterNode::MasterNode() : node_id_gen_(-1) {
+MasterNode::MasterNode() : node_id_gen_(0) {
   instance_ = this;
   set_node_id(0);
   ReadMasterAddr();
@@ -188,7 +188,7 @@ MasterNode::MasterNode() : node_id_gen_(-1) {
 }
 
 MasterNode::MasterNode(string node_ip, uint16_t node_port)
-    : BaseNode(node_ip, node_port), node_id_gen_(-1) {
+    : BaseNode(node_ip, node_port), node_id_gen_(0) {
   CreateActor();
 }
 
@@ -224,25 +224,35 @@ RetCode MasterNode::BroastNodeInfo(const unsigned int& node_id,
 }
 // should be atomic
 unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
+
   lock_.acquire();
-  node_id_gen_++;
-  BroastNodeInfo((unsigned int)node_id_gen_, node_ip, node_port);
+  unsigned int node_id;
+  if (node_ip == get_node_ip())
+  {
+    node_id = 0;
+    LOG(INFO)<<"master"<<endl;
+  }else{
+    LOG(INFO)<<"slave"<<node_id_gen_<<endl;
+    node_id = ++node_id_gen_;
+    LOG(INFO)<<"slave"<<node_id_gen_<<endl;
+  }
+  BroastNodeInfo((unsigned int)node_id, node_ip, node_port);
   node_id_to_addr_.insert(
-      make_pair((unsigned int)node_id_gen_, make_pair(node_ip, node_port)));
-  node_id_to_heartbeat_.insert(make_pair((unsigned int)node_id_gen_, 0));
+      make_pair((unsigned int)node_id, make_pair(node_ip, node_port)));
+  node_id_to_heartbeat_.insert(make_pair((unsigned int)node_id, 0));
   try {
     auto actor = remote_actor(node_ip, node_port);
-    node_id_to_actor_.insert(make_pair((unsigned int)node_id_gen_, actor));
-    LOG(INFO)<<"actor"<<node_id_gen_<<"address"<<node_ip<<"`````"<<node_port<<endl;
+    node_id_to_actor_.insert(make_pair((unsigned int)node_id, actor));
+    LOG(INFO)<<"actor"<<node_id<<"address"<<node_ip<<"`````"<<node_port<<endl;
   } catch (caf::network_error& e) {
     LOG(WARNING) << "cann't connect to node ( " << node_ip << " , " << node_port
                  << " ) and create remote actor failed!!";
     assert(false);
   }
-  LOG(INFO) << "register one node( " << node_id_gen_ << " < " << node_ip
+  LOG(INFO) << "register one node( " << node_id << " < " << node_ip
             << " " << node_port << " > )" << std::endl;
   lock_.release();
-  return node_id_gen_;
+  return node_id;
 }
 void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
   master_node->lock_.acquire();
