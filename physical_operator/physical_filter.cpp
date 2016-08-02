@@ -146,6 +146,7 @@ bool PhysicalFilter::Open(SegmentExecStatus* const exec_status,
   bool ret = state_.child_->Open(exec_status, kPartitiontOffset);
   SetReturnStatus(ret);
   BarrierArrive();
+  LOG(INFO) << "Filter open() finish" << endl;
   return GetReturnStatus();
 }
 

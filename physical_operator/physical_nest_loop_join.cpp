@@ -188,6 +188,7 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
                      // context in the operator context
   RETURN_IF_CANCELLED(exec_status);
   state_.child_right_->Open(exec_status, partition_offset);
+  LOG(INFO) << "Nest_loop open() finish" << endl;
   return true;
 }
 

@@ -93,6 +93,7 @@ bool PhysicalProject::Open(SegmentExecStatus* const exec_status,
   bool ret = state_.child_->Open(exec_status, kPartitionOffset);
   SetReturnStatus(ret);
   BarrierArrive();  //  Synchronization point
+  LOG(INFO) << "Project open() finish" << endl;
   return GetReturnStatus();
 }
 

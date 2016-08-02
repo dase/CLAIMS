@@ -309,8 +309,8 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
   for (int i = 0; i < state_.num_of_buckets_; i++) {
     RETURN_IF_CANCELLED(exec_status);
 
-    if(!private_hashtable->placeIterator(pht_it, i)) {
-	LOG(INFO) << "placeIterator false"; 
+    if (!private_hashtable->placeIterator(pht_it, i)) {
+      LOG(INFO) << "placeIterator false";
     }
     // traverse every tuple from block
     while (NULL != (cur = pht_it.readCurrent())) {
@@ -422,6 +422,7 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
   agg_attrs.clear();
   for (auto &i : group_by_attrs) DELETE_PTR(i);
   group_by_attrs.clear();
+  LOG(INFO) << "Agg open() finish" << endl;
   return GetReturnStatus();
 }
 
