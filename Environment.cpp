@@ -189,7 +189,7 @@ void Environment::InitMembership() {
     master_node_ = MasterNode::GetInstance();
   }
   slave_node_ = SlaveNode::GetInstance();
-  slave_node_->RegisterToMaster();
+  slave_node_->RegisterToMaster(true);
   node_id_ = slave_node_->get_node_id();
 }
 void Environment::initializeBufferManager() {

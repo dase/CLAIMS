@@ -57,15 +57,17 @@ class MasterNodeActor : public event_based_actor {
   }
   behavior MainWork() {
     return {
-
         [=](RegisterAtom, string ip, uint16_t port) -> caf::message {
-          //for reregister check
+         /* To check if slave node is Reregister
+          * because some reason may let slave node resend RegisterAtom to master.
+          * like network shake, or slave is restarted but master node doesn't check
+          * this condition by heatbeat.
+          */
           unsigned int tmp_node_id = -1;
           bool is_reregister = false;
           for(auto it = master_node_->node_id_to_addr_.begin();
               it != master_node_->node_id_to_addr_.end();++it)
           {
-            //port
             if((it->second.first == ip))
             {
               is_reregister = true;
@@ -74,34 +76,38 @@ class MasterNodeActor : public event_based_actor {
           }
           if(is_reregister)
           {
+            //find this slave is reregister, so remove old slave node info.
             master_node_->RemoveOneNode(tmp_node_id,master_node_);
             master_node_->node_id_to_heartbeat_.erase(tmp_node_id);
-            LOG(INFO)<<"master remove old node :"<<tmp_node_id<<"info"<<endl;
             Environment::getInstance()
                           ->getResourceManagerMaster()
                           ->UnRegisterSlave(tmp_node_id);
-            LOG(INFO)<<"master unRegister old node :"<<tmp_node_id<<"info"<<endl;
+            LOG(INFO)<<"master remove old node :"<<tmp_node_id<<"info"<<endl;
           }
-          LOG(INFO)<<"get register from "<<ip<<",  "<<port<<std::endl;
+          //add new slavenode info.
           unsigned id = master_node_->AddOneNode(ip, port);
           Environment::getInstance()
               ->getResourceManagerMaster()
               ->RegisterNewSlave(id);
-          LOG(INFO)<<"master Register slave node :"<<id<<endl;
+          LOG(INFO)<<"master Register slave node :"<<id<<"<"<<ip<<",  "<<port<<">"<<std::endl;
+          // Sync node list of master.
+          master_node_->SyncNodeList(master_node_);
           return make_message(OkAtom::value, id, *((BaseNode*)master_node_));
         },
         [=](HeartBeatAtom, unsigned int node_id_, string address_, uint16_t port_) -> caf::message {
           auto it = master_node_->node_id_to_heartbeat_.find(node_id_);
           if (it != master_node_->node_id_to_heartbeat_.end()){
+              //clear heartbeat count.
               it->second = 0;
               return make_message(OkAtom::value);
           }else{
-            LOG(INFO)<<"get heartbeat and register from "<<address_<<",  "<<port_<<std::endl;
+            LOG(INFO)<<"get heartbeat and register request from "<<address_<<",  "<<port_<<std::endl;
             unsigned id = master_node_->AddOneNode(address_, port_);
             Environment::getInstance()
                           ->getResourceManagerMaster()
                           ->RegisterNewSlave(id);
             LOG(INFO)<<"master Register slave node :"<<id<<endl;
+            master_node_->BroastNodeInfo(id,address_,port_);
             return make_message(OkAtom::value, id, *((BaseNode*)master_node_));
           }
         },
@@ -110,26 +116,27 @@ class MasterNodeActor : public event_based_actor {
           if(master_node_->node_id_to_heartbeat_.size() > 0){
             for (auto it = master_node_->node_id_to_heartbeat_.begin();it != master_node_->node_id_to_heartbeat_.end();)
             {
+                  //Heartbeat count++
                   it->second++;
                   {
                     if (it->second >= kMaxTryTimes){
                       is_losted = true;
                       LOG(WARNING) <<"master : lost hearbeat from ( node "<<it->first<<")"<<endl;
-                    auto node_id = it->first;
-                    auto tmp_it = it;
-                    it++;
-                    master_node_->node_id_to_heartbeat_.erase(tmp_it);
-                    master_node_->RemoveOneNode(node_id, master_node_);
-                    Environment::getInstance()
+                      auto node_id = it->first;
+                      auto tmp_it = it;
+                      it++;
+                      master_node_->node_id_to_heartbeat_.erase(tmp_it);
+                      master_node_->RemoveOneNode(node_id, master_node_);
+                      Environment::getInstance()
                         ->getResourceManagerMaster()
                         ->UnRegisterSlave(node_id);
-                    LOG(INFO)<<"master unRegister old node :"<<node_id<<"info"<<endl;
+                      LOG(INFO)<<"master unRegister old node :"<<node_id<<"info"<<endl;
                     }else{ it++;}
                   }
             }
           }
           if(is_losted){
-            master_node_->SyncNodeList(master_node_);
+             master_node_->SyncNodeList(master_node_);
              is_losted=false;
           }
           delayed_send(this, std::chrono::seconds(kTimeout/5), Updatelist::value);
@@ -224,26 +231,20 @@ RetCode MasterNode::BroastNodeInfo(const unsigned int& node_id,
 }
 // should be atomic
 unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
-
   lock_.acquire();
   unsigned int node_id;
-  if (node_ip == get_node_ip())
-  {
+  //If a slave has same ip with master, it get ID equals 0
+  if (node_ip == get_node_ip()){
     node_id = 0;
-    LOG(INFO)<<"master"<<endl;
   }else{
-    LOG(INFO)<<"slave"<<node_id_gen_<<endl;
     node_id = ++node_id_gen_;
-    LOG(INFO)<<"slave"<<node_id_gen_<<endl;
   }
-  BroastNodeInfo((unsigned int)node_id, node_ip, node_port);
   node_id_to_addr_.insert(
       make_pair((unsigned int)node_id, make_pair(node_ip, node_port)));
   node_id_to_heartbeat_.insert(make_pair((unsigned int)node_id, 0));
   try {
     auto actor = remote_actor(node_ip, node_port);
     node_id_to_actor_.insert(make_pair((unsigned int)node_id, actor));
-    LOG(INFO)<<"actor"<<node_id<<"address"<<node_ip<<"`````"<<node_port<<endl;
   } catch (caf::network_error& e) {
     LOG(WARNING) << "cann't connect to node ( " << node_ip << " , " << node_port
                  << " ) and create remote actor failed!!";
@@ -251,35 +252,39 @@ unsigned int MasterNode::AddOneNode(string node_ip, uint16_t node_port) {
   }
   LOG(INFO) << "register one node( " << node_id << " < " << node_ip
             << " " << node_port << " > )" << std::endl;
+  //BroastNodeInfo((unsigned int)node_id, node_ip, node_port);
   lock_.release();
   return node_id;
 }
+/*
+ *
+ *
+ * */
 void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
   master_node->lock_.acquire();
   master_node->node_id_to_addr_.erase(node_id);
   master_node->node_id_to_actor_.erase(node_id);
   master_node->lock_.release();
-  LOG(INFO) <<"finish remove node :"<<node_id<<endl;
+
+  //clear the partition info of removed node.
   Catalog* catalog = Catalog::getInstance();
   vector<TableID> table_id_list = catalog->GetAllTablesID();
   for (auto table_id : table_id_list){
     TableDescriptor* table = catalog->getTable(table_id);
     if(table != NULL){
-    LOG(INFO) <<"(~~~~~~~~~~~~~~~~~~~~~~ "<< table->getTableName()<<" ~~~~~~~~~~~~~~~~~~~~~~~)";
-    vector<ProjectionDescriptor*>* projection_list =  table ->GetProjectionList();
-    if(projection_list != NULL)
-    {
-      for(auto projection : *projection_list)
+      vector<ProjectionDescriptor*>* projection_list =  table ->GetProjectionList();
+      if(projection_list != NULL)
       {
-        Partitioner* partitioner = projection->getPartitioner();
-        if(partitioner != NULL)
-        {
-          vector<PartitionInfo *> partition_info_list = partitioner->getPartitionList();
-          if(partition_info_list.size() != 0){
-            for(auto partition_info : partition_info_list){
-              if(partition_info->get_location() == node_id){
-                LOG(INFO)<<node_id<<"'s partition is unbinding"<<endl;
-                partition_info->unbind_all_blocks();
+        for(auto projection : *projection_list){
+          Partitioner* partitioner = projection->getPartitioner();
+          if(partitioner != NULL){
+            vector<PartitionInfo *> partition_info_list = partitioner->getPartitionList();
+            if(partition_info_list.size() != 0){
+              for(auto partition_info : partition_info_list){
+                if(partition_info->get_location() == node_id){
+                  LOG(INFO)<<node_id<<"'s partition is unbinding"<<endl;
+                  partition_info->unbind_all_blocks();
+                }
               }
             }
           }
@@ -287,7 +292,6 @@ void MasterNode::RemoveOneNode(unsigned int node_id, MasterNode* master_node){
       }
     }
   }
- }
 }
 void MasterNode::SyncNodeList(MasterNode* master_node)
 {
