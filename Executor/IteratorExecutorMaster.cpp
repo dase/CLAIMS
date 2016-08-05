@@ -49,7 +49,7 @@ bool IteratorExecutorMaster::ExecuteBlockStreamIteratorsOnSite(
     auto target_actor =
         Environment::getInstance()->get_master_node()->GetNodeActorFromId(
             target_id);
-    self->send(target_actor, SendPlanAtom::value, str);
+    self->send(target_actor, SendPlanAtom::value, str, query_id, segment_id);
   } catch (caf::bind_failure& e) {
     LOG(ERROR)
         << "master sending plan binds port error when connecting remote actor";

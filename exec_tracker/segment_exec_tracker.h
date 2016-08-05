@@ -34,8 +34,8 @@
 #include <string>
 #include <utility>
 #include "../common/error_define.h"
-#include "../node_manager/base_node.h"
 #include "../utility/lock.h"
+#include "caf/all.hpp"
 using caf::actor;
 using std::pair;
 using std::string;
@@ -57,8 +57,9 @@ class SegmentExecTracker {
   static void ReportAllSegStatus(caf::event_based_actor* self,
                                  SegmentExecTracker* seg_exec_tracker);
 
- private:
   actor segment_exec_tracker_actor_;
+
+ private:
   boost::unordered_map<NodeSegmentID, SegmentExecStatus*>
       node_segment_id_to_status_;
   Lock map_lock_;

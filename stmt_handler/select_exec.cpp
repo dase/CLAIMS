@@ -248,18 +248,29 @@ RetCode SelectExec::Execute() {
       Environment::getInstance()->get_slave_node()->get_node_id());
   seg_exec_status->RegisterToTracker();
 
-  physical_plan->Open(seg_exec_status);
-  seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
-                                "physical plan Open() succeed", 0, true);
-  while (physical_plan->Next(seg_exec_status, NULL)) {
+  bool pret = physical_plan->Open(seg_exec_status);
+  if (pret) {
+    seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
+                                  "physical plan Open() succeed at collector",
+                                  0, true);
+    while (physical_plan->Next(seg_exec_status, NULL)) {
+    }
+    seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
+                                  "physical plan next() succeed", 0, true);
+    // the difference from the execution of normal segment due to getting result
+    stmt_exec_status_->set_query_result(physical_plan->GetResultSet());
+    stmt_exec_status_->set_exec_info(string("execute a query successfully"));
+  } else {
+    seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kError,
+                                  "physical plan open() failed at collector", 0,
+                                  true);
+    stmt_exec_status_->set_query_result(NULL);
+    stmt_exec_status_->set_exec_info(string("execute a query failed"));
   }
-  seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kOk,
-                                "physical plan next() succeed", 0, true);
-  stmt_exec_status_->set_query_result(physical_plan->GetResultSet());
-  stmt_exec_status_->set_exec_info(string("execute a query successfully"));
   physical_plan->Close(seg_exec_status);
   seg_exec_status->UpdateStatus(SegmentExecStatus::ExecStatus::kDone,
                                 "physical plan close() succeed", 0, true);
+
   if (tid != 0) {
     //    if (StmtExecStatus::kCancelled ==
     //    stmt_exec_status_->get_exec_status()) {
@@ -267,10 +278,8 @@ RetCode SelectExec::Execute() {
     //    }
     pthread_join(tid, NULL);
   }
-  seg_exec_status->UnRegisterFromTracker();
 
   ret = rSuccess;
-  delete seg_exec_status;
   delete logic_plan;
   delete physical_plan;
   return ret;
