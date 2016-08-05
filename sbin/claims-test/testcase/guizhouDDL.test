@@ -4,6 +4,7 @@ CREATE TABLE `family` (
 `FamilyID`  int(10),
 `GroupID`  int(10),
 `IsPoorFamily`  int(10),
+  `IsImmigrant` int(10),
 `MasterName`  varchar(255),
 `RID`  varchar(255),
 `HeadCount`  int(10),
@@ -17,19 +18,22 @@ CREATE TABLE `family` (
 `Bank`  varchar(255),
 `BankAccount`  varchar(255),
 `PovertyScore`  int(10),
-`PlanGetRidOfPovertyTime`  datetime,
+  `PlanGetRidOfPovertyTime` varchar(32),
 `ActualGetRidOfPovertyTime`  datetime ,
 `FourLineStatus`  varchar(255),
 `HelpCategory`  varchar(255),
 `Creater`  varchar(255),
 `CreateTime`  datetime,
 `Reviser`  varchar(255),
-`UpdateTime`  datetime
+`UpdateTime`  datetime,
+  `Outcoming` varchar(255),
+  `Location` varchar(255)
 );
 CREATE PROJECTION ON `family` (
 `FamilyID`,
 `GroupID`,
 `IsPoorFamily`,
+  `IsImmigrant`,
 `MasterName`,
 `RID`,
 `HeadCount`,
@@ -50,27 +54,9 @@ CREATE PROJECTION ON `family` (
 `Creater`,
 `CreateTime`,
 `Reviser`,
-`UpdateTime`
-) number = 1 partitioned on row_id;
-
-DROP TABLE IF EXISTS `family_project`;
-CREATE TABLE `family_project` (
-`FamilyProjectID`  int(10),
-`FamilyID`  int(10),
-`VillageProjectID`  int(10),
-`Creater`  varchar(255),
-`CreateTime`  datetime,
-`Reviser`  varchar(255),
-`UpdateTime`  datetime
-);
-CREATE PROJECTION ON `family_project` (
-`FamilyProjectID`,
-`FamilyID`,
-`VillageProjectID`,
-`Creater`,
-`CreateTime`,
-`Reviser`,
-`UpdateTime`
+`UpdateTime`,
+`Outcoming`,
+  `Location`
 ) number = 1 partitioned on row_id;
 
 DROP TABLE IF EXISTS `familygroup`;
@@ -100,6 +86,7 @@ CREATE TABLE `familyimmigration` (
 `MoveType`  varchar(255),
 `IsInPlan`  varchar(255),
 `WillToMove`  varchar(255),
+  `MoveYear` int(11),
 `MoveMode`  varchar(255),
 `SettlementPlace`  varchar(255),
 `MoveProblem`  varchar(255),
@@ -110,16 +97,11 @@ CREATE TABLE `familyimmigration` (
 `DismantleBonus`  decimal(10,2),
 `SelfFinancing`  decimal(10,2),
 `PlanMoveTime`  datetime,
-`ActualMoveTime`  datetime,
+  `ActualMoveTime` varchar(32),
 `PlanDismantleTime`  datetime,
-`ActualDismantleTime`  datetime,
-`PostSupportPlan`  varchar(255),
-`GetRidOfPovertyTime`  datetime,
-`OriginalHousingArea`  decimal(10,2),
-`OriginalHousingStructure`  varchar(255),
-`OriginalHouseBaseArea`  decimal(10,2),
-`SigningTime`  datetime,
-`ApplicationTime`  datetime,
+  `ActualDismantleTime` varchar(32),
+  `PostSupportPlan` varchar(8192),
+  `SettlementType` varchar(255),
 `Creater`  varchar(255),
 `CreateTime`  datetime,
 `Reviser`  varchar(255),
@@ -131,6 +113,7 @@ CREATE PROJECTION ON `familyimmigration` (
 `MoveType`,
 `IsInPlan`,
 `WillToMove`,
+  `MoveYear`,
 `MoveMode`,
 `SettlementPlace`,
 `MoveProblem`,
@@ -141,16 +124,11 @@ CREATE PROJECTION ON `familyimmigration` (
 `DismantleBonus`,
 `SelfFinancing`,
 `PlanMoveTime`,
-`ActualMoveTime`,
+  `ActualMoveTime`,
 `PlanDismantleTime`,
-`ActualDismantleTime`,
-`PostSupportPlan`,
-`GetRidOfPovertyTime`,
-`OriginalHousingArea`,
-`OriginalHousingStructure`,
-`OriginalHouseBaseArea`,
-`SigningTime`,
-`ApplicationTime`,
+  `ActualDismantleTime`,
+  `PostSupportPlan`,
+  `SettlementType`,
 `Creater`,
 `CreateTime`,
 `Reviser`,
@@ -161,15 +139,6 @@ DROP TABLE IF EXISTS `familyincome`;
 CREATE TABLE `familyincome` (
 `FamilyIncomeID`  int(10),
 `FamilyID`  int(10),
-`A17CultivatedArea`  decimal(10,2),
-`A17aEffectiveIrrigationArea`  decimal(10,2),
-`A17bField`  decimal(10,2),
-`A17cField`  decimal(10,2),
-`A18ForestArea`  decimal(10,2),
-`A18aReforestationCultivatedArea`  decimal(10,2),
-`A18bFruitTreeArea`  decimal(10,2),
-`A19PastureArea`  decimal(10,2),
-`A20WaterArea`  decimal(10,2),
 `A32OutstandingLoan`  decimal(10,2),
 `N02Annualncome`  decimal(10,2),
 `A34WageIncome`  decimal(10,2),
@@ -191,20 +160,12 @@ CREATE TABLE `familyincome` (
 `Creater`  varchar(255),
 `CreateTime`  datetime,
 `Reviser`  varchar(255),
-`UpdateTime`  datetime
+  `UpdateTime` datetime,
+  `TransferIncome` decimal(10,2)
 );
 CREATE PROJECTION ON `familyincome` (
 `FamilyIncomeID`,
 `FamilyID`,
-`A17CultivatedArea`,
-`A17aEffectiveIrrigationArea`,
-`A17bField`,
-`A17cField`,
-`A18ForestArea`,
-`A18aReforestationCultivatedArea`,
-`A18bFruitTreeArea`,
-`A19PastureArea`,
-`A20WaterArea`,
 `A32OutstandingLoan`,
 `N02Annualncome`,
 `A34WageIncome`,
@@ -214,7 +175,7 @@ CREATE PROJECTION ON `familyincome` (
 `A36Subsidy`,
 `N04ProductiveCost`,
 `A36aFamilyPlanningAwards`,
-`A36bMinGovSubsidy`,
+`A36bMinGovSubsidy` ,
 `A36cPensionInsurance`,
 `A36dNCMSMedicalFee`,
 `A36eMedicalAssistanceFund`,
@@ -226,7 +187,8 @@ CREATE PROJECTION ON `familyincome` (
 `Creater`,
 `CreateTime`,
 `Reviser`,
-`UpdateTime`
+  `UpdateTime`,
+  `TransferIncome`
 ) number = 1 partitioned on row_id;
 
 DROP TABLE IF EXISTS `familyliving`;
@@ -246,13 +208,23 @@ CREATE TABLE `familyliving` (
 `A29HasToilet`  varchar(255),
 `A30MainFuelType`  varchar(255),
 `A31HasJoinedFC`  varchar(255),
-`BulidingTime`  int(11),
 `BulidingStructure`  varchar(255),
 `RelocationStatus`  varchar(255),
 `Creater`  varchar(255),
 `CreateTime`  datetime,
 `Reviser`  varchar(255),
-`UpdateTime`  datetime
+  `UpdateTime` datetime ,
+  `HouseBaseArea` decimal(10,2) ,
+  `ProductionRoomArea` decimal(10,2) ,
+  `A17CultivatedArea` decimal(10,2) ,
+  `A17aEffectiveIrrigationArea` decimal(10,2) ,
+  `A17bField` decimal(10,2) ,
+  `A17cField` decimal(10,2) ,
+  `A18ForestArea` decimal(10,2) ,
+  `A18aReforestationCultivatedArea` decimal(10,2) ,
+  `A18bFruitTreeArea` decimal(10,2) ,
+  `A19PastureArea` decimal(10,2) ,
+  `A20WaterArea` decimal(10,2)
 );
 CREATE PROJECTION ON `familyliving` (
 `FamilyLivingID`,
@@ -270,13 +242,23 @@ CREATE PROJECTION ON `familyliving` (
 `A29HasToilet`,
 `A30MainFuelType`,
 `A31HasJoinedFC`,
-`BulidingTime`,
 `BulidingStructure`,
 `RelocationStatus`,
 `Creater`,
 `CreateTime`,
 `Reviser`,
-`UpdateTime`
+  `UpdateTime`,
+  `HouseBaseArea`,
+  `ProductionRoomArea`,
+  `A17CultivatedArea`,
+  `A17aEffectiveIrrigationArea`,
+  `A17bField`,
+  `A17cField`,
+  `A18ForestArea`,
+  `A18aReforestationCultivatedArea`,
+  `A18bFruitTreeArea`,
+  `A19PastureArea`,
+  `A20WaterArea`
 ) number = 1 partitioned on row_id;
 
 DROP TABLE IF EXISTS `familyperson`;
@@ -299,16 +281,21 @@ CREATE TABLE `familyperson` (
 `AddReason`  varchar(255),
 `MilitaryService`  varchar(255),
 `EndownmentInsurance`  varchar(255),
+  `Skill` varchar(255) ,
 `SkillNumber`  int(11),
 `IsTrained`  varchar(255),
 `IncomeOfWork`  decimal(10,2),
 `TransferJob`  varchar(255),
-`PreviousSchool`  varchar(255),
-`NewSchool`  varchar(255),
+  `ChildrenSchooling` varchar(255) ,
 `Creater`  varchar(255),
 `CreateTime`  datetime,
 `Reviser`  varchar(255),
-`UpdateTime`  datetime
+  `UpdateTime` datetime ,
+  `Other` varchar(255) ,
+  `Job` varchar(255) ,
+  `PlanJob` varchar(255) ,
+  `Age` int(10) ,
+  `Phone` varchar(255) 
 );
 CREATE PROJECTION ON `familyperson` (
 `FamilyPersonID`,
@@ -318,7 +305,7 @@ CREATE PROJECTION ON `familyperson` (
 `RID`,
 `Relationship`,
 `EthnicGroup`,
-`Education`,
+`Education` ,
 `StudentStatus`,
 `Health`,
 `WorkCapacity`,
@@ -329,22 +316,28 @@ CREATE PROJECTION ON `familyperson` (
 `AddReason`,
 `MilitaryService`,
 `EndownmentInsurance`,
+  `Skill`,
 `SkillNumber`,
 `IsTrained`,
 `IncomeOfWork`,
 `TransferJob`,
-`PreviousSchool`,
-`NewSchool`,
+  `ChildrenSchooling`,
 `Creater`,
 `CreateTime`,
 `Reviser`,
-`UpdateTime`
+  `UpdateTime`,
+  `Other`,
+  `Job`,
+  `PlanJob`,
+  `Age`,
+  `Phone` 
 ) number = 1 partitioned on row_id;
 
 DROP TABLE IF EXISTS `familypicture`;
 CREATE TABLE `familypicture` (
 `PictureID`  int(10),
 `FamilyID`  int(10),
+`ArchivesNO` varchar(255) ,
 `Name`  varchar(255),
 `Path`  varchar(255),
 `Type`  varchar(255),
@@ -356,6 +349,7 @@ CREATE TABLE `familypicture` (
 CREATE PROJECTION ON `familypicture` (
 `PictureID`,
 `FamilyID`,
+`ArchivesNO`
 `Name`,
 `Path`,
 `Type`,
@@ -363,6 +357,48 @@ CREATE PROJECTION ON `familypicture` (
 `CreateTime`,
 `Reviser`,
 `UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `family_project`;
+CREATE TABLE `family_project` (
+  `FamilyProjectID` int(10),
+  `FamilyID` int(10) ,
+  `VillageProjectID` int(10) ,
+  `Creater` varchar(255) ,
+  `CreateTime` datetime ,
+  `Reviser` varchar(255) ,
+  `UpdateTime` datetime 
+);
+CREATE PROJECTION ON `family_project` (
+  `FamilyProjectID`,
+  `FamilyID`,
+  `VillageProjectID`,
+  `Creater`,
+  `CreateTime`,
+  `Reviser`,
+  `UpdateTime`
+) number = 1 partitioned on row_id;
+
+DROP TABLE IF EXISTS `grouppicture`;
+CREATE TABLE `grouppicture` (
+  `PictureID` int(10),
+  `GroupID` int(10) ,
+  `Name` varchar(255) ,
+  `Path` varchar(255) ,
+  `Creater` varchar(255) ,
+  `CreateTime` datetime ,
+  `Reviser` varchar(255) ,
+  `UpdateTime` datetime
+);
+CREATE PROJECTION ON `grouppicture` (
+  `PictureID`,
+  `GroupID`,
+  `Name`,
+  `Path`,
+  `Creater`,
+  `CreateTime`,
+  `Reviser`,
+  `UpdateTime`
 ) number = 1 partitioned on row_id;
 
 DROP TABLE IF EXISTS `helper`;
@@ -389,6 +425,26 @@ CREATE PROJECTION ON `helper` (
 `UpdateTime`
 ) number = 1 partitioned on row_id;
 
+DROP TABLE IF EXISTS `helperorg_village`;
+CREATE TABLE `helperorg_village` (
+  `HelperOrgVilliageID` int(10),
+  `VillageID` int(10) ,
+  `HelpOrgID` int(10) ,
+  `Creater` varchar(255) ,
+  `CreateTime` datetime ,
+  `Reviser` varchar(255) ,
+  `UpdateTime` datetime
+);
+CREATE PROJECTION ON `helperorg_village` (
+  `HelperOrgVilliageID` int(10),
+  `VillageID` int(10) ,
+  `HelpOrgID` int(10) ,
+  `Creater` varchar(255) ,
+  `CreateTime` datetime ,
+  `Reviser` varchar(255) ,
+  `UpdateTime` datetime
+) number = 1 partitioned on row_id;
+
 DROP TABLE IF EXISTS `helper_family`;
 CREATE TABLE `helper_family` (
 `HelperFamilyID`  int(10),
@@ -409,25 +465,6 @@ CREATE PROJECTION ON `helper_family` (
 `UpdateTime`
 ) number = 1 partitioned on row_id;
 
-DROP TABLE IF EXISTS `helperorg_village`;
-CREATE TABLE `helperorg_village` (
-`HelperOrgVilliageID`  int(10),
-`VillageID`  int(10),
-`HelpOrgID`  int(10),
-`Creater`  varchar(255),
-`CreateTime`  datetime,
-`Reviser`  varchar(255),
-`UpdateTime`  datetime
-);
-CREATE PROJECTION ON `helperorg_village` (
-`HelperOrgVilliageID`,
-`VillageID`,
-`HelpOrgID`,
-`Creater`,
-`CreateTime`,
-`Reviser`,
-`UpdateTime`
-) number = 1 partitioned on row_id;
 
 DROP TABLE IF EXISTS `helporg`;
 CREATE TABLE `helporg` (
