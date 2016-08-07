@@ -349,7 +349,7 @@ CREATE TABLE `familypicture` (
 CREATE PROJECTION ON `familypicture` (
 `PictureID`,
 `FamilyID`,
-`ArchivesNO`
+`ArchivesNO`,
 `Name`,
 `Path`,
 `Type`,
@@ -436,13 +436,13 @@ CREATE TABLE `helperorg_village` (
   `UpdateTime` datetime
 );
 CREATE PROJECTION ON `helperorg_village` (
-  `HelperOrgVilliageID` int(10),
-  `VillageID` int(10) ,
-  `HelpOrgID` int(10) ,
-  `Creater` varchar(255) ,
-  `CreateTime` datetime ,
-  `Reviser` varchar(255) ,
-  `UpdateTime` datetime
+  `HelperOrgVilliageID`,
+  `VillageID`,
+  `HelpOrgID`,
+  `Creater`,
+  `CreateTime`,
+  `Reviser`,
+  `UpdateTime`
 ) number = 1 partitioned on row_id;
 
 DROP TABLE IF EXISTS `helper_family`;

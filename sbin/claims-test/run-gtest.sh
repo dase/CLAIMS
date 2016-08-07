@@ -8,7 +8,6 @@ cd ../../
 # now in CLAIMS_HOME
 
 starttime=$(date '+%Y-%m-%d %H:%M:%S')
-loops=0
 while [ 1 ]
 do
   echo "claimsserver is running..."

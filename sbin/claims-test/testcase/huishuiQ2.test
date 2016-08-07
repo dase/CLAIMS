@@ -1,0 +1,110 @@
+
+SELECT * FROM `town`;
+
+SELECT * FROM `town` WHERE `TownID` = 1 LIMIT 1;
+
+SELECT village.*,
+		t.`Name` TownName 
+FROM village
+LEFT JOIN `town` t ON village.`TownID` = t.`TownID`
+WHERE village.TownID = 1;
+	
+SELECT village.*,
+		t.Name TownName
+FROM village
+LEFT JOIN `town` t ON village.TownID = t.TownID
+WHERE VillageID = 1 LIMIT 1;
+
+SELECT g.`GroupID`, g.`Name`, 
+    v.`VillageID`, v.`Name` VillageName, 
+    t.`TownID`, t.`Name` TownName,
+    g.`Creater`, g.`CreateTime`,
+    g.`Reviser`, g.`UpdateTime`,  
+    p.`PictureID`, p.`Name` PictureName, p.`Path` PicturePath 
+FROM `familygroup` g
+LEFT JOIN `grouppicture` p 
+ON g.`GroupID` = p.`GroupID`
+LEFT JOIN `village` v ON g.`VillageID` = v.`VillageID`
+LEFT JOIN `town` t ON v.`TownID` = t.`TownID`
+WHERE g.`VillageID` = 1;
+
+SELECT g.`GroupID`, g.`Name`, 
+    v.`VillageID`, v.`Name` VillageName, 
+    t.`TownID`, t.`Name` TownName,
+    g.`Creater`, g.`CreateTime`,
+    g.`Reviser`, g.`UpdateTime`,  
+    p.`PictureID`, p.`Name` PictureName, p.`Path` PicturePath 
+FROM `familygroup` g
+LEFT JOIN `grouppicture` p ON g.`GroupID` = p.`GroupID`
+LEFT JOIN `village` v ON g.`VillageID` = v.`VillageID`
+LEFT JOIN `town` t ON v.`TownID` = t.`TownID`
+WHERE g.`GroupID` = 1
+LIMIT 1;	
+
+SELECT family.*,g.`GroupID`, g.`Name` GroupName, 
+	v.`VillageID`, v.`Name` VillageName, t.`TownID`, 
+	t.`Name` TownName
+FROM `family`
+LEFT JOIN `familygroup` g ON family.`GroupID` = g.`GroupID`
+LEFT JOIN `village` v ON g.`VillageID` = v.`VillageID`
+LEFT JOIN `town` t ON v.`TownID` = t.`TownID`
+WHERE `FamilyID` = 1 LIMIT 1;		
+
+SELECT family.*,g.`GroupID`, g.`Name` GroupName, 
+	v.`VillageID`, v.`Name` VillageName, t.`TownID`, 
+	t.`Name` TownName
+FROM `family`
+LEFT JOIN `familygroup` g ON family.`GroupID` = g.`GroupID`
+LEFT JOIN `village` v ON g.`VillageID` = v.`VillageID`
+LEFT JOIN `town` t ON v.`TownID` = t.`TownID` 
+WHERE  family.`RID` =1
+LIMIT 1;		
+
+SELECT family.*,g.`GroupID`, g.`Name` GroupName, 
+	v.`VillageID`, v.`Name` VillageName, t.`TownID`, 
+	t.`Name` TownName
+FROM `family`
+LEFT JOIN `familygroup` g ON family.`GroupID` = g.`GroupID`
+LEFT JOIN `village` v ON g.`VillageID` = v.`VillageID`
+LEFT JOIN `town` t ON v.`TownID` = t.`TownID`
+WHERE family.`IsImmigrant`=1 AND family.`RID` = 1
+LIMIT 1;	
+
+SELECT family.*,g.`GroupID`, g.`Name` GroupName, 
+	v.`VillageID`, v.`Name` VillageName, t.`TownID`, 
+	t.`Name` TownName
+FROM `family`
+LEFT JOIN `familygroup` g ON family.`GroupID` = g.`GroupID`
+LEFT JOIN `village` v ON g.`VillageID` = v.`VillageID`
+LEFT JOIN `town` t ON v.`TownID` = t.`TownID`
+WHERE `IsImmigrant` = 1 AND family.`GroupID` = 1;
+
+SELECT h.`HelperID`, h.`HelperName`, h.`HelperPhone`, h.`HelperTitle`, 
+    ho.`HelpOrgID`, ho.`HelpOrgName`,
+	f.`FamilyID`, f.`RID`, f.`MasterName`,
+    h.`Creater`, h.`CreateTime`, h.`Reviser`, h.`UpdateTime`
+FROM `family` f
+LEFT JOIN `helper_family` hf ON f.`FamilyID` = hf.`FamilyID`
+LEFT JOIN `helper` h ON hf.`HelperID` = h.`HelperID`
+LEFT JOIN `helporg` ho ON h.`HelpOrgID` = ho.`HelpOrgID`
+WHERE f.`FamilyID`= 1;		  
+
+SELECT * FROM `familyimmigration` WHERE `FamilyID` = 1 LIMIT 1;
+
+DELETE FROM familyimmigration  WHERE FamilyID =1;
+
+SELECT * FROM `familyincome` WHERE `FamilyID` = 1 LIMIT 1;
+
+DELETE FROM familyincome  WHERE FamilyID =1;			
+
+SELECT * FROM `familyliving` WHERE `FamilyID` = 1 LIMIT 1;
+
+delete from familyliving where FamilyID = 1;
+
+SELECT * FROM `familyperson` WHERE `FamilyID` = 1;
+
+DELETE FROM familyperson  WHERE RID = 1;			
+
+delete from familypicture where PictureID = 1;
+
+exit;
