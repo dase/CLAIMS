@@ -108,6 +108,7 @@ bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
               << " update logic_time= " << logic_time
               << " exec_status_= " << exec_status
               << " exec_info_= " << exec_info;
+    need_report = false;  // for debug
     if (need_report) {
       ++logic_time_;
       caf::scoped_actor self;
