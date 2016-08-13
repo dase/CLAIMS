@@ -112,10 +112,10 @@ void SegmentExecTracker::ReportAllSegStatus(
                 DELETE_PTR(it->second);
                 it = seg_exec_tracker->node_segment_id_to_status_.erase(it);
               } else {
-                ++it;
                 LOG(WARNING) << it->second->node_segment_id_.first << " , "
                              << it->second->node_segment_id_.second
                              << "segment report status out of order0!";
+                ++it;
               }
             } else {
               ++it->second->logic_time_;
@@ -143,6 +143,9 @@ void SegmentExecTracker::ReportAllSegStatus(
 
         } else {
           try {
+            LOG(INFO) << seg_exec_status->node_segment_id_.first << " , "
+                      << seg_exec_status->node_segment_id_.second
+                      << " before send: " << exec_status << " , " << exec_info;
             self->sync_send(
                       seg_exec_status->coor_actor_, ReportSegESAtom::value,
                       seg_exec_status->node_segment_id_, exec_status, exec_info)
@@ -171,7 +174,7 @@ void SegmentExecTracker::ReportAllSegStatus(
                     caf::others >>
                         [=]() {
                           LOG(WARNING)
-                              << "segment repote receives unknown message"
+                              << "segment report receives unknown message"
                               << endl;
                         },
                     // if timeout, then ReportErrorTimes+1,if ReportErrorTimes >
@@ -179,13 +182,15 @@ void SegmentExecTracker::ReportAllSegStatus(
                     // it
                     caf::after(std::chrono::seconds(kTimeout)) >>
                         [=]() {
+
+                          ++seg_exec_status->ReportErrorTimes;
                           LOG(WARNING)
                               << seg_exec_status->node_segment_id_.first
                               << " , "
                               << seg_exec_status->node_segment_id_.second
-                              << " segment report status timeout!";
+                              << " segment report status timeout! times= "
+                              << seg_exec_status->ReportErrorTimes;
 
-                          ++seg_exec_status->ReportErrorTimes;
                           if (seg_exec_status->ReportErrorTimes >
                               TryReportTimes) {
                             LOG(ERROR)

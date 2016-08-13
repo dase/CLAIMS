@@ -1,0 +1,4 @@
+select row_id from LINEITEM group by row_id;
+select L_PARTKEY,count(*) from LINEITEM group by L_PARTKEY;
+select L_RETURNFLAG from LINEITEM group by L_RETURNFLAG;
+exit;

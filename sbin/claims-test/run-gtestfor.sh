@@ -16,7 +16,7 @@ do
 #  ./claimstest.sh 1 1 concertdroptable
 #  ./claimstest.sh 1 1 concertcreatetable
 #  ./claimstest.sh 1 1 concertload50wdata
-  ./claimstest.sh 1000 20 AggregationLargeGroups
+  ./claimstest.sh 20000 20 gtestfor
   echo "start time:$starttime"
   echo "end time:$(date '+%Y-%m-%d %H:%M:%S')"
 done

@@ -820,6 +820,11 @@ void *ClientListener::sendHandler(void *para) {
               cliRes.status, cliRes.length, cliRes.content.c_str());
           server->write(result.fd_, cliRes);
           printf("send end response packet ok\n");
+          if (NULL != result.result_) {
+            delete result.result_;
+            result.result_ = NULL;
+            //            cout << "delete result in memory" << endl;
+          }
         }
       }
     } else {
@@ -836,6 +841,11 @@ void *ClientListener::sendHandler(void *para) {
           result.warning_.c_str());
       server->write(result.fd_, cliRes);
       printf("send error packet ok\n");
+      if (NULL != result.result_) {
+        delete result.result_;
+        result.result_ = NULL;
+        cout << "delete result in memory" << endl;
+      }
     }
   }
   return NULL;

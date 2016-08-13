@@ -68,15 +68,23 @@ class SlaveNodeActor : public event_based_actor {
                     << endl;
           quit();
         },
-        [=](SendPlanAtom, string str) {
+        [=](SendPlanAtom, string str, u_int64_t query_id,
+            u_int32_t segment_id) {
+          LOG(INFO) << "coor node receive one plan " << query_id << " , "
+                    << segment_id << " plan string size= " << str.length();
           PhysicalQueryPlan* new_plan = new PhysicalQueryPlan(
               PhysicalQueryPlan::TextDeserializePlan(str));
+          LOG(INFO) << "coor node deserialized plan " << query_id << " , "
+                    << segment_id;
+          ticks start = curtick();
           Environment::getInstance()
               ->getIteratorExecutorSlave()
               ->createNewThreadAndRun(new_plan);
+
           string log_message =
-              "Slave: received plan segment and create new thread and run it!";
-          LOG(INFO) << log_message;
+              "Slave: received plan segment and create new thread and run it! ";
+          LOG(INFO) << log_message << query_id << " , " << segment_id
+                    << " , createNewThreadAndRun:" << getMilliSecond(start);
         },
         [=](AskExchAtom, ExchangeID exch_id) -> message {
           auto addr =
@@ -110,6 +118,8 @@ class SlaveNodeActor : public event_based_actor {
                   ->UpdateSegExecStatus(
                       node_segment_id,
                       (SegmentExecStatus::ExecStatus)exec_status, exec_info);
+          LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
+                    << " after receive: " << exec_status << " , " << exec_info;
           if (false == ret) {
             return make_message(CancelPlanAtom::value);
           }

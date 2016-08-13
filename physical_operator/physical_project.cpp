@@ -40,7 +40,20 @@ PhysicalProject::PhysicalProject() {
   InitExpandedStatus();
 }
 
-PhysicalProject::~PhysicalProject() {}
+PhysicalProject::~PhysicalProject() {
+  if (NULL != state_.schema_output_) {
+    delete state_.schema_output_;
+    state_.schema_output_ = NULL;
+  }
+  if (NULL != state_.schema_input_) {
+    delete state_.schema_input_;
+    state_.schema_input_ = NULL;
+  }
+  if (NULL != state_.child_) {
+    delete state_.child_;
+    state_.child_ = NULL;
+  }
+}
 
 PhysicalProject::PhysicalProject(State state) : state_(state) {
   set_phy_oper_type(kPhysicalProject);

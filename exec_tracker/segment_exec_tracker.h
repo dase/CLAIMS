@@ -42,7 +42,7 @@ using std::string;
 
 namespace claims {
 // first=query_id, second=segment_id*kMaxNodeNum + node_id
-#define kReportIntervalTime 3000
+#define kReportIntervalTime 1000
 typedef std::pair<u_int64_t, u_int64_t> NodeSegmentID;
 class SegmentExecStatus;
 class SegmentExecTracker {

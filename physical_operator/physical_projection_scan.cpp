@@ -66,10 +66,10 @@ PhysicalProjectionScan::~PhysicalProjectionScan() {
     delete state_.schema_;
     state_.schema_ = NULL;
   }
-  if (NULL != perf_info_) {
-    delete perf_info_;
-    perf_info_ = NULL;
-  }
+  //  if (NULL != perf_info_) {
+  //    delete perf_info_;
+  //    perf_info_ = NULL;
+  //  }
 }
 
 PhysicalProjectionScan::State::State(ProjectionID projection_id, Schema* schema,
@@ -144,6 +144,9 @@ bool PhysicalProjectionScan::Next(SegmentExecStatus* const exec_status,
   RETURN_IF_CANCELLED(exec_status);
 
   unsigned long long total_start = curtick();
+  if (!block->isIsReference()) {
+    block->setIsReference(false);
+  }
 #ifdef AVOID_CONTENTION_IN_SCAN
   ScanThreadContext* stc = reinterpret_cast<ScanThreadContext*>(GetContext());
   if (NULL == stc) {
@@ -187,7 +190,7 @@ bool PhysicalProjectionScan::Next(SegmentExecStatus* const exec_status,
           pthread_self())) {
     return false;
   }
-  perf_info_->processed_one_block();
+  //  perf_info_->processed_one_block();
   // case(2)
   RETURN_IF_CANCELLED(exec_status);
   return partition_reader_iterator_->NextBlock(block);

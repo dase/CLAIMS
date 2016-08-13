@@ -328,7 +328,6 @@ PhysicalOperatorBase* LogicalAggregation::GetPhysicalPlan(
       expander_state.child_ = local_aggregation;
       expander_state.schema_ = local_agg_state.hash_schema_->duplicateSchema();
       PhysicalOperatorBase* expander_lower = new Expander(expander_state);
-
       ExchangeMerger::State exchange_state;
       exchange_state.block_size_ = block_size;
       exchange_state.child_ = expander_lower;
@@ -362,9 +361,9 @@ PhysicalOperatorBase* LogicalAggregation::GetPhysicalPlan(
       global_agg_state.num_of_buckets_ = local_agg_state.num_of_buckets_;
       global_agg_state.avg_index_ = avg_id_in_agg_;
       global_agg_state.count_column_id_ = count_column_id_;
-      PhysicalOperatorBase* global_aggregation =
-          new PhysicalAggregation(global_agg_state);
-      ret = global_aggregation;
+      //      PhysicalOperatorBase* global_aggregation =
+      //          new PhysicalAggregation(global_agg_state);
+      ret = new PhysicalAggregation(global_agg_state);
       break;
     }
     case kReparGlobalAgg: {
