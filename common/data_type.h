@@ -1286,7 +1286,7 @@ class OperateDecimal : public Operate {
   void SetDefault(string& str) const { str = string("0"); }
   /*
 private:
-	//bool CheckStr(string str) const;
+        //bool CheckStr(string str) const;
 */
  private:
   int precision_;
@@ -1401,6 +1401,7 @@ class column_type {
   }
   column_type() : operate(0){};
   ~column_type() {
+    //    cout << "call the destruct in columns_type" << endl;
     delete operate;
     operate = 0;
   }

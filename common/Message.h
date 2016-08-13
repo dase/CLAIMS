@@ -430,6 +430,8 @@ class PhysicalQueryPlan {
   static PhysicalQueryPlan TextDeserializePlan(const string& message) {
     return TextDeserialize<PhysicalQueryPlan>(message);
   }
+  u_int64_t get_query_id() { return query_id_; }
+  u_int32_t get_segment_id_() { return segment_id_; }
 
  private:
   PhysicalOperatorBase* block_stream_iterator_root_;

@@ -8,13 +8,17 @@ source ./generate-config.sh
 cd ../../
 # now in CLAIMS_HOME
 
-for node in $slaves $master
+./sbin/stop-all.sh>/dev/null 2>&1
+
+echo -e "\033[36m<$claimshome>\033[0m"
+
+for node in $master $slaves
 do
 
   echo -e "\033[36m<-$node->\033[0m"
 
   if [ "$1" = "" ] || [ "$1" = "exec" ]; then
-      ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin' ]; then mkdir -p '$claimshome/sbin'; else $claimshome/sbin/stop-node.sh; fi; exit"
+      ssh -f -n -l $user $node "if [ ! -d '$claimshome/sbin' ]; then mkdir -p '$claimshome/sbin'; fi; exit"
       ssh -f -n -l $user $node "if [ ! -d '$claimshome/install' ]; then mkdir -p '$claimshome/install'; fi; exit"
       scp install/claimsserver $user@$node:$claimshome/install
       scp install/client $user@$node:$claimshome/install

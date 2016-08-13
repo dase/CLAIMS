@@ -1,0 +1,2 @@
+select count(*) from LINEITEM,PART where PART.row_id=LINEITEM.row_id;
+exit;

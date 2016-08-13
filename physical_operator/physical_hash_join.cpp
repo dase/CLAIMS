@@ -74,6 +74,14 @@ PhysicalHashJoin::PhysicalHashJoin()
 }
 
 PhysicalHashJoin::~PhysicalHashJoin() {
+  if (NULL != state_.child_right_) {
+    delete state_.child_right_;
+    state_.child_right_ = NULL;
+  }
+  if (NULL != state_.child_left_) {
+    delete state_.child_left_;
+    state_.child_left_ = NULL;
+  }
   for (int i = 0; i < state_.join_condi_.size(); ++i) {
     DELETE_PTR(state_.join_condi_[i]);
   }
@@ -208,6 +216,7 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
     }
     jtc->l_block_for_asking_->setEmpty();
   }
+  DELETE_PTR(input_schema);
   DELETE_PTR(oper);
 #ifdef _DEBUG_
   tuples_in_hashtable = 0;

@@ -57,63 +57,43 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
                                                  NodeAddress& node_addr,
                                                  actor& target_actor) {
   caf::scoped_actor self;
-  try {
-    self->sync_send(target_actor, AskExchAtom::value, exchange_id)
-        .await(
-            /// should add overtime!
-            [&](OkAtom, const string& ip, const string& port) {
-              node_addr.ip = ip;
-              node_addr.port = port;
-            },
-            after(std::chrono::seconds(10)) >>
-                [=]() {
-                  LOG(WARNING)
-                      << "asking exchange connection info, but timeout 10s!!"
-                      << endl;
-                  return 0;
-                }
+  node_addr.ip = "0";
+  node_addr.port = "0";
+  int try_times = 0;
+  while (try_times < 3) {
+    try {
+      self->sync_send(target_actor, AskExchAtom::value, exchange_id).await(
+          /// should add overtime!
+          [&](OkAtom, const string& ip, const string& port) {
+            node_addr.ip = ip;
+            node_addr.port = port;
+            try_times = 100;
+          },
+          after(std::chrono::seconds(5)) >>
+              [&]() {
+                ++try_times;
+                LOG(WARNING) << "asking exchange connection info, but timeout "
+                                "5s!!! times= " << try_times << endl;
+              }
 
-            );
-  } catch (caf::network_error& e) {
-    PLOG(ERROR)
-        << "master socket related errors occur when asking for socke conn info "
-        << endl;
-    assert(false);
-    return false;
+          );
+    } catch (caf::network_error& e) {
+      PLOG(ERROR) << "master socket related errors occur when asking for socke "
+                     "conn info " << endl;
+      assert(false);
+      return false;
+    }
   }
   return node_addr.ip != "0";
 }
 bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
                                                  const NodeID& target_id,
                                                  NodeAddress& node_addr) {
-  caf::scoped_actor self;
-  try {
-    auto target_actor =
-        Environment::getInstance()->get_slave_node()->GetNodeActorFromId(
-            target_id);
-    self->sync_send(target_actor, AskExchAtom::value, exchange_id)
-        .await(
-            /// should add overtime!
-            [&](OkAtom, const string& ip, const string& port) {
-              node_addr.ip = ip;
-              node_addr.port = port;
-            },
-            after(std::chrono::seconds(10)) >>
-                [=]() {
-                  LOG(WARNING)
-                      << "asking exchange connection info, but timeout 10s!!"
-                      << endl;
-                  return 0;
-                }
-
-            );
-  } catch (caf::network_error& e) {
-    PLOG(ERROR) << "master socket related errors occur when asking for socket "
-                   "conn info!" << endl;
-    assert(false);
-    return false;
-  }
-  return node_addr.ip != "0";
+  auto target_actor =
+      Environment::getInstance()->get_slave_node()->GetNodeActorFromId(
+          target_id);
+  return AskForSocketConnectionInfo(exchange_id, target_id, node_addr,
+                                    target_actor);
 }
 NodeAddress ExchangeTracker::GetExchAddr(ExchangeID exch_id) {
   lock_.acquire();
