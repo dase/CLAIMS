@@ -47,6 +47,7 @@
 #include "../common/error_define.h"
 using caf::io::remote_actor;
 using caf::make_message;
+using caf::message;
 using std::make_pair;
 using std::unordered_map;
 using claims::common::rConRemoteActorError;
@@ -77,7 +78,7 @@ class SlaveNodeActor : public event_based_actor {
               "Slave: received plan segment and create new thread and run it!";
           LOG(INFO) << log_message;
         },
-        [=](AskExchAtom, ExchangeID exch_id) {
+        [=](AskExchAtom, ExchangeID exch_id) -> message {
           auto addr =
               Environment::getInstance()->getExchangeTracker()->GetExchAddr(
                   exch_id);
@@ -85,24 +86,24 @@ class SlaveNodeActor : public event_based_actor {
         },
         [=](BindingAtom, const PartitionID partition_id,
             const unsigned number_of_chunks,
-            const StorageLevel desirable_storage_level) {
+            const StorageLevel desirable_storage_level) -> message {
           LOG(INFO) << "receive binding message!" << endl;
           Environment::getInstance()->get_block_manager()->AddPartition(
               partition_id, number_of_chunks, desirable_storage_level);
           return make_message(OkAtom::value);
         },
-        [=](UnBindingAtom, const PartitionID partition_id) {
+        [=](UnBindingAtom, const PartitionID partition_id) -> message {
           LOG(INFO) << "receive unbinding message~!" << endl;
           Environment::getInstance()->get_block_manager()->RemovePartition(
               partition_id);
           return make_message(OkAtom::value);
         },
-        [&](BroadcastNodeAtom, const unsigned int& node_id,
+        [=](BroadcastNodeAtom, const unsigned int& node_id,
             const string& node_ip, const uint16_t& node_port) {
           slave_node_->AddOneNode(node_id, node_ip, node_port);
         },
         [=](ReportSegESAtom, NodeSegmentID node_segment_id, int exec_status,
-            string exec_info) {
+            string exec_info) -> message {
           bool ret =
               Environment::getInstance()
                   ->get_stmt_exec_tracker()

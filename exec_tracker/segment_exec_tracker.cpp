@@ -178,12 +178,12 @@ void SegmentExecTracker::ReportAllSegStatus(
                     // TryReportTimes, then the network may be error, so cancel
                     // it
                     caf::after(std::chrono::seconds(kTimeout)) >>
-                        [&]() {
+                        [=]() {
                           LOG(WARNING)
                               << seg_exec_status->node_segment_id_.first
                               << " , "
                               << seg_exec_status->node_segment_id_.second
-                              << "segment report status timeout!";
+                              << " segment report status timeout!";
 
                           ++seg_exec_status->ReportErrorTimes;
                           if (seg_exec_status->ReportErrorTimes >
@@ -208,7 +208,7 @@ void SegmentExecTracker::ReportAllSegStatus(
                        << " ) when report status";
           }
         }
-        // guarante it's the last action!!!
+        // guarantee it's the last action!!!
         --seg_exec_status->logic_time_;
       },
       [=](ExitAtom) { self->quit(); },
