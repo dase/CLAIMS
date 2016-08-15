@@ -234,7 +234,6 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
   // traverse every block from child
 
   RETURN_IF_CANCELLED(exec_status);
-
   while (state_.child_->Next(exec_status, block_for_asking)) {
     RETURN_IF_CANCELLED(exec_status);
     DELETE_PTR(bsti);
@@ -290,6 +289,7 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
       if (key_exist) {
         continue;
       }
+      eecnxt.tuple[0] = cur;
       new_tuple_in_hash_table = private_hashtable->allocate(bn);
       // set group-by's original value by expression
       for (int i = 0; i < group_by_attrs.size(); ++i) {
@@ -316,7 +316,9 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
   for (int i = 0; i < state_.num_of_buckets_; i++) {
     RETURN_IF_CANCELLED(exec_status);
 
-    private_hashtable->placeIterator(pht_it, i);
+    if(!private_hashtable->placeIterator(pht_it, i)) {
+	LOG(INFO) << "placeIterator false"; 
+    }
     // traverse every tuple from block
     while (NULL != (cur = pht_it.readCurrent())) {
       /* get the corresponding bucket index according to the first column in
@@ -423,6 +425,10 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
     delete private_hashtable;
     private_hashtable = NULL;
   }
+  for (auto &i : agg_attrs) DELETE_PTR(i);
+  agg_attrs.clear();
+  for (auto &i : group_by_attrs) DELETE_PTR(i);
+  group_by_attrs.clear();
   return GetReturnStatus();
 }
 

@@ -109,7 +109,8 @@ class BlockStreamBase : public Block {
   };
   static BlockStreamBase* createBlock(const Schema* const& schema,
                                       unsigned block_size);
-
+  static BlockStreamBase* createBlock2(const Schema* const& schema,
+                                       unsigned block_size);
   /**
    * @li:I add this function in order to end the chaos of setting the block size
    *  when initializing the BlockStream. -_-

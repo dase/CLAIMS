@@ -106,10 +106,15 @@ int main(int argc, char** argv) {
     //  create_poc_data_one_partitions();
     //  print_welcome();
     //  ExecuteLogicalQueryPlan();
-    while (true) sleep(1);
+    //    while (std::cin.get() != 'q') sleep(1);
+    //  } else {
+    //    Environment::getInstance(master);
+    //    while (std::cin.get() != 'q') sleep(1);
+    //  }
+    while (1) sleep(1);
   } else {
     Environment::getInstance(master);
-    while (true) sleep(1);
+    while (1) sleep(1);
   }
 #else
   int pid = fork();

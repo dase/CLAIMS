@@ -21,15 +21,15 @@ ip = "$slave";
 #端口范围（调试用）
 PortManager:
 {
-    start = 19000;
-    end   = 19500;
+    start = 48000;
+    end   = 48500;
 }
 
 #master的IP地址和端口
 coordinator:
 {
     ip="$master"
-    port="11001"
+    port="10010"
 }
 
 # whether this instance is the master.

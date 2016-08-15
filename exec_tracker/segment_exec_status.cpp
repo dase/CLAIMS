@@ -33,9 +33,13 @@
 #include "../exec_tracker/stmt_exec_tracker.h"
 #include "../Environment.h"
 #include "caf/io/all.hpp"
+
+#include "caf/all.hpp"
 using caf::io::remote_actor;
 using std::string;
 using std::endl;
+using claims::common::rNetworkError;
+using claims::common::rSendingTimeout;
 namespace claims {
 
 SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id,
@@ -46,7 +50,8 @@ SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id,
       exec_status_(ExecStatus::kOk),
       ret_code_(0),
       logic_time_(0),
-      stop_report_(false) {
+      stop_report_(false),
+      ReportErrorTimes(0) {
   //  RegisterToTracker();
   coor_actor_ =
       Environment::getInstance()->get_slave_node()->GetNodeActorFromId(
@@ -58,6 +63,7 @@ SegmentExecStatus::SegmentExecStatus(NodeSegmentID node_segment_id)
       exec_status_(ExecStatus::kOk),
       ret_code_(0),
       stop_report_(false),
+      ReportErrorTimes(0),
       logic_time_(Environment::getInstance()
                       ->get_stmt_exec_tracker()
                       ->get_logic_time()) {}
@@ -74,114 +80,15 @@ SegmentExecStatus::~SegmentExecStatus() {
 }
 
 RetCode SegmentExecStatus::CancelSegExec() {
-  //  lock_.acquire();
-  exec_status_ = kCancelled;
-  //  lock_.release();
-  LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
-            << " need be cancelled!" << endl;
-  return rSuccess;
-}
-// make sure that kCancel or kDone is the last message transfer to stmt
-RetCode SegmentExecStatus::ReportStatus(ExecStatus exec_status,
-                                        string exec_info) {
-  if (kCancelled == exec_status_ || stop_report_) {
-    lock_.release();
-    return rSuccess;
-  }
-  //  lock_.acquire();
-  try {
-    caf::scoped_actor self;
-    //    coor_actor_ = remote_actor(coor_addr_.first, coor_addr_.second);
-
-    self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
-                    (int)exec_status, exec_info)
-        .await(
-
-            [=](OkAtom) {
-              if (kCancelled == exec_status || kDone == exec_status) {
-                stop_report_ = true;
-              }
-              LOG(INFO) << node_segment_id_.first << " , "
-                        << node_segment_id_.second
-                        << " report0: " << exec_status << " , " << exec_info;
-            },
-            [=](CancelPlanAtom) {
-              stop_report_ = true;
-              CancelSegExec();
-            },
-            caf::after(std::chrono::seconds(kTimeout)) >>
-                [&]() {
-                  LOG(WARNING)
-                      << "segment report status timeout and cancel self!";
-                  CancelSegExec();
-                });
-
-  } catch (caf::network_error& e) {
-    LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
-                 << " cann't connect to node  ( " << coor_node_id_
-                 << " ) when report status";
-  }
-  lock_.release();
-
-  // for making sure kError or kDone be the last message sended to remote
-  //  if (ExecStatus::kError == exec_status_ || ExecStatus::kDone ==
-  //  exec_status_) {
-  //    lock_.acquire();
-  //    exec_status_ = kCancelled;
-  //    lock_.release();
-  //  }
-  return rSuccess;
-}
-RetCode SegmentExecStatus::ReportStatus() {
-  // if this segment is cancelled, needn't report status
+  stop_report_ = true;
   lock_.acquire();
-  if (kCancelled == exec_status_ || stop_report_) {
-    lock_.release();
-    return rSuccess;
-  }
-  ExecStatus exec_status = exec_status_;
-  string exec_info = exec_info_;
+  exec_status_ = kCancelled;
   lock_.release();
-  try {
-    caf::scoped_actor self;
-    self->sync_send(coor_actor_, ReportSegESAtom::value, node_segment_id_,
-                    (int)exec_status, exec_info)
-        .await(
-
-            [=](OkAtom) {
-              if (kCancelled == exec_status || kDone == exec_status) {
-                stop_report_ = true;
-              }
-              LOG(INFO) << node_segment_id_.first << " , "
-                        << node_segment_id_.second
-                        << " report : " << exec_status << " , " << exec_info;
-            },
-            [=](CancelPlanAtom) {
-              stop_report_ = true;
-              CancelSegExec();
-            },
-            caf::after(std::chrono::seconds(kTimeout)) >>
-                [&]() {
-                  LOG(WARNING)
-                      << "segment report status timeout and cancel self!";
-                  CancelSegExec();
-                });
-
-  } catch (caf::network_error& e) {
-    LOG(WARNING) << node_segment_id_.first << " , " << node_segment_id_.second
-                 << " cann't connect to node ( " << coor_node_id_
-                 << " ) when report status";
-  }
-
-  // for making sure kError or kDone be the last message sended to remote
-  //  if (ExecStatus::kError == exec_status || ExecStatus::kDone == exec_status)
-  //  {
-  //    lock_.acquire();
-  //    exec_status_ = kCancelled;
-  //    lock_.release();
-  //  }
+  LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
+            << " has been cancelled!" << endl;
   return rSuccess;
 }
+
 bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
                                      u_int64_t logic_time, bool need_report) {
   lock_.acquire();
@@ -191,17 +98,24 @@ bool SegmentExecStatus::UpdateStatus(ExecStatus exec_status, string exec_info,
     lock_.release();
     return false;
   } else if (ExecStatus::kOk == exec_status_) {
-    logic_time_ = logic_time;
+    if (0 != logic_time) {
+      logic_time_ = logic_time;
+    }
     exec_status_ = exec_status;
     exec_info_ = exec_info;
-    LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
-              << " update logic_time= " << logic_time_
-              << " exec_status_= " << exec_status_;
     lock_.release();
+    LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second
+              << " update logic_time= " << logic_time
+              << " exec_status_= " << exec_status
+              << " exec_info_= " << exec_info;
+    need_report = false;  // for debug
     if (need_report) {
-      lock_.acquire();
-      ReportStatus(exec_status, exec_info);
-      // ReportStatus();
+      ++logic_time_;
+      caf::scoped_actor self;
+      self->send(Environment::getInstance()
+                     ->get_segment_exec_tracker()
+                     ->segment_exec_tracker_actor_,
+                 ReportSAtom::value, this);
     }
   } else {
     lock_.release();
@@ -232,8 +146,10 @@ bool SegmentExecStatus::HaveErrorCase(u_int64_t logic_time) {
   LOG(INFO) << node_segment_id_.first << " , " << node_segment_id_.second << " "
             << exec_status_ << " " << logic_time << " - " << logic_time_
             << " = " << logic_time - logic_time_;
-  // if the exection status is normal, but logic time falls behind 4s
-  return (exec_status_ == kOk) && (logic_time - logic_time_ > 4);
+  // if the exection status is normal, but logic time falls behind
+  // TryReportTimes* kCheckIntervalTime
+  return (exec_status_ == kOk) &&
+         (logic_time - logic_time_ > TryReportTimes + 1);
 }
 
 }  // namespace claims

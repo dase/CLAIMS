@@ -106,9 +106,9 @@ void StmtExecTracker::CheckStmtExecStatus(caf::event_based_actor* self,
             it = stmtes->query_id_to_stmtes_.erase(it);
           } else {
             if (it->second->HaveErrorCase(stmtes->logic_time_)) {
-              LOG(WARNING) << "query id = " << it->first
-                           << " occur error and will be cancelled!";
-              assert(false);
+              LOG(ERROR) << "query id = " << it->first
+                         << " occur error and will be cancelled!";
+              //  assert(false);
               it->second->CancelStmtExec();
             }
             ++it;

@@ -38,7 +38,7 @@
 #include <atomic>
 using std::string;
 namespace claims {
-
+const int TryReportTimes = 20;
 // due to the conflict between deleting SegmentExecStatus and reporting the
 // last message (deleting is faster than reporting, so the last message doesn't
 // been sent successfully), so all instance of SegmentExecStatus should be
@@ -53,8 +53,7 @@ class SegmentExecStatus {
   virtual ~SegmentExecStatus();
   // first cancel data source, e.t. exchange merger
   RetCode CancelSegExec();
-  RetCode ReportStatus();
-  RetCode ReportStatus(ExecStatus exec_status, string exec_info);
+
   bool UpdateStatus(ExecStatus exec_status, string exec_info,
                     u_int64_t logic_time = 0, bool need_report = false);
   RetCode RegisterToTracker();
@@ -67,16 +66,19 @@ class SegmentExecStatus {
   void set_exec_info(string exec_info) { exec_info_ = exec_info; }
   bool is_cancelled() { return kCancelled == exec_status_; }
 
+  actor coor_actor_;
+  Lock lock_;
+  std::atomic_bool stop_report_;
+
+  std::atomic_int ReportErrorTimes;
+  NodeSegmentID node_segment_id_;
+  unsigned int coor_node_id_;
+  u_int64_t logic_time_;
+
  private:
   ExecStatus exec_status_;
   RetCode ret_code_;
   string exec_info_;
-  u_int64_t logic_time_;
-  actor coor_actor_;
-  unsigned int coor_node_id_;
-  NodeSegmentID node_segment_id_;
-  Lock lock_;
-  std::atomic_bool stop_report_;
 };
 #define UNLIKELY(expr) __builtin_expect(!!(expr), 0)
 

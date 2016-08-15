@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <vector>
 #include "../common/ids.h"
+#include "../common/memory_handle.h"
 
 namespace claims {
 namespace physical_operator {
@@ -41,6 +42,7 @@ Segment::Segment() {
 
 Segment::~Segment() {
   // TODO Auto-generated destructor stub
+  DELETE_PTR(plan_segment_);
 }
 Segment::Segment(PhysicalOperatorBase* plan_segment,
                  vector<NodeID> lower_node_id_list,

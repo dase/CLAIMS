@@ -1,0 +1,170 @@
+﻿
+SELECT * FROM town;
+
+SELECT * FROM town WHERE TownID = 1 LIMIT 1;
+
+select village.*, 
+	town.Name
+from village, town 
+where village.TownID = town.TownID 
+	and village.TownID = 1;
+
+select village.*, 
+	town.Name
+from village, town 
+where village.TownID = town.TownID 
+	and village.VillageID = 1 limit 1;
+
+select familygroup.GroupID, 
+		familygroup.Name, 
+	    village.VillageID, 
+	    village.Name, 
+	    town.TownID, 
+	    town.Name,
+	    familygroup.Creater, 
+	    familygroup.CreateTime,
+	    familygroup.Reviser, 
+	    familygroup.UpdateTime,  
+	    grouppicture.PictureID, 
+	    grouppicture.Name, 
+	    grouppicture.Path
+from familygroup, grouppicture, village, town
+where familygroup.GroupID = grouppicture.GroupID
+	and familygroup.VillageID = village.VillageID
+	and village.TownID = town.TownID
+	and familygroup.VillageID = 1;
+
+select familygroup.GroupID, 
+		familygroup.Name, 
+    	village.VillageID, 
+    	village.Name, 
+	    town.TownID, 
+	    town.Name,
+	    familygroup.Creater, 
+	    familygroup.CreateTime,
+ 	    familygroup.Reviser, 
+ 	    familygroup.UpdateTime,  
+ 	    grouppicture.PictureID, 
+    	grouppicture.Name, 
+ 	    grouppicture.Path
+FROM familygroup, grouppicture, village, town
+where familygroup.GroupID = grouppicture.GroupID
+	and familygroup.VillageID = village.VillageID
+	and village.TownID = town.TownID
+	and grouppicture.GroupID = 1 limit 1;
+
+SELECT family.FamilyID,
+    familygroup.GroupID,
+    familygroup.Name , 
+	village.VillageID,
+	village.Name ,
+	town.TownID, 
+	town.Name ,
+	family.IsPoorFamily,
+	family.MasterName,
+	family.RID,
+	family.HeadCount,
+	familyimmigration.PlanMoveTime,
+	familyimmigration.ActualMoveTime,
+	familyimmigration.PlanDismantleTime,
+	familyimmigration.ActualDismantleTime
+FROM family, familygroup, village, town, familyimmigration
+where family.GroupID = familygroup.GroupID
+	and familygroup.VillageID = village.VillageID
+	and village.TownID = town.TownID
+	and family.FamilyID = familyimmigration.FamilyID
+	and family.IsImmigrant = 1 
+	and family.GroupID = 1;
+
+SELECT family.FamilyID,
+    familygroup.GroupID,
+    familygroup.Name , 
+	village.VillageID,
+	village.Name ,
+	town.TownID, 
+	town.Name,
+	family.IsPoorFamily,
+	family.MasterName,
+	family.RID,
+	family.HeadCount,
+	familyimmigration.PlanMoveTime,
+	familyimmigration.ActualMoveTime,
+	familyimmigration.PlanDismantleTime,
+	familyimmigration.ActualDismantleTime
+FROM family ,familygroup, village, town, familyimmigration
+where family.GroupID = familygroup.GroupID
+	and familygroup.VillageID = village.VillageID
+	and village.TownID = town.TownID
+	and family.FamilyID = familyimmigration.FamilyID
+	and family.IsImmigrant = 1 
+	and familyimmigration.ActualMoveTime = 1;	
+
+SELECT family.*,
+	familygroup.GroupID, 
+	familygroup.Name , 
+	village.VillageID, 
+	village.Name , 
+	town.TownID, 
+	town.Name 
+FROM family, familygroup, village, town
+where family.GroupID = familygroup.GroupID
+	and familygroup.VillageID = village.VillageID
+	and village.TownID = town.TownID
+	and family.FamilyID = 1 LIMIT 1;		
+
+SELECT family.*,
+	familygroup.GroupID, 
+	familygroup.Name , 
+	village.VillageID, 
+	village.Name , 
+	town.TownID, 
+	town.Name 
+FROM family, familygroup, village, town
+where family.GroupID = familygroup.GroupID
+	and familygroup.VillageID = village.VillageID
+	and village.TownID = town.TownID
+	and family.RID = 1 LIMIT 1;		
+
+SELECT family.*,
+	familygroup.GroupID, 
+	familygroup.Name , 
+	village.VillageID, 
+	village.Name , 
+	town.TownID, 
+	town.Name
+FROM family, familygroup, village, town
+where family.GroupID = familygroup.GroupID
+and familygroup.VillageID = village.VillageID
+and village.TownID = town.TownID
+and family.IsImmigrant=1 
+and family.RID = 1 LIMIT 1;
+
+SELECT family.*,
+		familygroup.GroupID, 
+		familygroup.Name , 
+		village.VillageID, 
+		village.Name , 
+		town.TownID, 
+		town.Name 
+FROM family, familygroup, village, town
+where family.GroupID = familygroup.GroupID
+and familygroup.VillageID = village.VillageID
+and village.TownID = town.TownID
+and IsImmigrant = 1 
+and family.GroupID = 1;
+
+SELECT family.*,
+	familygroup.GroupID, 
+	familygroup.Name , 
+	village.VillageID, 
+	village.Name , 
+	town.TownID, 
+	town.Name
+FROM family, familygroup, village, town
+where family.GroupID = familygroup.GroupID
+	and familygroup.VillageID = village.VillageID
+	and village.TownID = town.TownID
+	and IsImmigrant = 1 
+	and family.GroupID = 1;		
+
+exit;

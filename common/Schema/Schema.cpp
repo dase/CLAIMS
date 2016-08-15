@@ -10,9 +10,13 @@
 #include <iostream>
 #include <vector>
 
+#include "../../common/memory_handle.h"
 Schema::Schema(const std::vector<column_type>& columns) : columns(columns) {}
 Schema::Schema(const Schema& r) { this->columns = r.columns; }
-Schema::~Schema() {}
+Schema::~Schema() {
+//  for (auto& i : columns) DELETE_PTR(i.operate);
+//  columns.clear();
+}
 
 unsigned Schema::getncolumns() const { return columns.size(); }
 

@@ -59,8 +59,8 @@ using BroadcastNodeAtom = caf::atom_constant<caf::atom("brdst_node")>;
 using ReportSegESAtom = caf::atom_constant<caf::atom("rept_sts")>;
 using CheckStmtESAtom = caf::atom_constant<caf::atom("ck_stmtes")>;
 using CancelPlanAtom = caf::atom_constant<caf::atom("cancel")>;
-
-const int kTimeout = 10;
+using ReportSAtom = caf::atom_constant<caf::atom("report")>;
+const int kTimeout = 5;
 class MemoryInfo {};
 class DiskInfo {};
 typedef pair<string, uint16_t> NodeAddr;

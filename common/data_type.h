@@ -1402,6 +1402,7 @@ class column_type {
   }
   column_type() : operate(0){};
   ~column_type() {
+    //    cout << "call the destruct in columns_type" << endl;
     delete operate;
     operate = 0;
   }

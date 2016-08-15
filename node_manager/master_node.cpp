@@ -64,18 +64,19 @@ class MasterNodeActor : public event_based_actor {
               ->RegisterNewSlave(id);
           return make_message(OkAtom::value, id, *((BaseNode*)master_node_));
         },
-        [&](StorageBudgetAtom, const StorageBudgetMessage& message) {
-          Environment::getInstance()
-              ->getResourceManagerMaster()
-              ->RegisterDiskBuget(message.nodeid, message.disk_budget);
-          Environment::getInstance()
-              ->getResourceManagerMaster()
-              ->RegisterMemoryBuget(message.nodeid, message.memory_budget);
-          LOG(INFO) << "receive storage budget message!! node: "
-                    << message.nodeid << " : disk = " << message.disk_budget
-                    << " , mem = " << message.memory_budget << endl;
-          return make_message(OkAtom::value);
-        },
+        [&](StorageBudgetAtom, const StorageBudgetMessage& message)
+            -> caf::message {
+              Environment::getInstance()
+                  ->getResourceManagerMaster()
+                  ->RegisterDiskBuget(message.nodeid, message.disk_budget);
+              Environment::getInstance()
+                  ->getResourceManagerMaster()
+                  ->RegisterMemoryBuget(message.nodeid, message.memory_budget);
+              LOG(INFO) << "receive storage budget message!! node: "
+                        << message.nodeid << " : disk = " << message.disk_budget
+                        << " , mem = " << message.memory_budget << endl;
+              return make_message(OkAtom::value);
+            },
         [=](ExitAtom) {
           LOG(INFO) << "master " << master_node_->get_node_id() << " finish!"
                     << endl;
