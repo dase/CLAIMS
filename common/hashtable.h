@@ -39,7 +39,7 @@ using boost::pool;
 //#define CONTENTION_REDUCTION
 
 inline int get_aligned_space(const unsigned& bucksize) {
-  return (2 * (bucksize + 2 * sizeof(void*) - 1) / cacheline_size + 1) *
+  return ((bucksize + 2 * sizeof(void*) - 1) / cacheline_size + 1) *
          cacheline_size;
 }
 class BasicHashTable {
