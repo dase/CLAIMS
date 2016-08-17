@@ -120,7 +120,10 @@ enum AstNodeType {
   AST_BOOL,
   AST_SHOW_STMT,
   AST_DELETE_STMT,
-  AST_DESC_STMT
+  AST_DESC_STMT,
+  AST_UPDATE_STMT,
+  AST_UPDATE_SET_LIST
+  
 };
 // the order should be keep
 enum SubExprType {
