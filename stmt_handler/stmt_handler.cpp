@@ -109,6 +109,10 @@ RetCode StmtHandler::GenerateStmtExec(AstNode* stmt_ast) {
       stmt_exec_ = new DeleteStmtExec(stmt_ast);
       break;
     }
+	case AST_UPDATE_STMT: {
+	  stmt_exec_ = NULL;
+	  break;
+	}
     default: {
       LOG(ERROR) << "unknow statement type!" << std::endl;
       return rUnknowStmtType;
