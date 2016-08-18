@@ -33,6 +33,7 @@
 #include "../stmt_handler/select_exec.h"
 #include "../stmt_handler/load_exec.h"
 #include "../stmt_handler/insert_exec.h"
+#include "../stmt_handler/update_stmt_exec.h"
 #include "./create_table_exec.h"
 #include "../Daemon/Daemon.h"
 #include "../sql_parser/parser/parser.h"

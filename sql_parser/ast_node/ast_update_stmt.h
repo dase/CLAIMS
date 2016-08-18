@@ -36,34 +36,33 @@
 
 class AstUpdateStmt : public AstNode {
  public:
-  AstUpdateStmt(AstNodeType ast_node_type, 
-  	AstNode* update_set_list, AstNode* update_table_list, 
-  	AstNode* where_list);
-  virtual AstUpdateStmt();
+  AstUpdateStmt(AstNodeType ast_node_type, AstNode* update_set_list,
+                AstNode* update_table, AstNode* where_list);
+  virtual ~AstUpdateStmt();
   void Print(int level = 0) const;
   RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
 
   AstNodeType ast_node_type_;
-  AstNode* update_set_list_; 
-  AstNode* update_table_list_;
+  AstNode* update_set_list_;
+  AstNode* update_table_;
   AstNode* where_list_;
 };
 
 class AstUpdateSetList : public AstNode {
  public:
-  AstUpdateSetList(AstNodeType ast_node_type, AstNode* args0, AstNode* args1, AstNode* next);
+  AstUpdateSetList(AstNodeType ast_node_type, AstNode* args0, AstNode* args1,
+                   AstNode* next);
   ~AstUpdateSetList();
   void Print(int level = 0) const;
   RetCode SemanticAnalisys(SemanticContext* sem_cnxt);
   RetCode PushDownCondition(PushDownConditionContext& pdccnxt);
   RetCode GetLogicalPlan(LogicalOperator*& logic_plan);
-  
+
   AstNodeType ast_node_type_;
   AstNode* args0_;
   AstNode* args1_;
   AstNode* next_;
 };
-
 
 // } /* namespace ast_node */
 // } /* namespace claims */
