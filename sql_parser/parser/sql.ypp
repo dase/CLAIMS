@@ -5,7 +5,7 @@
 %parse-param { struct ParseResult* result}
 %glr-parser
 %expect 4
-%expect-rr 63
+%expect-rr 62
 %defines
 %{
 #include <stdlib.h>
@@ -1208,8 +1208,8 @@ stmt: update_stmt { $$ = $1; }
 update_stmt: UPDATE table_factor SET update_set_list opt_where { $$ = new AstUpdateStmt(AST_UPDATE_STMT, $4, $2, $5); }
    ;
 
-update_set_list: expr '=' expr { $$ = new AstUpdateSetList(AST_UPDATE_SET_LIST, $1, $3, NULL); }
-   | update_set_list ',' expr '=' expr { $$ = new AstUpdateSetList(AST_UPDATE_SET_LIST, $3, $5, $1); }
+update_set_list: expr COMPARISON expr { $$ = new AstUpdateSetList(AST_UPDATE_SET_LIST, $1, $3, NULL); }
+   | update_set_list ',' expr COMPARISON expr { $$ = new AstUpdateSetList(AST_UPDATE_SET_LIST, $3, $5, $1); }
    ;
 
 %%

@@ -35,6 +35,7 @@
 #include <bitset>
 
 #include "./ast_select_stmt.h"
+#include "../ast_node/ast_expr_node.h"
 #include "../../common/error_define.h"
 #include "../../catalog/table.h"
 #include "../../Environment.h"
@@ -72,8 +73,10 @@ void AstUpdateStmt::Print(int level) const {
   cout << setw(level * TAB_SIZE) << " "
        << "|Update Stmt|" << endl;
 
-  if (NULL != update_set_list_) {
-    update_set_list_->Print(level + 1);
+  AstUpdateSetList* update_set_list_temp = update_set_list_;
+  while (NULL != update_set_list_temp) {
+    update_set_list_temp->Print(level + 1);
+    update_set_list_temp = update_set_list_temp->next_;
   }
 
   if (NULL != where_list_) {
@@ -97,12 +100,28 @@ RetCode AstUpdateStmt::SemanticAnalisys(SemanticContext* sem_cnxt) {
   new_table = Environment::getInstance()->getCatalog()->getTable(tabledel);
   if (NULL == new_table) {
     LOG(ERROR) << "The table DEL " + tabledel +
-                      " is not existed during delete data." << std::endl;
+                      " is not existed during update data." << std::endl;
     sem_cnxt->error_msg_ =
-        "The table DEL " + tabledel + " is not existed during delete data.";
+        "The table DEL " + tabledel + " is not existed during update data.";
     ret = rTableNotExisted;
     return ret;
   }
+
+  AstUpdateSetList* update_set_list_temp = update_set_list_;
+  while (NULL != update_set_list_temp) {
+    ret = update_set_list_temp->SemanticAnalisys(sem_cnxt);
+    if (rSuccess != ret) {
+      string column_name_tmp = reinterpret_cast<AstColumn*>(
+                                   update_set_list_temp->args0_)->column_name_;
+      LOG(ERROR) << "The column " + column_name_tmp +
+                        " is not existed during update data." << std::endl;
+      sem_cnxt->error_msg_ = "The column " + column_name_tmp +
+                             " is not existed during update data.";
+      return ret;
+    }
+    update_set_list_temp = update_set_list_temp->next_;
+  }
+
   return ret;
 }
 
@@ -127,26 +146,34 @@ AstUpdateSetList::~AstUpdateSetList() {
   }
 }
 
-void AstUpdateSetList::Print(int level) const {}
+void AstUpdateSetList::Print(int level) const {
+  cout << setw(level * TAB_SIZE) << " "
+       << "|UpdateSet List| " << endl;
+  if (args0_ != NULL) args0_->Print(level + 1);
+  if (args1_ != NULL) args1_->Print(level + 1);
+}
 
 RetCode AstUpdateSetList::SemanticAnalisys(SemanticContext* sem_cnxt) {
   RetCode ret = rSuccess;
-
+  //  cout << "args0_->ast_node_type():" << args0_->ast_node_type() << endl;
+  //  cout << "args1_->ast_node_type():" << args1_->ast_node_type() << endl;
   if (args0_->ast_node_type() == AST_COLUMN) {
     AstColumn* column = reinterpret_cast<AstColumn*>(args0_);
     cout << "AstUpdateSetList args0: [" << column->relation_name_ << "."
          << column->column_name_ << "]" << endl;
-  } else {
-    printf("AstUpdateSetList args0 error ast_node_type");
-  }
-  if (args1_->ast_node_type() == AST_COLUMN) {
-    AstColumn* column = reinterpret_cast<AstColumn*>(args1_);
-    cout << "AstUpdateSetList args1: [" << column->relation_name_ << "."
-         << column->column_name_ << "]" << endl;
-  } else {
-    printf("AstUpdateSetList args1 error ast_node_type");
-  }
 
+  } else {
+    printf("AstUpdateSetList args0 error ast_node_type\n");
+  }
+#if 1
+  if (args1_->ast_node_type() == AST_EXPR_CONST) {
+    AstExprConst* expr_const = reinterpret_cast<AstExprConst*>(args1_);
+    cout << "AstUpdateSetList args1: [" << expr_const->expr_type_ << "."
+         << expr_const->data_ << "]" << endl;
+  } else {
+    printf("AstUpdateSetList args1 error ast_node_type\n");
+  }
+#endif
   return ret;
 }
 

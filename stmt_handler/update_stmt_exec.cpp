@@ -18,9 +18,9 @@
  *
  * /CLAIMS/stmt_handler/delete_stmt_exec.cpp
  *
- *  Created on: Nov 19, 2015
- *      Author: yuyang
- *		   Email: youngfish93@hotmail.com
+ *  Created on: Aug 18, 2016
+ *      Author: cswang
+ *		   Email: cs_wang@infosys.com
  *
  * Description:
  *
@@ -77,6 +77,12 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
     return ret;
   }
 
+  update_stmt_ast_->where_list_;
+
+  AstUpdateSetList* update_set_list = dynamic_cast<AstUpdateSetList*>(
+      dynamic_cast<AstUpdateStmt*>(update_stmt_ast_)->update_set_list_);
+
+  exec_result->info_ = "update successfully.";
 /**
  * step1 : create new sql query including row_id, for example:
  * DELETE FROM tbA WHERE colA = 10;
@@ -84,49 +90,48 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
  * SELECT row_id FROM tbA WHERE colA = 10;
  */
 #if 0
-    AstNode* appended_query_sel_stmt;
-    ret = GenerateSelectStmt(table_base_name, appended_query_sel_stmt);
-    if (rSuccess == ret) {
-      appended_query_sel_stmt->Print();
-      // ExecutedResult* appended_result = new ExecutedResult();
-      SelectExec* appended_query_exec = new SelectExec(appended_query_sel_stmt);
-      ret = appended_query_exec->Execute(exec_result);
-      if (ret != rSuccess) {
-        WLOG(ret, "failed to find the delete tuples from the table ");
-        return ret;
-      }
-      ostringstream ostr;
-      ostr << exec_result->result_->getNumberOftuples() << " tuples deleted.";
-      exec_result->info_ = ostr.str();
-      // set the flag weather it contains the deleted tuples or not in the
-      // base table
-      TableDescriptor* table =
-          Environment::getInstance()->getCatalog()->getTable(table_base_name);
-      table->SetDeletedTuples(true);
+  AstNode* appended_query_sel_stmt;
+  ret = GenerateSelectStmt(table_base_name, appended_query_sel_stmt);
+  if (rSuccess == ret) {
+    appended_query_sel_stmt->Print();
+    // ExecutedResult* appended_result = new ExecutedResult();
+    SelectExec* appended_query_exec = new SelectExec(appended_query_sel_stmt);
+    ret = appended_query_exec->Execute(exec_result);
+    if (ret != rSuccess) {
+      WLOG(ret, "failed to find the delete tuples from the table ");
+      return ret;
+    }
+    ostringstream ostr;
+    ostr << exec_result->result_->getNumberOftuples() << " tuples deleted.";
+    exec_result->info_ = ostr.str();
+    // set the flag weather it contains the deleted tuples or not in the
+    // base table
+    TableDescriptor* table =
+        Environment::getInstance()->getCatalog()->getTable(table_base_name);
+    table->SetDeletedTuples(true);
 
-      /**
-       * step2 : Insert delete data into _DEL table.
-       */
-  string table_del_name = table_base_name + "_DEL";
-  InsertDeletedDataIntoTableDEL(table_del_name, exec_result);
+    /**
+     * step2 : Insert delete data into _DEL table.
+     */
+    string table_del_name = table_base_name + "_DEL";
+    InsertDeletedDataIntoTableDEL(table_del_name, exec_result);
 
-  // release the release of appended_query_sel_stmt and appended_query_exec
-  //  if (NULL != appended_query_sel_stmt) {
-  //    delete appended_query_sel_stmt;
-  //  }
-  //  if (NULL != appended_query_exec) {
-  //    delete appended_query_exec;
-  //  }
-  delete exec_result->result_;
-  exec_result->result_ = NULL;
-  return ret;
-}
-else if (rCreateProjectionOnDelTableFailed == ret) {
-  WLOG(ret,
-       "no projections has been created on the del table when delete tuples "
-       "from the base table");
-  return ret;
-}
+    // release the release of appended_query_sel_stmt and appended_query_exec
+    //  if (NULL != appended_query_sel_stmt) {
+    //    delete appended_query_sel_stmt;
+    //  }
+    //  if (NULL != appended_query_exec) {
+    //    delete appended_query_exec;
+    //  }
+    delete exec_result->result_;
+    exec_result->result_ = NULL;
+    return ret;
+  } else if (rCreateProjectionOnDelTableFailed == ret) {
+    WLOG(ret,
+         "no projections has been created on the del table when delete tuples "
+         "from the base table");
+    return ret;
+  }
 #endif
   return ret;
 }
