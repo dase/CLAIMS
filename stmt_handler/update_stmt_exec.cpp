@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <unordered_map>
 #include "../Environment.h"
 #include "../stmt_handler/update_stmt_exec.h"
 
@@ -48,6 +49,7 @@ using std::vector;
 using std::cout;
 using claims::catalog::TableDescriptor;
 using claims::common::rSuccess;
+using claims::common::rFailure;
 using claims::common::rNoProjection;
 using claims::common::rCreateProjectionOnDelTableFailed;
 namespace claims {
@@ -63,8 +65,8 @@ UpdateStmtExec::~UpdateStmtExec() {}
 RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
   RetCode ret = rSuccess;
   string table_base_name =
-      dynamic_cast<AstTable*>(dynamic_cast<AstUpdateStmt*>(update_stmt_ast_)
-                                  ->update_table_)->table_name_;
+      dynamic_cast<AstTable*>(update_stmt_ast_->update_table_)->table_name_;
+
   TableDescriptor* new_table =
       Environment::getInstance()->getCatalog()->getTable(table_base_name);
 
@@ -77,46 +79,62 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
     return ret;
   }
 
-  update_stmt_ast_->where_list_;
+  AstTable* update_table =
+      dynamic_cast<AstTable*>(update_stmt_ast_->update_table_);
+  AstWhereClause* update_where =
+      dynamic_cast<AstWhereClause*>(update_stmt_ast_->where_list_);
+  AstUpdateSetList* update_set_list =
+      dynamic_cast<AstUpdateSetList*>(update_stmt_ast_->update_set_list_);
 
-  AstUpdateSetList* update_set_list = dynamic_cast<AstUpdateSetList*>(
-      dynamic_cast<AstUpdateStmt*>(update_stmt_ast_)->update_set_list_);
+  AstFromList* from_list = new AstFromList(AST_FROM_LIST, update_table, NULL);
 
-  exec_result->info_ = "update successfully.";
-/**
- * step1 : create new sql query including row_id, for example:
- * DELETE FROM tbA WHERE colA = 10;
- * =>
- * SELECT row_id FROM tbA WHERE colA = 10;
- */
-#if 0
   AstNode* appended_query_sel_stmt;
-  ret = GenerateSelectStmt(table_base_name, appended_query_sel_stmt);
+  ret = GenerateSelectForUpdateStmt(table_base_name, appended_query_sel_stmt);
   if (rSuccess == ret) {
     appended_query_sel_stmt->Print();
     // ExecutedResult* appended_result = new ExecutedResult();
     SelectExec* appended_query_exec = new SelectExec(appended_query_sel_stmt);
     ret = appended_query_exec->Execute(exec_result);
     if (ret != rSuccess) {
-      WLOG(ret, "failed to find the delete tuples from the table ");
+      WLOG(ret, "failed to find the update tuples from the table ");
       return ret;
     }
     ostringstream ostr;
-    ostr << exec_result->result_->getNumberOftuples() << " tuples deleted.";
-    exec_result->info_ = ostr.str();
+    ostr << exec_result->result_->getNumberOftuples() << " tuples updated.";
+
     // set the flag weather it contains the deleted tuples or not in the
     // base table
-    TableDescriptor* table =
-        Environment::getInstance()->getCatalog()->getTable(table_base_name);
-    table->SetDeletedTuples(true);
+    //    TableDescriptor* table =
+    //        Environment::getInstance()->getCatalog()->getTable(table_base_name);
+    //    table->SetDeletedTuples(true);
 
+    /* STEP1.5 ： update selected data */
+    ostringstream ostr_res;
+    ret = GenerateUpdateData(table_base_name, update_set_list, exec_result,
+                             ostr_res);
+    if (rSuccess != ret) {
+      WLOG(ret, "updating tuples failed ");
+      return ret;
+    }
+    AstDeleteStmt* delete_stmt_ast =
+        new AstDeleteStmt(AST_DELETE_STMT, from_list, update_where, 0);
+    DeleteStmtExec* deletestmtexec = new DeleteStmtExec(delete_stmt_ast);
+    ret = deletestmtexec->Execute(exec_result);
+    if (ret != rSuccess) {
+      WLOG(ret, "failed to find the update tuples from the table ");
+      return ret;
+    }
+
+    InsertUpdatedDataIntoTable(table_base_name, exec_result, ostr_res);
+    exec_result->info_ = ostr.str();
     /**
      * step2 : Insert delete data into _DEL table.
      */
-    string table_del_name = table_base_name + "_DEL";
-    InsertDeletedDataIntoTableDEL(table_del_name, exec_result);
+    //    string table_del_name = table_base_name + "_DEL";
+    //    InsertDeletedDataIntoTableDEL(table_del_name, exec_result);
 
-    // release the release of appended_query_sel_stmt and appended_query_exec
+    // release the release of appended_query_sel_stmt and
+    // appended_query_exec
     //  if (NULL != appended_query_sel_stmt) {
     //    delete appended_query_sel_stmt;
     //  }
@@ -132,159 +150,109 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
          "from the base table");
     return ret;
   }
-#endif
   return ret;
 }
 
-RetCode UpdateStmtExec::GenerateSelectStmt(const string table_name,
-                                           AstNode*& appended_query_sel_stmt) {
+RetCode UpdateStmtExec::GenerateSelectForUpdateStmt(
+    const string table_name, AstNode*& appended_query_sel_stmt) {
   RetCode ret = rSuccess;
-#if 0
-  vector<string> column_names;
-  string column_name;
-  ret = GenerateSelectedColumns(table_name, column_names);
   if (rCreateProjectionOnDelTableFailed == ret) {
     WLOG(ret,
          "create projection on del table failed, since no projection has been "
          "created on the base table");
     return ret;
   }
-  //  // add the the row_id column
-  //  AstNode* appended_query_col =
-  //      new AstColumn(AST_COLUMN, table_name, "row_id", NULL);
-  //  AstNode* appended_query_sel_expr =
-  //      new AstSelectExpr(AST_SELECT_EXPR, "", appended_query_col);
-  //  AstNode* appended_query_sel_list_last =
-  //      new AstSelectList(AST_SELECT_LIST, false, appended_query_sel_expr,
-  //      NULL);
-  AstNode* appended_query_sel_list = NULL;
-  AstNode* appended_query_sel_list_last = NULL;
-  vector<string>::reverse_iterator r_iter = column_names.rbegin();
-  // -1 means the column row_id of the base table do not need to be selected
-  for (; r_iter != column_names.rend() - 1; r_iter++) {
-    if ("row_id_DEL" != *r_iter) {
-      AstNode* appended_query_col =
-          new AstColumn(AST_COLUMN, table_name, *r_iter, NULL);
-      AstNode* appended_query_sel_expr =
-          new AstSelectExpr(AST_SELECT_EXPR, "", appended_query_col);
-      appended_query_sel_list =
-          new AstSelectList(AST_SELECT_LIST, false, appended_query_sel_expr,
-                            appended_query_sel_list_last);
-      appended_query_sel_list_last = appended_query_sel_list;
-    } else {
-      column_name = *r_iter;
-      column_name = column_name.substr(0, column_name.size() - 4);
-      AstNode* appended_query_col =
-          new AstColumn(AST_COLUMN, table_name, column_name, NULL);
-      AstNode* appended_query_sel_expr =
-          new AstSelectExpr(AST_SELECT_EXPR, "", appended_query_col);
-      appended_query_sel_list =
-          new AstSelectList(AST_SELECT_LIST, false, appended_query_sel_expr,
-                            appended_query_sel_list_last);
-      appended_query_sel_list_last = appended_query_sel_list;
-    }
-  }
+  /* SELECT * FROM TABLLE */
+  AstFromList* from_list =
+      new AstFromList(AST_FROM_LIST, update_stmt_ast_->update_table_, NULL);
+  AstNode* appended_query_sel_list =
+      new AstSelectList(AST_SELECT_LIST, true, NULL, NULL);
   appended_query_sel_stmt = new AstSelectStmt(
-      AST_SELECT_STMT, 0, appended_query_sel_list, delete_stmt_ast_->from_list_,
-      delete_stmt_ast_->where_list_, NULL, NULL, NULL, NULL, NULL);
-#endif
+      AST_SELECT_STMT, 0, appended_query_sel_list, from_list,
+      update_stmt_ast_->where_list_, NULL, NULL, NULL, NULL, NULL);
+
   return ret;
 }
 
-RetCode UpdateStmtExec::GenerateSelectedColumns(const string table_name,
-                                                vector<string>& column_names) {
+RetCode UpdateStmtExec::GenerateUpdateData(string table_base_name,
+                                           AstNode* update_set_list,
+                                           ExecutedResult* exec_result,
+                                           ostringstream& ostr) {
   RetCode ret = rSuccess;
-#if 0
-  TableDescriptor* table_del =
-      Environment::getInstance()->getCatalog()->getTable(table_name + "_DEL");
-  string column_name;
-  vector<Attribute> columns = table_del->getAttributes();
-  if (0 == columns.size()) {
-    ret = rNoProjection;
-    WLOG(ret, "no projection is created on table:" + table_name +
-                  "when creating projection on the del table");
-    return ret;
-  } else {
-    for (auto& attribute : columns) {
-      column_name = attribute.getName();
-      auto pos = column_name.find(".");
-      column_name = column_name.substr(pos + 1, column_name.size() - pos);
-      column_names.push_back(column_name);
-    }
-    return ret;
-  }
-
-  //  string column_name;
-  //  const vector<ProjectionDescriptor*>* projection_list =
-  //      table_base->GetProjectionList();
-  //  if (0 == (*projection_list).size()) {
-  //    ret = rNoProjection;
-  //    WLOG(ret, "no projection is created on table:" + table_name +
-  //                  "when creating projection on the del table");
-  //    return ret;
-  //  } else {
-  //    for (int i = 0; i < projection_list->size(); i++) {
-  //      column_name =
-  //          (*projection_list)[i]->getPartitioner()->getPartitionKey().getName();
-  //      auto pos = column_name.find(".");
-  //      column_name = column_name.substr(pos + 1, column_name.size() - pos);
-  //      partition_attributes.push_back(column_name);
-  //    }
-  //    return ret;
-  //  }
-#endif
-  return ret;
-}
-
-void UpdateStmtExec::InsertDeletedDataIntoTableDEL(
-    string table_del_name, ExecutedResult* exec_result) {
-#if 0
   DynamicBlockBuffer::Iterator it = exec_result->result_->createIterator();
   BlockStreamBase* block = NULL;
   BlockStreamBase::BlockStreamTraverseIterator* tuple_it = NULL;
 
-  cout << "insert del table name : " << table_del_name.c_str();
-  TableDescriptor* table_del =
-      Environment::getInstance()->getCatalog()->getTable(table_del_name);
-  if (NULL == table_del) {
-    LOG(ERROR) << "The table DEL " + table_del_name +
-                      " is not existed during delete data." << std::endl;
-    return;
+  std::unordered_map<int, AstNode*> update_attr_list;
+
+  AstUpdateSetList* update_set_list_temp = update_set_list;
+  while (NULL != update_set_list_temp) {
+    AstColumn* update_column =
+        dynamic_cast<AstColumn*>(update_set_list_temp->args0_);
+    AstExprConst* expr_const =
+        dynamic_cast<AstExprConst*>(update_set_list_temp->args1_);
+
+    int update_column_index = -1;
+    for (unsigned i = 0; i < exec_result->result_->column_header_list_.size();
+         i++) {
+      if (exec_result->result_->column_header_list_[i] ==
+          (table_base_name + "." + update_column->column_name_)) {
+        update_column_index = i;
+        break;
+      }
+    }
+    if (update_column_index == -1) {
+      ret = rFailure;
+      string err_msg = "The column [" + table_base_name + "." +
+                       update_column->column_name_ +
+                       "] is not existed during update data.";
+      LOG(ERROR) << err_msg << std::endl;
+      exec_result->SetError(err_msg);
+      return ret;
+    }
+    update_attr_list.insert({update_column_index, expr_const});
+    update_set_list_temp = update_set_list_temp->next_;
   }
-  /**
-   *    Prepare the data which will be insert into TABLE_DEL.
-   */
-  ostringstream ostr;
+
+  char updateval[exec_result->result_->schema_->getTupleMaxSize()];
   while (block = it.nextBlock()) {
     tuple_it = block->createIterator();
     void* tuple;
     while (tuple = tuple_it->nextTuple()) {
-      for (unsigned i = 0; i < exec_result->result_->column_header_list_.size();
+      for (unsigned i = 1; i < exec_result->result_->column_header_list_.size();
            i++) {
-        // check whether the row has been deleted or not.
-        if (true) {
+        if (update_attr_list.find(i) != update_attr_list.end()) {
+          ostr << dynamic_cast<AstExprConst*>(update_attr_list[i])->data_;
+        } else {
           ostr << exec_result->result_->schema_->getcolumn(i)
                       .operate->toString(exec_result->result_->schema_
                                              ->getColumnAddess(i, tuple))
                       .c_str();
-          ostr << "|";
-        } else {
-          continue;
         }
+        ostr << "|";
       }
       ostr << "\n";
     }
     delete tuple_it;
   }
 
-  DataInjector* injector = new DataInjector(table_del);
+  return ret;
+}
+
+void UpdateStmtExec::InsertUpdatedDataIntoTable(string table_name,
+                                                ExecutedResult* exec_result,
+                                                ostringstream& ostr) {
+  TableDescriptor* table =
+      Environment::getInstance()->getCatalog()->getTable(table_name);
+  if (NULL == table) {
+    LOG(ERROR) << "The table " + table_name +
+                      " is not existed during update data." << std::endl;
+    return;
+  }
+
+  DataInjector* injector = new DataInjector(table);
   injector->InsertFromString(ostr.str(), exec_result);
-  //  HdfsLoader* Hl = new HdfsLoader(tabledel);
-  //  string tmp = ostr.str();
-  //  Hl->append(ostr.str());
-  //  cout << tmp << endl;
   Environment::getInstance()->getCatalog()->saveCatalog();
-#endif
 }
 
 } /* namespace stmt_handler */

@@ -54,12 +54,15 @@ class UpdateStmtExec : public StmtExec {
   RetCode Execute(ExecutedResult *exec_result);
 
  private:
-  RetCode GenerateSelectStmt(const string table_name,
-                             AstNode *&appended_query_sel_stmt);
-  RetCode GenerateSelectedColumns(const string table_name,
-                                  vector<string> &partition_attributes);
-  void InsertDeletedDataIntoTableDEL(string del_table_name,
-                                     ExecutedResult *exec_result);
+  RetCode GenerateSelectForUpdateStmt(const string table_name,
+                                      AstNode *&appended_query_sel_stmt);
+  //  RetCode GenerateSelectedColumns(const string table_name,
+  //                                  vector<string> &partition_attributes);
+  RetCode GenerateUpdateData(string table_base_name, AstNode *update_set_list,
+                             ExecutedResult *exec_result, ostringstream &ostr);
+  void InsertUpdatedDataIntoTable(string table_name,
+                                  ExecutedResult *exec_result,
+                                  ostringstream &ostr);
 
  private:
   AstUpdateStmt *update_stmt_ast_;
