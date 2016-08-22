@@ -42,22 +42,20 @@ namespace stmt_handler {
 class UpdateStmtExec : public StmtExec {
  public:
   /**
-   * @brief Method description: The executor about delete statement.
+   * @brief Method description: The executor about update statement.
    * @param AstNode* stmt   point to AST
    */
   UpdateStmtExec(AstNode *stmt);  // NOLINT
   virtual ~UpdateStmtExec();
 
   /**
-   * @brief the concrete operation of delete statement.
+   * @brief the concrete operation of update statement.
    */
   RetCode Execute(ExecutedResult *exec_result);
 
  private:
   RetCode GenerateSelectForUpdateStmt(const string table_name,
                                       AstNode *&appended_query_sel_stmt);
-  //  RetCode GenerateSelectedColumns(const string table_name,
-  //                                  vector<string> &partition_attributes);
   RetCode GenerateUpdateData(string table_base_name, AstNode *update_set_list,
                              ExecutedResult *exec_result, ostringstream &ostr);
   void InsertUpdatedDataIntoTable(string table_name,
@@ -71,4 +69,4 @@ class UpdateStmtExec : public StmtExec {
 } /* namespace stmt_handler */
 } /* namespace claims */
 
-#endif  //  STMT_HANDLER_DELETE_STMT_EXEC_H_
+#endif  //  STMT_HANDLER_UPDATE_STMT_EXEC_H_

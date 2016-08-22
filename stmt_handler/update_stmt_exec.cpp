@@ -92,7 +92,6 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
   ret = GenerateSelectForUpdateStmt(table_base_name, appended_query_sel_stmt);
   if (rSuccess == ret) {
     appended_query_sel_stmt->Print();
-    // ExecutedResult* appended_result = new ExecutedResult();
     SelectExec* appended_query_exec = new SelectExec(appended_query_sel_stmt);
     ret = appended_query_exec->Execute(exec_result);
     if (ret != rSuccess) {
@@ -102,13 +101,7 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
     ostringstream ostr;
     ostr << exec_result->result_->getNumberOftuples() << " tuples updated.";
 
-    // set the flag weather it contains the deleted tuples or not in the
-    // base table
-    //    TableDescriptor* table =
-    //        Environment::getInstance()->getCatalog()->getTable(table_base_name);
-    //    table->SetDeletedTuples(true);
-
-    /* STEP1.5 ： update selected data */
+    /* STEP2 ： generate update selected data */
     ostringstream ostr_res;
     ret = GenerateUpdateData(table_base_name, update_set_list, exec_result,
                              ostr_res);
@@ -116,6 +109,7 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
       WLOG(ret, "updating tuples failed ");
       return ret;
     }
+    /* STEP3 ： del update data */
     AstDeleteStmt* delete_stmt_ast =
         new AstDeleteStmt(AST_DELETE_STMT, from_list, update_where, 0);
     DeleteStmtExec* deletestmtexec = new DeleteStmtExec(delete_stmt_ast);
@@ -124,23 +118,9 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
       WLOG(ret, "failed to find the update tuples from the table ");
       return ret;
     }
-
+    /* STEP4 ：insert generate update selected data */
     InsertUpdatedDataIntoTable(table_base_name, exec_result, ostr_res);
     exec_result->info_ = ostr.str();
-    /**
-     * step2 : Insert delete data into _DEL table.
-     */
-    //    string table_del_name = table_base_name + "_DEL";
-    //    InsertDeletedDataIntoTableDEL(table_del_name, exec_result);
-
-    // release the release of appended_query_sel_stmt and
-    // appended_query_exec
-    //  if (NULL != appended_query_sel_stmt) {
-    //    delete appended_query_sel_stmt;
-    //  }
-    //  if (NULL != appended_query_exec) {
-    //    delete appended_query_exec;
-    //  }
     delete exec_result->result_;
     exec_result->result_ = NULL;
     return ret;

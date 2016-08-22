@@ -67,4 +67,4 @@ class AstUpdateSetList : public AstNode {
 // } /* namespace ast_node */
 // } /* namespace claims */
 
-#endif  //  SQL_PARSER_AST_NODE_AST_DELETE_STMT_H_
+#endif  //  SQL_PARSER_AST_NODE_AST_UPDATE_STMT_H_

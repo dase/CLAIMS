@@ -164,6 +164,8 @@ RetCode AstUpdateSetList::SemanticAnalisys(SemanticContext* sem_cnxt) {
 
   } else {
     printf("AstUpdateSetList args0 error ast_node_type\n");
+    ret = rFailure;
+    return ret;
   }
 #if 1
   if (args1_->ast_node_type() == AST_EXPR_CONST) {
@@ -172,6 +174,11 @@ RetCode AstUpdateSetList::SemanticAnalisys(SemanticContext* sem_cnxt) {
          << expr_const->data_ << "]" << endl;
   } else {
     printf("AstUpdateSetList args1 error ast_node_type\n");
+    LOG(ERROR) << "Don't support update set values use column data."
+               << std::endl;
+    sem_cnxt->error_msg_ = "Don't support update set values use column data.";
+    ret = rFailure;
+    return ret;
   }
 #endif
   return ret;
