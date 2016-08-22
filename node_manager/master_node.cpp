@@ -300,7 +300,7 @@ void MasterNode::SyncNodeList(MasterNode* master_node)
       for (auto it = master_node->node_id_to_addr_.begin(); it != master_node->node_id_to_addr_.end(); ++it)
       {
         self->send(master_node->node_id_to_actor_.at(it->first), SyncNodeInfo::value,*((BaseNode*)master_node));
-        LOG(INFO)<<" node lost ,start sync to node: "<<it->first<<endl;
+        LOG(INFO)<<" node info changed ,start sync to node: "<<it->first<<endl;
       }
   }catch(caf::network_error& e){
     LOG(INFO) <<"sync failure"<<endl;
