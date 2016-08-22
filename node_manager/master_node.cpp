@@ -96,7 +96,9 @@ class MasterNodeActor : public event_based_actor {
         },
         [=](HeartBeatAtom, unsigned int node_id_, string address_, uint16_t port_) -> caf::message {
           auto it = master_node_->node_id_to_heartbeat_.find(node_id_);
-          if (it != master_node_->node_id_to_heartbeat_.end()){
+          //有可能再重启后两个不同的ip使用相同的nodeID 所以要避免
+          if (it != master_node_->node_id_to_heartbeat_.end() &&
+              !(master_node_->node_id_to_addr_.find(node_id_)->second.first.compare(address_))){
               //clear heartbeat count.
               it->second = 0;
               return make_message(OkAtom::value);
