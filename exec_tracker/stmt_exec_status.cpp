@@ -109,7 +109,8 @@ bool StmtExecStatus::HaveErrorCase(u_int64_t logic_time) {
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
     if (it->second->HaveErrorCase(logic_time)) {
-      it->second->set_exec_status(SegmentExecStatus::ExecStatus::kError);
+      LOG(INFO)<<"change status to kCancelled"<<endl;
+      it->second->set_exec_status(SegmentExecStatus::ExecStatus::kCancelled);
       lock_.release();
       return true;
     }
