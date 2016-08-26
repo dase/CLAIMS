@@ -106,17 +106,22 @@ bool StmtExecStatus::CouldBeDeleted() {
 }
 bool StmtExecStatus::HaveErrorCase(u_int64_t logic_time) {
   lock_.acquire();
+  int error_count = 0;
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
     if (it->second->HaveErrorCase(logic_time)) {
       LOG(INFO)<<"change status to kCancelled"<<endl;
       it->second->set_exec_status(SegmentExecStatus::ExecStatus::kCancelled);
-      lock_.release();
-      return true;
+      error_count++;
     }
   }
   lock_.release();
-  return false;
+  if(error_count >0)
+  {
+    return true;
+  }else{
+    return false;
+  }
 }
 RetCode StmtExecStatus::RegisterToTracker() {
   return Environment::getInstance()->get_stmt_exec_tracker()->RegisterStmtES(
