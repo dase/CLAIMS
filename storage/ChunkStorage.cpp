@@ -73,9 +73,8 @@ ChunkStorage::~ChunkStorage() {
  * file is chunk.
  */
 ChunkReaderIterator* ChunkStorage::CreateChunkReaderIterator() {
-  ChunkReaderIterator* ret;
-
   lock_.acquire();
+  ChunkReaderIterator* ret;
   HdfsInMemoryChunk chunk_info;
   if (current_storage_level_ == MEMORY &&
       !BlockManager::getInstance()->getMemoryChunkStore()->GetChunk(

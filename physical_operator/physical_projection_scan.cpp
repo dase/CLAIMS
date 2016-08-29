@@ -93,7 +93,7 @@ bool PhysicalProjectionScan::Open(SegmentExecStatus* const exec_status,
 
   if (TryEntryIntoSerializedSection()) {
     /* this is the first expanded thread*/
-    PartitionStorage* partition_handle_;
+    PartitionStorage* partition_handle_ = NULL;
     if (NULL ==
         (partition_handle_ = BlockManager::getInstance()->GetPartitionHandle(
              PartitionID(state_.projection_id_, kPartitionOffset)))) {
@@ -159,7 +159,7 @@ bool PhysicalProjectionScan::Next(SegmentExecStatus* const exec_status,
     input_dataset_.AtomicPut(stc->assigned_data_);
     delete stc;
     destorySelfContext();
-    kPerfInfo->report_instance_performance_in_millibytes();
+    //    kPerfInfo->report_instance_performance_in_millibytes();
     return false;
   }
 
