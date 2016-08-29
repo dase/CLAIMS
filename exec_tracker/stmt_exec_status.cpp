@@ -106,12 +106,31 @@ bool StmtExecStatus::CouldBeDeleted() {
 }
 bool StmtExecStatus::HaveErrorCase(u_int64_t logic_time) {
   lock_.acquire();
+  int count = 0;
+  int kMaxLost = 0;
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
     if (it->second->HaveErrorCase(logic_time)) {
       lock_.release();
       return true;
     }
+    // han
+    if (it->second->get_exec_status() == kDone) {
+      count++;
+      if (kMaxLost < logic_time - it->second->logic_time_)
+        kMaxLost = logic_time - it->second->logic_time_;
+    }
+    if (it->second->get_exec_status() == kOk) {
+      if (count * 100 / node_seg_id_to_seges_.size() > 50) {
+        if (kMaxLost > 1000) {
+          LOG(ERROR)
+              << "This segment in loop, Error.Need to send the sql again."
+              << endl;
+          lock_.release();
+          return true;
+        }
+      }
+    }  // han by
   }
   lock_.release();
   return false;
