@@ -126,7 +126,6 @@ bool PhysicalProjectionScan::Open(SegmentExecStatus* const exec_status,
     perf_info_->initialize();
   }
   BarrierArrive();
-  LOG(INFO) << "Scan open() finish" << endl;
   return GetReturnStatus();
 }
 
