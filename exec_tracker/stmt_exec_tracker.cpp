@@ -144,8 +144,8 @@ bool StmtExecTracker::UpdateSegExecStatus(
     lock_.release();
     return ret;
   } else {  // may be delayed message
-    LOG(ERROR) << "query id = " << node_segment_id.first
-               << " couldn't be found in tracker!";
+    LOG(WARNING) << "query id = " << node_segment_id.first
+                 << " couldn't be found in tracker!";
     lock_.release();
   }
   return false;
