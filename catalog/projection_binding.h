@@ -33,6 +33,7 @@
 
 #include "../catalog/partitioner.h"
 #include "../storage/StorageLevel.h"
+#include "../utility/lock.h"
 namespace claims {
 namespace catalog {
 
@@ -45,6 +46,9 @@ class ProjectionBinding {
   bool BindingEntireProjection(
       Partitioner*, const StorageLevel& desriable_storage_level = MEMORY);
   bool UnbindingEntireProjection(Partitioner* part);
+
+ private:
+  Lock lock_;
 };
 
 } /* namespace catalog */

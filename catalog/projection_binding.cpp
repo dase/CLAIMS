@@ -31,6 +31,7 @@
 
 #include "../catalog/projection_binding.h"
 
+#include <glog/logging.h>
 #include <vector>
 #include "../Environment.h"
 #include "../utility/maths.h"
@@ -48,6 +49,13 @@ ProjectionBinding::~ProjectionBinding() {
 
 bool ProjectionBinding::BindingEntireProjection(
     Partitioner* part, const StorageLevel& desriable_storage_level) {
+  lock_.acquire();
+  if (part->allPartitionBound()) {
+    LOG(WARNING) << "occurr to competition that sending binding message"
+                 << endl;
+    lock_.release();
+    return true;
+  }
   if (part->get_binding_mode_() == OneToOne) {
     std::vector<std::pair<unsigned, NodeID> > partition_id_to_nodeid_list;
     ResourceManagerMaster* rmm =
@@ -124,19 +132,21 @@ bool ProjectionBinding::BindingEntireProjection(
       //
       //      BlockManagerMaster::getInstance()->SendBindingMessage(partition_id,number_of_chunks,MEMORY,target);
     }
-    /* conduct the binding according to the bingding information list*/
+
+    /* conduct the binding according to the binding information list*/
     for (unsigned i = 0; i < partition_id_to_nodeid_list.size(); i++) {
       const unsigned partition_off = partition_id_to_nodeid_list[i].first;
       const NodeID node_id = partition_id_to_nodeid_list[i].second;
-      /* update the information in Catalog*/
-      part->bindPartitionToNode(partition_off, node_id);
-
       /* notify the StorageManger of the target node*/
       PartitionID partition_id(part->getProejctionID(), partition_off);
       const unsigned number_of_chunks = part->getPartitionChunks(partition_off);
       BlockManagerMaster::getInstance()->SendBindingMessage(
           partition_id, number_of_chunks, desriable_storage_level, node_id);
+      /* update the information in Catalog*/
+      part->bindPartitionToNode(partition_off, node_id);
     }
+
+    lock_.release();
     return true;
   }
 
