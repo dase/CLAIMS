@@ -54,11 +54,6 @@ class StmtExec {
   StmtExec(AstNode* stmt);
   virtual ~StmtExec();
   virtual int Execute(ExecutedResult* exec_result);
-
-  virtual RetCode Execute() {
-    cout << "WARNING: parent StmtExec with returning StmtExecStatus" << endl;
-    return rSuccess;
-  }
   StmtExecStatus* get_stmt_exec_status() { return stmt_exec_status_; }
   void set_stmt_exec_status(StmtExecStatus* stmt_exec_status) {
     stmt_exec_status_ = stmt_exec_status;

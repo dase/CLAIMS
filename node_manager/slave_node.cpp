@@ -105,7 +105,7 @@ class SlaveNodeActor : public event_based_actor {
               partition_id);
           return make_message(OkAtom::value);
         },
-        [&](BroadcastNodeAtom, const unsigned int& node_id,
+        [=](BroadcastNodeAtom, const unsigned int& node_id,
             const string& node_ip, const uint16_t& node_port) {
           LOG(INFO) << "receive broadcast message~!" << endl;
           //check if this node is Reregister node
@@ -127,8 +127,6 @@ class SlaveNodeActor : public event_based_actor {
         },
         [=](ReportSegESAtom, NodeSegmentID node_segment_id, int exec_status,
             string exec_info) -> message {
-          LOG(INFO) << node_segment_id.first << " , " << node_segment_id.second
-                    << " just receive: " << exec_status << " , " << exec_info;
           bool ret =
               Environment::getInstance()
                   ->get_stmt_exec_tracker()

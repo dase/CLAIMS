@@ -84,88 +84,47 @@ SelectExec::~SelectExec() {
     all_segments_.pop();
   }
 }
+
 RetCode SelectExec::Execute(ExecutedResult* exec_result) {
-#ifdef PRINTCONTEXT
-  select_ast_->Print();
-  cout << "--------------begin semantic analysis---------------" << endl;
-#endif
-  SemanticContext sem_cnxt;
-  RetCode ret = rSuccess;
-  ret = select_ast_->SemanticAnalisys(&sem_cnxt);
+  GETCURRENTTIME(start_time);
+  // exec_status is deleted by tracker
+  StmtExecStatus* exec_status = new StmtExecStatus(raw_sql_);
+  exec_status->RegisterToTracker();
+  set_stmt_exec_status(exec_status);
+  RetCode ret = Execute();
   if (rSuccess != ret) {
-    exec_result->error_info_ =
-        "semantic analysis error \n" + sem_cnxt.error_msg_;
-    exec_result->status_ = false;
-    LOG(ERROR) << "semantic analysis error result= : " << ret;
-    cout << "semantic analysis error result= : " << ret << endl;
-    return ret;
-  }
-#ifdef PRINTCONTEXT
-  select_ast_->Print();
-  cout << "--------------begin push down condition ------------" << endl;
-#endif
-  PushDownConditionContext pdccnxt;
-  ret = select_ast_->PushDownCondition(pdccnxt);
-  if (rSuccess != ret) {
-    exec_result->error_info_ = "push down condition error";
-    exec_result->status_ = false;
     exec_result->result_ = NULL;
-    ELOG(ret, exec_result->error_info_);
-    cout << exec_result->error_info_;
-    return ret;
-  }
-#ifndef PRINTCONTEXT
-  select_ast_->Print();
-  cout << "--------------begin logical plan -------------------" << endl;
-#endif
-
-  LogicalOperator* logic_plan = NULL;
-  ret = select_ast_->GetLogicalPlan(logic_plan);
-  if (rSuccess != ret) {
-    exec_result->error_info_ = "get logical plan error";
     exec_result->status_ = false;
-    exec_result->result_ = NULL;
-    ELOG(ret, exec_result->error_info_);
-    cout << exec_result->error_info_;
+    exec_result->error_info_ = raw_sql_ + string(" execution error!");
+    exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
     return ret;
-  }
-  logic_plan = new LogicalQueryPlanRoot(0, logic_plan, raw_sql_,
-                                        LogicalQueryPlanRoot::kResultCollector);
-  logic_plan->GetPlanContext();
-#ifndef PRINTCONTEXT
-  logic_plan->Print();
-  cout << "--------------begin physical plan -------------------" << endl;
-#endif
+  } else {
+    if (StmtExecStatus::ExecStatus::kCancelled ==
+        exec_status->get_exec_status()) {
+      exec_result->result_ = NULL;
+      exec_result->status_ = false;
+      exec_result->error_info_ = raw_sql_ + string(" have been cancelled!");
+      exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
 
-  PhysicalOperatorBase* physical_plan = logic_plan->GetPhysicalPlan(64 * 1024);
-#ifndef PRINTCONTEXT
-  physical_plan->Print();
-  cout << "--------------begin output result -------------------" << endl;
-#endif
-  // collect all plan segments
-  physical_plan->GetAllSegments(&all_segments_);
-  // create thread to send all segments
-  pthread_t tid = 0;
-  if (all_segments_.size() > 0) {
-    int ret = pthread_create(&tid, NULL, SendAllSegments, this);
-  }
-  SegmentExecStatus* seg_exec_status = new SegmentExecStatus(make_pair(0, 0));
+    } else if (StmtExecStatus::ExecStatus::kOk ==
+               exec_status->get_exec_status()) {
+      exec_result->result_ = exec_status->get_query_result();
+      exec_result->status_ = true;
+      exec_result->info_ = exec_status->get_exec_info();
+      exec_status->set_exec_status(StmtExecStatus::ExecStatus::kDone);
 
-  if (false == physical_plan->Open(seg_exec_status)) {
-    LOG(ERROR) << "the whole physical plan open() error" << endl;
-    assert(false);
+    } else {
+      assert(false);
+      exec_status->set_exec_status(StmtExecStatus::ExecStatus::kError);
+    }
   }
 
-  while (physical_plan->Next(seg_exec_status, NULL)) {
+  double exec_time_ms = GetElapsedTime(start_time);
+  if (NULL != exec_result->result_) {
+    exec_result->result_->query_time_ = exec_time_ms / 1000.0;
   }
-  exec_result->result_ = physical_plan->GetResultSet();
-  physical_plan->Close(seg_exec_status);
-
-  if (tid != 0) {
-    pthread_join(tid, NULL);
-  }
-  delete logic_plan;
-  delete physical_plan;
+  LOG(INFO) << raw_sql_ << " execution time: " << exec_time_ms / 1000.0
+            << " sec" << endl;
   return rSuccess;
 }
 

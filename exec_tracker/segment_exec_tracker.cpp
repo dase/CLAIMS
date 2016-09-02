@@ -182,6 +182,7 @@ void SegmentExecTracker::ReportAllSegStatus(
                     // it
                     caf::after(std::chrono::seconds(kTimeout)) >>
                         [=]() {
+
                           ++seg_exec_status->ReportErrorTimes;
                           LOG(WARNING)
                               << seg_exec_status->node_segment_id_.first
@@ -212,7 +213,7 @@ void SegmentExecTracker::ReportAllSegStatus(
                        << " ) when report status";
           }
         }
-        // guarante it's the last action!!!
+        // guarantee it's the last action!!!
         --seg_exec_status->logic_time_;
       },
       [=](ExitAtom) { self->quit(); },

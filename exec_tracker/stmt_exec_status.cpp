@@ -107,15 +107,43 @@ bool StmtExecStatus::CouldBeDeleted(u_int64_t logic_time) {
 }
 bool StmtExecStatus::HaveErrorCase(u_int64_t logic_time) {
   lock_.acquire();
+  int error_count = 0;
+  int count = 0;
+  int max_lost = 0;
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
     if (it->second->HaveErrorCase(logic_time)) {
-      lock_.release();
-      return true;
+      LOG(INFO) << "change status to kCancelled" << endl;
+      it->second->set_exec_status(SegmentExecStatus::ExecStatus::kCancelled);
+      error_count++;
+    }
+    // if segment has done, judging the Max time that is the difference between
+    // segment finish time and current time is over 1000. Besides, if the ratio
+    // of finished segments >= 50%, so it has to be deleted.
+    if (it->second->get_exec_status() == kDone) {
+      count++;
+      if (max_lost < logic_time - it->second->logic_time_) {
+        max_lost = logic_time - it->second->logic_time_;
+      }
+    }
+    if (it->second->get_exec_status() == kOk) {
+      if (count * 100 / node_seg_id_to_seges_.size() > 50) {
+        if (max_lost > 1000) {
+          LOG(ERROR)
+              << "This segment in loop, Error.Need to send the sql again."
+              << endl;
+          lock_.release();
+          return true;
+        }
+      }
     }
   }
   lock_.release();
-  return false;
+  if (error_count > 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 RetCode StmtExecStatus::RegisterToTracker() {
   return Environment::getInstance()->get_stmt_exec_tracker()->RegisterStmtES(

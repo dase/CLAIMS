@@ -335,7 +335,7 @@ bool PhysicalOuterHashJoin::Next(SegmentExecStatus* const exec_status,
         }
       }
 
-      right_table_num_++;
+      // right_table_num_++;
       jtc->r_block_stream_iterator_->increase_cur_();
 #ifdef _DEBUG_
       consumed_tuples_from_right++;
@@ -457,7 +457,7 @@ bool PhysicalOuterHashJoin::Next(SegmentExecStatus* const exec_status,
                 return true;
               }
             }
-            hash_table_num_++;
+            // hash_table_num_++;
             jtc->hashtable_iterator_.increase_cur_();
           }
           jtc->hashtable_iterator_ = hashtable_->CreateIterator();

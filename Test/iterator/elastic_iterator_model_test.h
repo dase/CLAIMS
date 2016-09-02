@@ -211,6 +211,20 @@ TEST_F(ElasticIteratorModelTest, FilteredJoin) {
   delete b_it;
 }
 
+TEST_F(ElasticIteratorModelTest, OuterJoin) {
+  ResultSet rs;
+  std::string message;
+  client_.submit(
+      "SELECT COUNT(*) FROM CUSTOMER LEFT OUTER JOIN ORDERS ON "
+      "C_CUSTKEY = O_CUSTKEY AND O_COMMENT NOT LIKE '%unusual%deposits%';",
+      message, rs);
+  DynamicBlockBuffer::Iterator it = rs.createIterator();
+  BlockStreamBase::BlockStreamTraverseIterator *b_it =
+      it.nextBlock()->createIterator();
+  EXPECT_EQ(1533872, *(long *)b_it->nextTuple());
+  delete b_it;
+}
+
 // delete data test.
 TEST_F(ElasticIteratorModelTest, createTable) {
   string createtablesql =
