@@ -96,6 +96,7 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
     ret = appended_query_exec->Execute(exec_result);
     if (ret != rSuccess) {
       WLOG(ret, "failed to find the update tuples from the table ");
+      delete appended_query_exec;
       return ret;
     }
     ostringstream ostr;
@@ -105,6 +106,7 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
     ostringstream ostr_res;
     ret = GenerateUpdateData(table_base_name, update_set_list, exec_result,
                              ostr_res);
+    delete appended_query_exec;
     if (rSuccess != ret) {
       WLOG(ret, "updating tuples failed ");
       return ret;
@@ -116,6 +118,7 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
     ret = deletestmtexec->Execute(exec_result);
     if (ret != rSuccess) {
       WLOG(ret, "failed to find the update tuples from the table ");
+      delete deletestmtexec;
       return ret;
     }
     /* STEP4 ：insert generate update selected data */
@@ -123,6 +126,7 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
     exec_result->info_ = ostr.str();
     delete exec_result->result_;
     exec_result->result_ = NULL;
+    delete deletestmtexec;
     return ret;
   } else if (rCreateProjectionOnDelTableFailed == ret) {
     WLOG(ret,
@@ -194,7 +198,6 @@ RetCode UpdateStmtExec::GenerateUpdateData(string table_base_name,
     update_set_list_temp = update_set_list_temp->next_;
   }
 
-  char updateval[exec_result->result_->schema_->getTupleMaxSize()];
   while (block = it.nextBlock()) {
     tuple_it = block->createIterator();
     void* tuple;
