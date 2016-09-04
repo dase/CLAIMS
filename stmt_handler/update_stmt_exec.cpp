@@ -106,6 +106,8 @@ RetCode UpdateStmtExec::Execute(ExecutedResult* exec_result) {
     ostringstream ostr_res;
     ret = GenerateUpdateData(table_base_name, update_set_list, exec_result,
                              ostr_res);
+    delete exec_result->result_;
+    exec_result->result_ = NULL;
     delete appended_query_exec;
     if (rSuccess != ret) {
       WLOG(ret, "updating tuples failed ");
