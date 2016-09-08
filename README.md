@@ -27,9 +27,28 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 ![asdf](http://dase.ecnu.edu.cn/liwang/images/compare.jpg)
 
 #### Team members
-[Aoying Zhou](http://case.ecnu.edu.cn), Professor in East China Normal University, is the person in charge of this project.
+
+[Aoying Zhou](http://dase.ecnu.edu.cn/index/shows/catid/14/id/131), Professor in East China Normal University, is the person in charge of this project.
 
 [Minqi Zhou](https://github.com/polpo1980), Associate Professor in East China Normal University, is the person in charge of this project.
+
+[Chuliang Weng](http://dase.ecnu.edu.cn/index/shows/catid/14/id/144), Professor in East China Normal University, is the person in charge of this project.
+
+[Zhuhe Fang](https://github.com/fzhedu) is mainly responsible for designing and implementing SQL query optimization.
+
+[Kai Yu](https://github.com/yukai2014) is mainly responsible for designing and implementing SQL DDL and data injection.
+
+[Han Zhang](https://github.com/Jackson1992)
+
+[Yang Yu](https://github.com/FishYoung)
+
+[Zhifang Li](https://github.com/yestodaylee)
+
+[Zhenhui Zhao](https://github.com/zhejiangxiaomai)
+
+[Tingting Sun]()
+
+#### Old members
 
 [Li Wang](https://github.com/wangli1426), Ph.D. student in East China Normal University, manages the master students in this team and is responsible for designing and implementing the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.
 
@@ -38,10 +57,6 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 [Shaochan Dong](https://github.com/scdong) is responsible for designing and implementing in-memory index and index management, data types, as well as data loading and importing.
 
 [Xinzhou Zhang]() is mainly responsible for web UI design and implementing data importing model.
-
-[Zhuhe Fang](https://github.com/fzhedu) is mainly responsible for designing and implementing SQL DML parser and physical operators.
-
-[Yu Kai](https://github.com/yukai2014) is mainly responsible for designing and implementing SQL DDL parser, catalog persistence.
 
 [Yongfeng Li](https://github.com/NagamineLee) was a formal member of CLAIMS, who participated in designing and implementing catalog model.
 
