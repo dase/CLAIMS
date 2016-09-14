@@ -46,7 +46,7 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 [Zhenhui Zhao](https://github.com/zhejiangxiaomai) is mainly responsible for improving system stability.
 
-[Tingting Sun]() is mainly responsible for data format.
+[Tingting Sun](https://github.com/neko940709) is mainly responsible for data format.
 
 #### Old members
 
