@@ -38,15 +38,15 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 [Kai Yu](https://github.com/yukai2014) is mainly responsible for designing and implementing SQL DDL and data injection.
 
-[Han Zhang](https://github.com/Jackson1992)
+[Han Zhang](https://github.com/Jackson1992) is mainly responsible for storage layer.
 
-[Yang Yu](https://github.com/FishYoung)
+[Yang Yu](https://github.com/FishYoung) is mainly responsible for SQL parser and optimization.
 
-[Zhifang Li](https://github.com/yestodaylee)
+[Zhifang Li](https://github.com/yestodaylee) is mainly responsible for data injection.
 
-[Zhenhui Zhao](https://github.com/zhejiangxiaomai)
+[Zhenhui Zhao](https://github.com/zhejiangxiaomai) is mainly responsible for improving system stability.
 
-[Tingting Sun]()
+[Tingting Sun]() is mainly responsible for data format.
 
 #### Old members
 
