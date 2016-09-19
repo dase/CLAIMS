@@ -2,7 +2,7 @@
 
 #### Highlights
 
-#### 1. Massively parallel execution engine.
+##### 1. Massively parallel execution engine.
 
 CLAIMS relies on highly parallel query processing engine to dramatically accelerate data analysis speed. Query evaluations are not only distributed across the cluster to leverage the computation power of the cluster, but are also executed in a multi-threaded fashion to unleash the power of modern multi-core hardware.
 
