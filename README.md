@@ -32,7 +32,7 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 [Minqi Zhou](https://github.com/polpo1980), Associate Professor in East China Normal University, is the person in charge of this project.
 
-[Chuliang Weng](http://dase.ecnu.edu.cn/index/shows/catid/14/id/144), Professor in East China Normal University, is the person in charge of this project.
+[Chuliang Weng](http://chuliangweng.github.io), Professor in East China Normal University, is the person in charge of this project.
 
 [Zhuhe Fang](https://github.com/fzhedu) is mainly responsible for designing and implementing SQL query optimization.
 
