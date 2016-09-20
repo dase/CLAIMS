@@ -1,15 +1,15 @@
-**CLAIMS** (CLuster-Aware In-Memory Sql query engin) is a parallel in-memory database prototype, which runs on clusters of commodity servers and aims to provide real-time data analytics on relational dataset. 
+**CLAIMS** (CLuster-Aware In-Memory Sql query engine) is a parallel in-memory database prototype, which runs on clusters of commodity servers and aims to provide real-time data analytics on relational dataset. 
 
 #### Highlights
 
 ##### 1. Massively parallel execution engine.
 
-CLAIMS relies on highly parallel query processing engine to dramatically accelerate data analysis speed. Query evaluations are distributed across the cluster and executed in parallel. Query evaluations are not only distirbuted across the cluster to leverage the computation power of the cluster, but are also executed in a multi-threaded fashion to unleash the power of modern multi-core hardware.
+CLAIMS relies on highly parallel query processing engine to dramatically accelerate data analysis speed. Query evaluations are not only distributed across the cluster to leverage the computation power of the cluster, but are also executed in a multi-threaded fashion to unleash the power of modern multi-core hardware.
 
 
 ##### 2. Smart intra-node parallelism. 
 
-Pipelining the query execution among nodes in the cluster effectively reduces the response latency and dramatically saves storage space for intermediate query results. However, its benefits degrade tremendously when the workloads are imbalanced among execution partitions due to the improperly generated query execution plan. To tackle this problem, a novel elastic pipelining query processing model is proposed in CLAIMS, which adapts the intra-node parallelism to the runtime workload. Beneficial from elastic pipelining query processing, the parallelism of different execution fragments in a pipelined is self-adaptive with each other and results in an optimal intra-node parallelism assignment. Please refer to our SIGMOD paper for more details about elastic pipelining.
+Pipelining the query execution among nodes in the cluster effectively reduces the response latency and dramatically saves storage space for intermediate query results. However, its benefits degrade tremendously when the workloads are imbalanced among execution partitions due to the improperly generated query execution plan. To tackle this problem, a novel elastic pipelining query processing model is proposed in CLAIMS, which adapts the intra-node parallelism to the runtime workload. Beneficial from elastic pipelining query processing, the parallelism of different execution fragments in a pipelined is self-adaptive with each other, which results in an optimal intra-node parallelism assignment. Please refer to our SIGMOD paper for more details about elastic pipelining.
 ![asdf](http://dase.ecnu.edu.cn/liwang/images/elastic_pipeline.jpg)
 
 
@@ -19,10 +19,10 @@ Pipelining the query execution among nodes in the cluster effectively reduces th
 CLAIMS employs a large set of optimization techniques to achieve efficient in-memory data processing, including batch-at-a-time processing, cache-sensitive operators, SIMD-based optimization, code generation, lock-free and concurrent processing structures. These optimizations work collaborately and enable CLAIMS to process up to gigabytes data per second within a single thread.
 
 ##### 4. Network communication optimization. 
-Parallel query processing imposes high burdens on network communication, which becomes the performance bottleneck for in-memory parallel databases due to the relatively slow network bandwidth. When compiling a user query into an execution plan, CLAIMS’s query optimizer leverages a sophisticated selectivity propagation system and cost model to generate physical query plans with minimized network communication cost. Furthermore, CLAIMS deploys a new data exchange implementation, which offers efficient, scalable and skew-resilient network data communication among CLAIMS instances. These optimizations greatly reduce the response time of the queries that require network data communication.
+Parallel query processing imposes high burdens on network communication, which becomes the performance bottleneck for in-memory parallel databases due to the relatively slow network bandwidth. When compiling a user query into an execution plan, CLAIMS’s query optimizer leverages a sophisticated selectivity propagation system and cost model to generate physical query plans with minimized network communication cost. Furthermore, CLAIMS deploys a new data exchange implementation, which offers efficient, scalable and skew-resilient network data communication among CLAIMS instances. These optimizations greatly reduce the response time of the queries which requiring network data communication.
 
 #### Performance
-Beneficial from the smart and massively parallelism and the in-memory data processing optimizations, CLAIMS is up to 5X faster than Shark and Impala, two state-of-the-art systems in the open source community, in the queries against TPCH dataset and Shanghai Stock Exchange dataset.
+Beneficial from the smart and massively parallelism and the in-memory data processing optimizations, CLAIMS is up to 5X faster than Shark and Impala-two state-of-the-art systems in the open source community-in the queries against TPCH dataset and Shanghai Stock Exchange dataset.
 
 ![asdf](http://dase.ecnu.edu.cn/liwang/images/compare.jpg)
 
@@ -32,7 +32,7 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 [Minqi Zhou](https://github.com/polpo1980), Associate Professor in East China Normal University, is the person in charge of this project.
 
-[Chuliang Weng](http://dase.ecnu.edu.cn/index/shows/catid/14/id/144), Professor in East China Normal University, is the person in charge of this project.
+[Chuliang Weng](http://chuliangweng.github.io), Professor in East China Normal University, is the person in charge of this project.
 
 [Zhuhe Fang](https://github.com/fzhedu) is mainly responsible for designing and implementing SQL query optimization.
 
@@ -48,7 +48,7 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 [Tingting Sun](https://github.com/neko940709) is mainly responsible for data format.
 
-#### Old members
+#### Former members
 
 [Li Wang](https://github.com/wangli1426), Ph.D. student in East China Normal University, manages the master students in this team and is responsible for designing and implementing the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.
 
