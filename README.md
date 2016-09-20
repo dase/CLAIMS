@@ -10,7 +10,6 @@ CLAIMS relies on highly parallel query processing engine to dramatically acceler
 ##### 2. Smart intra-node parallelism. 
 
 Pipelining the query execution among nodes in the cluster effectively reduces the response latency and dramatically saves storage space for intermediate query results. However, its benefits degrade tremendously when the workloads are imbalanced among execution partitions due to the improperly generated query execution plan. To tackle this problem, a novel elastic pipelining query processing model is proposed in CLAIMS, which adapts the intra-node parallelism to the runtime workload. Beneficial from elastic pipelining query processing, the parallelism of different execution fragments in a pipelined is self-adaptive with each other, which results in an optimal intra-node parallelism assignment. Please refer to our SIGMOD paper for more details about elastic pipelining.
-![asdf](http://dase.ecnu.edu.cn/liwang/images/elastic_pipeline.jpg)
 
 
 
@@ -24,7 +23,6 @@ Parallel query processing imposes high burdens on network communication, which b
 #### Performance
 Beneficial from the smart and massively parallelism and the in-memory data processing optimizations, CLAIMS is up to 5X faster than Shark and Impala-two state-of-the-art systems in the open source community-in the queries against TPCH dataset and Shanghai Stock Exchange dataset.
 
-![asdf](http://dase.ecnu.edu.cn/liwang/images/compare.jpg)
 
 #### Team members
 
@@ -52,15 +50,15 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 [Li Wang](https://github.com/wangli1426), Ph.D. student in East China Normal University, manages the master students in this team and is responsible for designing and implementing the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.
 
-[Lei Zhang](https://github.com/egraldlo) is responsible for designing and implementing the key components of CLAIMS, including query optimizer, physical operators, persistent data exchange, storage management, etc.
+[Lei Zhang](https://github.com/egraldlo), M.A. student in East China Normal University, is responsible for designing and implementing the key components of CLAIMS, including query optimizer, physical operators, persistent data exchange, storage management, etc.
 
-[Shaochan Dong](https://github.com/scdong) is responsible for designing and implementing in-memory index and index management, data types, as well as data loading and importing.
+[Shaochan Dong](https://github.com/scdong), M.A. student in East China Normal University, is responsible for designing and implementing in-memory index and index management, data types, as well as data loading and importing.
 
-[Xinzhou Zhang]() is mainly responsible for web UI design and implementing data importing model.
+[Xinzhou Zhang](), M.A. student in East China Normal University, is mainly responsible for web UI design and implementing data importing model.
 
-[Yongfeng Li](https://github.com/NagamineLee) was a formal member of CLAIMS, who participated in designing and implementing catalog model.
+[Yongfeng Li](https://github.com/NagamineLee), M.A. student in East China Normal University, was a formal member of CLAIMS, who participated in designing and implementing catalog model.
 
-[Lin Gu]() is responsible for designing the demo cases of CLAIMS.
+[Lin Gu](), M.A. student in East China Normal University, is responsible for designing the demo cases of CLAIMS.
 
 #### Publications
 
