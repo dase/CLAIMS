@@ -55,7 +55,7 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 #### Former members
 
-[Li Wang](https://github.com/wangli1426), formal a Ph.D. student in East China Normal University, architected and implemented CLAIMS system from scratch. He was responsible for the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.
+[Li Wang](https://github.com/wangli1426), formal Ph.D. student in East China Normal University, architected and implemented CLAIMS system from scratch. He was responsible for the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.
 
 [Lei Zhang](https://github.com/egraldlo), formal M.A. student in East China Normal University, was responsible for designing and implementing the key components of CLAIMS, including query optimizer, physical operators, persistent data exchange, storage management, etc.
 
