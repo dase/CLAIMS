@@ -30,6 +30,7 @@ using namespace std;
 #include "../ast_node/ast_show_stmt.h"
 #include "../ast_node/ast_delete_stmt.h"
 #include "../ast_node/ast_desc_stmt.h"
+#include "../ast_node/ast_update_stmt.h"
 
 void yyerror(struct ParseResult *pp,const char *s, ...);
 void emit(char *s, ...);
@@ -422,6 +423,7 @@ should replace YYLEX with the following clause in sql.tab.cpp, why so? I don't k
 %type <ast_node> opt_col_names enum_list opt_length
 %type <ast_node> column_atts data_type load_table_stmt
 %type <ast_node> delete_opts delete_list delete_stmt
+%type <ast_node> update_stmt update_set_list
 
 
 %type <intval> opt_if_exists opt_if_not_exists opt_ignore_replace
@@ -1199,7 +1201,17 @@ delete_list: NAME opt_dot_star {  }
 opt_dot_star: /* nil */ 
    | '.' '*' 
    ;
-   
+
+stmt: update_stmt { $$ = $1; }
+   ;
+
+update_stmt: UPDATE table_factor SET update_set_list opt_where { $$ = new AstUpdateStmt(AST_UPDATE_STMT, $4, $2, $5); }
+   ;
+
+update_set_list: expr COMPARISON expr { $$ = new AstUpdateSetList(AST_UPDATE_SET_LIST, $1, $3, NULL); }
+   | update_set_list ',' expr COMPARISON expr { $$ = new AstUpdateSetList(AST_UPDATE_SET_LIST, $3, $5, $1); }
+   ;
+
 %%
 
 void emit(char *s, ...)
