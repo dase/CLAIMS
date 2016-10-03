@@ -82,7 +82,7 @@ RetCode StmtExecStatus::CancelStmtExec(bool locked) {
   return rSuccess;
 }
 // check every segment status
-bool StmtExecStatus::CouldBeDeleted() {
+bool StmtExecStatus::CouldBeDeleted(u_int64_t logic_time) {
   // exec_status_ is set kDone or kError when the stmt is over in
   // select_exec.cpp, and then it could be deleted
   lock_.acquire();
@@ -94,7 +94,8 @@ bool StmtExecStatus::CouldBeDeleted() {
   // kDone), then shouldn't delete this stmt
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
-    if (it->second->get_exec_status() == SegmentExecStatus::ExecStatus::kOk) {
+    if (it->second->get_exec_status() == SegmentExecStatus::ExecStatus::kOk
+        && !(it->second->HaveErrorCase(logic_time))) {
       lock_.release();
       return false;
     }

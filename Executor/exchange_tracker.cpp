@@ -62,12 +62,14 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
   int try_times = 0;
   while (try_times < 3) {
     try {
+      LOG(INFO)<<"ask exch Atom to "<<target_id<<endl;
       self->sync_send(target_actor, AskExchAtom::value, exchange_id).await(
           /// should add overtime!
           [&](OkAtom, const string& ip, const string& port) {
             node_addr.ip = ip;
             node_addr.port = port;
             try_times = 100;
+            LOG(INFO)<<"ip ~~~:"<<node_addr.ip<<"port ~~~"<<node_addr.port<<endl;
           },
           after(std::chrono::seconds(5)) >>
               [&]() {
@@ -92,6 +94,7 @@ bool ExchangeTracker::AskForSocketConnectionInfo(const ExchangeID& exchange_id,
   auto target_actor =
       Environment::getInstance()->get_slave_node()->GetNodeActorFromId(
           target_id);
+
   return AskForSocketConnectionInfo(exchange_id, target_id, node_addr,
                                     target_actor);
 }

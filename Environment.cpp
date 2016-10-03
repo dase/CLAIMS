@@ -189,8 +189,8 @@ void Environment::InitMembership() {
     master_node_ = MasterNode::GetInstance();
   }
   slave_node_ = SlaveNode::GetInstance();
-  slave_node_->RegisterToMaster();
-  nodeid = slave_node_->get_node_id();
+  slave_node_->RegisterToMaster(true);
+  node_id_ = slave_node_->get_node_id();
 }
 void Environment::initializeBufferManager() {
   bufferManager_ = BufferManager::getInstance();
@@ -207,7 +207,7 @@ ResourceManagerMaster* Environment::getResourceManagerMaster() {
 InstanceResourceManager* Environment::getResourceManagerSlave() {
   return resourceManagerSlave_;
 }
-NodeID Environment::getNodeID() const { return nodeid; }
+NodeID Environment::getNodeID() const { return node_id_; }
 claims::catalog::Catalog* Environment::getCatalog() const { return catalog_; }
 
 void Environment::initializeClientListener() {

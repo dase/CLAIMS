@@ -36,7 +36,7 @@
 #include <unordered_map>
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
-
+#include <glog/logging.h>
 #include "../common/ids.h"
 #include "../utility/lock.h"
 using std::pair;
@@ -59,6 +59,13 @@ using BroadcastNodeAtom = caf::atom_constant<caf::atom("brdst_node")>;
 using ReportSegESAtom = caf::atom_constant<caf::atom("rept_sts")>;
 using CheckStmtESAtom = caf::atom_constant<caf::atom("ck_stmtes")>;
 using CancelPlanAtom = caf::atom_constant<caf::atom("cancel")>;
+using HeartBeatAtom = caf::atom_constant<caf::atom("heartbeat")>;
+using Updatelist = caf::atom_constant<caf::atom("updatelist")>;
+using SyncNodeInfo = caf::atom_constant<caf::atom("syncinfo")>;
+
+
+
+const int kMaxTryTimes = 5;
 using ReportSAtom = caf::atom_constant<caf::atom("report")>;
 const int kTimeout = 5;
 class MemoryInfo {};
