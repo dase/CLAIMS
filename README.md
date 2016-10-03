@@ -45,5 +45,5 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 Try our CLAIMS, please follow [Quick Start](https://github.com/dase/CLAIMS/wiki/Installation-steps).
 
 #### More 
-Learn more information, please go to [Wiki](https://github.com/dase/CLAIMS/wiki)
+Learn more information, please go to [Wiki](https://github.com/dase/CLAIMS/wiki).
 
