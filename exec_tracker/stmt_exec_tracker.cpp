@@ -98,7 +98,7 @@ void StmtExecTracker::CheckStmtExecStatus(caf::event_based_actor* self,
         stmtes->lock_.acquire();
         for (auto it = stmtes->query_id_to_stmtes_.begin();
              it != stmtes->query_id_to_stmtes_.end();) {
-          if (it->second->CouldBeDeleted()) {
+          if (it->second->CouldBeDeleted((u_int64_t)stmtes->logic_time_)) {
             LOG(INFO) << "query id = " << it->first << " will be deleted!";
             delete it->second;
             it->second = NULL;
@@ -143,7 +143,7 @@ bool StmtExecTracker::UpdateSegExecStatus(
               << " ,after: " << it->second->get_exec_status();
     lock_.release();
     return ret;
-  } else {  // may be delayed message
+  } else {  // maybe receive delayed message
     LOG(WARNING) << "query id = " << node_segment_id.first
                  << " couldn't be found in tracker!";
     lock_.release();

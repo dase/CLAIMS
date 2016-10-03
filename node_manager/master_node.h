@@ -59,6 +59,8 @@ class MasterNode : public BaseNode {
   void PrintNodeList();
   void FinishAllNode();
   unsigned int AddOneNode(string node_ip, uint16_t node_port);
+  void SyncNodeList(MasterNode* master_node);
+  void RemoveOneNode(unsigned int node_id, MasterNode* master_node);
   RetCode BroastNodeInfo(const unsigned int& node_id, const string& node_ip,
                          const uint16_t& node_port);
   MasterNode();
@@ -70,8 +72,10 @@ class MasterNode : public BaseNode {
  private:
   static MasterNode* instance_;
   atomic_uint node_id_gen_;
+  std::unordered_map<unsigned int, int> node_id_to_heartbeat_;
 };
 
 }  // namespace claims
+
 
 #endif  //  NODE_MANAGER_MASTER_NODE_H_

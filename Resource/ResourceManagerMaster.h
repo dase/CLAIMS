@@ -17,6 +17,7 @@ class ResourceManagerMaster {
   ResourceManagerMaster();
   virtual ~ResourceManagerMaster();
   NodeID RegisterNewSlave(NodeAddress);
+  void UnRegisterSlave(const NodeID old_node_id);
   void RegisterNewSlave(const NodeID new_node_id);
   /* notify the ResourceManager how large the budget is for a target node*/
   bool RegisterDiskBuget(NodeID report_node_id, unsigned size_in_mb);

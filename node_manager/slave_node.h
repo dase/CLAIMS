@@ -47,13 +47,14 @@ class SlaveNode : public BaseNode {
   SlaveNode(string node_ip, uint16_t node_port);
   void CreateActor();
   virtual ~SlaveNode();
-  RetCode RegisterToMaster();
+  RetCode RegisterToMaster(bool isFirstRegister);
+  RetCode reRegisterToMaster();
   static SlaveNode* GetInstance();
   RetCode AddOneNode(const unsigned int& node_id, const string& node_ip,
                      const uint16_t& node_port);
-
  private:
   static SlaveNode* instance_;
+  unsigned int heartbeat_count_;
 };
 
 }  // namespace claims

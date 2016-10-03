@@ -41,11 +41,11 @@ int main(int argc, char** argv) {
   MasterNode* master_node = new MasterNode();
   //  usleep(1000);
   SlaveNode* slave_node1 = new SlaveNode();
-  slave_node1->RegisterToMaster();
+  slave_node1->RegisterToMaster(true);
   SlaveNode* slave_node2 = new SlaveNode();
-  slave_node2->RegisterToMaster();
+  slave_node2->RegisterToMaster(true);
   SlaveNode* slave_node3 = new SlaveNode();
-  slave_node3->RegisterToMaster();
+  slave_node3->RegisterToMaster(true);
 
   master_node->PrintNodeList();
   //  usleep(5000);

@@ -82,7 +82,7 @@ RetCode StmtExecStatus::CancelStmtExec(bool locked) {
   return rSuccess;
 }
 // check every segment status
-bool StmtExecStatus::CouldBeDeleted() {
+bool StmtExecStatus::CouldBeDeleted(u_int64_t logic_time) {
   // exec_status_ is set kDone or kError when the stmt is over in
   // select_exec.cpp, and then it could be deleted
   lock_.acquire();
@@ -94,7 +94,8 @@ bool StmtExecStatus::CouldBeDeleted() {
   // kDone), then shouldn't delete this stmt
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
-    if (it->second->get_exec_status() == SegmentExecStatus::ExecStatus::kOk) {
+    if (it->second->get_exec_status() == SegmentExecStatus::ExecStatus::kOk
+        && !(it->second->HaveErrorCase(logic_time))) {
       lock_.release();
       return false;
     }
@@ -106,23 +107,28 @@ bool StmtExecStatus::CouldBeDeleted() {
 }
 bool StmtExecStatus::HaveErrorCase(u_int64_t logic_time) {
   lock_.acquire();
+  int error_count = 0;
   int count = 0;
-  int kMaxLost = 0;
+  int max_lost = 0;
   for (auto it = node_seg_id_to_seges_.begin();
        it != node_seg_id_to_seges_.end(); ++it) {
     if (it->second->HaveErrorCase(logic_time)) {
-      lock_.release();
-      return true;
+      LOG(INFO) << "change status to kCancelled" << endl;
+      it->second->set_exec_status(SegmentExecStatus::ExecStatus::kCancelled);
+      error_count++;
     }
-    // han
+    // if segment has done, judging the Max time that is the difference between
+    // segment finish time and current time is over 1000. Besides, if the ratio
+    // of finished segments >= 50%, so it has to be deleted.
     if (it->second->get_exec_status() == kDone) {
       count++;
-      if (kMaxLost < logic_time - it->second->logic_time_)
-        kMaxLost = logic_time - it->second->logic_time_;
+      if (max_lost < logic_time - it->second->logic_time_) {
+        max_lost = logic_time - it->second->logic_time_;
+      }
     }
     if (it->second->get_exec_status() == kOk) {
       if (count * 100 / node_seg_id_to_seges_.size() > 50) {
-        if (kMaxLost > 1000) {
+        if (max_lost > 1000) {
           LOG(ERROR)
               << "This segment in loop, Error.Need to send the sql again."
               << endl;
@@ -130,10 +136,14 @@ bool StmtExecStatus::HaveErrorCase(u_int64_t logic_time) {
           return true;
         }
       }
-    }  // han by
+    }
   }
   lock_.release();
-  return false;
+  if (error_count > 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 RetCode StmtExecStatus::RegisterToTracker() {
   return Environment::getInstance()->get_stmt_exec_tracker()->RegisterStmtES(

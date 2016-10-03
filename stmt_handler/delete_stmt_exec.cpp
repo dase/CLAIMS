@@ -93,6 +93,7 @@ RetCode DeleteStmtExec::Execute(ExecutedResult* exec_result) {
     ret = appended_query_exec->Execute(exec_result);
     if (ret != rSuccess) {
       WLOG(ret, "failed to find the delete tuples from the table ");
+      delete appended_query_exec;
       return ret;
     }
     ostringstream ostr;
@@ -119,6 +120,7 @@ RetCode DeleteStmtExec::Execute(ExecutedResult* exec_result) {
     //  }
     delete exec_result->result_;
     exec_result->result_ = NULL;
+    delete appended_query_exec;
     return ret;
   } else if (rCreateProjectionOnDelTableFailed == ret) {
     WLOG(ret,

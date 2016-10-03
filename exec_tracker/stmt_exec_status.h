@@ -58,7 +58,7 @@ class StmtExecStatus {
   bool UpdateSegExecStatus(NodeSegmentID node_segment_id,
                            SegmentExecStatus::ExecStatus exec_status,
                            string exec_info, u_int64_t logic_time);
-  bool CouldBeDeleted();
+  bool CouldBeDeleted(u_int64_t logic_time);
   bool HaveErrorCase(u_int64_t logic_time);
   void set_exec_status(ExecStatus exec_status) { exec_status_ = exec_status; }
   ExecStatus get_exec_status() { return exec_status_; }

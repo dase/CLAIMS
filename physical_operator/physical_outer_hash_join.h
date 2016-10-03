@@ -110,6 +110,8 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
     unsigned hashtable_bucket_num_;
     unsigned hashtable_bucket_size_;
     unsigned block_size_;
+
+    // 0 means left join; 1 means right join; 2 means full join
     int join_type_;
   };
   PhysicalOuterHashJoin(State state);
@@ -197,15 +199,17 @@ class PhysicalOuterHashJoin : public PhysicalOperator {
   unsigned consumed_tuples_from_left;
   unsigned tuples_in_hashtable;
   unsigned water_mark;
-  unsigned long int first_arrive_thread_ = 0;
   // atomic<long long> working_thread_count_{0};
+  // atomic<unsigned long> hash_table_num_{0};
+  // atomic<unsigned long> right_table_num_{0};
+  // bool checked_bucket_[1048577]{false};
+
+  // outer join sync
+  unsigned long int first_arrive_thread_ = 0;
   std::set<unsigned long> working_threads_;
   Lock working_;
   atomic<unsigned> bucket_num_{0};
   atomic<bool> first_done_{false};
-  atomic<unsigned long> hash_table_num_{0};
-  atomic<unsigned long> right_table_num_{0};
-  // bool checked_bucket_[1048577]{false};
   Lock lock_thread_;
   Lock set_;
   Lock left_join_;

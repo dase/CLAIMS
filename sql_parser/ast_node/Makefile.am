@@ -36,7 +36,8 @@ noinst_LIBRARIES=libast_node.a
 
 libast_node_a_SOURCES = \
     ast_desc_stmt.cpp           ast_desc_stmt.h \
-    ast_delete_stmt.cpp          ast_delete.h  \
+    ast_delete_stmt.cpp          ast_delete_stmt.h  \
+    ast_update_stmt.cpp          ast_update_stmt.h  \
 	ast_show_stmt.cpp           ast_show_stmt.h \
 	ast_select_stmt.cpp			ast_select_stmt.h \
 	ast_create_stmt.cpp			ast_create_stmt.h \
