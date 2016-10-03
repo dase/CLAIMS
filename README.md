@@ -29,44 +29,6 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 ![asdf](http://i2.imgbus.com/doimg/bcomamonacb8382.jpg)
 
 
-
-
-#### Team members
-
-[Aoying Zhou](http://dase.ecnu.edu.cn/index/shows/catid/14/id/131), Professor in East China Normal University, is the person in charge of this project.
-
-[Minqi Zhou](https://github.com/polpo1980), Associate Professor in East China Normal University, is the person in charge of this project.
-
-[Chuliang Weng](http://chuliangweng.github.io), Professor in East China Normal University, is the person in charge of this project.
-
-[Zhuhe Fang](https://github.com/fzhedu) is mainly responsible for designing and implementing SQL query optimization.
-
-[Kai Yu](https://github.com/yukai2014) is mainly responsible for designing and implementing SQL DDL and data injection.
-
-[Han Zhang](https://github.com/Jackson1992) is mainly responsible for storage layer.
-
-[Yang Yu](https://github.com/FishYoung) is mainly responsible for SQL parser and optimization.
-
-[Zhifang Li](https://github.com/yestodaylee) is mainly responsible for data injection.
-
-[Zhenhui Zhao](https://github.com/zhejiangxiaomai) is mainly responsible for improving system stability.
-
-[Tingting Sun](https://github.com/neko940709) is mainly responsible for data format.
-
-#### Former members
-
-[Li Wang](https://github.com/wangli1426), formal Ph.D. student in East China Normal University, architected and implemented CLAIMS system from scratch. He was responsible for the key components of CLAIMS, including query optimizer, catalog, physical operators, distributed communication infrastructure, storage layout, etc.
-
-[Lei Zhang](https://github.com/egraldlo), formal M.A. student in East China Normal University, was responsible for designing and implementing the key components of CLAIMS, including query optimizer, physical operators, persistent data exchange, storage management, etc.
-
-[Shaochan Dong](https://github.com/scdong), formal M.A. student in East China Normal University, was responsible for designing and implementing in-memory index and index management, data types, as well as data loading, importing and storage.
-
-[Xinzhou Zhang](), formal M.A. student in East China Normal University, was mainly responsible for web UI design and implementing data importing model.
-
-[Yongfeng Li](https://github.com/NagamineLee), formal M.A. student in East China Normal University, participated in designing and implementing catalog model.
-
-[Lin Gu](), formal M.A. student in East China Normal University, was responsible for designing the demo cases of CLAIMS.
-
 #### Publications
 
 1. Li Wang, Minqi Zhou, Zhenjie Zhang, Yin Yang, Aoying Zhou, Dina Bitton. Elastic Pipelining in In-Memory Database Cluster. ACM SIGMOD 2016, pp. 1279-1294.
