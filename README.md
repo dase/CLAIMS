@@ -42,7 +42,8 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 9. Yongfeng Li, Minqi Zhou, Hualiang Hu, Survey of resource uniform management and scheduling in cluster, Journal of East China Normal University, 2014
 
 #### Quick Start
-Try our CLAIMS, following [Quick Start](https://github.com/dase/CLAIMS/wiki).
+Try our CLAIMS, please follow [Quick Start](https://github.com/dase/CLAIMS/wiki/Installation-steps).
 
-#### [More](https://github.com/dase/CLAIMS/wiki)
+#### More 
+Learn more information, please go to [Wiki](https://github.com/dase/CLAIMS/wiki)
 
