@@ -11,7 +11,7 @@ CLAIMS relies on highly parallel query processing engine to dramatically acceler
 
 Pipelining the query execution among nodes in the cluster effectively reduces the response time and dramatically saves storage space for intermediate query results. However, its benefits degrade tremendously when the workloads are imbalanced among execution partitions due to the improperly generated query execution plan. To tackle this problem, a novel elastic query processing framework, i.e., *elastic pipelining*, is proposed in CLAIMS, which adjusts the intra-node parallelism according to the runtime workload based on elaborate performance model. Beneficial from elastic pipelining query processing, the parallelism of different execution fragments in a pipelined is self-adaptive, resulting in an optimal intra-node parallelism assignment. Please refer to our SIGMOD paper for more details about the elastic pipelining framework.
 
-![asdf](http://i4.imgbus.com/doimg/4coammbonb1d1d4.jpg)
+![asdf](https://i1.piimg.com/1949/99a94a4e18e6fc21.jpg)
 
 
 
@@ -26,7 +26,7 @@ Parallel query processing imposes high burdens on network communication, which u
 #### Performance
 Beneficial from the smart and massively parallelism and the in-memory data processing optimizations, CLAIMS is up to 5X faster than Shark and Impala, two state-of-the-art systems in the open source community, in the queries against TPCH dataset and Shanghai Stock Exchange dataset.
 
-![asdf](http://i2.imgbus.com/doimg/bcomamonacb8382.jpg)
+![asdf](https://i1.piimg.com/1949/de04caa268f1215f.jpg)
 
 
 #### Publications
