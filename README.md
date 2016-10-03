@@ -43,3 +43,6 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 #### Quick Start
 Try our CLAIMS, following [Quick Start](https://github.com/dase/CLAIMS/wiki).
+
+#### [More](https://github.com/dase/CLAIMS/wiki)
+
