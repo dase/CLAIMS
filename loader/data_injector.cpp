@@ -489,8 +489,6 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
   thread_index_ = 0;
   cout << endl;
 
-  assert(open_flag != FileOpenFlag::kReadFile);
-
   EXEC_AND_RETURN_ERROR(
       ret, PrepareEverythingForLoading(input_file_names, open_flag, result),
       "failed to prepare everything for loading");
@@ -626,6 +624,7 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   return LoadFromFileSingleThread(input_file_names, open_flag, result,
                                   sample_rate);
 #else
+  assert(open_flag != FileOpenFlag::kReadFile);
   return LoadFromFileMultiThread(input_file_names, open_flag, result,
                                  sample_rate);
 #endif
