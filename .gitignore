@@ -1,5 +1,6 @@
 !thirdparty/
 .idea
+.vscode/*
 *.Po
 *.a
 *.dat*
