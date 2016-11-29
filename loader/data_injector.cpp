@@ -241,6 +241,7 @@ RetCode DataInjector::PrepareInitInfo(FileOpenFlag open_flag) {
         tmp_block_num.push_back(0);
       } else {
         LOG(ERROR) << "Invalid open_flag. kReadFile shouldn't be here.";
+        assert(open_flag != FileOpenFlag::kReadFile);
       }
       LOG(INFO) << "init number of partitions (" << i << "," << j
                 << "):" << tmp_block_num[j];
@@ -397,6 +398,7 @@ RetCode DataInjector::SetTableState(FileOpenFlag open_flag,
     LOG(INFO) << "\n------------------Append  Begin!-----------------------\n";
   } else {
     LOG(ERROR) << "Invalid open_flag, kReadFile shouldn't be here.";
+    assert(open_flag != FileOpenFlag::kReadFile);
   }
   return ret;
 }
@@ -619,12 +621,11 @@ RetCode DataInjector::LoadFromFile(vector<string> input_file_names,
   total_read_sem_fail_count_ = 0;
   total_unread_sem_fail_count_ = 0;
   total_append_warning_time_ = 0;
-
+  assert(open_flag != FileOpenFlag::kReadFile);
 #ifndef MULTI_THREAD_LOAD
   return LoadFromFileSingleThread(input_file_names, open_flag, result,
                                   sample_rate);
 #else
-  assert(open_flag != FileOpenFlag::kReadFile);
   return LoadFromFileMultiThread(input_file_names, open_flag, result,
                                  sample_rate);
 #endif
