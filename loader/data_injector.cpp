@@ -236,9 +236,11 @@ RetCode DataInjector::PrepareInitInfo(FileOpenFlag open_flag) {
                 j));
         tmp_block_num.push_back(
             table_->getProjectoin(i)->getPartitioner()->getPartitionBlocks(j));
-      } else {
+      } else if (kCreateFile == open_flag) {
         tmp_tuple_count.push_back(0);
         tmp_block_num.push_back(0);
+      } else {
+        LOG(ERROR) << "Invalid open_flag. kReadFile shouldn't be here.";
       }
       LOG(INFO) << "init number of partitions (" << i << "," << j
                 << "):" << tmp_block_num[j];
@@ -391,8 +393,10 @@ RetCode DataInjector::SetTableState(FileOpenFlag open_flag,
       }
     }
     LOG(INFO) << "\n--------------------Load  Begin!------------------------\n";
-  } else {
+  } else if (FileOpenFlag::kAppendFile == open_flag) {
     LOG(INFO) << "\n------------------Append  Begin!-----------------------\n";
+  } else {
+    LOG(ERROR) << "Invalid open_flag, kReadFile shouldn't be here.";
   }
   return ret;
 }
@@ -484,6 +488,8 @@ RetCode DataInjector::LoadFromFileMultiThread(vector<string> input_file_names,
   result_ = result;
   thread_index_ = 0;
   cout << endl;
+
+  assert(open_flag != FileOpenFlag::kReadFile);
 
   EXEC_AND_RETURN_ERROR(
       ret, PrepareEverythingForLoading(input_file_names, open_flag, result),

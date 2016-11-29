@@ -1000,13 +1000,13 @@ stmt: load_table_stmt	                    { $$ = $1;}
 load_table_stmt: LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING SAMPLE COMPARISON APPROXNUM
 		{
 		  if ($11 != 4) { yyerror(result,"please give a specific number"); } 
-		  else {$$ = new AstLoadTable(AST_LOAD_TABLE, string($3), $5, string($7), string($9), atof($12), 0);}
+		  else {$$ = new AstLoadTable(AST_LOAD_TABLE, string($3), $5, string($7), string($9), atof($12), 1);}
 		}
-	| LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING { $$ = new AstLoadTable(AST_LOAD_TABLE, string($3), $5, string($7), string($9), 1.0, 0);}
-	| APPEND TABLE NAME FROM expr_list WITH STRING ',' STRING { $$ = new AstLoadTable(AST_LOAD_TABLE, string($3), $5, string($7), string($9), 1.0, 1);}
+	| LOAD TABLE NAME FROM expr_list WITH STRING ',' STRING { $$ = new AstLoadTable(AST_LOAD_TABLE, string($3), $5, string($7), string($9), 1.0, 1);}
+	| APPEND TABLE NAME FROM expr_list WITH STRING ',' STRING { $$ = new AstLoadTable(AST_LOAD_TABLE, string($3), $5, string($7), string($9), 1.0, 2);}
 	| APPEND TABLE NAME FROM expr_list WITH STRING ',' STRING SAMPLE COMPARISON APPROXNUM 
 		{ if ($11 != 4) { yyerror(result,"please give a specific number"); } 
-		 else {$$ = new AstLoadTable(AST_LOAD_TABLE, string($3), $5, string($7), string($9), atof($12), 1);}
+		 else {$$ = new AstLoadTable(AST_LOAD_TABLE, string($3), $5, string($7), string($9), atof($12), 2);}
 		}
 	;
 
