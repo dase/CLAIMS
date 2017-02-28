@@ -53,6 +53,7 @@ OperFuncInfo PhysicalSort::fcinfo = NULL;
 PhysicalSort::PhysicalSort() : PhysicalOperator(3, 2), block_buffer_(NULL) {
   set_phy_oper_type(kPhysicalSort);
   lock_ = new Lock();
+  cmp_state_ = &state_;
   InitExpandedStatus();
 }
 
@@ -230,6 +231,7 @@ bool PhysicalSort::Open(SegmentExecStatus *const exec_status,
     state_.eecnxt_.schema[0] = state_.input_schema_;
     state_.eecnxt1_.schema[0] = state_.input_schema_;
     RETURN_IF_CANCELLED(exec_status);
+    cmp_state_ = &state_;
 
     Order();
   }
