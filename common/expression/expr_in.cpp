@@ -95,5 +95,17 @@ void ExprIn::InitExprAtPhysicalPlan() {
 }
 
 ExprNode* ExprIn::ExprCopy() { return new ExprIn(this); }
+
+void ExprIn::GetUniqueAttr(set<string>& attrs) {
+  for (int i = 0, size = cmp_expr_.size(); i < size; ++i) {
+    cmp_expr_[i]->GetUniqueAttr(attrs);
+  }
+  for (int i = 0; i < right_node_.size(); i++) {
+    for (int j = 0; j < right_node_[i].size(); j++) {
+      right_node_[i][j]->GetUniqueAttr(attrs);
+    }
+  }
+}
+
 }  // namespace common
 }  // namespace claims

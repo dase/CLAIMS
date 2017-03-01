@@ -138,6 +138,8 @@ class ExprNode {
 
   virtual void InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {}
 
+  virtual void GetUniqueAttr(set<string>& attrs) {}
+
   virtual void InitExprAtPhysicalPlan() {}
   virtual ExprNode* ExprCopy() { return NULL; }
   bool IsEqualAttr(const Attribute& attr);

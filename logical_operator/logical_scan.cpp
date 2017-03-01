@@ -124,8 +124,8 @@ void LogicalScan::ChangeAliasAttr() {
 PlanContext LogicalScan::GetPlanContext() {
   lock_->acquire();
   if (NULL != plan_context_) {
-    lock_->release();
-    return *plan_context_;
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   plan_context_ = new PlanContext();
 

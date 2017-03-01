@@ -35,6 +35,7 @@ class ExprUnary : public ExprNode {
 
   virtual void InitExprAtPhysicalPlan();
   virtual ExprNode* ExprCopy();
+  void GetUniqueAttr(set<string>& attrs);
 
  private:
   friend class boost::serialization::access;

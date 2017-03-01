@@ -122,8 +122,8 @@ void LogicalAggregation::ChangeAggAttrsForAVG() {
 PlanContext LogicalAggregation::GetPlanContext() {
   lock_->acquire();
   if (NULL != plan_context_) {
-    lock_->release();
-    return *plan_context_;
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   PlanContext ret;
   const PlanContext child_context = child_->GetPlanContext();
@@ -480,6 +480,17 @@ void LogicalAggregation::Print(int level) const {
   }
   --level;
   child_->Print(level);
+}
+void LogicalAggregation::PruneProj(set<string>& above_attrs) {
+  set<string> above_attrs_copy = above_attrs;
+  for (int i = 0, size = group_by_attrs_.size(); i < size; ++i) {
+    group_by_attrs_[i]->GetUniqueAttr(above_attrs_copy);
+  }
+  for (int i = 0, size = aggregation_attrs_.size(); i < size; ++i) {
+    aggregation_attrs_[i]->GetUniqueAttr(above_attrs_copy);
+  }
+  child_->PruneProj(above_attrs_copy);
+  child_ = DecideAndCreateProject(above_attrs_copy, child_);
 }
 }  // namespace logical_operator
 }  // namespace claims

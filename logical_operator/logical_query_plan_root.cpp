@@ -190,8 +190,8 @@ PhysicalOperatorBase* LogicalQueryPlanRoot::GetPhysicalPlan(
 PlanContext LogicalQueryPlanRoot::GetPlanContext() {
   lock_->acquire();
   if (NULL != plan_context_) {
-    lock_->release();
-    return *plan_context_;
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   PlanContext ret = child_->GetPlanContext();
   LOG(INFO) << "Communication cost: " << ret.commu_cost_
@@ -440,6 +440,9 @@ void LogicalQueryPlanRoot::Print(int level) const {
        << plan_context_->plan_partitioner_.get_partition_key().index << " ]"
        << endl;
   child_->Print(level);
+}
+void LogicalQueryPlanRoot::PruneProj(set<string>& above_attrs) {
+  child_->PruneProj(above_attrs);
 }
 
 }  // namespace logical_operator

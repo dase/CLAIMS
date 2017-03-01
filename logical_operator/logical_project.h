@@ -79,6 +79,7 @@ class LogicalProject : public LogicalOperator {
    * @param level:initialized to zero
    */
   void Print(int level = 0) const;
+  void PruneProj(set<string>& above_attrs);
 
  private:
   /**

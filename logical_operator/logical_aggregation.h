@@ -94,6 +94,7 @@ class LogicalAggregation : public LogicalOperator {
                      vector<ExprUnary*> aggregation_attrs,
                      LogicalOperator* child);
   virtual ~LogicalAggregation();
+  void PruneProj(set<string>& above_attrs);
 
  protected:
   /**

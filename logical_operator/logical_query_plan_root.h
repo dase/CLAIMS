@@ -99,6 +99,7 @@ class LogicalQueryPlanRoot : public LogicalOperator {
    * @return  void
    */
   void Print(int level = 0) const;
+  void PruneProj(set<string>& above_attrs);
 
  private:
   /**

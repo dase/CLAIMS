@@ -92,6 +92,9 @@ class LogicalLimit : public LogicalOperator {
   virtual void Print(int level = 0) const;
 
   LogicalOperator* child_;
+  void PruneProj(set<string>& above_attrs) {
+    return child_->PruneProj(above_attrs);
+  }
 
  private:
   const unsigned PredictCardinality(unsigned i,

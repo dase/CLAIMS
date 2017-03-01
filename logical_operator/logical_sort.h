@@ -110,6 +110,7 @@ class LogicalSort : public LogicalOperator {
   virtual bool GetOptimalPhysicalPlan(
       Requirement requirement, PhysicalPlanDescriptor &physical_plan_descriptor,
       const unsigned &block_size = 4096 * 1024) {}
+  void PruneProj(set<string> &above_attrs);
 
  private:
   vector<pair<ExprNode *, int>> order_by_attrs_;
