@@ -290,7 +290,7 @@ bool LogicalFilter::CanBeHashPruned(unsigned partition_id,
  * condition_.
  */
 float LogicalFilter::PredictSelectivity() const {
-  float ret = 1;
+  float ret = 0.5;
 
   //  /**
   //   * In the current version, due to the lack of statistic information, we
