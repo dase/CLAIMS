@@ -121,3 +121,34 @@ double BlockStreamBuffer::getBufferUsage() {
 long BlockStreamBuffer::getReceivedDataSizeInKbytes() {
   return received_block_count_ * block_size_ / 1024;
 }
+// insert one new block into list, then set it to be NULL.
+void BlockStreamBuffer::InsertOneBlock(BlockStreamBase*& block) {
+  lock_.acquire();
+  block_stream_used_list_.push_back(block);
+  received_block_count_++;
+  lock_.release();
+  block = NULL;
+  return;
+}
+
+bool BlockStreamBuffer::ReturnEmptyBlock(BlockStreamBase*& block) {
+  lock_.acquire();
+  block_stream_empty_list_.push_back(block);
+  lock_.release();
+  block = NULL;
+  return true;
+}
+
+bool BlockStreamBuffer::getEmptyBlock(BlockStreamBase*& block) {
+  if (sema_empty_block_.timed_wait(1)) {
+    lock_.acquire();
+    block = block_stream_empty_list_.front();
+    block_stream_empty_list_.pop_front();
+    lock_.release();
+    block->setEmpty();
+  } else {
+    block = NULL;
+    return false;
+  }
+  return true;
+}

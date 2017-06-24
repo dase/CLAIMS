@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 /*
  * Copyright [2012-2015] DaSE@ECNU
  *
@@ -234,28 +236,53 @@ void* Expander::ExpandedWork(void* arg) {
     if (expanding == true) {
       expanding = false;
     }
-    BlockStreamBase* block_for_asking = BlockStreamBase::createBlock(
-        Pthis->state_.schema_, Pthis->state_.block_size_);
-    block_for_asking->setEmpty();
 
-    while (Pthis->state_.child_->Next(Pthis->exec_status_, block_for_asking)) {
-      if (!block_for_asking->Empty()) {
-        Pthis->lock_.acquire();
-        Pthis->received_tuples_ += block_for_asking->getTuplesInBlock();
-        Pthis->lock_.release();
-        Pthis->block_stream_buffer_->insertBlock(block_for_asking);
-        block_for_asking->setEmpty();
-        block_count++;
+    BlockStreamBase* block_for_asking = NULL;
+    bool isCancelled = false;
+    while (!isCancelled) {
+      // get one empty block from buffer
+      while (!Pthis->block_stream_buffer_->getEmptyBlock(block_for_asking)) {
+        if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
+                pthread_self())) {
+          LOG(INFO) << Pthis->expander_id_
+                    << " <<<<<<<<<<<<<<<<Expander detected "
+                       "call back signal after open!>>>>>>>" << pthread_self()
+                    << std::endl;
+          isCancelled = true;
+          break;
+        } else {  // wait empty block
+          sleep(3);
+          LOG(INFO)
+              << Pthis->expander_id_
+              << "could not get empty block, aftersleep 3ms, buffer useage = "
+              << Pthis->block_stream_buffer_->getBufferUsage()
+              << " thread = " << pthread_self() << std::endl;
+        }
+      }
+      if (isCancelled) {
+        break;
+      }
+      LOG(INFO) << Pthis->expander_id_ << " get one empty block "
+                << pthread_self() << std::endl;
+      // after get one empty block
+      if (Pthis->state_.child_->Next(Pthis->exec_status_, block_for_asking)) {
+        if (!block_for_asking->Empty()) {
+          Pthis->lock_.acquire();
+          Pthis->received_tuples_ += block_for_asking->getTuplesInBlock();
+          Pthis->lock_.release();
+          Pthis->block_stream_buffer_->InsertOneBlock(block_for_asking);
+          block_count++;
+        }
+      } else {
+        // return empty block to buffer
+        LOG(INFO) << Pthis->expander_id_ << " cancelled and return empty block "
+                  << pthread_self() << std::endl;
+        assert(block_for_asking->Empty() == true);
+        Pthis->block_stream_buffer_->ReturnEmptyBlock(block_for_asking);
+        break;
       }
     }
-    /*
-     * When the above loop exits, it means that either the stage beginner has
-     * exhausted, or it received termination request.
-     */
-    if (NULL != block_for_asking) {
-      delete block_for_asking;
-      block_for_asking = NULL;
-    }
+
     if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
             pthread_self())) {
       LOG(INFO) << Pthis->expander_id_ << " <<<<<<<<<<<<<<<<Expander detected "
