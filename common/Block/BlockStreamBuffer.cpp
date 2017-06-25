@@ -134,6 +134,7 @@ void BlockStreamBuffer::InsertOneBlock(BlockStreamBase*& block) {
 bool BlockStreamBuffer::ReturnEmptyBlock(BlockStreamBase*& block) {
   lock_.acquire();
   block_stream_empty_list_.push_back(block);
+  sema_empty_block_.post();
   lock_.release();
   block = NULL;
   return true;

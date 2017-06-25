@@ -236,8 +236,7 @@ bool ExchangeMerger::Next(SegmentExecStatus* const exec_status,
      * actually at least one block is not handled , then this method return
      * false without handing the last block even the last few blocks.
      */
-    if (exhausted_lowers == lower_num_ &&
-        sem_new_block_or_eof_.get_value() == 0) {
+    if (exhausted_lowers == lower_num_ && all_merged_block_buffer_->Empty()) {
       LOG(INFO) << "the value of sem_new_block_or_eof_ is :"
                 << sem_new_block_or_eof_.get_value() << endl;
       LOG(INFO) << "now all lower are exhausted~~~~~~~~~~~" << endl;
