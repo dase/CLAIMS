@@ -252,19 +252,13 @@ void* Expander::ExpandedWork(void* arg) {
           break;
         } else {  // wait empty block
           sleep(3);
-          LOG(INFO)
-              << Pthis->expander_id_
-              << "could not get empty block, aftersleep 3ms, buffer useage = "
-              << Pthis->block_stream_buffer_->getBufferUsage()
-              << " thread = " << pthread_self() << std::endl;
         }
       }
       if (isCancelled) {
         break;
       }
-      LOG(INFO) << Pthis->expander_id_ << " get one empty block "
-                << pthread_self() << std::endl;
       // after get one empty block
+      assert(block_for_asking->Empty() && "get a empty block");
       if (Pthis->state_.child_->Next(Pthis->exec_status_, block_for_asking)) {
         if (!block_for_asking->Empty()) {
           Pthis->lock_.acquire();
@@ -275,14 +269,11 @@ void* Expander::ExpandedWork(void* arg) {
         }
       } else {
         // return empty block to buffer
-        LOG(INFO) << Pthis->expander_id_ << " cancelled and return empty block "
-                  << pthread_self() << std::endl;
-        assert(block_for_asking->Empty() || block_for_asking->isIsReference());
+        assert(block_for_asking->Empty() && "return empty block");
         Pthis->block_stream_buffer_->ReturnEmptyBlock(block_for_asking);
         break;
       }
     }
-
     if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
             pthread_self())) {
       LOG(INFO) << Pthis->expander_id_ << " <<<<<<<<<<<<<<<<Expander detected "
