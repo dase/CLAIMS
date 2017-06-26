@@ -79,7 +79,12 @@ LogicalOuterJoin::LogicalOuterJoin(
       join_policy_(kNull),
       plan_context_(NULL),
       join_type_(join_type),
-      join_condi_(join_condi) {}
+      join_condi_(join_condi) {
+  for (unsigned i = 0; i < joinpair_list.size(); ++i) {
+    left_join_key_list_.push_back(joinpair_list[i].left_join_attr_);
+    right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
+  }
+}
 LogicalOuterJoin::~LogicalOuterJoin() {
   if (NULL != plan_context_) {
     delete plan_context_;
