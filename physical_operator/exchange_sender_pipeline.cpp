@@ -35,7 +35,6 @@
 #include "../../common/rename.h"
 #include "../../common/Logging.h"
 #include "../../common/ids.h"
-//#include "../../common/log/logging.h"
 #include "../../Environment.h"
 #include "../../utility/ThreadSafe.h"
 #include "../../utility/rdtsc.h"
@@ -50,7 +49,6 @@ ExchangeSenderPipeline::ExchangeSenderPipeline(State state)
       partitioned_data_buffer_(NULL),
       block_for_asking_(NULL),
       block_for_sending_buffer_(NULL),
-      block_for_serialization_(NULL),
       sending_buffer_(NULL),
       partition_function_(NULL),
       socket_fd_upper_list_(NULL) {
@@ -64,7 +62,6 @@ ExchangeSenderPipeline::ExchangeSenderPipeline()
       partitioned_data_buffer_(NULL),
       block_for_asking_(NULL),
       block_for_sending_buffer_(NULL),
-      block_for_serialization_(NULL),
       sending_buffer_(NULL),
       partition_function_(NULL),
       socket_fd_upper_list_(NULL) {
@@ -123,12 +120,6 @@ bool ExchangeSenderPipeline::Open(SegmentExecStatus* const exec_status,
    */
   sending_buffer_ = new PartitionedBlockContainer(
       upper_num_, block_for_asking_->getSerializedBlockSize());
-
-  // Initialized the temporary block to hold the serialized block.
-
-  block_for_serialization_ =
-      new Block(block_for_asking_->getSerializedBlockSize());
-
   /**
    * Initialize the blocks that are used to accumulate the tuples from child so
    * that the insertion to the buffer
@@ -182,6 +173,10 @@ bool ExchangeSenderPipeline::Open(SegmentExecStatus* const exec_status,
  * serialize it and insert into corresponding partition buffer.
  * else the state_.partition_schema_ is broadcast, straightly insert the block
  * from child into each partition buffer.
+ *
+ * note to avoid memcpy(), not only in hash mode, but also in broadcast mode,
+ *there should one memcpy () from block_for_asking to partitioned_data_buffer
+ *
  */
 bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
                                   BlockStreamBase* no_block) {
@@ -222,10 +217,9 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
              * if the destination block is full, it should be serialized and
              * inserted into the partitioned_data_buffer.
              */
-            partitioned_block_stream_[partition_id]->serialize(
-                *block_for_serialization_);
+            partitioned_block_stream_[partition_id]->Serialize();
             partitioned_data_buffer_->insertBlockToPartitionedList(
-                block_for_serialization_, partition_id);
+                partitioned_block_stream_[partition_id], partition_id, false);
             partitioned_block_stream_[partition_id]->setEmpty();
           }
           /**
@@ -238,26 +232,27 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
         DELETE_PTR(traverse_iterator);  // by hAN MEMORY LEAK
       } else if (state_.partition_schema_.isBroadcastPartition()) {
         /**
-         * for boardcast case, all block from child should inserted into all
+         * for boardcast case, all block from child should be copied into all
          * partitioned_data_buffer
          */
-        block_for_asking_->serialize(*block_for_serialization_);
+        block_for_asking_->Serialize();
         for (unsigned i = 0; i < upper_num_; ++i) {
           partitioned_data_buffer_->insertBlockToPartitionedList(
-              block_for_serialization_, i);
+              block_for_asking_, i, true);
         }
       }
     } else {
       RETURN_IF_CANCELLED(exec_status);
 
       if (state_.partition_schema_.isHashPartition()) {
-        /* the child iterator is exhausted. We add the last block stream block
-         * which would be not full into the buffer for hash partitioned case.
-         */
+/* the child iterator is exhausted. We add the last block stream block
+ * which would be not full into the buffer for hash partitioned case.
+ */
+#ifdef OPTI
         for (unsigned i = 0; i < upper_num_; ++i) {
-          partitioned_block_stream_[i]->serialize(*block_for_serialization_);
+          partitioned_block_stream_[i]->Serialize();
           partitioned_data_buffer_->insertBlockToPartitionedList(
-              block_for_serialization_, i);
+              partitioned_block_stream_[i], i, false);
         }
         /* The following lines send an empty block to the upper, indicating that
          * all the data from current sent has been transmit to the uppers.
@@ -265,20 +260,36 @@ bool ExchangeSenderPipeline::Next(SegmentExecStatus* const exec_status,
         for (unsigned i = 0; i < upper_num_; ++i) {
           if (!partitioned_block_stream_[i]->Empty()) {
             partitioned_block_stream_[i]->setEmpty();
-            partitioned_block_stream_[i]->serialize(*block_for_serialization_);
+            partitioned_block_stream_[i]->Serialize();
             partitioned_data_buffer_->insertBlockToPartitionedList(
-                block_for_serialization_, i);
+                partitioned_block_stream_[i], i, true);
           }
         }
+#else
+        for (unsigned i = 0; i < upper_num_; ++i) {
+          if (!partitioned_block_stream_[i]->Empty()) {
+            partitioned_block_stream_[i]->Serialize();
+            partitioned_data_buffer_->insertBlockToPartitionedList(
+                partitioned_block_stream_[i], i, false);
+          }
+          // add additional empty block
+          partitioned_block_stream_[i]->setEmpty();
+          partitioned_block_stream_[i]->Serialize();
+          partitioned_data_buffer_->insertBlockToPartitionedList(
+              partitioned_block_stream_[i], i, false);
+          partitioned_block_stream_[i]->setEmpty();
+        }
+#endif
+
       } else if (state_.partition_schema_.isBroadcastPartition()) {
         /* The following lines send an empty block to the upper, indicating that
          * all the data from current sent has been transmit to the uppers.
          */
-        block_for_asking_->setEmpty();
-        block_for_asking_->serialize(*block_for_serialization_);
         for (unsigned i = 0; i < upper_num_; ++i) {
+          partitioned_block_stream_[i]->setEmpty();
+          partitioned_block_stream_[i]->Serialize();
           partitioned_data_buffer_->insertBlockToPartitionedList(
-              block_for_serialization_, i);
+              partitioned_block_stream_[i], i, false);
         }
       }
 
@@ -332,10 +343,6 @@ bool ExchangeSenderPipeline::Close(SegmentExecStatus* const exec_status) {
   if (NULL != block_for_asking_) {
     delete block_for_asking_;
     block_for_asking_ = NULL;
-  }
-  if (NULL != block_for_serialization_) {
-    delete block_for_serialization_;
-    block_for_serialization_ = NULL;
   }
   if (NULL != sending_buffer_) {
     delete sending_buffer_;

@@ -443,7 +443,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
   PlanContext dataflow_right = right_child_->GetPlanContext();
   PhysicalHashJoin::State state;
   state.block_size_ = block_size;
-  state.hashtable_bucket_num_ = 1024 * 1024;
+  state.hashtable_bucket_num_ = Config::hash_join_bucket_num;
   // state.ht_nbuckets=1024;
   state.input_schema_left_ = GetSchema(dataflow_left.attribute_list_);
   state.input_schema_right_ = GetSchema(dataflow_right.attribute_list_);
@@ -459,7 +459,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
    * number of overflowing buckets and avoid the random memory access caused by
    * acceesing overflowing buckets.
    */
-  state.hashtable_bucket_size_ = 128;
+  state.hashtable_bucket_size_ = Config::hash_join_bucket_size;
   state.output_schema_ = GetSchema(plan_context_->attribute_list_);
 
   state.join_index_left_ = GetLeftJoinKeyIds();

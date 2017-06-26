@@ -23,15 +23,17 @@ BlockStreamFix::BlockStreamFix(unsigned block_size, unsigned tuple_size,
   assert(free_ - start <= BlockSize);
 }
 
-BlockStreamFix::~BlockStreamFix() {}
+BlockStreamFix::~BlockStreamFix() { free_ = NULL; }
 
 void BlockStreamFix::setEmpty() { free_ = start; }
 
 BlockStreamBase* BlockStreamBase::createBlock(const Schema* const& schema,
                                               unsigned block_size) {
   if (schema->getSchemaType() == Schema::fixed) {
-    return new BlockStreamFix(block_size - sizeof(BlockStreamFix::tail_info),
-                              schema->getTupleMaxSize());
+    return new BlockStreamFix(block_size, schema->getTupleMaxSize());
+    //    return new BlockStreamFix(block_size -
+    //    sizeof(BlockStreamFix::tail_info),
+    //                              schema->getTupleMaxSize());
   } else {
     return new BlockStreamVar(block_size, schema);
   }
@@ -72,6 +74,9 @@ bool BlockStreamFix::switchBlock(BlockStreamBase& block) {
   std::swap(blockfix->start, start);
   std::swap(blockfix->free_, free_);
   std::swap(blockfix->tuple_size_, tuple_size_);
+  bool ref = blockfix->isIsReference();
+  blockfix->ForceSetIsRef(isIsReference());
+  ForceSetIsRef(ref);
   return true;
 }
 
@@ -99,7 +104,7 @@ void BlockStreamFix::deepCopy(const Block* block) {
 bool BlockStreamFix::Empty() const { return start == free_; }
 
 bool BlockStreamFix::serialize(Block& block) const {
-  assert(block.getsize() >= BlockSize + sizeof(tail_info));
+  assert(block.getsize() >= BlockSize);
 
   /*copy the content*/
   memcpy(block.getBlock(), start, BlockSize);
@@ -156,8 +161,27 @@ BlockStreamBase* BlockStreamFix::createBlockAndDeepCopy() {
   }
   return ret;
 }
+// just add tail info to the block
+bool BlockStreamFix::Serialize() {
+  tail_info* tail = (tail_info*)((char*)start + BlockSize - sizeof(tail_info));
+  tail->tuple_count = (free_ - start) / tuple_size_;
+  return true;
+}
+bool BlockStreamFix::DeSerialize(Block* block) {
+  // switch content of block
+  SwitchBlock(block);
+  const tail_info tail =
+      *(tail_info*)((char*)start + BlockSize - sizeof(tail_info));
+
+  if (tail.tuple_count * tuple_size_ > BlockSize) {
+    LOG(ERROR) << "tuple count:" << tail.tuple_count << " in deserialize()";
+    assert(false);
+  }
+  free_ = (char*)start + (tail.tuple_count) * tuple_size_;
+  return true;
+}
 bool BlockStreamFix::deserialize(Block* block) {
-  assert(block->getsize() >= BlockSize + sizeof(tail_info));
+  assert(block->getsize() >= BlockSize);
 
   /* copy the content*/
   memcpy(start, block->getBlock(), BlockSize);
@@ -184,15 +208,13 @@ bool BlockStreamFix::deserialize(Block* block) {
 
   return true;
 }
-unsigned BlockStreamFix::getSerializedBlockSize() const {
-  return BlockSize + sizeof(tail_info);
-}
+unsigned BlockStreamFix::getSerializedBlockSize() const { return BlockSize; }
 unsigned BlockStreamFix::getTuplesInBlock() const {
   return (free_ - start) / tuple_size_;
 }
 void BlockStreamFix::constructFromBlock(const Block& block) {
   /*set block size*/
-  assert(BlockSize == block.getsize() - sizeof(tail_info));
+  assert(BlockSize == block.getsize());
 
   /* copy the content*/
   memcpy(start, block.getBlock(), BlockSize);

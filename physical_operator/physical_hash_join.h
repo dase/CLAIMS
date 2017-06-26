@@ -51,6 +51,7 @@
 #include "../physical_operator/physical_operator.h"
 using claims::common::ExprNode;
 using claims::common::ExprEvalCnxt;
+using claims::common::GetPartitionValue;
 
 namespace claims {
 namespace physical_operator {
@@ -103,7 +104,6 @@ class PhysicalHashJoin : public PhysicalOperator {
     PhysicalOperatorBase* child_left_, *child_right_;
     Schema* input_schema_left_, *input_schema_right_;
     Schema* output_schema_, *hashtable_schema_;
-
     // how to join
     std::vector<unsigned> join_index_left_;
     std::vector<unsigned> join_index_right_;
@@ -186,10 +186,13 @@ class PhysicalHashJoin : public PhysicalOperator {
   typedef void (*ConditionFilterFunc)(void*, void*, void*, vector<unsigned>&,
                                       vector<unsigned>&, Schema*, Schema*,
                                       ExprFuncTwoTuples);
+
   ConditionFilterFunc cff_;
   ExprFuncTwoTuples eftt_;
+  GetPartitionValue gpv_right_, gpv_left_;
   LLVMMemcpy memcpy_;
   LLVMMemcat memcat_;
+  unsigned bucket_num_mod_;
 
   // debug
   unsigned produced_tuples;

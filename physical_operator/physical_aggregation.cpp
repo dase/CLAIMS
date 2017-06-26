@@ -174,12 +174,14 @@ bool PhysicalAggregation::Open(SegmentExecStatus *const exec_status,
   RETURN_IF_CANCELLED(exec_status);
 
   state_.child_->Open(exec_status, partition_offset);
+
   if (ExpanderTracker::getInstance()->isExpandedThreadCallBack(
           pthread_self())) {
     UnregisterExpandedThreadToAllBarriers(1);
     return true;
   }
 
+  RETURN_IF_CANCELLED(exec_status);
   ticks start = curtick();
   if (TryEntryIntoSerializedSection(1)) {
     hash_ = PartitionFunctionFactory::createGeneralModuloFunction(

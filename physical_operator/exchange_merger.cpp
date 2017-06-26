@@ -822,7 +822,7 @@ for (auto &it : Pthis->lower_fd_to_passwd_) {
 
           /** deserialize the data block from Sender to the blockstreambase
            * (block_for_deserialization) **/
-          Pthis->block_for_deserialization->deserialize(
+          Pthis->block_for_deserialization->DeSerialize(
               reinterpret_cast<Block*>(
                   Pthis->block_for_socket_[socket_fd_index]));
 

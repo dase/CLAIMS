@@ -785,6 +785,7 @@ class OperateDate : public Operate {
     return boost::hash_value((*(boost::gregorian::date*)(key)).julian_day()) %
            mod;
   }
+
   Operate* duplicateOperator() const { return new OperateDate(this->nullable); }
 
   inline bool setNull(void* value) {

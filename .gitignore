@@ -45,6 +45,7 @@ config.sub
 configure
 depcomp
 doc
+doc/*
 include/
 install-sh
 install/
@@ -53,17 +54,14 @@ log
 ltmain.sh
 missing
 sbin/.claimssserver.pid
-<<<<<<< HEAD
+sbin/2-claims-conf/
 sbin/2-claims-conf/claims_log/
 sbin/2-claims-conf/config-*
 sbin/2-claims-conf/test_for_DI_GetTuple
-=======
-sbin/2-claims-conf/
->>>>>>> f5005b1ecfdcfb429ed630a0dfd573e1129a592b
 sbin/claims-test/claims_log/
 sbin/claims-test/test_for_DI_GetTuple
 sbin/claims-test/testresult/
-sbin/claims-test/testresult/*.result
+sbin/claims-test/testresult/*
 sbin/claims_log/
 sbin/logs/
 stamp-h1

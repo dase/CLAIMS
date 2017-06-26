@@ -277,7 +277,7 @@ void* Expander::ExpandedWork(void* arg) {
         // return empty block to buffer
         LOG(INFO) << Pthis->expander_id_ << " cancelled and return empty block "
                   << pthread_self() << std::endl;
-        assert(block_for_asking->Empty() == true);
+        assert(block_for_asking->Empty() || block_for_asking->isIsReference());
         Pthis->block_stream_buffer_->ReturnEmptyBlock(block_for_asking);
         break;
       }

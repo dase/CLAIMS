@@ -11,7 +11,7 @@
 #define COMMON_EXPRESSION_DATA_TYPE_OPER_H_
 #include <string.h>
 #include <math.h>
-#include <iosfwd>
+#include <string>
 #include "./expr_node.h"
 #include "../../common/data_type.h"
 #include "../../common/Logging.h"
@@ -19,6 +19,9 @@
 #include "../../common/types/decimal.h"
 #include "boost/date_time/gregorian/parsers.hpp"
 #include <boost/date_time/gregorian/greg_duration.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/functional/hash.hpp>
 #include "boost/date_time/gregorian/formatters.hpp"
 namespace claims {
 namespace common {
@@ -29,6 +32,7 @@ class DataTypeOper {
  public:
   static DataTypeOperFunc data_type_oper_func_[DATA_TYPE_NUM][OPER_TYPE_NUM];
   static AvgDivide avg_divide_[DATA_TYPE_NUM];
+  static GetPartitionValue partition_value_[DATA_TYPE_NUM][2];
 };
 
 #define NextByte(p, plen) ((p)++, (plen)--)
@@ -1497,6 +1501,167 @@ inline void InitAggAvgDivide() {
   DataTypeOper::avg_divide_[t_smallInt] = avg_smallint_divide;
   DataTypeOper::avg_divide_[t_u_smallInt] = avg_usmallint_divide;
   DataTypeOper::avg_divide_[t_decimal] = avg_decimal_divide;
+}
+
+inline unsigned partition_value_error(const void *addr,
+                                      const unsigned long &mod) {
+  assert(false && "error partition function!");
+}
+inline unsigned partition_value_int(const void *addr,
+                                    const unsigned long &mod) {
+  return boost::hash_value(*(int *)addr) % mod;
+}
+inline unsigned partition_value_float(const void *addr,
+                                      const unsigned long &mod) {
+  return boost::hash_value(*(float *)addr) % mod;
+}
+inline unsigned partition_value_double(const void *addr,
+                                       const unsigned long &mod) {
+  return boost::hash_value(*(double *)addr) % mod;
+}
+inline unsigned partition_value_ulong(const void *addr,
+                                      const unsigned long &mod) {
+  return boost::hash_value(*(unsigned long *)addr) % mod;
+}
+inline unsigned partition_value_smallint(const void *addr,
+                                         const unsigned long &mod) {
+  return boost::hash_value(*(short *)addr) % mod;
+}
+inline unsigned partition_value_usmallint(const void *addr,
+                                          const unsigned long &mod) {
+  return boost::hash_value(*(unsigned short *)addr) % mod;
+}
+inline unsigned partition_value_string(const void *addr,
+                                       const unsigned long &mod) {
+  return boost::hash_value(std::string((char *)addr)) % mod;
+}
+inline unsigned partition_value_date(const void *addr,
+                                     const unsigned long &mod) {
+  return boost::hash_value((*(boost::gregorian::date *)(addr)).julian_day()) %
+         mod;
+}
+inline unsigned partition_value_time(const void *addr,
+                                     const unsigned long &mod) {
+  return boost::hash_value((*(time_duration *)(addr)).total_nanoseconds()) %
+         mod;
+}
+inline unsigned partition_value_datetime(const void *addr,
+                                         const unsigned long &mod) {
+  return boost::hash_value(to_simple_string(*(ptime *)(addr))) % mod;
+}
+
+inline unsigned partition_value_decimal(const void *addr,
+                                        const unsigned long &mod) {
+  const void *pttint = (&((*(Decimal *)addr).GetTTInt()));
+  unsigned long ul1 = *reinterpret_cast<const unsigned long *>(pttint);
+  unsigned long ul2 = *reinterpret_cast<const unsigned long *>(pttint + 8);
+  unsigned long ul3 = *reinterpret_cast<const unsigned long *>(pttint + 16);
+  unsigned long ul4 = *reinterpret_cast<const unsigned long *>(pttint + 24);
+
+  boost::hash_combine(ul1, ul2);
+  boost::hash_combine(ul1, ul3);
+  boost::hash_combine(ul1, ul4);
+  return ul1 % mod;
+}
+
+inline unsigned partition_value_bool(const void *addr,
+                                     const unsigned long &mod) {
+  return boost::hash_value(*(int *)addr) % mod;
+}
+/*****for mod=2^n,but input mod=mod-1****/
+inline unsigned partition_value_int_and(const void *addr,
+                                        const unsigned long &mod) {
+  return boost::hash_value(*(int *)addr) & mod;
+}
+inline unsigned partition_value_float_and(const void *addr,
+                                          const unsigned long &mod) {
+  return boost::hash_value(*(float *)addr) & mod;
+}
+inline unsigned partition_value_double_and(const void *addr,
+                                           const unsigned long &mod) {
+  return boost::hash_value(*(double *)addr) & mod;
+}
+inline unsigned partition_value_ulong_and(const void *addr,
+                                          const unsigned long &mod) {
+  return (*(unsigned long *)addr) & mod;
+}
+inline unsigned partition_value_smallint_and(const void *addr,
+                                             const unsigned long &mod) {
+  return boost::hash_value(*(short *)addr) & mod;
+}
+inline unsigned partition_value_usmallint_and(const void *addr,
+                                              const unsigned long &mod) {
+  return boost::hash_value(*(unsigned short *)addr) & mod;
+}
+inline unsigned partition_value_string_and(const void *addr,
+                                           const unsigned long &mod) {
+  return boost::hash_value(std::string((char *)addr)) & mod;
+}
+inline unsigned partition_value_date_and(const void *addr,
+                                         const unsigned long &mod) {
+  return boost::hash_value((*(boost::gregorian::date *)(addr)).julian_day()) &
+         mod;
+}
+inline unsigned partition_value_time_and(const void *addr,
+                                         const unsigned long &mod) {
+  return boost::hash_value((*(time_duration *)(addr)).total_nanoseconds()) &
+         mod;
+}
+inline unsigned partition_value_datetime_and(const void *addr,
+                                             const unsigned long &mod) {
+  return boost::hash_value(to_simple_string(*(ptime *)(addr))) & mod;
+}
+
+inline unsigned partition_value_decimal_and(const void *addr,
+                                            const unsigned long &mod) {
+  const void *pttint = (&((*(Decimal *)addr).GetTTInt()));
+  unsigned long ul1 = *reinterpret_cast<const unsigned long *>(pttint);
+  unsigned long ul2 = *reinterpret_cast<const unsigned long *>(pttint + 8);
+  unsigned long ul3 = *reinterpret_cast<const unsigned long *>(pttint + 16);
+  unsigned long ul4 = *reinterpret_cast<const unsigned long *>(pttint + 24);
+
+  boost::hash_combine(ul1, ul2);
+  boost::hash_combine(ul1, ul3);
+  boost::hash_combine(ul1, ul4);
+  return ul1 & mod;
+}
+
+inline unsigned partition_value_bool_and(const void *addr,
+                                         const unsigned long &mod) {
+  return boost::hash_value(*(int *)addr) & mod;
+}
+
+inline void InitpartitionValue() {
+  for (int i = 0; i < DATA_TYPE_NUM; ++i) {
+    DataTypeOper::partition_value_[i][0] = partition_value_error;
+    DataTypeOper::partition_value_[i][1] = partition_value_error;
+  }
+  DataTypeOper::partition_value_[t_boolean][0] = partition_value_bool;
+  DataTypeOper::partition_value_[t_decimal][0] = partition_value_decimal;
+  DataTypeOper::partition_value_[t_datetime][0] = partition_value_datetime;
+  DataTypeOper::partition_value_[t_time][0] = partition_value_time;
+  DataTypeOper::partition_value_[t_date][0] = partition_value_date;
+  DataTypeOper::partition_value_[t_int][0] = partition_value_int;
+  DataTypeOper::partition_value_[t_float][0] = partition_value_float;
+  DataTypeOper::partition_value_[t_double][0] = partition_value_double;
+  DataTypeOper::partition_value_[t_smallInt][0] = partition_value_smallint;
+  DataTypeOper::partition_value_[t_u_smallInt][0] = partition_value_usmallint;
+  DataTypeOper::partition_value_[t_u_long][0] = partition_value_ulong;
+  DataTypeOper::partition_value_[t_string][0] = partition_value_string;
+
+  DataTypeOper::partition_value_[t_boolean][1] = partition_value_bool_and;
+  DataTypeOper::partition_value_[t_decimal][1] = partition_value_decimal_and;
+  DataTypeOper::partition_value_[t_datetime][1] = partition_value_datetime_and;
+  DataTypeOper::partition_value_[t_time][1] = partition_value_time_and;
+  DataTypeOper::partition_value_[t_date][1] = partition_value_date_and;
+  DataTypeOper::partition_value_[t_int][1] = partition_value_int_and;
+  DataTypeOper::partition_value_[t_float][1] = partition_value_float_and;
+  DataTypeOper::partition_value_[t_double][1] = partition_value_double_and;
+  DataTypeOper::partition_value_[t_smallInt][1] = partition_value_smallint_and;
+  DataTypeOper::partition_value_[t_u_smallInt][1] =
+      partition_value_usmallint_and;
+  DataTypeOper::partition_value_[t_u_long][1] = partition_value_ulong_and;
+  DataTypeOper::partition_value_[t_string][1] = partition_value_string_and;
 }
 
 }  // namespace common
