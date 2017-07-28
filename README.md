@@ -1,4 +1,4 @@
-**CLAIMS** (CLuster-Aware In-Memory Sql query engine) is a parallel in-memory database prototype, which runs on clusters of commodity servers and aims to provide real-time data analytics on relational dataset. 
+**CLAIMS** (CLuster-Aware In-Memory Sql query engine) is a parallel in-memory database prototype, which runs on clusters of commodity servers and provides real-time data analytics on relational dataset. 
 
 #### Highlights
 
@@ -31,8 +31,8 @@ Beneficial from the smart and massively parallelism and the in-memory data proce
 
 #### Publications
 
-1. Li Wang, Minqi Zhou, Zhenjie Zhang, Yin Yang, Aoying Zhou, Dina Bitton. Elastic Pipelining in In-Memory Database Cluster. ACM SIGMOD 2016, pp. 1279-1294.
-2. Li Wang, Minqi Zhou, Zhenjie Zhang, Ming-chien Shan, Aoying Zhou. NUMA-aware Scalable and Efficient Aggregation on Large Domains. IEEE TKDE 2015:4. pp.1071-1084 .
+1. Li Wang, Minqi Zhou, Zhenjie Zhang, Yin Yang, Aoying Zhou, Dina Bitton. Elastic Pipelining in a In-Memory Database Cluster. ACM SIGMOD 2016, pp. 1279-1294. [[pdf](http://dase.ecnu.edu.cn/liwang/papers/li-elastic.pdf), [cite](http://dase.ecnu.edu.cn/liwang/papers/li-elastic.bib)]
+2. Li Wang, Minqi Zhou, Zhenjie Zhang, Ming-chien Shan, Aoying Zhou. NUMA-aware Scalable and Efficient Aggregation on Large Domains. IEEE TKDE 2015:4. pp.1071-1084. [[pdf](http://dase.ecnu.edu.cn/liwang/papers/li-tkde2014.pdf), [cite](http://dase.ecnu.edu.cn/liwang/papers/li-tkde2014.bib)]
 3. Li Wang, Lei Zhang, Chengcheng Yu, Aoying Zhou. Optimizing Pipelined Execution for Distributed In-memory OLAY System. In: DaMen 2014. Springer. 2014. pp. 35-56.
 4. Lan Huang, Ke Xun, Xiaozhou Chen, Minqi Zhou, In-memory Cluster Computing: Interactive Data Analysis, Journal of East China Normal University, 2014
 5. Shaochan Dong, Minqi Zhou, Rong Zhang，Aoying Zhou, In-Memory Index：Performance Enhancement Leveraging on Processors, Journal of East China Normal University,2014
