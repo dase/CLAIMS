@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <memory.h>
 #include "../../configure.h"
+#define BLOCK_FOR_PARTITION 10
 PartitionedBlockBuffer::PartitionedBlockBuffer(unsigned nPartitions,
                                                unsigned block_size,
                                                unsigned nBlocks)
@@ -26,7 +27,7 @@ PartitionedBlockBuffer::PartitionedBlockBuffer(unsigned nPartitions,
 }
 PartitionedBlockBuffer::PartitionedBlockBuffer(unsigned nPartitions,
                                                unsigned block_size)
-    : nPartitions(nPartitions), nBlocks(nPartitions * 3) {
+    : nPartitions(nPartitions), nBlocks(nPartitions * BLOCK_FOR_PARTITION) {
   blocks_in_partition_list = new std::list<Block*>[nPartitions];
   for (unsigned i = 0; i < nBlocks; i++) {
     Block* block = new Block(block_size);

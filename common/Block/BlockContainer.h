@@ -11,21 +11,23 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
-class BlockContainer:public Block {
-public:
-	BlockContainer(unsigned size);
-	virtual ~BlockContainer();
-	unsigned GetMaxSize()const;
-	unsigned GetCurSize()const;
-	unsigned GetRestSizeToHandle()const;
-	void reset();
-	void IncreaseActualSize(unsigned size);
-	/**
-	 * Copy the block content and the acutal_size_
-	 */
-	void copy(BlockContainer& block);
-private:
-	unsigned actual_size_;
+class BlockContainer : public Block {
+ public:
+  BlockContainer(unsigned size);
+  virtual ~BlockContainer();
+  unsigned GetMaxSize() const;
+  unsigned GetCurSize() const;
+  unsigned GetRestSizeToHandle() const;
+  void reset();
+  void IncreaseActualSize(unsigned size);
+  bool IsEmpty() const;
+  /**
+   * Copy the block content and the acutal_size_
+   */
+  void copy(BlockContainer& block);
+
+ private:
+  unsigned actual_size_;
 };
 
 #endif /* BLOCKCONTAINER_H_ */

@@ -21,6 +21,7 @@ class BlockStreamBuffer : public MonitorableBuffer {
   BlockStreamBuffer(unsigned block_size, unsigned block_count, Schema* schema);
   virtual ~BlockStreamBuffer();
   void insertBlock(BlockStreamBase* block);
+  bool InsertOneBlock(Block* const block);
   void InsertOneBlock(BlockStreamBase*& block);
   bool getBlock(BlockStreamBase& block);
   unsigned getBlockInBuffer();

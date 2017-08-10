@@ -18,6 +18,7 @@
 #include "../common/ids.h"
 #include "caf/all.hpp"
 
+#include "../common/Block/BlockStreamBuffer.h"
 using caf::actor;
 
 /*
@@ -28,7 +29,8 @@ class ExchangeTracker {
  public:
   ExchangeTracker();
   virtual ~ExchangeTracker();
-  bool RegisterExchange(ExchangeID exchange_id, std::string port);
+  bool RegisterExchange(ExchangeID exchange_id, std::string port,
+                        BlockStreamBuffer* const buffer);
   void LogoutExchange(const ExchangeID& exchange_id);
   bool AskForSocketConnectionInfo(const ExchangeID& exchange_id,
                                   const NodeID& target_id,
@@ -38,9 +40,11 @@ class ExchangeTracker {
                                   NodeAddress& node_addr, actor& target_actor);
   void printAllExchangeId() const;
   NodeAddress GetExchAddr(ExchangeID exch_id);
+  BlockStreamBuffer* const getBuffer(const ExchangeID exch_id);
 
  private:
   boost::unordered_map<ExchangeID, std::string> id_to_port;
+  boost::unordered_map<ExchangeID, BlockStreamBuffer*> id_to_buffer_;
   Lock lock_;
 };
 

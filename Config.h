@@ -83,6 +83,7 @@ class Config {
   static int load_thread_num;
   static int hash_join_bucket_size;
   static int hash_join_bucket_num;
+  static int expander_buffer_size;
 
  private:
   static Config* instance_;

@@ -94,6 +94,7 @@ int Config::memory_utilization;
 
 int Config::hash_join_bucket_num;
 int Config::hash_join_bucket_size;
+int Config::expander_buffer_size;
 
 Config *Config::getInstance() {
   if (instance_ == 0) {
@@ -163,6 +164,8 @@ void Config::initialize() {
 
   hash_join_bucket_size = getInt("hash_join_bucket_size", 1024);
 
+  expander_buffer_size = getInt("expander_buffer_size", 3000);
+
 #ifdef DEBUG_Config
   print_configure();
 #endif
@@ -222,8 +225,9 @@ void Config::print_configure() const {
   std::cout << "codegen:" << enable_codegen << std::endl;
   std::cout << "enable_prune_column: " << enable_prune_column << std::endl;
   std::cout << "load_thread_num:" << load_thread_num << std::endl;
-  std::cout << "hash_join_bucket_num" << hash_join_bucket_num << std::endl;
-  std::cout << "hash_join_bucket_size" << hash_join_bucket_size << std::endl;
+  std::cout << "hash_join_bucket_num: " << hash_join_bucket_num << std::endl;
+  std::cout << "hash_join_bucket_size: " << hash_join_bucket_size << std::endl;
+  std::cout << "expander_buffer_size: " << expander_buffer_size << std::endl;
 }
 
 void Config::setConfigFile(std::string file_name) { config_file = file_name; }

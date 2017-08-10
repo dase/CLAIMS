@@ -88,8 +88,7 @@ bool Expander::Open(SegmentExecStatus* const exec_status,
   one_thread_finished_ = false;
   finished_thread_count_ = 0;
   block_stream_buffer_ = new BlockStreamBuffer(
-      state_.block_size_, state_.block_count_in_buffer_ * 100, state_.schema_);
-
+      state_.block_size_, Config::expander_buffer_size, state_.schema_);
   in_work_expanded_thread_list_.clear();
   RETURN_IF_CANCELLED(exec_status);
 

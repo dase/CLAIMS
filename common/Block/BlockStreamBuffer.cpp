@@ -137,6 +137,19 @@ bool BlockStreamBuffer::ReturnEmptyBlock(BlockStreamBase*& block) {
   return true;
 }
 
+bool BlockStreamBuffer::InsertOneBlock(Block* const block) {
+  BlockStreamBase* empty_block = NULL;
+  auto ret = getEmptyBlock(empty_block);
+  if (ret == false) {
+    return false;
+  }
+  //  empty_block->deserialize(block);
+  empty_block->DeSerialize(block);
+
+  InsertOneBlock(empty_block);
+  return true;
+}
+
 bool BlockStreamBuffer::getEmptyBlock(BlockStreamBase*& block) {
   if (sema_empty_block_.timed_wait(1)) {
     lock_.acquire();
