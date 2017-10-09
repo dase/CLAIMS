@@ -28,7 +28,8 @@ using claims::OkAtom;
 ExchangeTracker::ExchangeTracker() {}
 
 ExchangeTracker::~ExchangeTracker() {}
-bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port) {
+bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port,
+                                       BlockStreamBuffer* const buffer) {
   lock_.acquire();
   if (id_to_port.find(id) != id_to_port.end()) {
     LOG(ERROR) << "RegisterExchange fails because the exchange id has already "
@@ -37,8 +38,9 @@ bool ExchangeTracker::RegisterExchange(ExchangeID id, std::string port) {
     return false;
   }
   id_to_port[id] = port;
+  id_to_buffer_[id] = buffer;
   LOG(INFO) << "New exchange with id= " << id.exchange_id << " (port = " << port
-            << ")is successfully registered!";
+            << ") and buffer is successfully registered!";
   lock_.release();
   return true;
 }
@@ -48,6 +50,9 @@ void ExchangeTracker::LogoutExchange(const ExchangeID& id) {
       id_to_port.find(id);
   assert(it != id_to_port.cend());
   id_to_port.erase(it);
+  auto ita = id_to_buffer_.find(id);
+  assert(ita != id_to_buffer_.cend());
+  id_to_buffer_.erase(ita);
   lock_.release();
   LOG(INFO) << "Exchange with id=(" << id.exchange_id << " , "
             << id.partition_offset << " ) is logged out!";
@@ -118,4 +123,12 @@ void ExchangeTracker::printAllExchangeId() const {
     printf("(%ld,%ld) --->%s\n", it->first.exchange_id,
            it->first.partition_offset, it->second.c_str());
   }
+}
+
+BlockStreamBuffer* const ExchangeTracker::getBuffer(const ExchangeID id) {
+  lock_.acquire();
+  auto it = id_to_buffer_.find(id);
+  assert(it != id_to_buffer_.cend());
+  lock_.release();
+  return it->second;
 }

@@ -62,7 +62,9 @@ class LogicalEqualJoin : public LogicalOperator {
     kNoRepartition,
     kLeftRepartition,
     kRightRepartition,
-    kCompleteRepartition
+    kCompleteRepartition,
+    kLeftBroadCast,
+    kRightBroadCast
   };
 
  public:
@@ -106,6 +108,7 @@ class LogicalEqualJoin : public LogicalOperator {
   bool GetOptimalPhysicalPlan(Requirement requirement,
                               PhysicalPlanDescriptor& physical_plan_descriptor,
                               const unsigned& block_size = 4096 * 1024);
+  void PruneProj(set<string>& above_attrs);
 
  private:
   std::vector<unsigned> GetLeftJoinKeyIds() const;

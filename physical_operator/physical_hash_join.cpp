@@ -32,14 +32,19 @@
 
 #include "../physical_operator/physical_hash_join.h"
 #include <glog/logging.h>
+#include <algorithm>
 #include <stack>
 
 #include "../codegen/ExpressionGenerator.h"
+#include "../common/data_type.h"
+#include "../common/expression/data_type_oper.h"
 #include "../common/expression/expr_node.h"
+#include "../common/hashtable.h"
 #include "../Config.h"
 #include "../Executor/expander_tracker.h"
 #include "../utility/rdtsc.h"
 
+using claims::common::DataTypeOper;
 using claims::common::ExprNode;
 
 // #define _DEBUG_
@@ -49,24 +54,28 @@ namespace physical_operator {
 
 PhysicalHashJoin::PhysicalHashJoin(State state)
     : state_(state),
-      hash_func_(0),
-      hashtable_(0),
+      hash_func_(NULL),
+      hashtable_(NULL),
       PhysicalOperator(barrier_number(2), serialized_section_number(1)),
-      eftt_(0),
-      memcpy_(0),
-      memcat_(0) {
+      eftt_(NULL),
+      memcpy_(NULL),
+      memcat_(NULL),
+      gpv_left_(NULL),
+      gpv_right_(NULL) {
   set_phy_oper_type(kPhysicalHashJoin);
   // sema_open_.set_value(1);
   InitExpandedStatus();
 }
 
 PhysicalHashJoin::PhysicalHashJoin()
-    : hash_func_(0),
-      hashtable_(0),
+    : hash_func_(NULL),
+      hashtable_(NULL),
       PhysicalOperator(barrier_number(2), serialized_section_number(1)),
-      eftt_(0),
-      memcpy_(0),
-      memcat_(0) {
+      eftt_(NULL),
+      memcpy_(NULL),
+      memcat_(NULL),
+      gpv_left_(NULL),
+      gpv_right_(NULL) {
   set_phy_oper_type(kPhysicalHashJoin);
 
   // sema_open_.set_value(1);
@@ -127,14 +136,30 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
     hash_func_ = PartitionFunctionFactory::createBoostHashFunction(
         state_.hashtable_bucket_num_);
     unsigned long long hash_table_build = curtick();
+    // optimal bucket size could contain 2 tuples
     hashtable_ = new BasicHashTable(
         state_.hashtable_bucket_num_, state_.hashtable_bucket_size_,
         state_.input_schema_left_->getTupleMaxSize());
 
+    gpv_left_ = DataTypeOper::partition_value_
+        [state_.input_schema_left_->getcolumn(state_.join_index_left_[0])
+             .type][((state_.hashtable_bucket_num_ &
+                      (state_.hashtable_bucket_num_ - 1)) == 0)];
+    gpv_right_ = DataTypeOper::partition_value_
+        [state_.input_schema_right_->getcolumn(state_.join_index_right_[0])
+             .type][((state_.hashtable_bucket_num_ &
+                      (state_.hashtable_bucket_num_ - 1)) == 0)];
+    bucket_num_mod_ = state_.hashtable_bucket_num_;
+    if (((state_.hashtable_bucket_num_ & (state_.hashtable_bucket_num_ - 1)) ==
+         0)) {
+      --bucket_num_mod_;
+    }
 #ifdef _DEBUG_
     consumed_tuples_from_left = 0;
 #endif
 
+    memcat_ = getMemcat(state_.hashtable_schema_->getTupleMaxSize(),
+                        state_.input_schema_right_->getTupleMaxSize());
 #ifdef CodeGen
     QNode* expr = createEqualJoinExpression(
         state_.hashtable_schema_, state_.input_schema_right_,
@@ -144,8 +169,6 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
       eftt_ = getExprFuncTwoTuples(expr, state_.hashtable_schema_,
                                    state_.input_schema_right_);
       memcpy_ = getMemcpy(state_.hashtable_schema_->getTupleMaxSize());
-      memcat_ = getMemcat(state_.hashtable_schema_->getTupleMaxSize(),
-                          state_.input_schema_right_->getTupleMaxSize());
     }
     if (eftt_) {
       cff_ = PhysicalHashJoin::IsMatchCodegen;
@@ -186,10 +209,6 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
   JoinThreadContext* jtc = CreateOrReuseContext(crm_numa_sensitive);
 
   const Schema* input_schema = state_.input_schema_left_->duplicateSchema();
-  const Operate* oper = input_schema->getcolumn(state_.join_index_left_[0])
-                            .operate->duplicateOperator();
-  const unsigned buckets = state_.hashtable_bucket_num_;
-
   unsigned long long int start = curtick();
   unsigned long long int processed_tuple_count = 0;
   RETURN_IF_CANCELLED(exec_status);
@@ -197,10 +216,10 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
   LOG(INFO) << "join operator begin to call left child's next()" << endl;
   while (state_.child_left_->Next(exec_status, jtc->l_block_for_asking_)) {
     RETURN_IF_CANCELLED(exec_status);
-
+    // TODO(fzh) should reuse the block_iterator, instead of doing create/delete
     delete jtc->l_block_stream_iterator_;
     jtc->l_block_stream_iterator_ = jtc->l_block_for_asking_->createIterator();
-    while (cur = jtc->l_block_stream_iterator_->nextTuple()) {
+    while (NULL != (cur = jtc->l_block_stream_iterator_->nextTuple())) {
 #ifdef _DEBUG_
       processed_tuple_count++;
       lock_.acquire();
@@ -209,15 +228,15 @@ bool PhysicalHashJoin::Open(SegmentExecStatus* const exec_status,
 #endif
       const void* key_addr =
           input_schema->getColumnAddess(state_.join_index_left_[0], cur);
-      bn = oper->getPartitionValue(key_addr, buckets);
+      bn = gpv_left_(key_addr, bucket_num_mod_);
       tuple_in_hashtable = hashtable_->atomicAllocate(bn);
       /* copy join index columns*/
       input_schema->copyTuple(cur, tuple_in_hashtable);
     }
     jtc->l_block_for_asking_->setEmpty();
   }
+
   DELETE_PTR(input_schema);
-  DELETE_PTR(oper);
 #ifdef _DEBUG_
   tuples_in_hashtable = 0;
 
@@ -269,13 +288,6 @@ bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
 
     while (NULL != (tuple_from_right_child =
                         jtc->r_block_stream_iterator_->currentTuple())) {
-      unsigned bn =
-          state_.input_schema_right_->getcolumn(state_.join_index_right_[0])
-              .operate->getPartitionValue(
-                  state_.input_schema_right_->getColumnAddess(
-                      state_.join_index_right_[0], tuple_from_right_child),
-                  state_.hashtable_bucket_num_);
-
       while (NULL !=
              (tuple_in_hashtable = jtc->hashtable_iterator_.readCurrent())) {
 #ifdef CodeGen
@@ -312,11 +324,10 @@ bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
 #endif
       if (NULL != (tuple_from_right_child =
                        jtc->r_block_stream_iterator_->currentTuple())) {
-        bn = state_.input_schema_right_->getcolumn(state_.join_index_right_[0])
-                 .operate->getPartitionValue(
-                     state_.input_schema_right_->getColumnAddess(
-                         state_.join_index_right_[0], tuple_from_right_child),
-                     state_.hashtable_bucket_num_);
+        unsigned bn =
+            gpv_right_(state_.input_schema_right_->getColumnAddess(
+                           state_.join_index_right_[0], tuple_from_right_child),
+                       bucket_num_mod_);
         hashtable_->placeIterator(jtc->hashtable_iterator_, bn);
       }
     }
@@ -335,11 +346,9 @@ bool PhysicalHashJoin::Next(SegmentExecStatus* const exec_status,
     if ((tuple_from_right_child =
              jtc->r_block_stream_iterator_->currentTuple())) {
       unsigned bn =
-          state_.input_schema_right_->getcolumn(state_.join_index_right_[0])
-              .operate->getPartitionValue(
-                  state_.input_schema_right_->getColumnAddess(
-                      state_.join_index_right_[0], tuple_from_right_child),
-                  state_.hashtable_bucket_num_);
+          gpv_right_(state_.input_schema_right_->getColumnAddess(
+                         state_.join_index_right_[0], tuple_from_right_child),
+                     bucket_num_mod_);
       hashtable_->placeIterator(jtc->hashtable_iterator_, bn);
     }
   }
@@ -365,8 +374,13 @@ bool PhysicalHashJoin::Close(SegmentExecStatus* const exec_status) {
 }
 
 void PhysicalHashJoin::Print() {
-  LOG(INFO) << "Join: buckets:" << state_.hashtable_bucket_num_ << endl;
-  cout << "Join: buckets:" << state_.hashtable_bucket_num_ << endl;
+  LOG(INFO) << "Join: buckets: (num= " << state_.hashtable_bucket_num_
+            << " , size= "
+            << get_aligned_space(state_.input_schema_left_->getTupleMaxSize())
+            << ")" << endl;
+  cout << "Join: buckets: (num= " << state_.hashtable_bucket_num_ << " , size= "
+       << get_aligned_space(state_.input_schema_left_->getTupleMaxSize()) << ")"
+       << endl;
 
   LOG(INFO) << "------Join Left-------" << endl;
   cout << "------Join Left-------" << endl;

@@ -75,11 +75,15 @@ class Config {
   static bool pipelined_exchange;
   static int client_listener_port;
   static bool enable_codegen;
+  static bool enable_prune_column;
   static std::string catalog_file;
   static int thread_pool_init_thread_num;
   static int memory_utilization;
 
   static int load_thread_num;
+  static int hash_join_bucket_size;
+  static int hash_join_bucket_num;
+  static int expander_buffer_size;
 
  private:
   static Config* instance_;

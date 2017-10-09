@@ -121,8 +121,8 @@ int LogicalCrossJoin::get_join_policy_() {
 PlanContext LogicalCrossJoin::GetPlanContext() {
   lock_->acquire();
   if (NULL != plan_context_) {
-    lock_->release();
-    return *plan_context_;
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   PlanContext left_plan_context = left_child_->GetPlanContext();
   PlanContext right_plan_context = right_child_->GetPlanContext();
@@ -291,6 +291,20 @@ PhysicalOperatorBase* LogicalCrossJoin::GetPhysicalPlan(
   state.child_right_ = child_iterator_right;
   cross_join_iterator = new PhysicalNestLoopJoin(state);
   return cross_join_iterator;
+}
+
+void LogicalCrossJoin::PruneProj(set<string>& above_attrs) {
+  set<string> above_attrs_copy = above_attrs;
+
+  for (int i = 0, size = join_condi_.size(); i < size; ++i) {
+    join_condi_[i]->GetUniqueAttr(above_attrs_copy);
+  }
+  set<string> above_attrs_right = above_attrs_copy;
+  left_child_->PruneProj(above_attrs_copy);
+  left_child_ = DecideAndCreateProject(above_attrs_copy, left_child_);
+
+  right_child_->PruneProj(above_attrs_right);
+  right_child_ = DecideAndCreateProject(above_attrs_right, right_child_);
 }
 
 int LogicalCrossJoin::GenerateChildPhysicalQueryPlan(

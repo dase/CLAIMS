@@ -55,6 +55,7 @@ class LogicalCrossJoin : public LogicalOperator {
   PlanContext GetPlanContext();
   PhysicalOperatorBase* GetPhysicalPlan(const unsigned& blocksize);
   void Print(int level = 0) const;
+  void PruneProj(set<string>& above_attrs);
 
  protected:
   /**

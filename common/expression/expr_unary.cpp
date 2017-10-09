@@ -83,5 +83,8 @@ void ExprUnary::InitExprAtPhysicalPlan() {
 }
 
 ExprNode* ExprUnary::ExprCopy() { return new ExprUnary(this); }
+void ExprUnary::GetUniqueAttr(set<string>& attrs) {
+  arg0_->GetUniqueAttr(attrs);
+}
 }  // namespace common
 }  // namespace claims

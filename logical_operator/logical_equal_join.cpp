@@ -131,13 +131,26 @@ void LogicalEqualJoin::DecideJoinPolicy(const PlanContext& left_dataflow,
     if (!left_dataflow_key_partitioned && !right_dataflow_key_partitioned)
       join_policy_ = kCompleteRepartition;
   }
+  if (join_policy_ != kNoRepartition) {
+    int part_num = 100;
+    int64_t left_data_size = left_dataflow.GetAggregatedDatasize();
+    int64_t right_data_size = right_dataflow.GetAggregatedDatasize();
+    if ((left_data_size < (right_data_size / part_num)) &&
+        (right_data_size > 0)) {
+      join_policy_ =
+          join_policy_ == kLeftRepartition ? kLeftRepartition : kLeftBroadCast;
+    } else if (((left_data_size / part_num) > right_data_size) &&
+               (left_data_size > 0)) {
+      join_policy_ = join_policy_ == kRightRepartition ? kRightRepartition
+                                                       : kRightBroadCast;
+    }
+  }
 }
 PlanContext LogicalEqualJoin::GetPlanContext() {
   lock_->acquire();
   if (NULL != plan_context_) {
-    // the data flow has been computed*/
-    lock_->release();
-    return *plan_context_;
+    delete plan_context_;
+    plan_context_ = NULL;
   }
 
   /**
@@ -145,6 +158,28 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
    */
   PlanContext left_dataflow = left_child_->GetPlanContext();
   PlanContext right_dataflow = right_child_->GetPlanContext();
+  // update the left and right join key list
+  for (int i = 0, size = left_join_key_list_.size(); i < size; ++i) {
+    for (int j = 0, jsize = left_dataflow.attribute_list_.size(); j < jsize;
+         ++j) {
+      if (left_join_key_list_[i].attrName ==
+          left_dataflow.attribute_list_[j].attrName) {
+        left_join_key_list_[i] = left_dataflow.attribute_list_[j];
+        joinkey_pair_list_[i].left_join_attr_ =
+            left_dataflow.attribute_list_[j];
+      }
+    }
+    for (int j = 0, jsize = right_dataflow.attribute_list_.size(); j < jsize;
+         ++j) {
+      if (right_join_key_list_[i].attrName ==
+          right_dataflow.attribute_list_[j].attrName) {
+        right_join_key_list_[i] = right_dataflow.attribute_list_[j];
+        joinkey_pair_list_[i].right_join_attr_ =
+            right_dataflow.attribute_list_[j];
+      }
+    }
+  }
+
   PlanContext ret;
   DecideJoinPolicy(left_dataflow, right_dataflow);
   const Attribute left_partition_key =
@@ -275,6 +310,64 @@ PlanContext LogicalEqualJoin::GetPlanContext() {
       // assert(false);
       break;
     }
+    case kLeftBroadCast: {
+      LOG(INFO) << "kLeftBroadCast" << std::endl;
+      //     ret.property_.partitioner=right_dataflow.property_.partitioner;
+
+      ret.plan_partitioner_.set_partition_list(
+          right_dataflow.plan_partitioner_.get_partition_list());
+      ret.plan_partitioner_.set_partition_func(
+          right_dataflow.plan_partitioner_.get_partition_func());
+      ret.plan_partitioner_.set_partition_key(
+          right_dataflow.plan_partitioner_.get_partition_key());
+      //  ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
+      /* set the generated data size*/
+      const unsigned left_total_size =
+          left_dataflow.plan_partitioner_.GetAggregatedDataSize();
+      const unsigned right_partition_count =
+          right_dataflow.plan_partitioner_.GetNumberOfPartitions();
+      for (unsigned i = 0; i < ret.plan_partitioner_.GetNumberOfPartitions();
+           i++) {
+        const unsigned r_size =
+            right_dataflow.plan_partitioner_.GetPartition(i)->get_cardinality();
+        ret.plan_partitioner_.GetPartition(i)
+            ->set_cardinality(r_size + left_total_size / right_partition_count);
+      }
+
+      ret.commu_cost_ = left_dataflow.commu_cost_ + right_dataflow.commu_cost_;
+      ret.commu_cost_ +=
+          left_dataflow.plan_partitioner_.GetAggregatedDataSize();
+
+    } break;
+    case kRightBroadCast: {
+      LOG(INFO) << "kRightBroadCast" << std::endl;
+      //  ret.property_.partitioner=left_dataflow.property_.partitioner;
+
+      ret.plan_partitioner_.set_partition_list(
+          left_dataflow.plan_partitioner_.get_partition_list());
+      ret.plan_partitioner_.set_partition_func(
+          left_dataflow.plan_partitioner_.get_partition_func());
+      ret.plan_partitioner_.set_partition_key(
+          left_dataflow.plan_partitioner_.get_partition_key());
+      //   ret.property_.partitioner.addShadowPartitionKey(right_partition_key);
+      /**
+       *  set the generated data size
+       */
+      const unsigned right_total_size =
+          right_dataflow.plan_partitioner_.GetAggregatedDataSize();
+      const unsigned left_partition_count =
+          left_dataflow.plan_partitioner_.GetNumberOfPartitions();
+      for (unsigned i = 0; i < ret.plan_partitioner_.GetNumberOfPartitions();
+           i++) {
+        const unsigned l_size =
+            left_dataflow.plan_partitioner_.GetPartition(i)->get_cardinality();
+        ret.plan_partitioner_.GetPartition(i)
+            ->set_cardinality(l_size + right_total_size / left_partition_count);
+      }
+      ret.commu_cost_ = left_dataflow.commu_cost_ + right_dataflow.commu_cost_;
+      ret.commu_cost_ +=
+          right_dataflow.plan_partitioner_.GetAggregatedDataSize();
+    } break;
     default: {
       LOG(ERROR) << "The join police has not been decided!" << std::endl;
       assert(false);
@@ -339,9 +432,8 @@ LogicalEqualJoin::JoinPolicy LogicalEqualJoin::DecideLeftOrRightRepartition(
 
 PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
     const unsigned& block_size) {
-  if (NULL == plan_context_) {
-    GetPlanContext();
-  }
+  //  if (NULL == plan_context_)
+  { GetPlanContext(); }
   PhysicalHashJoin* join_iterator;
   PhysicalOperatorBase* child_iterator_left =
       left_child_->GetPhysicalPlan(block_size);
@@ -351,7 +443,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
   PlanContext dataflow_right = right_child_->GetPlanContext();
   PhysicalHashJoin::State state;
   state.block_size_ = block_size;
-  state.hashtable_bucket_num_ = 1024 * 1024;
+  state.hashtable_bucket_num_ = Config::hash_join_bucket_num;
   // state.ht_nbuckets=1024;
   state.input_schema_left_ = GetSchema(dataflow_left.attribute_list_);
   state.input_schema_right_ = GetSchema(dataflow_right.attribute_list_);
@@ -367,7 +459,7 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
    * number of overflowing buckets and avoid the random memory access caused by
    * acceesing overflowing buckets.
    */
-  state.hashtable_bucket_size_ = 128;
+  state.hashtable_bucket_size_ = Config::hash_join_bucket_size;
   state.output_schema_ = GetSchema(plan_context_->attribute_list_);
 
   state.join_index_left_ = GetLeftJoinKeyIds();
@@ -551,6 +643,70 @@ PhysicalOperatorBase* LogicalEqualJoin::GetPhysicalPlan(
       join_iterator = new PhysicalHashJoin(state);
       break;
     }
+    case kLeftBroadCast: {
+      Expander::State expander_state;
+      expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
+      expander_state.block_size_ = block_size;
+      expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
+      expander_state.child_ = child_iterator_left;
+      expander_state.schema_ = GetSchema(dataflow_left.attribute_list_);
+      PhysicalOperatorBase* expander = new Expander(expander_state);
+
+      ExchangeMerger::State exchange_state;
+      exchange_state.block_size_ = block_size;
+      exchange_state.child_ = expander;  // child_iterator_left;
+      exchange_state.exchange_id_ =
+          IDsGenerator::getInstance()->generateUniqueExchangeID();
+
+      std::vector<NodeID> upper_id_list =
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
+      exchange_state.upper_id_list_ = upper_id_list;
+
+      std::vector<NodeID> lower_id_list =
+          GetInvolvedNodeID(dataflow_left.plan_partitioner_);
+      exchange_state.lower_id_list_ = lower_id_list;
+
+      exchange_state.partition_schema_ =
+          partition_schema::set_broadcast_partition();
+      exchange_state.schema_ = GetSchema(dataflow_left.attribute_list_);
+      PhysicalOperatorBase* exchange = new ExchangeMerger(exchange_state);
+      state.child_left_ = exchange;
+      state.child_right_ = child_iterator_right;
+      join_iterator = new PhysicalHashJoin(state);
+    } break;
+    case kRightBroadCast: {
+      Expander::State expander_state;
+      expander_state.block_count_in_buffer_ = EXPANDER_BUFFER_SIZE;
+      expander_state.block_size_ = block_size;
+      expander_state.init_thread_count_ = Config::initial_degree_of_parallelism;
+      expander_state.child_ = child_iterator_right;
+      expander_state.schema_ = GetSchema(dataflow_right.attribute_list_);
+      PhysicalOperatorBase* expander = new Expander(expander_state);
+
+      NodeTracker* node_tracker = NodeTracker::GetInstance();
+      ExchangeMerger::State exchange_state;
+      exchange_state.block_size_ = block_size;
+      exchange_state.child_ = expander;
+      exchange_state.exchange_id_ =
+          IDsGenerator::getInstance()->generateUniqueExchangeID();
+
+      std::vector<NodeID> upper_id_list =
+          GetInvolvedNodeID(plan_context_->plan_partitioner_);
+      exchange_state.upper_id_list_ = upper_id_list;
+
+      std::vector<NodeID> lower_id_list =
+          GetInvolvedNodeID(dataflow_right.plan_partitioner_);
+      exchange_state.lower_id_list_ = lower_id_list;
+
+      exchange_state.partition_schema_ =
+          partition_schema::set_broadcast_partition();
+
+      exchange_state.schema_ = GetSchema(dataflow_right.attribute_list_);
+      PhysicalOperatorBase* exchange = new ExchangeMerger(exchange_state);
+      state.child_left_ = child_iterator_left;
+      state.child_right_ = exchange;
+      join_iterator = new PhysicalHashJoin(state);
+    } break;
     default: { break; }
   }
   return join_iterator;
@@ -738,6 +894,12 @@ void LogicalEqualJoin::Print(int level) const {
       cout << "complete_repartition!" << endl;
       break;
     }
+    case kLeftBroadCast: {
+      cout << "left broadcast!" << endl;
+    } break;
+    case kRightBroadCast: {
+      cout << " right broadcast!" << endl;
+    } break;
     default: { cout << "not given!" << endl; }
   }
   GetPlanContext();
@@ -774,6 +936,21 @@ double LogicalEqualJoin::PredictEqualJoinSelectivity(
   }
   return ret;
 }
+
+void LogicalEqualJoin::PruneProj(set<string>& above_attrs) {
+  set<string> above_attrs_copy = above_attrs;
+
+  for (int i = 0, size = join_condi_.size(); i < size; ++i) {
+    join_condi_[i]->GetUniqueAttr(above_attrs_copy);
+  }
+  set<string> above_attrs_right = above_attrs_copy;
+  left_child_->PruneProj(above_attrs_copy);
+  left_child_ = DecideAndCreateProject(above_attrs_copy, left_child_);
+
+  right_child_->PruneProj(above_attrs_right);
+  right_child_ = DecideAndCreateProject(above_attrs_right, right_child_);
+}
+
 double LogicalEqualJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair(
     const Attribute& attr_left, const Attribute& attr_right) const {
   double ret;

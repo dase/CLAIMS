@@ -74,10 +74,10 @@ LogicalProject::~LogicalProject() {
 // construct a PlanContext from child
 PlanContext LogicalProject::GetPlanContext() {
   lock_->acquire();
-  if (NULL != plan_context_) {
-    lock_->release();
-    return *plan_context_;
-  }
+  //  if (NULL != plan_context_) {
+  //    lock_->release();
+  //    return *plan_context_;
+  //  }
   PlanContext ret;
   // get the PlanContext of child
   const PlanContext child_plan_context = child_->GetPlanContext();
@@ -137,7 +137,13 @@ PlanContext LogicalProject::GetPlanContext() {
   ret_attrs.clear();
   LogicInitCnxt licnxt;
   licnxt.schema0_ = input_schema;
-  int mid_table_id = MIDINADE_TABLE_ID++;
+  int mid_table_id = 0;
+  if (plan_context_ == NULL) {
+    mid_table_id = MIDINADE_TABLE_ID++;
+  } else {
+    mid_table_id = plan_context_->attribute_list_[0].table_id_;
+    DELETE_PTR(plan_context_);
+  }
   GetColumnToId(child_plan_context.attribute_list_, licnxt.column_id0_);
   for (int i = 0; i < expr_list_.size(); ++i) {
     licnxt.return_type_ = expr_list_[i]->actual_type_;
@@ -215,6 +221,12 @@ void LogicalProject::Print(int level) const {
   --level;
 #endif
   child_->Print(level);
+}
+void LogicalProject::PruneProj(set<string>& above_attrs) {
+  for (int i = 0, size = expr_list_.size(); i < size; ++i) {
+    expr_list_[i]->GetUniqueAttr(above_attrs);
+  }
+  child_->PruneProj(above_attrs);
 }
 
 }  // namespace logical_operator

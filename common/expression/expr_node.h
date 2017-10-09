@@ -39,6 +39,7 @@ typedef struct OperFuncInfoData {
 }* OperFuncInfo;
 typedef void (*DataTypeOperFunc)(OperFuncInfo fcinfo);
 typedef void (*AvgDivide)(void* sum_value, int64_t tuple_number, void* result);
+typedef unsigned (*GetPartitionValue)(const void*, const unsigned long&);
 
 enum ExprNodeType {
   t_qnode,
@@ -137,6 +138,8 @@ class ExprNode {
   virtual void* ExprEvaluate(ExprEvalCnxt& eecnxt) { return NULL; }
 
   virtual void InitExprAtLogicalPlan(LogicInitCnxt& licnxt) {}
+
+  virtual void GetUniqueAttr(set<string>& attrs) {}
 
   virtual void InitExprAtPhysicalPlan() {}
   virtual ExprNode* ExprCopy() { return NULL; }

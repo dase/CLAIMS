@@ -30,7 +30,15 @@
 #include <map>
 #include <vector>
 #include <string>
+
+#include "../common/expression/expr_column.h"
+#include "../common/expression/expr_node.h"
+#include "../logical_operator/logical_project.h"
 #include "../Resource/NodeTracker.h"
+
+using claims::common::ExprColumn;
+using claims::common::ExprNode;
+using claims::common::ExprNodeType;
 namespace claims {
 namespace logical_operator {
 // LogicalOperator::LogicalOperator() {
@@ -103,6 +111,52 @@ void LogicalOperator::GetColumnToId(const std::vector<Attribute>& attributes,
   for (int i = 0; i < attributes.size(); ++i) {
     column_to_id[attributes[i].attrName] = i;
   }
+}
+LogicalOperator* LogicalOperator::DecideAndCreateProject(
+    set<string>& attrs, LogicalOperator* child) {
+  LogicalOperator* ret = child;
+  auto child_attr_list = child->GetPlanContext().attribute_list_;
+  // get the position where the attribute from child should be pruned
+  vector<int> keep_id;
+  for (int i = 0, size = child_attr_list.size(); i < size; ++i) {
+    bool need_prune = true;
+    for (auto it = attrs.begin(); it != attrs.end() && need_prune; ++it) {
+      if (*it == child_attr_list[i].attrName) {
+        need_prune = false;
+      }
+    }
+    if (!need_prune) {
+      keep_id.push_back(i);
+    }
+  }
+  // if there are attributes should be pruned, then create project
+  if (keep_id.size() < child_attr_list.size()) {
+    vector<ExprNode*> expression_list;
+    for (int i = 0, size = keep_id.size(); i < size; ++i) {
+      int pos = child_attr_list[keep_id[i]].attrName.find('.');
+      int len = child_attr_list[keep_id[i]].attrName.length();
+      expression_list.push_back(new ExprColumn(
+          ExprNodeType::t_qcolcumns, child_attr_list[keep_id[i]].attrType->type,
+          child_attr_list[keep_id[i]].attrName,
+          child_attr_list[keep_id[i]].attrName.substr(0, pos),
+          child_attr_list[keep_id[i]].attrName.substr(pos + 1, len)));
+    }
+    // if no need to provide one column, then choose the first column or don't
+    // add project
+    if (keep_id.size() == 0 && child_attr_list.size() > 3) {
+      int pos = child_attr_list[0].attrName.find('.');
+      int len = child_attr_list[0].attrName.length();
+      expression_list.push_back(new ExprColumn(
+          ExprNodeType::t_qcolcumns, child_attr_list[0].attrType->type,
+          child_attr_list[0].attrName,
+          child_attr_list[0].attrName.substr(0, pos),
+          child_attr_list[0].attrName.substr(pos + 1, len)));
+    }
+    if (expression_list.size() > 0) {
+      ret = new LogicalProject(child, expression_list);
+    }
+  }
+  return ret;
 }
 
 }  // namespace logical_operator

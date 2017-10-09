@@ -87,9 +87,8 @@ LogicalDeleteFilter::~LogicalDeleteFilter() {
 PlanContext LogicalDeleteFilter::GetPlanContext() {
   lock_->acquire();
   if (NULL != dataflow_) {
-    // the data flow has been computed*/
-    lock_->release();
-    return *dataflow_;
+    delete dataflow_;
+    dataflow_ = NULL;
   }
 
   /**
@@ -98,7 +97,26 @@ PlanContext LogicalDeleteFilter::GetPlanContext() {
   PlanContext left_dataflow = left_child_->GetPlanContext();
   PlanContext right_dataflow = right_child_->GetPlanContext();
   PlanContext ret;
-
+  for (int i = 0, size = left_filter_key_list_.size(); i < size; ++i) {
+    for (int j = 0, jsize = left_dataflow.attribute_list_.size(); j < jsize;
+         ++j) {
+      if (left_filter_key_list_[i].attrName ==
+          left_dataflow.attribute_list_[j].attrName) {
+        left_filter_key_list_[i] = left_dataflow.attribute_list_[j];
+        filterkey_pair_list_[i].left_filter_attr_ =
+            left_dataflow.attribute_list_[j];
+      }
+    }
+    for (int j = 0, jsize = right_dataflow.attribute_list_.size(); j < jsize;
+         ++j) {
+      if (right_filter_key_list_[i].attrName ==
+          right_dataflow.attribute_list_[j].attrName) {
+        right_filter_key_list_[i] = right_dataflow.attribute_list_[j];
+        filterkey_pair_list_[i].right_filter_attr_ =
+            right_dataflow.attribute_list_[j];
+      }
+    }
+  }
   const bool left_dataflow_key_partitioned = CanOmitHashRepartition(
       left_filter_key_list_, left_dataflow.plan_partitioner_);
   const bool right_dataflow_key_partitioned = CanOmitHashRepartition(
@@ -840,6 +858,23 @@ double LogicalDeleteFilter::PredictFilterSelectivity(
   }
   return ret;
 }
+
+void LogicalDeleteFilter::PruneProj(set<string>& above_attrs) {
+  set<string> above_attrs_copy = above_attrs;
+  set<string> above_attrs_right = above_attrs_copy;
+
+  for (int i = 0, size = filterkey_pair_list_.size(); i < size; ++i) {
+    above_attrs_copy.insert(filterkey_pair_list_[i].left_filter_attr_.attrName);
+    above_attrs_right.insert(
+        filterkey_pair_list_[i].right_filter_attr_.attrName);
+  }
+  left_child_->PruneProj(above_attrs_copy);
+  left_child_ = DecideAndCreateProject(above_attrs_copy, left_child_);
+
+  right_child_->PruneProj(above_attrs_right);
+  right_child_ = DecideAndCreateProject(above_attrs_right, right_child_);
+}
+
 double LogicalDeleteFilter::PredictFilterSelectivityOnSingleJoinAttributePair(
     const Attribute& attr_left, const Attribute& attr_right) const {
   double ret;

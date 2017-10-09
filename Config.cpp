@@ -83,6 +83,7 @@ bool Config::local_disk_mode;
 int Config::client_listener_port;
 
 bool Config::enable_codegen;
+bool Config::enable_prune_column;
 
 std::string Config::catalog_file;
 
@@ -90,6 +91,10 @@ int Config::thread_pool_init_thread_num;
 
 int Config::load_thread_num;
 int Config::memory_utilization;
+
+int Config::hash_join_bucket_num;
+int Config::hash_join_bucket_size;
+int Config::expander_buffer_size;
 
 Config *Config::getInstance() {
   if (instance_ == 0) {
@@ -154,6 +159,13 @@ void Config::initialize() {
 
   memory_utilization = getInt("memory_utilization", 100);
 
+  enable_prune_column = getBoolean("enable_prune_column", true);
+  hash_join_bucket_num = getInt("hash_join_bucket_num", 1024 * 1024);
+
+  hash_join_bucket_size = getInt("hash_join_bucket_size", 1024);
+
+  expander_buffer_size = getInt("expander_buffer_size", 3000);
+
 #ifdef DEBUG_Config
   print_configure();
 #endif
@@ -211,7 +223,11 @@ void Config::print_configure() const {
   std::cout << "client_lisener_port:" << client_listener_port << std::endl;
   std::cout << "catalog_file:" << catalog_file << std::endl;
   std::cout << "codegen:" << enable_codegen << std::endl;
+  std::cout << "enable_prune_column: " << enable_prune_column << std::endl;
   std::cout << "load_thread_num:" << load_thread_num << std::endl;
+  std::cout << "hash_join_bucket_num: " << hash_join_bucket_num << std::endl;
+  std::cout << "hash_join_bucket_size: " << hash_join_bucket_size << std::endl;
+  std::cout << "expander_buffer_size: " << expander_buffer_size << std::endl;
 }
 
 void Config::setConfigFile(std::string file_name) { config_file = file_name; }

@@ -65,5 +65,11 @@ void ExprBinary::InitExprAtPhysicalPlan() {
 }
 
 ExprNode* ExprBinary::ExprCopy() { return new ExprBinary(this); }
+
+void ExprBinary::GetUniqueAttr(set<string>& attrs) {
+  arg0_->GetUniqueAttr(attrs);
+  arg1_->GetUniqueAttr(attrs);
+}
+
 }  // namespace common
 }  // namespace claims

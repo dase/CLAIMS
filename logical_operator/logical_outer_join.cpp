@@ -79,7 +79,12 @@ LogicalOuterJoin::LogicalOuterJoin(
       join_policy_(kNull),
       plan_context_(NULL),
       join_type_(join_type),
-      join_condi_(join_condi) {}
+      join_condi_(join_condi) {
+  for (unsigned i = 0; i < joinpair_list.size(); ++i) {
+    left_join_key_list_.push_back(joinpair_list[i].left_join_attr_);
+    right_join_key_list_.push_back(joinpair_list[i].right_join_attr_);
+  }
+}
 LogicalOuterJoin::~LogicalOuterJoin() {
   if (NULL != plan_context_) {
     delete plan_context_;
@@ -133,9 +138,8 @@ void LogicalOuterJoin::DecideJoinPolicy(const PlanContext& left_dataflow,
 PlanContext LogicalOuterJoin::GetPlanContext() {
   lock_->acquire();
   if (NULL != plan_context_) {
-    // the data flow has been computed*/
-    lock_->release();
-    return *plan_context_;
+    delete plan_context_;
+    plan_context_ = NULL;
   }
 
   /**
@@ -143,6 +147,26 @@ PlanContext LogicalOuterJoin::GetPlanContext() {
    */
   PlanContext left_dataflow = left_child_->GetPlanContext();
   PlanContext right_dataflow = right_child_->GetPlanContext();
+  for (int i = 0, size = left_join_key_list_.size(); i < size; ++i) {
+    for (int j = 0, jsize = left_dataflow.attribute_list_.size(); j < jsize;
+         ++j) {
+      if (left_join_key_list_[i].attrName ==
+          left_dataflow.attribute_list_[j].attrName) {
+        left_join_key_list_[i] = left_dataflow.attribute_list_[j];
+        joinkey_pair_list_[i].left_join_attr_ =
+            left_dataflow.attribute_list_[j];
+      }
+    }
+    for (int j = 0, jsize = right_dataflow.attribute_list_.size(); j < jsize;
+         ++j) {
+      if (right_join_key_list_[i].attrName ==
+          right_dataflow.attribute_list_[j].attrName) {
+        right_join_key_list_[i] = right_dataflow.attribute_list_[j];
+        joinkey_pair_list_[i].right_join_attr_ =
+            right_dataflow.attribute_list_[j];
+      }
+    }
+  }
   PlanContext ret;
   DecideJoinPolicy(left_dataflow, right_dataflow);
   const Attribute left_partition_key =
@@ -810,6 +834,21 @@ double LogicalOuterJoin::PredictEqualJoinSelectivity(
   }
   return ret;
 }
+
+void LogicalOuterJoin::PruneProj(set<string>& above_attrs) {
+  set<string> above_attrs_copy = above_attrs;
+
+  for (int i = 0, size = join_condi_.size(); i < size; ++i) {
+    join_condi_[i]->GetUniqueAttr(above_attrs_copy);
+  }
+  set<string> above_attrs_right = above_attrs_copy;
+  left_child_->PruneProj(above_attrs_copy);
+  left_child_ = DecideAndCreateProject(above_attrs_copy, left_child_);
+
+  right_child_->PruneProj(above_attrs_right);
+  right_child_ = DecideAndCreateProject(above_attrs_right, right_child_);
+}
+
 double LogicalOuterJoin::PredictEqualJoinSelectivityOnSingleJoinAttributePair(
     const Attribute& attr_left, const Attribute& attr_right) const {
   double ret;

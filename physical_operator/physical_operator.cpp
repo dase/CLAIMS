@@ -135,6 +135,7 @@ ThreadContext* PhysicalOperator::GetContext() {
   if ((it = context_list_.find(pthread_self())) != context_list_.cend()) {
     ret = it->second;
   } else {
+    assert(false && "the context is null!");
     ret = NULL;
   }
   //	printf("Thread %lx is poped!\n",pthread_self());

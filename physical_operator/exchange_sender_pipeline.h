@@ -133,12 +133,12 @@ class ExchangeSenderPipeline : public ExchangeSender {
   BlockContainer* block_for_sending_;
   BlockContainer* block_for_sending_buffer_;
   PartitionedBlockContainer* sending_buffer_;
-  Block* block_for_serialization_;
   BlockStreamBase* block_for_asking_;
   pthread_t sender_thread_id_;
   pthread_t debug_thread_id_;
   PartitionFunction* partition_function_;
-  unsigned sendedblocks_;
+  atomic_ullong sendedblocks_;
+  boost::unordered_map<unsigned, ExchangeID> local_partition_exch_id_;
 
  private:
   friend class boost::serialization::access;

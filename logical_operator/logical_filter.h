@@ -87,6 +87,7 @@ class LogicalFilter : public LogicalOperator {
    * @param level: As an index.
    */
   void Print(int level = 0) const;
+  void PruneProj(set<string>& above_attrs);
 
  private:
   /**

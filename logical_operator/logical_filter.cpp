@@ -71,8 +71,8 @@ PlanContext LogicalFilter::GetPlanContext() {
    */
   lock_->acquire();
   if (NULL != plan_context_) {
-    lock_->release();
-    return *plan_context_;
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   PlanContext plan_context = child_->GetPlanContext();
   if (plan_context.IsHashPartitioned()) {
@@ -290,7 +290,7 @@ bool LogicalFilter::CanBeHashPruned(unsigned partition_id,
  * condition_.
  */
 float LogicalFilter::PredictSelectivity() const {
-  float ret = 1;
+  float ret = 0.5;
 
   //  /**
   //   * In the current version, due to the lack of statistic information, we
@@ -386,6 +386,14 @@ void LogicalFilter::Print(int level) const {
 #endif
 
   child_->Print(level);
+}
+void LogicalFilter::PruneProj(set<string>& above_attrs) {
+  set<string> above_attrs_copy = above_attrs;
+  for (int i = 0, size = condition_.size(); i < size; ++i) {
+    condition_[i]->GetUniqueAttr(above_attrs_copy);
+  }
+  child_->PruneProj(above_attrs_copy);
+  child_ = DecideAndCreateProject(above_attrs_copy, child_);
 }
 
 }  // namespace logical_operator

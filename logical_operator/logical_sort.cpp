@@ -78,8 +78,8 @@ LogicalSort::~LogicalSort() {
 PlanContext LogicalSort::GetPlanContext() {
   lock_->acquire();
   if (NULL != plan_context_) {
-    lock_->release();
-    return *plan_context_;
+    delete plan_context_;
+    plan_context_ = NULL;
   }
   // Get the information from its child
   PlanContext child_plan_context_ = child_->GetPlanContext();
@@ -209,5 +209,15 @@ void LogicalSort::Print(int level) const {
   PrintOrderByAttr(level);
   child_->Print(level);
 }
+
+void LogicalSort::PruneProj(set<string> &above_attrs) {
+  set<string> above_attrs_copy = above_attrs;
+  for (int i = 0, size = order_by_attrs_.size(); i < size; ++i) {
+    order_by_attrs_[i].first->GetUniqueAttr(above_attrs_copy);
+  }
+  child_->PruneProj(above_attrs_copy);
+  child_ = DecideAndCreateProject(above_attrs_copy, child_);
+}
+
 }  // namespace logical_operator
 }  // namespace claims

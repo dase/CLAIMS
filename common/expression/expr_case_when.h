@@ -45,6 +45,7 @@ class ExprCaseWhen : public ExprNode {
 
   void InitExprAtPhysicalPlan();
   ExprNode* ExprCopy();
+  void GetUniqueAttr(set<string>& attrs);
 
  private:
   friend class boost::serialization::access;

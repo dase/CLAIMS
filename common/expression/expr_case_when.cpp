@@ -76,5 +76,15 @@ void ExprCaseWhen::InitExprAtPhysicalPlan() {
 }
 
 ExprNode* ExprCaseWhen::ExprCopy() { return new ExprCaseWhen(this); }
+
+void ExprCaseWhen::GetUniqueAttr(set<string>& attrs) {
+  for (int i = 0; i < case_when_.size(); i++) {
+    case_when_[i]->GetUniqueAttr(attrs);
+  }
+  for (int i = 0; i < case_then_.size(); i++) {
+    case_then_[i]->GetUniqueAttr(attrs);
+  }
+}
+
 }  // namespace common
 }  // namespace claims

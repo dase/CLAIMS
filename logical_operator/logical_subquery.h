@@ -48,6 +48,7 @@ class LogicalSubquery : public LogicalOperator {
   PlanContext GetPlanContext();
   PhysicalOperatorBase *GetPhysicalPlan(const unsigned &blocksize);
   void Print(int level = 0) const;
+  void PruneProj(set<string> &above_attrs) { child_->PruneProj(above_attrs); }
 
  private:
   vector<Attribute> subquery_attrs_;

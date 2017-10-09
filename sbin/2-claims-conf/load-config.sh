@@ -37,7 +37,8 @@ function load_config()
     getcfg $config enable_codegen enable_codegen 
     getcfg $config load_thread_num load_thread_num
     getcfg $config memory_utilization memory_utilization
-
+    getcfg $config hash_join_bucket_num hash_join_bucket_num
+    getcfg $config hash_join_bucket_size hash_join_bucket_size
 }
 
 function currdir()
@@ -69,6 +70,8 @@ echo "client_listener_port :                [$client_listener_port]"
 echo "enable_codegen :                      [$enable_codegen]"
 echo "load_thread_num :                     [$load_thread_num]"
 echo "memory_utilization :                  [$memory_utilization]"
+echo "hash_join_bucket_num :                [$hash_join_bucket_num]"
+echo "hash_join_bucket_size :               [$hash_join_bucket_size]"
 echo "=========cluster config end=========="
 }
 

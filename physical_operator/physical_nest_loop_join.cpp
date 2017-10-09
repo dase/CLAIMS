@@ -116,16 +116,9 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
   NestLoopJoinContext *jtc = CreateOrReuseContext(crm_numa_sensitive);
   // create a new block to hold the results from the left child
   // and add results to the dynamic buffer
-  //  jtc->block_for_asking_ == BlockStreamBase::createBlock(
-  //                                state_.input_schema_left_,
-  //                                state_.block_size_);
+
   CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
-  //  auto temp = jtc->block_for_asking_->getBlock();
-  //  cout << "temp start" << temp << endl;
-  //
-  //  cout << "init block_for_asking_ : " << jtc->block_for_asking_->getBlock()
-  //       << " is reference : " << jtc->block_for_asking_->isIsReference() <<
-  //       endl;
+
   while (state_.child_left_->Next(exec_status, jtc->block_for_asking_)) {
     if (exec_status->is_cancelled()) {
       if (NULL != jtc->block_for_asking_) {
@@ -134,24 +127,10 @@ bool PhysicalNestLoopJoin::Open(SegmentExecStatus *const exec_status,
       }
       return false;
     }
-    //    cout << "after assgin start :" << jtc->block_for_asking_->getBlock()
-    //         << " is reference : " << jtc->block_for_asking_->isIsReference()
-    //         << endl;
+
     block_buffer_->atomicAppendNewBlock(jtc->block_for_asking_);
-    //    if (!jtc->block_for_asking_->isIsReference()) {
     CreateBlockStream(jtc->block_for_asking_, state_.input_schema_left_);
-    //    } else {
-    //      //      cout << "temp after" << temp << endl;
-    //      //      delete temp;
-    //      CreateBlockStream(jtc->block_for_asking_,
-    //      state_.input_schema_left_);
-    //      jtc->block_for_asking_->setIsReference(false);
-    //    }
-    //    cout << "new start :" << jtc->block_for_asking_->getBlock()
-    //         << " is reference : " << jtc->block_for_asking_->isIsReference()
-    //         << endl;
   }
-  //  cout << "buffer_size_ : " << block_buffer_->GetBufferSize() << endl;
   //  the last block is created without storing the results from the left
   // child
 

@@ -127,7 +127,7 @@ bool ExchangeMerger::Open(SegmentExecStatus* const exec_status,
     }
     // buffer all deserialized blocks come from every socket
     all_merged_block_buffer_ = new BlockStreamBuffer(
-        state_.block_size_, kBufferSizeInExchange, state_.schema_);
+        state_.block_size_, Config::expander_buffer_size, state_.schema_);
 
     RETURN_IF_CANCELLED(exec_status);
 
@@ -221,13 +221,19 @@ bool ExchangeMerger::Next(SegmentExecStatus* const exec_status,
           << pthread_self() << ">>>>>>>>" << endl;
       return false;
     }
-
-    if (sem_new_block_or_eof_.timed_wait(1)) {
-      if (all_merged_block_buffer_->getBlock(*block)) {
-        perf_info_->processed_one_block();
-        return true;
-      }
+    //   if (sem_new_block_or_eof_.timed_wait(1)) {
+    if (all_merged_block_buffer_->getBlock(*block)) {
+      perf_info_->processed_one_block();
+      return true;
     }
+    // if there is no block, it will delay the Shrin(), so add this Check
+    if (this->CheckTerminateRequest()) {
+      LOG(INFO)
+          << "<<<<<<<<<<<<<Exchange detected call back, signal! get failed>>>"
+          << pthread_self() << ">>>>>>>>" << endl;
+      return false;
+    }
+    //    }
     /*
      * Fix bug by checking whether the value of sem_new_block_or_eof_ is 0.
      * There is an extreme case that just after timed_wait(1) returned false
@@ -235,11 +241,13 @@ bool ExchangeMerger::Next(SegmentExecStatus* const exec_status,
      * nexhausted_lowers++, which leads to nexhausted_lowers = nlowers but
      * actually at least one block is not handled , then this method return
      * false without handing the last block even the last few blocks.
+     *
+     * the previous way to check the value of sem_new_block_or_eof_ is 0 or not,
+     *but sem_new_block_or_eof_ is too large than the actual block number in
+     *buffer, so it just to check the buffer is empty is ok.
      */
-    if (exhausted_lowers == lower_num_ &&
-        sem_new_block_or_eof_.get_value() == 0) {
-      LOG(INFO) << "the value of sem_new_block_or_eof_ is :"
-                << sem_new_block_or_eof_.get_value() << endl;
+
+    if (exhausted_lowers == lower_num_ && all_merged_block_buffer_->Empty()) {
       LOG(INFO) << "now all lower are exhausted~~~~~~~~~~~" << endl;
       return false;
     }
@@ -404,7 +412,8 @@ bool ExchangeMerger::RegisterExchange() {
   std::ostringstream port_str;
   port_str << socket_port_;
   return et->RegisterExchange(
-      ExchangeID(state_.exchange_id_, partition_offset_), port_str.str());
+      ExchangeID(state_.exchange_id_, partition_offset_), port_str.str(),
+      all_merged_block_buffer_);
 }
 /**
  * make sure each exchange merger at the same segment is registered, otherwise
@@ -823,7 +832,7 @@ for (auto &it : Pthis->lower_fd_to_passwd_) {
 
           /** deserialize the data block from Sender to the blockstreambase
            * (block_for_deserialization) **/
-          Pthis->block_for_deserialization->deserialize(
+          Pthis->block_for_deserialization->DeSerialize(
               reinterpret_cast<Block*>(
                   Pthis->block_for_socket_[socket_fd_index]));
 
@@ -846,8 +855,8 @@ for (auto &it : Pthis->lower_fd_to_passwd_) {
 
             //??? why is all ,not 1
             // multiple threads will still compete with lock
-            Pthis->sem_new_block_or_eof_.post(
-                Pthis->number_of_registered_expanded_threads_);
+            //    Pthis->sem_new_block_or_eof_.post(
+            //      Pthis->number_of_registered_expanded_threads_);
           } else {
 /** The newly obtained data block is the end-of-file.  **/
 #ifdef GLOG_STATUS
@@ -862,8 +871,8 @@ for (auto &it : Pthis->lower_fd_to_passwd_) {
              * threads waiting for the semaphore continue.
              **/
             Pthis->exhausted_lowers++;
-            Pthis->sem_new_block_or_eof_.post(
-                Pthis->number_of_registered_expanded_threads_);
+            // Pthis->sem_new_block_or_eof_.post(
+            //     Pthis->number_of_registered_expanded_threads_);
 
             if (Pthis->exhausted_lowers == Pthis->lower_num_) {
               /*

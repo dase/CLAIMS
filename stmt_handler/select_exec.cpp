@@ -175,6 +175,12 @@ RetCode SelectExec::Execute() {
   }
   logic_plan = new LogicalQueryPlanRoot(0, logic_plan, raw_sql_,
                                         LogicalQueryPlanRoot::kResultCollector);
+
+  if (Config::enable_prune_column &&
+      ((AstSelectList*)(select_ast_->select_list_))->is_all_ == false) {
+    set<string> attrs;
+    logic_plan->PruneProj(attrs);
+  }
   logic_plan->GetPlanContext();
 #ifndef PRINTCONTEXT
   logic_plan->Print();
